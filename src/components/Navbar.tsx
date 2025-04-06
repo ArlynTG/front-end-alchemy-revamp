@@ -24,16 +24,18 @@ const Navbar = () => {
         </div>
 
         {/* Desktop Navigation */}
-        <nav className="hidden md:flex md:items-center md:gap-8">
-          <a href="#features" className="text-tobey-text hover:text-tobey-orange transition-colors">Features</a>
-          <a href="#story" className="text-tobey-text hover:text-tobey-orange transition-colors">Origin Story</a>
-          <a href="#contact" className="text-tobey-text hover:text-tobey-orange transition-colors">Contact</a>
-        </nav>
+        <div className="hidden md:flex md:items-center md:gap-8">
+          <nav className="flex items-center gap-6">
+            <a href="#features" className="text-tobey-text hover:text-tobey-orange transition-colors">Features</a>
+            <a href="#story" className="text-tobey-text hover:text-tobey-orange transition-colors">Origin Story</a>
+            <a href="#contact" className="text-tobey-text hover:text-tobey-orange transition-colors">Contact</a>
+          </nav>
 
-        {/* Login and Signup Buttons */}
-        <div className="hidden md:flex md:items-center md:gap-3">
-          <a href="#" className="text-tobey-text font-medium hover:text-tobey-orange transition-colors">Log In</a>
-          <Button className="btn-primary">Sign Up</Button>
+          {/* Login and Signup Buttons */}
+          <div className="flex items-center gap-3">
+            <a href="#" className="text-tobey-text font-medium hover:text-tobey-orange transition-colors">Log In</a>
+            <Button className="btn-primary">Sign Up</Button>
+          </div>
         </div>
 
         {/* Mobile Menu Button */}
@@ -64,3 +66,4 @@ const Navbar = () => {
 };
 
 export default Navbar;
+
