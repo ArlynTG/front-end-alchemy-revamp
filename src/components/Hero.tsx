@@ -1,9 +1,17 @@
+
 import React from 'react';
+import { Button } from "@/components/ui/button";
 
 const Hero = () => {
   return (
     <section className="py-16 md:py-24">
-      <div className="container">
+      <div className="container relative">
+        <div className="absolute top-0 left-0 m-4">
+          <Button variant="default" className="btn-primary">
+            Join the Beta
+          </Button>
+        </div>
+
         <div className="grid md:grid-cols-2 gap-10 items-center mb-12">
           <div className="order-1 md:order-1">
             <img 
