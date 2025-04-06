@@ -2,11 +2,22 @@
 import { Link } from "react-router-dom";
 
 const Footer = () => {
+  const scrollToTop = () => {
+    // If not on homepage, navigate to homepage
+    window.location.pathname !== "/" && (window.location.href = "/");
+    
+    // Scroll to top of the page
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
   return (
     <footer className="bg-tobey-blue py-6">
       <div className="container">
         <div className="flex flex-col md:flex-row justify-between items-center mb-4">
-          <div className="flex items-center gap-2">
+          <div 
+            className="flex items-center gap-2 cursor-pointer"
+            onClick={scrollToTop}
+          >
             <svg 
               viewBox="0 0 24 24" 
               fill="none" 
