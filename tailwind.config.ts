@@ -1,4 +1,3 @@
-
 import type { Config } from "tailwindcss";
 
 export default {
@@ -66,12 +65,11 @@ export default {
 					border: 'hsl(var(--sidebar-border))',
 					ring: 'hsl(var(--sidebar-ring))'
 				},
-				// Custom colors for Tobey's Tutor
 				tobey: {
 					peach: '#FFE8CC',
 					blue: '#D9E4F0',
-					orange: '#FFA26B',
-					darkOrange: '#FF7E3E',
+					orange: '#FFF7518',
+					darkOrange: '#FFF7518',
 					text: '#333333',
 				}
 			},
@@ -117,4 +115,3 @@ export default {
 	},
 	plugins: [require("tailwindcss-animate")],
 } satisfies Config;
-
