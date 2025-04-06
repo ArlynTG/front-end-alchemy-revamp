@@ -9,6 +9,7 @@ const ChatDemo = () => {
   const [messages, setMessages] = useState<Array<{role: string, content: string}>>([]);
   const [input, setInput] = useState('');
   const [loading, setLoading] = useState(false);
+  const [isOnline, setIsOnline] = useState(navigator.onLine);
   const chatContainerRef = useRef<HTMLDivElement>(null);
 
   // Auto-scroll to bottom when messages change
@@ -18,8 +19,35 @@ const ChatDemo = () => {
     }
   }, [messages]);
 
+  // Listen for online/offline status changes
+  useEffect(() => {
+    const handleOnline = () => setIsOnline(true);
+    const handleOffline = () => setIsOnline(false);
+
+    window.addEventListener('online', handleOnline);
+    window.addEventListener('offline', handleOffline);
+
+    return () => {
+      window.removeEventListener('online', handleOnline);
+      window.removeEventListener('offline', handleOffline);
+    };
+  }, []);
+
+  const checkConnection = () => {
+    if (!isOnline) {
+      toast.error('No internet connection', {
+        description: 'Please check your network and try again'
+      });
+      return false;
+    }
+    return true;
+  };
+
   const sendMessage = async () => {
     if (!input.trim()) return;
+    
+    // Check connection before sending
+    if (!checkConnection()) return;
     
     const userMessage = { role: 'user', content: input };
     setMessages((prev) => [...prev, userMessage]);
@@ -89,7 +117,12 @@ const ChatDemo = () => {
                 <div className="animate-bounce delay-300">.</div>
               </div>
             )}
-            {messages.length === 0 && !loading && (
+            {!isOnline && (
+              <div className="p-3 text-center text-red-500 bg-red-50 rounded-md mt-2">
+                You appear to be offline. Please check your internet connection.
+              </div>
+            )}
+            {messages.length === 0 && !loading && isOnline && (
               <div className="h-full flex items-center justify-center text-gray-400 italic">
                 Your conversation with Tobey will appear here
               </div>
@@ -104,11 +137,12 @@ const ChatDemo = () => {
               onKeyDown={(e) => e.key === 'Enter' && sendMessage()}
               placeholder="Ask Tobey something..."
               className="flex-1"
+              disabled={!isOnline || loading}
             />
             <Button 
               className="btn-primary"
               onClick={sendMessage}
-              disabled={loading || !input.trim()}
+              disabled={loading || !input.trim() || !isOnline}
             >
               Send
             </Button>
@@ -120,4 +154,3 @@ const ChatDemo = () => {
 };
 
 export default ChatDemo;
-
