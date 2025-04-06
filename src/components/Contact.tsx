@@ -2,9 +2,13 @@
 import { Button } from "@/components/ui/button";
 import { Mail } from "lucide-react";
 
-const Contact = () => {
+interface ContactProps {
+  id?: string;
+}
+
+const Contact = ({ id }: ContactProps) => {
   return (
-    <section id="contact" className="py-16 md:py-24 bg-white">
+    <section id={id || "contact"} className="py-16 md:py-24 bg-white">
       <div className="container">
         <div className="grid md:grid-cols-2 gap-10 items-center">
           <div>
