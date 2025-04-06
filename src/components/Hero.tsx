@@ -1,3 +1,4 @@
+
 import React from 'react';
 
 const Hero = () => {
@@ -14,7 +15,7 @@ const Hero = () => {
           </div>
           <div className="order-2 md:order-2">
             <h1 className="text-5xl font-bold mb-4">Tobey's Tutor</h1>
-            <h2 className="text-2xl text-tobey-orange mb-4">Using AI to optimize the power of dyslexic minds</h2>
+            <h2 className="text-2xl text-tobey-orange mb-4">Unlock potential. Celebrate neurodiversity. Transform Learning.</h2>
             <p className="text-base text-gray-700">
               As parents, we know what it's like to feel stuck. Watching our children struggle with traditional learning methods can be heartbreaking. We built Tobey's Tutor for kids who learn differently, enabling them to unlock their academic potential, build confidence, find their voice — and have fun too.
             </p>
