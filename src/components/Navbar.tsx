@@ -1,4 +1,3 @@
-
 import { Button } from "@/components/ui/button";
 import { useState } from "react";
 import { Menu, X } from "lucide-react";
@@ -20,7 +19,7 @@ const Navbar = () => {
           >
             <path d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
           </svg>
-          <span className="text-xl font-medium text-tobey-orange">Tobey's Tutor</span>
+          <span className="text-xl font-medium text-tobey-orange">Tobey's Tutor+</span>
         </div>
 
         {/* Desktop Navigation */}
