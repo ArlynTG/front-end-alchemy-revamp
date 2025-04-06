@@ -1,3 +1,4 @@
+
 import { Button } from "@/components/ui/button";
 import { Check } from "lucide-react";
 import { useState } from "react";
@@ -39,7 +40,7 @@ const Pricing = () => {
           <h3 className="text-5xl font-bold my-6">$29<span className="text-xl text-gray-500 font-normal">/mo</span></h3>
           
           <p className="text-gray-600 mb-8">
-            Full access to all features. Cancel anytime. No credit card required for trial.
+            Full access to all features. Cancel anytime.
           </p>
           
           <div className="space-y-4 mb-8 text-left">
