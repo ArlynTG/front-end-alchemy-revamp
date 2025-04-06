@@ -68,8 +68,8 @@ export default {
 				tobey: {
 					peach: '#FFE8CC',
 					blue: '#D9E4F0',
-					orange: '#FFF7518',
-					darkOrange: '#FFF7518',
+					orange: '#FF7518',
+					darkOrange: '#FF7518',
 					text: '#333333',
 				}
 			},
