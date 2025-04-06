@@ -66,7 +66,7 @@ export default {
 					ring: 'hsl(var(--sidebar-ring))'
 				},
 				tobey: {
-					peach: '#FFE8CC',
+					peach: '#FFD4A3',
 					blue: '#D9E4F0',
 					orange: '#FF7518',
 					darkOrange: '#FF7518',
