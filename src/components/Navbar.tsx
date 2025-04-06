@@ -26,7 +26,7 @@ const Navbar = () => {
           <div className="flex items-center gap-6">
             <a href="#features" className="text-tobey-text hover:text-tobey-orange transition-colors">Features</a>
             <a href="#story" className="text-tobey-text hover:text-tobey-orange transition-colors">Origin Story</a>
-            <a href="#contact" className="text-tobey-text hover:text-tobey-orange transition-colors">Contact</a>
+            <a href="#demo" className="text-tobey-text hover:text-tobey-orange transition-colors">Demo</a>
             <a href="#" className="text-tobey-text font-medium hover:text-tobey-orange transition-colors">Log In</a>
             <Button className="btn-primary">Join the Beta</Button>
           </div>
@@ -45,7 +45,7 @@ const Navbar = () => {
           <nav className="flex flex-col gap-6 text-lg">
             <a href="#features" className="text-tobey-text hover:text-tobey-orange transition-colors" onClick={() => setMobileMenuOpen(false)}>Features</a>
             <a href="#story" className="text-tobey-text hover:text-tobey-orange transition-colors" onClick={() => setMobileMenuOpen(false)}>Origin Story</a>
-            <a href="#contact" className="text-tobey-text hover:text-tobey-orange transition-colors" onClick={() => setMobileMenuOpen(false)}>Contact</a>
+            <a href="#demo" className="text-tobey-text hover:text-tobey-orange transition-colors" onClick={() => setMobileMenuOpen(false)}>Demo</a>
           </nav>
           <div className="mt-8 flex flex-col gap-4">
             <a href="#" className="text-center text-tobey-text font-medium hover:text-tobey-orange transition-colors">Log In</a>
@@ -58,4 +58,3 @@ const Navbar = () => {
 };
 
 export default Navbar;
-

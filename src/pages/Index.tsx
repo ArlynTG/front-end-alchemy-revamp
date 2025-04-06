@@ -18,7 +18,7 @@ const Index = () => {
         <Story />
         <ChatDemo />
         <Pricing />
-        <Contact />
+        <Contact id="demo" />
       </main>
       <Footer />
     </div>
