@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { Button } from "@/components/ui/button";
 
@@ -14,11 +15,6 @@ const Hero = () => {
             />
           </div>
           <div className="order-2 md:order-2">
-            <div className="flex items-center gap-4 mb-4">
-              <Button variant="default" className="btn-primary">
-                Join the Beta
-              </Button>
-            </div>
             <h1 className="text-5xl font-bold mb-4 text-tobey-orange">Tobey's Tutor</h1>
             <h2 className="text-2xl mb-4 text-black flex flex-col">
               <span>Unlock potential.</span>
