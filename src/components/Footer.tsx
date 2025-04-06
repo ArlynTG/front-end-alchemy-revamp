@@ -1,4 +1,6 @@
 
+import { Link } from "react-router-dom";
+
 const Footer = () => {
   return (
     <footer className="bg-tobey-blue py-12">
@@ -26,9 +28,9 @@ const Footer = () => {
         <div className="border-t border-gray-200 mt-12 pt-8 flex flex-col md:flex-row justify-between items-center">
           <p className="text-gray-600 text-sm">© 2025 Tobey's Tutor, Inc. All rights reserved.</p>
           <div className="flex gap-4 mt-4 md:mt-0">
-            <a href="#" className="text-gray-600 hover:text-tobey-orange transition-colors text-sm">Privacy Policy</a>
-            <a href="#" className="text-gray-600 hover:text-tobey-orange transition-colors text-sm">Terms of Service</a>
-            <a href="#" className="text-gray-600 hover:text-tobey-orange transition-colors text-sm">Cookie Policy</a>
+            <Link to="/privacy-policy" className="text-gray-600 hover:text-tobey-orange transition-colors text-sm">Privacy Policy</Link>
+            <Link to="/terms-of-service" className="text-gray-600 hover:text-tobey-orange transition-colors text-sm">Terms of Service</Link>
+            <Link to="/cookie-policy" className="text-gray-600 hover:text-tobey-orange transition-colors text-sm">Cookie Policy</Link>
           </div>
         </div>
       </div>
