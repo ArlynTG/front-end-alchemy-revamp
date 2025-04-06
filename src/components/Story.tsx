@@ -1,34 +1,32 @@
 
 const Story = () => {
   return (
-    <section id="story" className="py-16 md:py-24 bg-white">
+    <section id="story" className="py-16 md:py-24 bg-tobey-peach">
       <div className="container max-w-4xl mx-auto">
         <span className="section-tag">Story</span>
-        <h2 className="section-title">When AI met dinosaurs</h2>
-        <h3 className="text-center text-xl text-gray-600 mb-12 italic">The story school always tells</h3>
+        <h2 className="section-title">Superheroes, dinosaurs, and AI. Oh My.</h2>
+        <h3 className="text-center text-xl text-gray-600 mb-12 italic">The Story behind Tobey's Tutor</h3>
         
         <div className="prose prose-lg mx-auto text-gray-700">
           <p className="mb-6">
-            When my son Tobey was diagnosed with dyslexia, we struggled to find resources that truly understood his unique way of learning. At school, he was falling behind his peers, despite having an incredibly creative mind.
+            We created Tobey's Tutor as a practical solution for our son Tobey—a bright 11-year-old with dyslexia who inspired both our mission and our name.
           </p>
           
           <p className="mb-6">
-            As an AI researcher, I began developing a specialized tutoring platform—a system that would adapt to dyslexic thinking patterns. I knew that Tobey wasn't lacking intelligence; he simply processed information differently than traditional education methods allowed for.
+            Like many parents of children with learning differences, we searched for effective tools to support his education. Seeing his natural curiosity about superheroes, dinosaurs, and YouTube's Mark Rober, we developed a tutoring system that connects learning to his genuine interests.
           </p>
           
           <p className="mb-6">
-            The breakthrough came when Tobey discovered dinosaurs. His passion for paleontology was unmatched—he could recall complex species names, geological periods, and evolutionary traits that most adults would struggle to memorize. We incorporated this interest into our AI tutor, and suddenly, learning became exciting for him.
+            By thoughtfully integrating his passions into structured learning sessions, we've created a tool that makes academic progress both effective and engaging—leading Tobey to voluntarily ask for study time.
           </p>
           
           <p className="mb-6">
-            By recognizing that dyslexia isn't merely a disability but a different cognitive approach, we created Tobey's Tutor. The platform leverages the strengths of neurodivergent thinking while providing adaptive support for traditional academic challenges.
+            While no technology replaces great teachers and schools, Tobey's Tutor offers what we couldn't find elsewhere: a personalized learning experience that meets children where they are—addressing specific needs, building confidence, and making education feel relevant to their world.
           </p>
           
           <p className="mb-8">
-            Today, Tobey has not only caught up with his peers but excels in many subjects. His experience inspired us to help other children discover their unique potential, turning learning differences into powerful advantages.
+            —Arlyn Gajilan & Robin Winn
           </p>
-          
-          <p className="text-right text-sm italic">- Professor Alex Monty, Founder</p>
         </div>
       </div>
     </section>
