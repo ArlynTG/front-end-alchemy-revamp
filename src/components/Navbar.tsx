@@ -1,4 +1,3 @@
-
 import { Button } from "@/components/ui/button";
 import { useState } from "react";
 import { Menu, X } from "lucide-react";
@@ -7,7 +6,7 @@ const Navbar = () => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   return (
-    <header className="sticky top-0 z-50 bg-tobey-blue py-4">
+    <header className="sticky top-0 z-50 bg-tobey-blue/90 py-4 backdrop-blur-sm">
       <div className="container flex items-center justify-between">
         <div className="flex items-center gap-2">
           <svg 
