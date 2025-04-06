@@ -1,6 +1,7 @@
+
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
-import { Send } from "lucide-react";
+import { Send, Plus } from "lucide-react";
 
 const ChatDemo = () => {
   const [messages, setMessages] = useState([
@@ -46,8 +47,8 @@ const ChatDemo = () => {
         <div className="max-w-2xl mx-auto bg-white rounded-xl shadow-md overflow-hidden">
           {/* Chat Header */}
           <div className="bg-tobey-orange text-white p-4 flex items-center gap-3">
-            <div className="h-8 w-8 bg-white rounded-full flex items-center justify-center">
-              <span className="text-tobey-orange font-bold">T</span>
+            <div className="h-8 w-8 bg-black rounded-full flex items-center justify-center">
+              <Plus size={16} color="white" />
             </div>
             <div>
               <p className="font-medium">Tobey's Tutor</p>
