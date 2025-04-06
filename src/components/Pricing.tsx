@@ -49,10 +49,6 @@ const Pricing = () => {
             </div>
             <div className="flex items-start gap-3">
               <Check className="h-5 w-5 text-tobey-orange mt-0.5" />
-              <span>Reading and writing assistance tools</span>
-            </div>
-            <div className="flex items-start gap-3">
-              <Check className="h-5 w-5 text-tobey-orange mt-0.5" />
               <span>Progress tracking and insights</span>
             </div>
             <div className="flex items-start gap-3">
