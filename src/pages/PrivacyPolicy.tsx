@@ -1,4 +1,3 @@
-
 import PolicyLayout from "@/components/PolicyLayout";
 
 const PrivacyPolicy = () => {
@@ -100,8 +99,7 @@ const PrivacyPolicy = () => {
             If you have any questions or concerns about this Privacy Policy or our privacy practices, please contact us at:
           </p>
           <div className="mt-4">
-            <p>Email: privacy@tobeystutor.com</p>
-            <p>Address: 123 Learning Lane, San Francisco, CA 94110</p>
+            <p>Email: support@tobeystutor.com</p>
           </div>
         </section>
       </div>

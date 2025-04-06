@@ -1,4 +1,3 @@
-
 import PolicyLayout from "@/components/PolicyLayout";
 
 const CookiePolicy = () => {
@@ -97,8 +96,7 @@ const CookiePolicy = () => {
             If you have any questions about our Cookie Policy, please contact us at:
           </p>
           <div className="mt-4">
-            <p>Email: privacy@tobeystutor.com</p>
-            <p>Address: 123 Learning Lane, San Francisco, CA 94110</p>
+            <p>Email: support@tobeystutor.com</p>
           </div>
         </section>
       </div>
