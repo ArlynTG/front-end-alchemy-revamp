@@ -60,16 +60,16 @@ const CookiePolicy = () => {
           </p>
           <ul className="list-disc ml-6 space-y-2">
             <li>
-              <strong>Google Chrome:</strong> Click the three dots in the top right corner, select "Settings" > "Privacy and security" > "Cookies and other site data."
+              <strong>Google Chrome:</strong> Click the three dots in the top right corner, select "Settings" {'>'}  "Privacy and security" {'>'} "Cookies and other site data."
             </li>
             <li>
-              <strong>Microsoft Edge:</strong> Click the three dots in the top right corner, select "Settings" > "Cookies and site permissions" > "Manage and delete cookies and site data."
+              <strong>Microsoft Edge:</strong> Click the three dots in the top right corner, select "Settings" {'>'} "Cookies and site permissions" {'>'} "Manage and delete cookies and site data."
             </li>
             <li>
-              <strong>Safari:</strong> Click "Safari" in the top menu, select "Preferences" > "Privacy" > "Manage Website Data."
+              <strong>Safari:</strong> Click "Safari" in the top menu, select "Preferences" {'>'} "Privacy" {'>'} "Manage Website Data."
             </li>
             <li>
-              <strong>Firefox:</strong> Click the three lines in the top right corner, select "Options" > "Privacy & Security" > in the "Cookies and Site Data" section, click "Manage Data."
+              <strong>Firefox:</strong> Click the three lines in the top right corner, select "Options" {'>'} "Privacy & Security" {'>'} in the "Cookies and Site Data" section, click "Manage Data."
             </li>
           </ul>
           <p className="mt-4">
