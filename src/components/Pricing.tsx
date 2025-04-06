@@ -1,4 +1,3 @@
-
 import { Button } from "@/components/ui/button";
 import { Check } from "lucide-react";
 import { useState } from "react";
@@ -34,7 +33,7 @@ const Pricing = () => {
             >
               <path d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
             </svg>
-            <span className="text-xl font-medium">14-Day Free Trial</span>
+            <span className="text-xl font-medium">7-Day Free Trial</span>
           </div>
           
           <h3 className="text-5xl font-bold my-6">$29<span className="text-xl text-gray-500 font-normal">/mo</span></h3>
