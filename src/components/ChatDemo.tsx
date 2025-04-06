@@ -1,5 +1,4 @@
-
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Send } from "lucide-react";
 import { Input } from "@/components/ui/input";
@@ -40,7 +39,7 @@ const ChatDemo = () => {
         headers: { 
           'Content-Type': 'application/json',
           'Authorization': `Bearer ${openAIKey}`,
-          'OpenAI-Beta': 'assistants=v1'
+          'OpenAI-Beta': 'assistants=v2'
         },
         body: JSON.stringify({}),
       });
@@ -58,7 +57,7 @@ const ChatDemo = () => {
         headers: { 
           'Content-Type': 'application/json',
           'Authorization': `Bearer ${openAIKey}`,
-          'OpenAI-Beta': 'assistants=v1'
+          'OpenAI-Beta': 'assistants=v2'
         },
         body: JSON.stringify({
           role: 'user',
@@ -76,7 +75,7 @@ const ChatDemo = () => {
         headers: { 
           'Content-Type': 'application/json',
           'Authorization': `Bearer ${openAIKey}`,
-          'OpenAI-Beta': 'assistants=v1'
+          'OpenAI-Beta': 'assistants=v2'
         },
         body: JSON.stringify({
           assistant_id: assistantId
@@ -100,7 +99,7 @@ const ChatDemo = () => {
           method: 'GET',
           headers: { 
             'Authorization': `Bearer ${openAIKey}`,
-            'OpenAI-Beta': 'assistants=v1'
+            'OpenAI-Beta': 'assistants=v2'
           },
         });
         
@@ -117,7 +116,7 @@ const ChatDemo = () => {
         method: 'GET',
         headers: { 
           'Authorization': `Bearer ${openAIKey}`,
-          'OpenAI-Beta': 'assistants=v1'
+          'OpenAI-Beta': 'assistants=v2'
         },
       });
       
@@ -174,7 +173,7 @@ const ChatDemo = () => {
   };
   
   // Load credentials from localStorage on component mount
-  useState(() => {
+  useEffect(() => {
     const savedKey = localStorage.getItem('openai_key');
     const savedAssistantId = localStorage.getItem('assistant_id');
     
@@ -183,7 +182,7 @@ const ChatDemo = () => {
       setAssistantId(savedAssistantId);
       setShowSetup(false);
     }
-  });
+  }, []);
   
   return (
     <section id="demo" className="py-16 md:py-24 bg-white">
