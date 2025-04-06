@@ -3,6 +3,7 @@ import { useState, useRef, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import { toast } from "sonner";
 
 const ChatDemo = () => {
   const [messages, setMessages] = useState<Array<{role: string, content: string}>>([]);
@@ -19,28 +20,32 @@ const ChatDemo = () => {
 
   const sendMessage = async () => {
     if (!input.trim()) return;
+    
     const userMessage = { role: 'user', content: input };
     setMessages((prev) => [...prev, userMessage]);
     setInput('');
     setLoading(true);
 
     try {
-      // Using the provided API endpoint
       const response = await fetch('https://tobeys-tutor-demo.fly.dev/api/chat', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ message: input }),
       });
 
+      if (!response.ok) {
+        // If the response is not OK, throw an error with the status
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
       const data = await response.json();
       const assistantMessage = { role: 'assistant', content: data.reply };
       setMessages((prev) => [...prev, assistantMessage]);
     } catch (err) {
       console.error('Error sending message:', err);
-      setMessages((prev) => [...prev, { 
-        role: 'assistant', 
-        content: 'Sorry, I had trouble responding. Please try again.' 
-      }]);
+      toast.error('Failed to send message', {
+        description: err instanceof Error ? err.message : 'Unknown error occurred'
+      });
     } finally {
       setLoading(false);
     }
@@ -115,3 +120,4 @@ const ChatDemo = () => {
 };
 
 export default ChatDemo;
+
