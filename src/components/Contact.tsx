@@ -13,7 +13,7 @@ const Contact = ({ id }: ContactProps) => {
         <div className="text-center mb-12">
           <h2 className="text-3xl font-medium mb-4">Get in Touch with Us</h2>
           <div className="space-y-2 text-gray-600 max-w-2xl mx-auto">
-            <p>Have questions about Tobey's Tutor? We're here to help!</p>
+            <p>Have more questions or comments?</p>
             <p>Get in touch with our team and we'll get back to you as soon as possible.</p>
           </div>
         </div>
