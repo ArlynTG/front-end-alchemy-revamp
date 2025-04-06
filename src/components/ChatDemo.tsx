@@ -33,12 +33,16 @@ const ChatDemo = () => {
   };
   
   return (
-    <section id="demo" className="py-16 md:py-24 bg-tobey-blue/30">
+    <section id="demo" className="py-16 md:py-24 bg-white">
       <div className="container">
         <h2 className="section-title">Chat with Tobey's Tutor</h2>
-        <p className="text-center text-gray-600 max-w-2xl mx-auto mb-10">
+        <p className="text-center text-gray-600 max-w-2xl mx-auto mb-6">
           See how our custom-built AI adapts to your unique learning style, making complex concepts easier to understand.
         </p>
+        
+        <div className="flex justify-center mb-10">
+          <Button className="btn-primary">Demo</Button>
+        </div>
         
         <div className="max-w-2xl mx-auto bg-white rounded-xl shadow-md overflow-hidden">
           {/* Chat Header */}
