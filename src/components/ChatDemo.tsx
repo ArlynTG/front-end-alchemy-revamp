@@ -172,7 +172,6 @@ const ChatDemo = () => {
     });
   };
   
-  // Load credentials from localStorage on component mount
   useEffect(() => {
     const savedKey = localStorage.getItem('openai_key');
     const savedAssistantId = localStorage.getItem('assistant_id');
@@ -187,9 +186,7 @@ const ChatDemo = () => {
   return (
     <section id="demo" className="py-16 md:py-24 bg-white">
       <div className="container">
-        <div className="flex items-start justify-start mb-10">
-          <Button className="btn-primary">Demo</Button>
-        </div>
+        <span className="section-tag">Demo</span>
         
         <h2 className="section-title">Got Questions?</h2>
         <p className="text-center text-gray-600 max-w-2xl mx-auto mb-6">
@@ -246,7 +243,6 @@ const ChatDemo = () => {
           </div>
         ) : (
           <div className="max-w-2xl mx-auto bg-white rounded-xl shadow-md overflow-hidden">
-            {/* Chat Header */}
             <div className="bg-tobey-orange text-white p-4 flex items-center gap-3 justify-between">
               <div className="flex items-center gap-3">
                 <div className="h-8 w-8 bg-black rounded-full flex items-center justify-center">
@@ -266,7 +262,6 @@ const ChatDemo = () => {
               </Button>
             </div>
             
-            {/* Chat Messages */}
             <div className="p-4 h-80 overflow-y-auto flex flex-col gap-4">
               {messages.map((msg, idx) => (
                 <div 
@@ -297,7 +292,6 @@ const ChatDemo = () => {
               )}
             </div>
             
-            {/* Chat Input */}
             <div className="p-4 border-t">
               <div className="flex gap-2">
                 <Input
