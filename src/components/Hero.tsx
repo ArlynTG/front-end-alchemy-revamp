@@ -1,4 +1,3 @@
-
 import React from 'react';
 
 const Hero = () => {
@@ -34,19 +33,19 @@ const Hero = () => {
             </div>
             <div className="absolute -bottom-2 -right-2 w-16 h-16 bg-tobey-peach rounded-full opacity-40 blur-md"></div>
           </div>
-          <div className="feature-highlight bg-gradient-to-br from-white to-tobey-blue/60 p-6 rounded-xl shadow-sm relative overflow-hidden backdrop-blur-sm">
+          <div className="feature-highlight bg-gradient-to-br from-white to-tobey-peach/60 p-6 rounded-xl shadow-sm relative overflow-hidden backdrop-blur-sm">
             <div className="relative z-10">
               <h4 className="font-medium mb-2">Adaptive</h4>
               <p className="text-sm text-gray-600">Our patent-pending AI platform uses games and your child's interests to automatically adjust to learning speed, difficulty, and focus level.</p>
             </div>
-            <div className="absolute -bottom-2 -right-2 w-16 h-16 bg-tobey-blue rounded-full opacity-40 blur-md"></div>
+            <div className="absolute -bottom-2 -right-2 w-16 h-16 bg-tobey-peach rounded-full opacity-40 blur-md"></div>
           </div>
-          <div className="feature-highlight bg-gradient-to-br from-white to-tobey-orange/40 p-6 rounded-xl shadow-sm relative overflow-hidden backdrop-blur-sm">
+          <div className="feature-highlight bg-gradient-to-br from-white to-tobey-peach/60 p-6 rounded-xl shadow-sm relative overflow-hidden backdrop-blur-sm">
             <div className="relative z-10">
               <h4 className="font-medium mb-2">Proven</h4>
               <p className="text-sm text-gray-600">Guided by research-backed approaches like Orton Gillingham and structured literacy techniques.</p>
             </div>
-            <div className="absolute -bottom-2 -right-2 w-16 h-16 bg-tobey-orange rounded-full opacity-30 blur-md"></div>
+            <div className="absolute -bottom-2 -right-2 w-16 h-16 bg-tobey-peach rounded-full opacity-40 blur-md"></div>
           </div>
         </div>
       </div>
