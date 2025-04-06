@@ -1,4 +1,6 @@
 
+import React from 'react';
+
 const Story = () => {
   return (
     <section id="story" className="py-16 md:py-24 bg-tobey-peach">
@@ -7,7 +9,7 @@ const Story = () => {
         <h2 className="section-title">Superheroes, dinosaurs, and AI. Oh My.</h2>
         <h3 className="text-center text-xl text-gray-600 mb-12 italic">The Story behind Tobey's Tutor</h3>
         
-        <div className="prose prose-lg mx-auto text-gray-700 text-right">
+        <div className="prose prose-lg mx-auto text-gray-700">
           <p className="mb-6">
             We created Tobey's Tutor as a practical solution for our son Tobey—a bright 11-year-old with dyslexia who inspired both our mission and our name.
           </p>
@@ -24,7 +26,7 @@ const Story = () => {
             While no technology replaces great teachers and schools, Tobey's Tutor offers what we couldn't find elsewhere: a personalized learning experience that meets children where they are—addressing specific needs, building confidence, and making education feel relevant to their world.
           </p>
           
-          <p className="mb-8">
+          <p className="mb-8 text-right">
             —Arlyn Gajilan & Robin Winn
           </p>
         </div>
@@ -34,4 +36,3 @@ const Story = () => {
 };
 
 export default Story;
-
