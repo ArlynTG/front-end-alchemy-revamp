@@ -1,3 +1,4 @@
+
 import { Button } from "@/components/ui/button";
 import { useState } from "react";
 import { Menu, X } from "lucide-react";
@@ -22,13 +23,10 @@ const Navbar = () => {
         </div>
 
         <div className="hidden md:flex md:items-center md:gap-8">
-          <nav className="flex items-center gap-6">
+          <div className="flex items-center gap-6">
             <a href="#features" className="text-tobey-text hover:text-tobey-orange transition-colors">Features</a>
             <a href="#story" className="text-tobey-text hover:text-tobey-orange transition-colors">Origin Story</a>
             <a href="#contact" className="text-tobey-text hover:text-tobey-orange transition-colors">Contact</a>
-          </nav>
-
-          <div className="flex items-center gap-3">
             <a href="#" className="text-tobey-text font-medium hover:text-tobey-orange transition-colors">Log In</a>
             <Button className="btn-primary">Join the Beta</Button>
           </div>
@@ -60,3 +58,4 @@ const Navbar = () => {
 };
 
 export default Navbar;
+
