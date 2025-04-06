@@ -1,3 +1,4 @@
+
 import { Button } from "@/components/ui/button";
 import { useState } from "react";
 import { Menu, X } from "lucide-react";
@@ -13,7 +14,7 @@ const Navbar = () => {
           <svg 
             viewBox="0 0 24 24" 
             fill="none" 
-            className="h-7 w-7 text-tobey-orange"
+            className="h-7 w-7 text-black"
             stroke="currentColor" 
             strokeWidth="2"
           >
