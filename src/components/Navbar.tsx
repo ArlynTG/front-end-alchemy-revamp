@@ -1,4 +1,3 @@
-
 import { Button } from "@/components/ui/button";
 import { useState } from "react";
 import { Menu, X } from "lucide-react";
@@ -9,7 +8,6 @@ const Navbar = () => {
   return (
     <header className="sticky top-0 z-50 bg-tobey-blue py-4">
       <div className="container flex items-center justify-between">
-        {/* Logo */}
         <div className="flex items-center gap-2">
           <svg 
             viewBox="0 0 24 24" 
@@ -23,7 +21,6 @@ const Navbar = () => {
           <span className="text-xl font-medium text-tobey-orange">Tobey's Tutor</span>
         </div>
 
-        {/* Desktop Navigation */}
         <div className="hidden md:flex md:items-center md:gap-8">
           <nav className="flex items-center gap-6">
             <a href="#features" className="text-tobey-text hover:text-tobey-orange transition-colors">Features</a>
@@ -31,14 +28,12 @@ const Navbar = () => {
             <a href="#contact" className="text-tobey-text hover:text-tobey-orange transition-colors">Contact</a>
           </nav>
 
-          {/* Login and Signup Buttons */}
           <div className="flex items-center gap-3">
             <a href="#" className="text-tobey-text font-medium hover:text-tobey-orange transition-colors">Log In</a>
-            <Button className="btn-primary">Sign Up</Button>
+            <Button className="btn-primary">Join the Beta</Button>
           </div>
         </div>
 
-        {/* Mobile Menu Button */}
         <button 
           className="md:hidden"
           onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
@@ -47,7 +42,6 @@ const Navbar = () => {
         </button>
       </div>
 
-      {/* Mobile Menu */}
       {mobileMenuOpen && (
         <div className="fixed inset-0 top-16 bg-white/95 z-40 flex flex-col p-6 md:hidden">
           <nav className="flex flex-col gap-6 text-lg">
@@ -57,7 +51,7 @@ const Navbar = () => {
           </nav>
           <div className="mt-8 flex flex-col gap-4">
             <a href="#" className="text-center text-tobey-text font-medium hover:text-tobey-orange transition-colors">Log In</a>
-            <Button className="btn-primary w-full">Sign Up</Button>
+            <Button className="btn-primary w-full">Join the Beta</Button>
           </div>
         </div>
       )}
@@ -66,4 +60,3 @@ const Navbar = () => {
 };
 
 export default Navbar;
-
