@@ -19,9 +19,6 @@ const Pricing = () => {
     <section id="pricing" className="py-16 md:py-24">
       <div className="container max-w-5xl mx-auto text-center">
         <h2 className="text-4xl font-medium mb-4">Unlock potential. Celebrate neurodiversity. Transform Learning.</h2>
-        <p className="text-xl text-gray-600 max-w-3xl mx-auto mb-12">
-          Join thousands of families discovering the power of personalized AI tutoring designed specifically for neurodivergent learners.
-        </p>
         
         <div className="bg-white rounded-2xl shadow-md p-8 max-w-md mx-auto">
           <div className="flex items-center justify-center gap-2 mb-2">
