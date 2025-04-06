@@ -5,8 +5,15 @@ const Hero = () => {
   return (
     <section className="py-16 md:py-24">
       <div className="container">
-        <div className="grid md:grid-cols-1 gap-10 items-center mb-12">
-          <div>
+        <div className="grid md:grid-cols-2 gap-10 items-center mb-12">
+          <div className="order-1 md:order-1">
+            <img 
+              src="/lovable-uploads/6bc5b168-2aed-4e98-bf32-1eb71ed74d5b.png" 
+              alt="Student using Tobey's Tutor" 
+              className="rounded-xl shadow-lg max-w-full h-auto object-cover"
+            />
+          </div>
+          <div className="order-2 md:order-2">
             <h1 className="text-4xl font-medium leading-tight mb-4">
               Tobey's Tutor
               <span className="block text-3xl mt-2">
