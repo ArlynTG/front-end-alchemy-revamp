@@ -1,8 +1,20 @@
 
 import { Button } from "@/components/ui/button";
 import { Check } from "lucide-react";
+import { useState } from "react";
 
 const Pricing = () => {
+  const [isLoading, setIsLoading] = useState(false);
+  
+  const handleJoinBeta = () => {
+    setIsLoading(true);
+    // This will be replaced with Stripe checkout logic later
+    setTimeout(() => {
+      setIsLoading(false);
+      alert("Stripe integration will be implemented here!");
+    }, 1000);
+  };
+
   return (
     <section id="pricing" className="py-16 md:py-24">
       <div className="container max-w-5xl mx-auto text-center">
@@ -54,8 +66,12 @@ const Pricing = () => {
             </div>
           </div>
           
-          <Button className="w-full btn-primary text-lg py-6">
-            Start Your Free Trial →
+          <Button 
+            className="w-full btn-primary text-lg py-6"
+            onClick={handleJoinBeta}
+            disabled={isLoading}
+          >
+            {isLoading ? "Processing..." : "Start Your Free Trial →"}
           </Button>
         </div>
       </div>
