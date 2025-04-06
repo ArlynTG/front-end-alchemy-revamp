@@ -6,8 +6,8 @@ const Story = () => {
     <section id="story" className="py-16 md:py-24 bg-tobey-peach">
       <div className="container max-w-4xl mx-auto">
         <span className="section-tag">Story</span>
-        <h2 className="section-title">Superheroes, dinosaurs, and AI. Oh My.</h2>
-        <h3 className="text-center text-xl text-gray-600 mb-12 italic">The Story behind Tobey's Tutor</h3>
+        <h2 className="section-title mb-4">Why We Created Tobey's Tutor</h2>
+        <h3 className="text-center text-xl text-gray-600 mb-10 italic">Superheroes, dinosaurs, and AI. Oh My.</h3>
         
         <div className="prose prose-lg mx-auto text-gray-700">
           <p className="mb-6">
