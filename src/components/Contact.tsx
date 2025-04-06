@@ -12,9 +12,10 @@ const Contact = ({ id }: ContactProps) => {
       <div className="container">
         <div className="text-center mb-12">
           <h2 className="text-3xl font-medium mb-4">Get in Touch with Us</h2>
-          <p className="text-gray-600 max-w-2xl mx-auto">
-            Have questions about Tobey's Tutor? We're here to help! Get in touch with our team and we'll get back to you as soon as possible.
-          </p>
+          <div className="space-y-2 text-gray-600 max-w-2xl mx-auto">
+            <p>Have questions about Tobey's Tutor? We're here to help!</p>
+            <p>Get in touch with our team and we'll get back to you as soon as possible.</p>
+          </div>
         </div>
 
         <div className="flex justify-center">
