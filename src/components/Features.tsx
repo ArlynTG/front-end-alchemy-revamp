@@ -1,37 +1,37 @@
 
-import { BookOpen, Brain, Check, Clock, LightbulbOff, Lightbulb } from "lucide-react";
+import { BookUser, Star, Eye, Smile, Brain, Wand2 } from "lucide-react";
 
 const Features = () => {
   const features = [
     {
-      icon: <BookOpen className="h-10 w-10 text-tobey-orange" />,
+      icon: <BookUser className="h-10 w-10 text-tobey-orange" />,
       title: "Personalized Learning",
-      description: "A tailored approach that adapts to your unique learning style and pace, making education accessible for everyone."
+      description: "Lessons adapt to your child's interests, pace, and challenges them in real time."
+    },
+    {
+      icon: <Star className="h-10 w-10 text-tobey-orange" />,
+      title: "Patent Pending",
+      description: "Uses intelligent, responsive agentic AI built specifically for neurodiverse learners."
+    },
+    {
+      icon: <Eye className="h-10 w-10 text-tobey-orange" />,
+      title: "Parental Visibility",
+      description: "Regular progress reports shows how your child is doing and what they're working on."
+    },
+    {
+      icon: <Smile className="h-10 w-10 text-tobey-orange" />,
+      title: "Confidence Builder",
+      description: "Teaches kids how to ask for help, stay motivated, and feel proud of progress."
     },
     {
       icon: <Brain className="h-10 w-10 text-tobey-orange" />,
-      title: "Neuronal Versatility",
-      description: "Harness the creative potential of the dyslexic brain with techniques designed to leverage your natural cognitive strengths."
-    },
-    {
-      icon: <Check className="h-10 w-10 text-tobey-orange" />,
-      title: "Confidence Builder",
-      description: "Build self-esteem and overcome learning obstacles with a supportive AI tutor that celebrates your progress."
-    },
-    {
-      icon: <Clock className="h-10 w-10 text-tobey-orange" />,
       title: "Frustration Aware",
-      description: "Detect when you're stuck and pivot teaching methods to reduce stress and make learning enjoyable again."
+      description: "Detects when your child is overwhelmed and adjusts before they shut down."
     },
     {
-      icon: <LightbulbOff className="h-10 w-10 text-tobey-orange" />,
-      title: "Pain, Unblocked",
-      description: "Identify and address specific learning challenges with strategies that transform difficulties into manageable tasks."
-    },
-    {
-      icon: <Lightbulb className="h-10 w-10 text-tobey-orange" />,
-      title: "Patent Pending",
-      description: "Our innovative approach to AI-assisted learning for neurodivergent minds is backed by research and technology."
+      icon: <Wand2 className="h-10 w-10 text-tobey-orange" />,
+      title: "Fun, Unlocked",
+      description: "Creatively uses your kid's favorite characters, hobbies and interests to build themed lessons."
     }
   ];
 
