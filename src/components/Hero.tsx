@@ -28,16 +28,16 @@ const Hero = () => {
 
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
           <div className="feature-highlight bg-white/80 p-6 rounded-xl shadow-sm">
-            <h4 className="font-medium mb-2">Personalized Learning</h4>
-            <p className="text-sm text-gray-600">Adapts to your unique learning style and needs in real-time</p>
+            <h4 className="font-medium mb-2">Personalized</h4>
+            <p className="text-sm text-gray-600">Effective lesson plans can be based on recent school reports, neuropsychological evaluations, and other data.</p>
           </div>
           <div className="feature-highlight bg-white/80 p-6 rounded-xl shadow-sm">
-            <h4 className="font-medium mb-2">AI-Powered Tools</h4>
-            <p className="text-sm text-gray-600">Smart technology that makes reading and writing easier and more enjoyable</p>
+            <h4 className="font-medium mb-2">Adaptive</h4>
+            <p className="text-sm text-gray-600">Our patent-pending AI platform uses games and your child's interests to automatically adjust to learning speed, difficulty, and focus level.</p>
           </div>
           <div className="feature-highlight bg-white/80 p-6 rounded-xl shadow-sm">
-            <h4 className="font-medium mb-2">Confidence Building</h4>
-            <p className="text-sm text-gray-600">Focuses on strengths and builds self-esteem through positive reinforcement</p>
+            <h4 className="font-medium mb-2">Proven</h4>
+            <p className="text-sm text-gray-600">Guided by research-backed approaches like Orton Gillingham and structured literacy techniques.</p>
           </div>
         </div>
       </div>
