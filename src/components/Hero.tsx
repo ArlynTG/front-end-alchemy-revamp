@@ -1,4 +1,3 @@
-
 import { Button } from "@/components/ui/button";
 
 const Hero = () => {
@@ -9,7 +8,7 @@ const Hero = () => {
           <h1 className="text-4xl font-medium leading-tight mb-4">
             Tobey's Tutor
             <span className="block text-3xl mt-2">
-              Using AI to optimize the power of dyslexic minds
+              As parents, we know what it's like to feel stuck. Watching our children struggle with traditional learning methods can be heartbreaking. We built Tobey's Tutor for kids who learn differently, enabling them to unlock their academic potential, build confidence, find their voice — and have fun too.
             </span>
           </h1>
           <p className="text-gray-700 mb-8 text-lg">
