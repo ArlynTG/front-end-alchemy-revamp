@@ -1,5 +1,4 @@
-
-import { BookOpen, Brain, Check, Clock, LightbulbOff, LightbulbOn } from "lucide-react";
+import { BookOpen, Brain, Check, Clock, LightbulbOff, Lightbulb } from "lucide-react";
 
 const Features = () => {
   const features = [
@@ -29,7 +28,7 @@ const Features = () => {
       description: "Identify and address specific learning challenges with strategies that transform difficulties into manageable tasks."
     },
     {
-      icon: <LightbulbOn className="h-10 w-10 text-tobey-orange" />,
+      icon: <Lightbulb className="h-10 w-10 text-tobey-orange" />,
       title: "Patent Pending",
       description: "Our innovative approach to AI-assisted learning for neurodivergent minds is backed by research and technology."
     }
