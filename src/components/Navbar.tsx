@@ -1,3 +1,4 @@
+
 import { Button } from "@/components/ui/button";
 import { useState } from "react";
 import { Menu, X } from "lucide-react";
@@ -24,10 +25,8 @@ const Navbar = () => {
 
         {/* Desktop Navigation */}
         <nav className="hidden md:flex md:items-center md:gap-8">
-          <a href="#" className="text-tobey-text hover:text-tobey-orange transition-colors">Home</a>
           <a href="#features" className="text-tobey-text hover:text-tobey-orange transition-colors">Features</a>
-          <a href="#story" className="text-tobey-text hover:text-tobey-orange transition-colors">Our Story</a>
-          <a href="#pricing" className="text-tobey-text hover:text-tobey-orange transition-colors">Pricing</a>
+          <a href="#story" className="text-tobey-text hover:text-tobey-orange transition-colors">Origin Story</a>
           <a href="#contact" className="text-tobey-text hover:text-tobey-orange transition-colors">Contact</a>
         </nav>
 
@@ -50,10 +49,8 @@ const Navbar = () => {
       {mobileMenuOpen && (
         <div className="fixed inset-0 top-16 bg-white/95 z-40 flex flex-col p-6 md:hidden">
           <nav className="flex flex-col gap-6 text-lg">
-            <a href="#" className="text-tobey-text hover:text-tobey-orange transition-colors" onClick={() => setMobileMenuOpen(false)}>Home</a>
             <a href="#features" className="text-tobey-text hover:text-tobey-orange transition-colors" onClick={() => setMobileMenuOpen(false)}>Features</a>
-            <a href="#story" className="text-tobey-text hover:text-tobey-orange transition-colors" onClick={() => setMobileMenuOpen(false)}>Our Story</a>
-            <a href="#pricing" className="text-tobey-text hover:text-tobey-orange transition-colors" onClick={() => setMobileMenuOpen(false)}>Pricing</a>
+            <a href="#story" className="text-tobey-text hover:text-tobey-orange transition-colors" onClick={() => setMobileMenuOpen(false)}>Origin Story</a>
             <a href="#contact" className="text-tobey-text hover:text-tobey-orange transition-colors" onClick={() => setMobileMenuOpen(false)}>Contact</a>
           </nav>
           <div className="mt-8 flex flex-col gap-4">
