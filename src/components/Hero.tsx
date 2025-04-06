@@ -5,15 +5,8 @@ const Hero = () => {
   return (
     <section className="py-16 md:py-24">
       <div className="container">
-        <div className="grid md:grid-cols-2 gap-10 items-center mb-12">
-          <div className="order-1">
-            <img 
-              src="/lovable-uploads/8df52e8d-0803-4596-8495-7a39f9479a72.png" 
-              alt="Student using Tobey's Tutor" 
-              className="rounded-xl shadow-lg max-w-full object-cover"
-            />
-          </div>
-          <div className="order-2">
+        <div className="grid md:grid-cols-1 gap-10 items-center mb-12">
+          <div>
             <h1 className="text-4xl font-medium leading-tight mb-4">
               Tobey's Tutor
               <span className="block text-3xl mt-2">
@@ -43,4 +36,3 @@ const Hero = () => {
 };
 
 export default Hero;
-
