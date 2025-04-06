@@ -1,3 +1,4 @@
+
 import { BookOpen, Brain, Check, Clock, LightbulbOff, Lightbulb } from "lucide-react";
 
 const Features = () => {
@@ -35,7 +36,7 @@ const Features = () => {
   ];
 
   return (
-    <section id="features" className="py-16 md:py-24">
+    <section id="features" className="py-16 md:py-24 bg-white">
       <div className="container">
         <span className="section-tag">Features</span>
         <h2 className="section-title">Tailored Learning. Limitless Potential.</h2>
