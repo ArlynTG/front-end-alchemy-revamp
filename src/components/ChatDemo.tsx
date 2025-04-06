@@ -1,35 +1,44 @@
 
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
-import { Send, Plus } from "lucide-react";
+import { Send } from "lucide-react";
+import { Input } from "@/components/ui/input";
 
 const ChatDemo = () => {
   const [messages, setMessages] = useState([
     {
-      sender: "bot",
+      role: "assistant",
       content: "Hi, I'm Tobey's Tutor! I'm designed to help you learn in a way that works best for you. What would you like to explore today?"
     }
   ]);
   
-  const [inputValue, setInputValue] = useState("");
+  const [input, setInput] = useState("");
   
-  const handleSendMessage = () => {
-    if (!inputValue.trim()) return;
+  const sendMessage = async () => {
+    if (!input.trim()) return;
     
     // Add user message
-    setMessages([...messages, { sender: "user", content: inputValue }]);
-    setInputValue("");
+    const userMessage = { role: "user", content: input };
+    setMessages([...messages, userMessage]);
+    setInput("");
     
-    // Simulate bot response after a short delay
-    setTimeout(() => {
-      setMessages(prev => [
-        ...prev, 
-        { 
-          sender: "bot", 
-          content: "That's a great question about dinosaurs! The Tyrannosaurus Rex lived during the late Cretaceous Period, about 68-66 million years ago. Would you like to learn more about prehistoric creatures or explore a different topic?"
-        }
-      ]);
-    }, 1000);
+    try {
+      const response = await fetch('https://tobiasced2.vercel.app/api/chat', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ message: input }),
+      });
+      const data = await response.json();
+      const botMessage = { role: 'assistant', content: data.reply };
+      setMessages(prev => [...prev, botMessage]);
+    } catch (error) {
+      console.error('Error:', error);
+      // Add error message to chat
+      setMessages(prev => [...prev, { 
+        role: 'assistant', 
+        content: "Sorry, I'm having trouble connecting. Please try again later." 
+      }]);
+    }
   };
   
   return (
@@ -48,7 +57,7 @@ const ChatDemo = () => {
           {/* Chat Header */}
           <div className="bg-tobey-orange text-white p-4 flex items-center gap-3">
             <div className="h-8 w-8 bg-black rounded-full flex items-center justify-center">
-              <Plus size={16} color="white" />
+              <div className="text-xs font-bold text-white">T</div>
             </div>
             <div>
               <p className="font-medium">Tobey's Tutor</p>
@@ -58,19 +67,19 @@ const ChatDemo = () => {
           
           {/* Chat Messages */}
           <div className="p-4 h-80 overflow-y-auto flex flex-col gap-4">
-            {messages.map((message, index) => (
+            {messages.map((msg, idx) => (
               <div 
-                key={index} 
-                className={`flex ${message.sender === "user" ? "justify-end" : "justify-start"}`}
+                key={idx} 
+                className={`flex ${msg.role === "user" ? "justify-end" : "justify-start"}`}
               >
                 <div 
                   className={`max-w-[80%] p-3 rounded-lg ${
-                    message.sender === "user" 
+                    msg.role === "user" 
                       ? "bg-blue-100 text-gray-800 rounded-br-none" 
                       : "bg-tobey-orange/10 text-gray-800 rounded-bl-none"
                   }`}
                 >
-                  {message.content}
+                  {msg.content}
                 </div>
               </div>
             ))}
@@ -79,16 +88,16 @@ const ChatDemo = () => {
           {/* Chat Input */}
           <div className="p-4 border-t">
             <div className="flex gap-2">
-              <input
+              <Input
                 type="text"
-                value={inputValue}
-                onChange={(e) => setInputValue(e.target.value)}
-                onKeyDown={(e) => e.key === "Enter" && handleSendMessage()}
+                value={input}
+                onChange={(e) => setInput(e.target.value)}
+                onKeyDown={(e) => e.key === "Enter" && sendMessage()}
                 placeholder="Ask about dinosaurs, math help, or reading strategies..."
-                className="flex-1 border rounded-full px-4 py-2 focus:outline-none focus:ring-2 focus:ring-tobey-orange"
+                className="flex-1 px-4 py-2 focus:outline-none focus:ring-2 focus:ring-tobey-orange"
               />
               <Button 
-                onClick={handleSendMessage}
+                onClick={sendMessage}
                 className="btn-primary"
               >
                 <Send size={16} />
