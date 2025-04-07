@@ -2,6 +2,13 @@
 import { Button } from "@/components/ui/button";
 import NavLink from "./NavLink";
 import { useLocation } from "react-router-dom";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { ChevronDown } from "lucide-react";
 
 interface DesktopNavProps {
   scrollToSection: (sectionId: string) => void;
@@ -48,7 +55,21 @@ const DesktopNav = ({ scrollToSection, onJoinBeta }: DesktopNavProps) => {
             <NavLink to="/#demo" label="FAQ" />
           </>
         )}
-        <NavLink to="#" label="Log In" className="font-medium" />
+        
+        <DropdownMenu>
+          <DropdownMenuTrigger className="text-tobey-text hover:text-tobey-orange transition-colors font-medium flex items-center">
+            Log In <ChevronDown size={16} className="ml-1" />
+          </DropdownMenuTrigger>
+          <DropdownMenuContent className="bg-white">
+            <DropdownMenuItem className="cursor-pointer">
+              <NavLink to="#" label="Parent" className="w-full" />
+            </DropdownMenuItem>
+            <DropdownMenuItem className="cursor-pointer">
+              <NavLink to="#" label="Student" className="w-full" />
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
+        
         <Button className="btn-primary" onClick={onJoinBeta}>Join the Beta</Button>
       </div>
     </div>

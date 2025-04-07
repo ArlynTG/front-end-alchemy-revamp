@@ -2,6 +2,13 @@
 import { Button } from "@/components/ui/button";
 import NavLink from "./NavLink";
 import { useLocation } from "react-router-dom";
+import {
+  Collapsible,
+  CollapsibleContent,
+  CollapsibleTrigger,
+} from "@/components/ui/collapsible";
+import { ChevronDown, ChevronUp } from "lucide-react";
+import { useState } from "react";
 
 interface MobileMenuProps {
   isOpen: boolean;
@@ -12,6 +19,7 @@ interface MobileMenuProps {
 
 const MobileMenu = ({ isOpen, onClose, onJoinBeta, scrollToSection }: MobileMenuProps) => {
   const location = useLocation();
+  const [isLoginOpen, setIsLoginOpen] = useState(false);
 
   if (!isOpen) return null;
 
@@ -54,7 +62,20 @@ const MobileMenu = ({ isOpen, onClose, onJoinBeta, scrollToSection }: MobileMenu
         )}
       </nav>
       <div className="mt-8 flex flex-col gap-4">
-        <NavLink to="#" label="Log In" className="text-center font-medium" />
+        <Collapsible
+          open={isLoginOpen}
+          onOpenChange={setIsLoginOpen}
+          className="w-full"
+        >
+          <CollapsibleTrigger className="flex items-center justify-between w-full text-center font-medium text-tobey-text hover:text-tobey-orange transition-colors py-2">
+            Log In
+            {isLoginOpen ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
+          </CollapsibleTrigger>
+          <CollapsibleContent className="pl-4 py-2 flex flex-col gap-3">
+            <NavLink to="#" label="Parent" className="text-left" onClick={onClose} />
+            <NavLink to="#" label="Student" className="text-left" onClick={onClose} />
+          </CollapsibleContent>
+        </Collapsible>
         <Button className="btn-primary w-full" onClick={onJoinBeta}>Join the Beta</Button>
       </div>
     </div>
