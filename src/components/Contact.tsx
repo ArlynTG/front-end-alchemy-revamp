@@ -22,8 +22,6 @@ const Contact = ({ id }: ContactProps) => {
             </div>
 
             <div className="bg-tobey-peach/30 p-8 rounded-xl max-w-md w-full">
-              <h3 className="text-2xl font-medium mb-6">Contact Information</h3>
-              
               <div className="space-y-6">
                 <div className="flex items-center gap-4">
                   <div className="h-10 w-10 rounded-full bg-tobey-orange/20 flex items-center justify-center">
@@ -57,3 +55,4 @@ const Contact = ({ id }: ContactProps) => {
 };
 
 export default Contact;
+
