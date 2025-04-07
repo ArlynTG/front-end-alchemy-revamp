@@ -1,23 +1,35 @@
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Textarea } from "@/components/ui/textarea";
-import { SendHorizontal } from "lucide-react";
+import { SendHorizontal, Info } from "lucide-react";
 import { useToast } from "@/components/ui/use-toast";
 
 const ChatDemo = () => {
   const [message, setMessage] = useState("");
-  const [chatHistory, setChatHistory] = useState<Array<{text: string, sender: "user" | "ai"}>>([
+  const [chatHistory, setChatHistory] = useState<Array<{text: string, sender: "user" | "ai", isError?: boolean}>>([
     { text: "Hi there! How can I help with your questions about Tobey AI tutoring?", sender: "ai" }
   ]);
   const [isLoading, setIsLoading] = useState(false);
-  const [n8nUrl, setN8nUrl] = useState<string>(localStorage.getItem("n8nUrl") || "");
+  const [n8nUrl, setN8nUrl] = useState<string>("");
   const { toast } = useToast();
+
+  // Load saved URL on component mount
+  useEffect(() => {
+    const savedUrl = localStorage.getItem("n8nUrl");
+    if (savedUrl) {
+      setN8nUrl(savedUrl);
+    }
+  }, []);
 
   const saveN8nUrl = (url: string) => {
     localStorage.setItem("n8nUrl", url);
     setN8nUrl(url);
+    toast({
+      title: "URL Saved",
+      description: "Your n8n workflow URL has been saved successfully.",
+    });
   };
 
   const handleSendMessage = async () => {
@@ -39,6 +51,15 @@ const ChatDemo = () => {
     setIsLoading(true);
 
     try {
+      console.log("Sending request to n8n workflow:", n8nUrl);
+      console.log("Payload:", {
+        message: userMessage.text,
+        history: chatHistory.map(entry => ({
+          role: entry.sender === "ai" ? "assistant" : "user",
+          content: entry.text
+        }))
+      });
+
       // Call n8n webhook
       const response = await fetch(n8nUrl, {
         method: "POST",
@@ -54,11 +75,14 @@ const ChatDemo = () => {
         }),
       });
 
+      console.log("Response status:", response.status);
+      
       if (!response.ok) {
-        throw new Error(`Error: ${response.status}`);
+        throw new Error(`Error: ${response.status} - ${response.statusText}`);
       }
 
       const data = await response.json();
+      console.log("Response data:", data);
       
       // Add AI response to chat
       setChatHistory(prev => [...prev, {
@@ -67,16 +91,23 @@ const ChatDemo = () => {
       }]);
     } catch (error) {
       console.error("Error calling n8n workflow:", error);
-      toast({
-        title: "Connection Error",
-        description: "Failed to connect to your n8n workflow. Please check the URL and try again.",
-        variant: "destructive",
-      });
+      
+      // Add more detailed error message to the chat
+      const errorMessage = error instanceof Error 
+        ? `Connection error: ${error.message}` 
+        : "Unknown connection error";
       
       setChatHistory(prev => [...prev, {
-        text: "Sorry, I couldn't connect to the AI service. Please check the n8n workflow URL below.",
-        sender: "ai"
+        text: `${errorMessage}. Please check your n8n workflow URL and ensure your workflow is properly configured to receive and respond to messages.`,
+        sender: "ai",
+        isError: true
       }]);
+      
+      toast({
+        title: "Connection Error",
+        description: "Failed to connect to your n8n workflow. Please check the URL and your workflow configuration.",
+        variant: "destructive",
+      });
     } finally {
       setIsLoading(false);
     }
@@ -86,6 +117,52 @@ const ChatDemo = () => {
     if (e.key === 'Enter' && !e.shiftKey) {
       e.preventDefault();
       handleSendMessage();
+    }
+  };
+
+  const testConnection = async () => {
+    if (!n8nUrl) {
+      toast({
+        title: "Missing URL",
+        description: "Please enter an n8n workflow URL before testing the connection.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    setIsLoading(true);
+    try {
+      const response = await fetch(n8nUrl, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          message: "test_connection",
+          history: []
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error(`Error: ${response.status} - ${response.statusText}`);
+      }
+
+      // Try to parse the response
+      await response.json();
+
+      toast({
+        title: "Connection Successful",
+        description: "Successfully connected to your n8n workflow.",
+      });
+    } catch (error) {
+      console.error("Connection test failed:", error);
+      toast({
+        title: "Connection Failed",
+        description: error instanceof Error ? error.message : "Unknown error occurred",
+        variant: "destructive",
+      });
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -111,7 +188,9 @@ const ChatDemo = () => {
                     className={`max-w-[80%] rounded-2xl px-4 py-2 ${
                       chat.sender === 'user' 
                         ? 'bg-tobey-orange text-white rounded-tr-none' 
-                        : 'bg-gray-200 text-gray-800 rounded-tl-none'
+                        : chat.isError
+                          ? 'bg-red-100 text-red-800 rounded-tl-none'
+                          : 'bg-gray-200 text-gray-800 rounded-tl-none'
                     }`}
                   >
                     <div className="flex items-center space-x-2 mb-1">
@@ -160,7 +239,9 @@ const ChatDemo = () => {
             </div>
             
             <div className="mt-4">
-              <div className="text-xs text-gray-500 mb-1">n8n Workflow URL:</div>
+              <div className="text-xs text-gray-500 mb-1 flex items-center gap-1">
+                <Info className="h-3 w-3" /> n8n Workflow URL:
+              </div>
               <div className="flex space-x-2">
                 <input
                   type="text"
@@ -177,6 +258,14 @@ const ChatDemo = () => {
                 >
                   Save
                 </Button>
+                <Button 
+                  onClick={testConnection}
+                  size="sm"
+                  variant="outline"
+                  className="text-xs"
+                >
+                  Test
+                </Button>
               </div>
               <p className="text-xs text-gray-500 mt-1">
                 Your n8n workflow should accept a message and history and return a response.
@@ -190,3 +279,4 @@ const ChatDemo = () => {
 };
 
 export default ChatDemo;
+
