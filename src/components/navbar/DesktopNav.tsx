@@ -62,10 +62,10 @@ const DesktopNav = ({ scrollToSection, onJoinBeta }: DesktopNavProps) => {
           </DropdownMenuTrigger>
           <DropdownMenuContent className="bg-white">
             <DropdownMenuItem className="cursor-pointer">
-              <NavLink to="#" label="Parent" className="w-full" />
+              <NavLink to="/parent-login" label="Parent" className="w-full" />
             </DropdownMenuItem>
             <DropdownMenuItem className="cursor-pointer">
-              <NavLink to="#" label="Student" className="w-full" />
+              <NavLink to="/student-login" label="Student" className="w-full" />
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>

@@ -72,8 +72,8 @@ const MobileMenu = ({ isOpen, onClose, onJoinBeta, scrollToSection }: MobileMenu
             {isLoginOpen ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
           </CollapsibleTrigger>
           <CollapsibleContent className="pl-4 py-2 flex flex-col gap-3">
-            <NavLink to="#" label="Parent" className="text-left" onClick={onClose} />
-            <NavLink to="#" label="Student" className="text-left" onClick={onClose} />
+            <NavLink to="/parent-login" label="Parent" className="text-left" onClick={onClose} />
+            <NavLink to="/student-login" label="Student" className="text-left" onClick={onClose} />
           </CollapsibleContent>
         </Collapsible>
         <Button className="btn-primary w-full" onClick={onJoinBeta}>Join the Beta</Button>
