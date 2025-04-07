@@ -84,7 +84,7 @@ const ChatDemo = () => {
       <div className="container">
         <span className="section-tag">Demo</span>
         
-        <h2 className="section-title">Chat with Tobey</h2>
+        <h2 className="section-title">Got Questions?</h2>
         <p className="text-center text-gray-600 max-w-2xl mx-auto mb-6">
           Wondering how all this AI works? What's a tutoring session look like? How is progress measured? Just ask!
         </p>
@@ -144,7 +144,7 @@ const ChatDemo = () => {
               onClick={sendMessage}
               disabled={loading || !input.trim() || !isOnline}
             >
-              Send
+              FAQ
             </Button>
           </div>
         </div>

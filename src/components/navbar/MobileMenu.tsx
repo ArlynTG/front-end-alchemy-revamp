@@ -38,7 +38,7 @@ const MobileMenu = ({ isOpen, onClose, onJoinBeta, scrollToSection }: MobileMenu
             />
             <NavLink 
               to="#demo" 
-              label="Got Questions?"
+              label="FAQ"
               onClick={(e) => {
                 e.preventDefault();
                 scrollToSection('demo');
@@ -49,7 +49,7 @@ const MobileMenu = ({ isOpen, onClose, onJoinBeta, scrollToSection }: MobileMenu
           <>
             <NavLink to="/#features" label="Features" onClick={onClose} />
             <NavLink to="/#story" label="Origin Story" onClick={onClose} />
-            <NavLink to="/#demo" label="Got Questions?" onClick={onClose} />
+            <NavLink to="/#demo" label="FAQ" onClick={onClose} />
           </>
         )}
       </nav>
