@@ -1,9 +1,11 @@
+
 import React, { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useToast } from "@/hooks/use-toast";
 import { Link } from "react-router-dom";
 import Navbar from "@/components/Navbar";
+import Footer from "@/components/Footer";
 
 const ParentLogin = () => {
   const [email, setEmail] = useState("");
@@ -96,6 +98,7 @@ const ParentLogin = () => {
           </p>
         </div>
       </div>
+      <Footer />
     </div>
   );
 };
