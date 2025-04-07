@@ -1,12 +1,24 @@
 
 import { Button } from "@/components/ui/button";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Menu, X } from "lucide-react";
 import { Link, useLocation } from "react-router-dom";
 
 const Navbar = () => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [isScrolled, setIsScrolled] = useState(false);
   const location = useLocation();
+
+  // Add scroll event listener to track scroll position
+  useEffect(() => {
+    const handleScroll = () => {
+      const scrollPosition = window.scrollY;
+      setIsScrolled(scrollPosition > 10);
+    };
+
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
 
   // Function to handle section navigation
   const scrollToSection = (sectionId: string) => {
@@ -25,8 +37,13 @@ const Navbar = () => {
     }
   };
 
+  // Dynamic classes for the navbar based on scroll position
+  const navbarClasses = `sticky top-0 z-50 py-4 backdrop-blur-sm transition-all duration-200 ${
+    isScrolled ? 'bg-tobey-blue/70' : 'bg-tobey-blue/90'
+  }`;
+
   return (
-    <header className="sticky top-0 z-50 bg-tobey-blue/90 py-4 backdrop-blur-sm">
+    <header className={navbarClasses}>
       <div className="container flex items-center justify-between">
         <div className="flex items-center gap-2">
           <Link to="/" className="flex items-center gap-2">
