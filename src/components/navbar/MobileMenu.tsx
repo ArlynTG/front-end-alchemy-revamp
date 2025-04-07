@@ -26,7 +26,7 @@ const MobileMenu = ({ isOpen, onClose, onJoinBeta, scrollToSection }: MobileMenu
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 top-16 bg-white/95 z-40 flex flex-col p-6 md:hidden">
+    <div className="fixed inset-0 top-16 bg-tobey-peach/95 z-40 flex flex-col p-6 md:hidden">
       <nav className="flex flex-col gap-6 text-lg">
         {location.pathname === "/" ? (
           <>
