@@ -144,7 +144,7 @@ const ChatDemo = () => {
               onClick={sendMessage}
               disabled={loading || !input.trim() || !isOnline}
             >
-              FAQ
+              Send
             </Button>
           </div>
         </div>
@@ -154,3 +154,4 @@ const ChatDemo = () => {
 };
 
 export default ChatDemo;
+
