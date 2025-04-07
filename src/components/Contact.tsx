@@ -11,14 +11,14 @@ const Contact = ({ id }: ContactProps) => {
     <section id={id || "contact"} className="py-16 md:py-24 bg-white">
       <div className="container">
         <div className="text-center mb-12">
-          <h2 className="text-3xl font-medium mb-4">Get in Touch with Us</h2>
+          <h2 className="text-3xl font-bold mb-4">Get in Touch with Us</h2>
           <div className="space-y-2 text-gray-600 max-w-2xl mx-auto">
             <p>Have more questions or comments?</p>
             <p>Get in touch with our team and we'll get back to you as soon as possible.</p>
           </div>
         </div>
 
-        <div className="flex justify-center">
+        <div className="flex flex-col md:flex-row justify-center items-center gap-8">
           <div className="bg-tobey-peach/30 p-8 rounded-xl max-w-md w-full">
             <h3 className="text-2xl font-medium mb-6">Contact Information</h3>
             
@@ -35,6 +35,14 @@ const Contact = ({ id }: ContactProps) => {
                 </div>
               </div>
             </div>
+          </div>
+          
+          <div className="max-w-md w-full">
+            <img 
+              src="/public/lovable-uploads/8df52e8d-0803-4596-8495-7a39f9479a72.png" 
+              alt="Contact us" 
+              className="w-full h-auto rounded-xl object-cover shadow-lg"
+            />
           </div>
         </div>
       </div>
