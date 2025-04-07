@@ -1,9 +1,8 @@
-
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Textarea } from "@/components/ui/textarea";
-import { PaperPlaneIcon, User2Icon } from "lucide-react";
+import { SendHorizontal } from "lucide-react";
 
 const ChatDemo = () => {
   const [message, setMessage] = useState("");
@@ -13,13 +12,8 @@ const ChatDemo = () => {
 
   const handleSendMessage = () => {
     if (message.trim()) {
-      // Add user message to chat
       setChatHistory([...chatHistory, { text: message, sender: "user" }]);
-      
-      // Clear input field
       setMessage("");
-      
-      // Simulating response for now - later this will be replaced with webhook call
       setTimeout(() => {
         setChatHistory(prev => [...prev, {
           text: "This is a placeholder response. In the future, this will be connected to an actual API.",
@@ -47,7 +41,6 @@ const ChatDemo = () => {
         </p>
         
         <div className="max-w-2xl mx-auto bg-white rounded-xl shadow-md overflow-hidden border border-gray-200">
-          {/* Chat messages area */}
           <ScrollArea className="h-96 p-4 bg-gray-50">
             <div className="space-y-4">
               {chatHistory.map((chat, index) => (
@@ -76,7 +69,6 @@ const ChatDemo = () => {
             </div>
           </ScrollArea>
           
-          {/* Message input */}
           <div className="p-4 border-t border-gray-200 bg-white">
             <div className="flex space-x-2">
               <Textarea 
@@ -93,7 +85,7 @@ const ChatDemo = () => {
                 type="submit"
                 disabled={!message.trim()}
               >
-                <PaperPlaneIcon className="h-4 w-4" />
+                <SendHorizontal className="h-4 w-4" />
               </Button>
             </div>
           </div>
