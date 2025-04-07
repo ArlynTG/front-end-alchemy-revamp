@@ -1,3 +1,4 @@
+
 import { Button } from "@/components/ui/button";
 import NavLink from "./NavLink";
 import { useLocation } from "react-router-dom";
@@ -25,7 +26,7 @@ const MobileMenu = ({ isOpen, onClose, onJoinBeta, scrollToSection }: MobileMenu
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 top-16 bg-tobey-blue/40 z-40 flex flex-col p-6 pb-24 md:hidden shadow-lg h-screen">
+    <div className="fixed inset-0 top-16 bg-tobey-blue/20 z-40 flex flex-col p-6 pb-24 md:hidden shadow-lg h-screen">
       <nav className="flex flex-col gap-6 text-lg">
         {location.pathname === "/" ? (
           <>
