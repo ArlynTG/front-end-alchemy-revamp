@@ -1,4 +1,3 @@
-
 import { Button } from "@/components/ui/button";
 import { Check } from "lucide-react";
 import { useState } from "react";
@@ -19,7 +18,7 @@ const Pricing = () => {
     // Simulate API call
     setTimeout(() => {
       setIsLoading(false);
-      // Navigate to confirmation page instead of showing toast
+      // Navigate to confirmation page with state data
       navigate("/beta-confirmed", { 
         state: { 
           firstName, 
