@@ -39,7 +39,7 @@ const Features = () => {
     <section id="features" className="py-16 md:py-24 bg-white">
       <div className="container">
         <span className="section-tag">Features</span>
-        <h2 className="section-title">Tailored Learning. Limitless Potential.</h2>
+        <h2 className="section-title"><strong>Tailored Learning. Limitless Potential.</strong></h2>
         
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
           {features.map((feature, index) => (
