@@ -2,12 +2,12 @@
 import { Button } from "@/components/ui/button";
 import { Check } from "lucide-react";
 import { useState } from "react";
-import { toast } from "sonner";
 import { useNavigate } from "react-router-dom";
 
 const Pricing = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [firstName, setFirstName] = useState("");
+  const [studentFirstName, setStudentFirstName] = useState("");
   const [lastName, setLastName] = useState("");
   const [email, setEmail] = useState("");
   const navigate = useNavigate();
@@ -21,7 +21,12 @@ const Pricing = () => {
       setIsLoading(false);
       // Navigate to confirmation page instead of showing toast
       navigate("/beta-confirmed", { 
-        state: { firstName, lastName, email } 
+        state: { 
+          firstName, 
+          lastName, 
+          email, 
+          studentFirstName 
+        } 
       });
     }, 1000);
   };
@@ -84,7 +89,7 @@ const Pricing = () => {
             <div>
               <input
                 type="text"
-                placeholder="First name"
+                placeholder="Your First Name"
                 className="w-full px-4 py-3 rounded-md border border-gray-300 focus:outline-none focus:ring-2 focus:ring-tobey-orange focus:border-transparent"
                 value={firstName}
                 onChange={(e) => setFirstName(e.target.value)}
@@ -99,6 +104,15 @@ const Pricing = () => {
                 value={lastName}
                 onChange={(e) => setLastName(e.target.value)}
                 required
+              />
+            </div>
+            <div>
+              <input
+                type="text"
+                placeholder="Student's First Name (Optional)"
+                className="w-full px-4 py-3 rounded-md border border-gray-300 focus:outline-none focus:ring-2 focus:ring-tobey-orange focus:border-transparent text-gray-700"
+                value={studentFirstName}
+                onChange={(e) => setStudentFirstName(e.target.value)}
               />
             </div>
             <div>

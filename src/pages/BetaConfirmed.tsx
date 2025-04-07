@@ -5,7 +5,7 @@ import { Check, Calendar } from "lucide-react";
 
 const BetaConfirmed = () => {
   const location = useLocation();
-  const { firstName } = location.state || {};
+  const { firstName, studentFirstName } = location.state || {};
 
   // If someone tries to access this page directly without state, redirect to home
   if (!location.state) {
@@ -22,6 +22,11 @@ const BetaConfirmed = () => {
           <h1 className="text-2xl font-bold mb-2">Beta Reservation Confirmed!</h1>
           <p className="text-gray-600">
             Thank you{firstName ? `, ${firstName}` : ""}, for joining our beta waitlist.
+            {studentFirstName && (
+              <span className="block text-sm mt-2 text-gray-500">
+                We're excited to support {studentFirstName}'s learning journey!
+              </span>
+            )}
           </p>
         </div>
 
