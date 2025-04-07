@@ -67,13 +67,6 @@ const Pricing = () => {
             >
               {isLoading ? "Processing..." : "Start Your Free Trial →"}
             </Button>
-            
-            <Button 
-              className="w-full bg-tobey-orange hover:bg-tobey-darkOrange text-white font-medium rounded-full transition-colors text-lg py-6"
-              onClick={handleJoinBeta}
-            >
-              Join the Beta
-            </Button>
           </div>
         </div>
       </div>
