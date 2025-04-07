@@ -1,25 +1,84 @@
+
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Textarea } from "@/components/ui/textarea";
 import { SendHorizontal } from "lucide-react";
+import { useToast } from "@/components/ui/use-toast";
 
 const ChatDemo = () => {
   const [message, setMessage] = useState("");
   const [chatHistory, setChatHistory] = useState<Array<{text: string, sender: "user" | "ai"}>>([
     { text: "Hi there! How can I help with your questions about Tobey AI tutoring?", sender: "ai" }
   ]);
+  const [isLoading, setIsLoading] = useState(false);
+  const [n8nUrl, setN8nUrl] = useState<string>(localStorage.getItem("n8nUrl") || "");
+  const { toast } = useToast();
 
-  const handleSendMessage = () => {
-    if (message.trim()) {
-      setChatHistory([...chatHistory, { text: message, sender: "user" }]);
-      setMessage("");
-      setTimeout(() => {
-        setChatHistory(prev => [...prev, {
-          text: "This is a placeholder response. In the future, this will be connected to an actual API.",
-          sender: "ai"
-        }]);
-      }, 1000);
+  const saveN8nUrl = (url: string) => {
+    localStorage.setItem("n8nUrl", url);
+    setN8nUrl(url);
+  };
+
+  const handleSendMessage = async () => {
+    if (!message.trim()) return;
+    
+    if (!n8nUrl) {
+      toast({
+        title: "Missing n8n Workflow URL",
+        description: "Please enter your n8n workflow webhook URL below to connect the chat.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    // Add user message to chat
+    const userMessage = { text: message.trim(), sender: "user" as const };
+    setChatHistory(prev => [...prev, userMessage]);
+    setMessage("");
+    setIsLoading(true);
+
+    try {
+      // Call n8n webhook
+      const response = await fetch(n8nUrl, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          message: userMessage.text,
+          history: chatHistory.map(entry => ({
+            role: entry.sender === "ai" ? "assistant" : "user",
+            content: entry.text
+          }))
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error(`Error: ${response.status}`);
+      }
+
+      const data = await response.json();
+      
+      // Add AI response to chat
+      setChatHistory(prev => [...prev, {
+        text: data.response || "Sorry, I couldn't process your request at this time.",
+        sender: "ai"
+      }]);
+    } catch (error) {
+      console.error("Error calling n8n workflow:", error);
+      toast({
+        title: "Connection Error",
+        description: "Failed to connect to your n8n workflow. Please check the URL and try again.",
+        variant: "destructive",
+      });
+      
+      setChatHistory(prev => [...prev, {
+        text: "Sorry, I couldn't connect to the AI service. Please check the n8n workflow URL below.",
+        sender: "ai"
+      }]);
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -66,6 +125,16 @@ const ChatDemo = () => {
                   </div>
                 </div>
               ))}
+              {isLoading && (
+                <div className="flex justify-start">
+                  <div className="max-w-[80%] rounded-2xl px-4 py-2 bg-gray-200 text-gray-800 rounded-tl-none">
+                    <div className="flex items-center space-x-2 mb-1">
+                      <div className="font-medium text-sm">Tobey AI</div>
+                    </div>
+                    <p className="text-sm">Thinking...</p>
+                  </div>
+                </div>
+              )}
             </div>
           </ScrollArea>
           
@@ -78,15 +147,40 @@ const ChatDemo = () => {
                 placeholder="Type your question here..."
                 className="flex-1 resize-none border-gray-300 focus:border-tobey-orange focus:ring-tobey-orange"
                 rows={1}
+                disabled={isLoading}
               />
               <Button 
                 onClick={handleSendMessage}
                 className="bg-tobey-orange hover:bg-tobey-darkOrange text-white"
                 type="submit"
-                disabled={!message.trim()}
+                disabled={!message.trim() || isLoading}
               >
                 <SendHorizontal className="h-4 w-4" />
               </Button>
+            </div>
+            
+            <div className="mt-4">
+              <div className="text-xs text-gray-500 mb-1">n8n Workflow URL:</div>
+              <div className="flex space-x-2">
+                <input
+                  type="text"
+                  value={n8nUrl}
+                  onChange={(e) => setN8nUrl(e.target.value)}
+                  placeholder="Enter your n8n workflow webhook URL here"
+                  className="flex-1 px-3 py-2 border border-gray-300 rounded-md text-xs"
+                />
+                <Button 
+                  onClick={() => saveN8nUrl(n8nUrl)}
+                  size="sm"
+                  variant="outline"
+                  className="text-xs"
+                >
+                  Save
+                </Button>
+              </div>
+              <p className="text-xs text-gray-500 mt-1">
+                Your n8n workflow should accept a message and history and return a response.
+              </p>
             </div>
           </div>
         </div>
