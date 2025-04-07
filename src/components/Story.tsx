@@ -1,11 +1,10 @@
-
 import React from 'react';
 
 const Story = () => {
   return (
     <section id="story" className="py-16 md:py-24 bg-tobey-peach">
       <div className="container max-w-4xl mx-auto">
-        <span className="section-tag">Story</span>
+        <span className="section-tag">Origin Story</span>
         <h2 className="section-title mb-4"><strong>Why We Created Tobey's Tutor</strong></h2>
         <h3 className="text-center text-xl text-gray-600 mb-10 italic">Superheroes, dinosaurs, and AI. Oh My.</h3>
         
