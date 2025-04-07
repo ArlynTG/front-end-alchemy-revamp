@@ -37,6 +37,23 @@ const Navbar = () => {
     }
   };
 
+  // Handle join beta button click
+  const handleJoinBeta = () => {
+    setMobileMenuOpen(false);
+
+    // If we're not on the homepage, navigate to homepage with pricing hash
+    if (location.pathname !== "/") {
+      window.location.href = "/#pricing";
+      return;
+    }
+    
+    // If we're already on the homepage, scroll to pricing section
+    const pricingSection = document.getElementById("pricing");
+    if (pricingSection) {
+      pricingSection.scrollIntoView({ behavior: "smooth" });
+    }
+  };
+
   // Dynamic classes for the navbar based on scroll position
   const navbarClasses = `sticky top-0 z-50 py-4 backdrop-blur-sm transition-all duration-200 ${
     isScrolled ? 'bg-tobey-blue/70' : 'bg-tobey-blue/90'
@@ -109,7 +126,7 @@ const Navbar = () => {
               </>
             )}
             <a href="#" className="text-tobey-text font-medium hover:text-tobey-orange transition-colors">Log In</a>
-            <Button className="btn-primary">Join the Beta</Button>
+            <Button className="btn-primary" onClick={handleJoinBeta}>Join the Beta</Button>
           </div>
         </div>
 
@@ -173,7 +190,7 @@ const Navbar = () => {
           </nav>
           <div className="mt-8 flex flex-col gap-4">
             <a href="#" className="text-center text-tobey-text font-medium hover:text-tobey-orange transition-colors">Log In</a>
-            <Button className="btn-primary w-full">Join the Beta</Button>
+            <Button className="btn-primary w-full" onClick={handleJoinBeta}>Join the Beta</Button>
           </div>
         </div>
       )}
