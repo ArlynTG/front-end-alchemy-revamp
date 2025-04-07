@@ -47,7 +47,7 @@ const BetaConfirmed = () => {
         </div>
 
         <Link to="/">
-          <Button className="w-full">
+          <Button className="w-full bg-tobey-orange hover:bg-tobey-orange/90">
             Back to homepage
           </Button>
         </Link>
