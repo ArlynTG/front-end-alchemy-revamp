@@ -59,13 +59,22 @@ const Pricing = () => {
             </div>
           </div>
           
-          <Button 
-            className="w-full btn-primary text-lg py-6"
-            onClick={handleJoinBeta}
-            disabled={isLoading}
-          >
-            {isLoading ? "Processing..." : "Start Your Free Trial →"}
-          </Button>
+          <div className="flex flex-col space-y-4">
+            <Button 
+              className="w-full btn-primary text-lg py-6"
+              onClick={handleJoinBeta}
+              disabled={isLoading}
+            >
+              {isLoading ? "Processing..." : "Start Your Free Trial →"}
+            </Button>
+            
+            <Button 
+              className="w-full bg-tobey-orange hover:bg-tobey-darkOrange text-white font-medium rounded-full transition-colors text-lg py-6"
+              onClick={handleJoinBeta}
+            >
+              Join the Beta
+            </Button>
+          </div>
         </div>
       </div>
     </section>
