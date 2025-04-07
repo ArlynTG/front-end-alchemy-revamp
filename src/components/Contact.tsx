@@ -40,7 +40,7 @@ const Contact = ({ id }: ContactProps) => {
           <div className="max-w-md w-full">
             <img 
               src="/lovable-uploads/current_upload.png" 
-              alt="Contact us" 
+              alt="Students collaborating on laptops" 
               className="w-full h-auto rounded-xl object-cover shadow-lg"
             />
           </div>
@@ -51,3 +51,4 @@ const Contact = ({ id }: ContactProps) => {
 };
 
 export default Contact;
+
