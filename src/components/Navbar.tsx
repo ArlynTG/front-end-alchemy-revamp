@@ -59,7 +59,7 @@ const Navbar = () => {
         />
 
         <button 
-          className="md:hidden"
+          className="md:hidden text-white bg-tobey-orange rounded-full p-1"
           onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
         >
           {mobileMenuOpen ? <X /> : <Menu />}
