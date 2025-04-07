@@ -39,7 +39,7 @@ const Contact = ({ id }: ContactProps) => {
           
           <div className="max-w-md w-full">
             <img 
-              src="/public/lovable-uploads/8df52e8d-0803-4596-8495-7a39f9479a72.png" 
+              src="/lovable-uploads/current_upload.png" 
               alt="Contact us" 
               className="w-full h-auto rounded-xl object-cover shadow-lg"
             />
