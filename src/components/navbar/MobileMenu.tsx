@@ -26,7 +26,7 @@ const MobileMenu = ({ isOpen, onClose, onJoinBeta, scrollToSection }: MobileMenu
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 top-16 bg-tobey-blue z-40 flex flex-col p-6 md:hidden shadow-lg">
+    <div className="fixed inset-0 top-16 bg-tobey-blue z-40 flex flex-col p-6 pb-24 md:hidden shadow-lg h-screen">
       <nav className="flex flex-col gap-6 text-lg">
         {location.pathname === "/" ? (
           <>
@@ -37,7 +37,7 @@ const MobileMenu = ({ isOpen, onClose, onJoinBeta, scrollToSection }: MobileMenu
                 e.preventDefault();
                 scrollToSection('features');
               }}
-              className="text-white hover:text-tobey-orange"
+              className="text-black hover:text-tobey-orange"
             />
             <NavLink 
               to="#story" 
@@ -46,7 +46,7 @@ const MobileMenu = ({ isOpen, onClose, onJoinBeta, scrollToSection }: MobileMenu
                 e.preventDefault();
                 scrollToSection('story');
               }}
-              className="text-white hover:text-tobey-orange"
+              className="text-black hover:text-tobey-orange"
             />
             <NavLink 
               to="#demo" 
@@ -55,7 +55,7 @@ const MobileMenu = ({ isOpen, onClose, onJoinBeta, scrollToSection }: MobileMenu
                 e.preventDefault();
                 scrollToSection('demo');
               }}
-              className="text-white hover:text-tobey-orange"
+              className="text-black hover:text-tobey-orange"
             />
           </>
         ) : (
@@ -64,19 +64,19 @@ const MobileMenu = ({ isOpen, onClose, onJoinBeta, scrollToSection }: MobileMenu
               to="/#features" 
               label="Features" 
               onClick={onClose}
-              className="text-white hover:text-tobey-orange"
+              className="text-black hover:text-tobey-orange"
             />
             <NavLink 
               to="/#story" 
               label="Origin Story" 
               onClick={onClose}
-              className="text-white hover:text-tobey-orange"
+              className="text-black hover:text-tobey-orange"
             />
             <NavLink 
               to="/#demo" 
               label="FAQ" 
               onClick={onClose}
-              className="text-white hover:text-tobey-orange"
+              className="text-black hover:text-tobey-orange"
             />
           </>
         )}
@@ -87,7 +87,7 @@ const MobileMenu = ({ isOpen, onClose, onJoinBeta, scrollToSection }: MobileMenu
           onOpenChange={setIsLoginOpen}
           className="w-full"
         >
-          <CollapsibleTrigger className="flex items-center justify-between w-full text-center font-medium text-white hover:text-tobey-orange transition-colors py-2">
+          <CollapsibleTrigger className="flex items-center justify-between w-full text-center font-medium text-black hover:text-tobey-orange transition-colors py-2">
             Log In
             {isLoginOpen ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
           </CollapsibleTrigger>
