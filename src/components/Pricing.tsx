@@ -3,10 +3,14 @@ import { Button } from "@/components/ui/button";
 import { Check } from "lucide-react";
 import { useState } from "react";
 import { toast } from "sonner";
+import { useNavigate } from "react-router-dom";
 
 const Pricing = () => {
   const [isLoading, setIsLoading] = useState(false);
+  const [firstName, setFirstName] = useState("");
+  const [lastName, setLastName] = useState("");
   const [email, setEmail] = useState("");
+  const navigate = useNavigate();
   
   const handleJoinBeta = (e: React.FormEvent) => {
     e.preventDefault();
@@ -15,8 +19,10 @@ const Pricing = () => {
     // Simulate API call
     setTimeout(() => {
       setIsLoading(false);
-      toast.success("Thank you for joining our beta waitlist! We'll be in touch soon.");
-      setEmail("");
+      // Navigate to confirmation page instead of showing toast
+      navigate("/beta-confirmed", { 
+        state: { firstName, lastName, email } 
+      });
     }, 1000);
   };
 
@@ -75,6 +81,26 @@ const Pricing = () => {
           </div>
           
           <form onSubmit={handleJoinBeta} className="flex flex-col space-y-4">
+            <div>
+              <input
+                type="text"
+                placeholder="First name"
+                className="w-full px-4 py-3 rounded-md border border-gray-300 focus:outline-none focus:ring-2 focus:ring-tobey-orange focus:border-transparent"
+                value={firstName}
+                onChange={(e) => setFirstName(e.target.value)}
+                required
+              />
+            </div>
+            <div>
+              <input
+                type="text"
+                placeholder="Last name"
+                className="w-full px-4 py-3 rounded-md border border-gray-300 focus:outline-none focus:ring-2 focus:ring-tobey-orange focus:border-transparent"
+                value={lastName}
+                onChange={(e) => setLastName(e.target.value)}
+                required
+              />
+            </div>
             <div>
               <input
                 type="email"
