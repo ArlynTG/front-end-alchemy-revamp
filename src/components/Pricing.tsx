@@ -2,42 +2,55 @@
 import { Button } from "@/components/ui/button";
 import { Check } from "lucide-react";
 import { useState } from "react";
+import { toast } from "sonner";
 
 const Pricing = () => {
   const [isLoading, setIsLoading] = useState(false);
+  const [email, setEmail] = useState("");
   
-  const handleJoinBeta = () => {
+  const handleJoinBeta = (e: React.FormEvent) => {
+    e.preventDefault();
     setIsLoading(true);
-    // This will be replaced with Stripe checkout logic later
+    
+    // Simulate API call
     setTimeout(() => {
       setIsLoading(false);
-      alert("Stripe integration will be implemented here!");
+      toast.success("Thank you for joining our beta waitlist! We'll be in touch soon.");
+      setEmail("");
     }, 1000);
   };
 
   return (
     <section id="pricing" className="py-16 md:py-24">
       <div className="container max-w-5xl mx-auto text-center">
-        <h2 className="text-4xl font-medium mb-4">Unlock potential. Celebrate neurodiversity. Transform Learning.</h2>
+        <h2 className="text-4xl font-medium mb-4">Join Our Limited Beta</h2>
+        <p className="text-xl text-gray-600 mb-8 max-w-2xl mx-auto">
+          Be one of only 200 users to get early access to Tobey's Tutor
+        </p>
         
         <div className="bg-white rounded-2xl shadow-md p-8 max-w-md mx-auto">
           <div className="flex items-center justify-center gap-2 mb-2">
-            <svg 
-              viewBox="0 0 24 24" 
-              fill="none" 
-              className="h-6 w-6 text-tobey-orange"
-              stroke="currentColor" 
-              strokeWidth="2"
-            >
-              <path d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
-            </svg>
-            <span className="text-xl font-medium">7-Day Free Trial</span>
+            <div className="bg-tobey-orange/10 p-2 rounded-full">
+              <svg 
+                viewBox="0 0 24 24" 
+                fill="none" 
+                className="h-6 w-6 text-tobey-orange"
+                stroke="currentColor" 
+                strokeWidth="2"
+              >
+                <path d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+              </svg>
+            </div>
+            <span className="text-xl font-medium">Early Adopter Special</span>
           </div>
           
-          <h3 className="text-5xl font-bold my-6">$29<span className="text-xl text-gray-500 font-normal">/mo</span></h3>
+          <div className="flex items-baseline justify-center gap-1 my-6">
+            <h3 className="text-5xl font-bold">$29</h3>
+            <span className="text-xl text-gray-500 font-normal">/mo</span>
+          </div>
           
           <p className="text-gray-600 mb-8">
-            Full access to all features. Cancel anytime.
+            Starting with a 7-day free trial
           </p>
           
           <div className="space-y-4 mb-8 text-left">
@@ -59,15 +72,28 @@ const Pricing = () => {
             </div>
           </div>
           
-          <div className="flex flex-col space-y-4">
+          <form onSubmit={handleJoinBeta} className="flex flex-col space-y-4">
+            <div>
+              <input
+                type="email"
+                placeholder="Your email address"
+                className="w-full px-4 py-3 rounded-md border border-gray-300 focus:outline-none focus:ring-2 focus:ring-tobey-orange focus:border-transparent"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                required
+              />
+            </div>
             <Button 
+              type="submit"
               className="w-full btn-primary text-lg py-6"
-              onClick={handleJoinBeta}
               disabled={isLoading}
             >
-              {isLoading ? "Processing..." : "Start Your Free Trial →"}
+              {isLoading ? "Processing..." : "Reserve Your Spot →"}
             </Button>
-          </div>
+            <p className="text-xs text-gray-500">
+              Limited to 200 early adopters. Secure your spot now!
+            </p>
+          </form>
         </div>
       </div>
     </section>
