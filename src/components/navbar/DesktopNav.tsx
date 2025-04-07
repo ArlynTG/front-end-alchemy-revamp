@@ -34,7 +34,7 @@ const DesktopNav = ({ scrollToSection, onJoinBeta }: DesktopNavProps) => {
             />
             <NavLink 
               to="#demo" 
-              label="Demo"
+              label="Got Questions?"
               onClick={(e) => {
                 e.preventDefault();
                 scrollToSection('demo');
@@ -45,7 +45,7 @@ const DesktopNav = ({ scrollToSection, onJoinBeta }: DesktopNavProps) => {
           <>
             <NavLink to="/#features" label="Features" />
             <NavLink to="/#story" label="Origin Story" />
-            <NavLink to="/#demo" label="Demo" />
+            <NavLink to="/#demo" label="Got Questions?" />
           </>
         )}
         <NavLink to="#" label="Log In" className="font-medium" />
