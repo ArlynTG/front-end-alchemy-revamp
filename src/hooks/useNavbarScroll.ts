@@ -17,7 +17,7 @@ export const useNavbarScroll = () => {
 
   // Dynamic classes for the navbar based on scroll position
   const navbarClasses = `sticky top-0 z-50 py-4 backdrop-blur-sm transition-all duration-200 ${
-    isScrolled ? 'bg-tobey-blue/70' : 'bg-tobey-blue/90'
+    isScrolled ? 'bg-tobey-blue' : 'bg-tobey-blue'
   }`;
 
   return { isScrolled, navbarClasses };
