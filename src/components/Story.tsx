@@ -25,10 +25,6 @@ const Story = () => {
           <p className="mb-6">
             While no technology replaces great teachers and well-run schools, Tobey's Tutor offers what is sadly difficult for most families to find: a personalized learning experience that meets children where they are—addressing specific needs, building confidence, and making education feel relevant to their world.
           </p>
-          
-          <p className="mb-8 text-right">
-            —Arlyn Gajilan & Robin Winn
-          </p>
         </div>
       </div>
     </section>
@@ -36,4 +32,3 @@ const Story = () => {
 };
 
 export default Story;
-
