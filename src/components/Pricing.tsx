@@ -23,9 +23,11 @@ const Pricing = () => {
   return (
     <section id="pricing" className="py-16 md:py-24">
       <div className="container max-w-5xl mx-auto text-center">
-        <h2 className="text-4xl font-medium mb-4">Join Our Limited Beta</h2>
+        <h2 className="text-4xl font-medium mb-4"><strong>Join Our Limited Beta</strong></h2>
         <p className="text-xl text-gray-600 mb-8 max-w-2xl mx-auto">
           Be one of only 200 users to get early access to Tobey's Tutor
+          <br />
+          <span className="text-base text-gray-500">Expected launch: May 2025</span>
         </p>
         
         <div className="bg-white rounded-2xl shadow-md p-8 max-w-md mx-auto">
