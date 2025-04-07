@@ -1,4 +1,3 @@
-
 import { useState, useRef, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -12,14 +11,12 @@ const ChatDemo = () => {
   const [isOnline, setIsOnline] = useState(navigator.onLine);
   const chatContainerRef = useRef<HTMLDivElement>(null);
 
-  // Auto-scroll to bottom when messages change
   useEffect(() => {
     if (chatContainerRef.current) {
       chatContainerRef.current.scrollTop = chatContainerRef.current.scrollHeight;
     }
   }, [messages]);
 
-  // Listen for online/offline status changes
   useEffect(() => {
     const handleOnline = () => setIsOnline(true);
     const handleOffline = () => setIsOnline(false);
@@ -46,7 +43,6 @@ const ChatDemo = () => {
   const sendMessage = async () => {
     if (!input.trim()) return;
     
-    // Check connection before sending
     if (!checkConnection()) return;
     
     const userMessage = { role: 'user', content: input };
@@ -62,7 +58,6 @@ const ChatDemo = () => {
       });
 
       if (!response.ok) {
-        // If the response is not OK, throw an error with the status
         throw new Error(`HTTP error! status: ${response.status}`);
       }
 
@@ -82,7 +77,7 @@ const ChatDemo = () => {
   return (
     <section id="demo" className="py-16 md:py-24 bg-white">
       <div className="container">
-        <span className="section-tag">Demo</span>
+        <span className="section-tag">FAQ</span>
         
         <h2 className="section-title">Got Questions?</h2>
         <p className="text-center text-gray-600 max-w-2xl mx-auto mb-6">
@@ -154,4 +149,3 @@ const ChatDemo = () => {
 };
 
 export default ChatDemo;
-
