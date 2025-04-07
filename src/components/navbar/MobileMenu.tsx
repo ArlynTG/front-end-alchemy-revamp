@@ -20,6 +20,8 @@ interface MobileMenuProps {
 const MobileMenu = ({ isOpen, onClose, onJoinBeta, scrollToSection }: MobileMenuProps) => {
   const location = useLocation();
   const [isLoginOpen, setIsLoginOpen] = useState(false);
+  const isParentLoginPage = location.pathname === "/parent-login";
+  const isStudentLoginPage = location.pathname === "/student-login";
 
   if (!isOpen) return null;
 
@@ -72,8 +74,12 @@ const MobileMenu = ({ isOpen, onClose, onJoinBeta, scrollToSection }: MobileMenu
             {isLoginOpen ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
           </CollapsibleTrigger>
           <CollapsibleContent className="pl-4 py-2 flex flex-col gap-3">
-            <NavLink to="/parent-login" label="Parent" className="text-left" onClick={onClose} />
-            <NavLink to="/student-login" label="Student" className="text-left" onClick={onClose} />
+            {!isParentLoginPage && (
+              <NavLink to="/parent-login" label="Parent" className="text-left" onClick={onClose} />
+            )}
+            {!isStudentLoginPage && (
+              <NavLink to="/student-login" label="Student" className="text-left" onClick={onClose} />
+            )}
           </CollapsibleContent>
         </Collapsible>
         <Button className="btn-primary w-full" onClick={onJoinBeta}>Join the Beta</Button>

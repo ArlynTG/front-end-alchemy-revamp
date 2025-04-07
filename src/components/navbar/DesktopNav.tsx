@@ -17,6 +17,8 @@ interface DesktopNavProps {
 
 const DesktopNav = ({ scrollToSection, onJoinBeta }: DesktopNavProps) => {
   const location = useLocation();
+  const isParentLoginPage = location.pathname === "/parent-login";
+  const isStudentLoginPage = location.pathname === "/student-login";
 
   return (
     <div className="hidden md:flex md:items-center md:gap-8">
@@ -61,12 +63,16 @@ const DesktopNav = ({ scrollToSection, onJoinBeta }: DesktopNavProps) => {
             Log In <ChevronDown size={16} className="ml-1" />
           </DropdownMenuTrigger>
           <DropdownMenuContent className="bg-white">
-            <DropdownMenuItem className="cursor-pointer">
-              <NavLink to="/parent-login" label="Parent" className="w-full" />
-            </DropdownMenuItem>
-            <DropdownMenuItem className="cursor-pointer">
-              <NavLink to="/student-login" label="Student" className="w-full" />
-            </DropdownMenuItem>
+            {!isParentLoginPage && (
+              <DropdownMenuItem className="cursor-pointer">
+                <NavLink to="/parent-login" label="Parent" className="w-full" />
+              </DropdownMenuItem>
+            )}
+            {!isStudentLoginPage && (
+              <DropdownMenuItem className="cursor-pointer">
+                <NavLink to="/student-login" label="Student" className="w-full" />
+              </DropdownMenuItem>
+            )}
           </DropdownMenuContent>
         </DropdownMenu>
         
