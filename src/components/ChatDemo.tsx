@@ -3,8 +3,24 @@ import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Textarea } from "@/components/ui/textarea";
-import { SendHorizontal, Info } from "lucide-react";
+import { SendHorizontal, Info, AlertCircle } from "lucide-react";
 import { useToast } from "@/components/ui/use-toast";
+import {
+  Form,
+  FormControl,
+  FormDescription,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useForm } from "react-hook-form";
+import * as z from "zod";
+
+const urlSchema = z.object({
+  url: z.string().url({ message: "Please enter a valid URL" }).min(1, { message: "URL is required" }),
+});
 
 const ChatDemo = () => {
   const [message, setMessage] = useState("");
@@ -13,23 +29,50 @@ const ChatDemo = () => {
   ]);
   const [isLoading, setIsLoading] = useState(false);
   const [n8nUrl, setN8nUrl] = useState<string>("");
+  const [testInProgress, setTestInProgress] = useState(false);
   const { toast } = useToast();
+
+  const form = useForm<z.infer<typeof urlSchema>>({
+    resolver: zodResolver(urlSchema),
+    defaultValues: {
+      url: "",
+    },
+  });
 
   // Load saved URL on component mount
   useEffect(() => {
     const savedUrl = localStorage.getItem("n8nUrl");
     if (savedUrl) {
       setN8nUrl(savedUrl);
+      form.setValue("url", savedUrl);
     }
-  }, []);
+  }, [form]);
 
   const saveN8nUrl = (url: string) => {
-    localStorage.setItem("n8nUrl", url);
-    setN8nUrl(url);
-    toast({
-      title: "URL Saved",
-      description: "Your n8n workflow URL has been saved successfully.",
-    });
+    if (!url.trim()) {
+      toast({
+        title: "URL Required",
+        description: "Please enter a valid n8n workflow URL",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    try {
+      new URL(url); // Validate URL format
+      localStorage.setItem("n8nUrl", url);
+      setN8nUrl(url);
+      toast({
+        title: "URL Saved",
+        description: "Your n8n workflow URL has been saved successfully.",
+      });
+    } catch (error) {
+      toast({
+        title: "Invalid URL",
+        description: "Please enter a valid URL format",
+        variant: "destructive",
+      });
+    }
   };
 
   const handleSendMessage = async () => {
@@ -78,6 +121,8 @@ const ChatDemo = () => {
       console.log("Response status:", response.status);
       
       if (!response.ok) {
+        const errorData = await response.text();
+        console.error("Error response body:", errorData);
         throw new Error(`Error: ${response.status} - ${response.statusText}`);
       }
 
@@ -98,14 +143,14 @@ const ChatDemo = () => {
         : "Unknown connection error";
       
       setChatHistory(prev => [...prev, {
-        text: `${errorMessage}. Please check your n8n workflow URL and ensure your workflow is properly configured to receive and respond to messages.`,
+        text: `${errorMessage}. Your n8n workflow returned a 500 error, which usually indicates an issue within the workflow itself. Please check your workflow configuration, webhook node settings, and any error logs in n8n.`,
         sender: "ai",
         isError: true
       }]);
       
       toast({
-        title: "Connection Error",
-        description: "Failed to connect to your n8n workflow. Please check the URL and your workflow configuration.",
+        title: "Connection Error (500)",
+        description: "Your n8n workflow returned a server error. Please check your workflow configuration in n8n.",
         variant: "destructive",
       });
     } finally {
@@ -121,7 +166,9 @@ const ChatDemo = () => {
   };
 
   const testConnection = async () => {
-    if (!n8nUrl) {
+    const url = form.getValues().url || n8nUrl;
+    
+    if (!url) {
       toast({
         title: "Missing URL",
         description: "Please enter an n8n workflow URL before testing the connection.",
@@ -130,9 +177,10 @@ const ChatDemo = () => {
       return;
     }
 
-    setIsLoading(true);
+    setTestInProgress(true);
     try {
-      const response = await fetch(n8nUrl, {
+      console.log("Testing connection to:", url);
+      const response = await fetch(url, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -143,12 +191,22 @@ const ChatDemo = () => {
         }),
       });
 
+      console.log("Test response status:", response.status);
+      
       if (!response.ok) {
-        throw new Error(`Error: ${response.status} - ${response.statusText}`);
+        const errorText = await response.text();
+        console.error("Test error response:", errorText);
+        
+        if (response.status === 500) {
+          throw new Error(`Server error (500): This usually indicates a problem within the n8n workflow itself.`);
+        } else {
+          throw new Error(`Error: ${response.status} - ${response.statusText}`);
+        }
       }
 
       // Try to parse the response
-      await response.json();
+      const data = await response.json();
+      console.log("Test response data:", data);
 
       toast({
         title: "Connection Successful",
@@ -158,12 +216,18 @@ const ChatDemo = () => {
       console.error("Connection test failed:", error);
       toast({
         title: "Connection Failed",
-        description: error instanceof Error ? error.message : "Unknown error occurred",
+        description: error instanceof Error 
+          ? error.message 
+          : "Unknown error occurred while testing the connection",
         variant: "destructive",
       });
     } finally {
-      setIsLoading(false);
+      setTestInProgress(false);
     }
+  };
+
+  const onUrlSubmit = (values: z.infer<typeof urlSchema>) => {
+    saveN8nUrl(values.url);
   };
 
   return (
@@ -238,38 +302,69 @@ const ChatDemo = () => {
               </Button>
             </div>
             
-            <div className="mt-4">
-              <div className="text-xs text-gray-500 mb-1 flex items-center gap-1">
-                <Info className="h-3 w-3" /> n8n Workflow URL:
+            <div className="mt-4 p-4 border border-gray-200 rounded-md bg-gray-50">
+              <div className="flex items-center gap-2 mb-2">
+                <Info className="h-4 w-4 text-blue-500" /> 
+                <h3 className="text-sm font-medium">n8n Workflow Connection</h3>
               </div>
-              <div className="flex space-x-2">
-                <input
-                  type="text"
-                  value={n8nUrl}
-                  onChange={(e) => setN8nUrl(e.target.value)}
-                  placeholder="Enter your n8n workflow webhook URL here"
-                  className="flex-1 px-3 py-2 border border-gray-300 rounded-md text-xs"
-                />
-                <Button 
-                  onClick={() => saveN8nUrl(n8nUrl)}
-                  size="sm"
-                  variant="outline"
-                  className="text-xs"
-                >
-                  Save
-                </Button>
-                <Button 
-                  onClick={testConnection}
-                  size="sm"
-                  variant="outline"
-                  className="text-xs"
-                >
-                  Test
-                </Button>
+              
+              <Form {...form}>
+                <form onSubmit={form.handleSubmit(onUrlSubmit)} className="space-y-3">
+                  <FormField
+                    control={form.control}
+                    name="url"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel className="text-xs">n8n Webhook URL</FormLabel>
+                        <div className="flex space-x-2">
+                          <FormControl>
+                            <input
+                              placeholder="Enter your n8n workflow webhook URL here"
+                              className="w-full px-3 py-2 border border-gray-300 rounded-md text-xs"
+                              {...field}
+                            />
+                          </FormControl>
+                          <Button 
+                            type="submit"
+                            size="sm"
+                            variant="outline"
+                            className="text-xs"
+                          >
+                            Save
+                          </Button>
+                          <Button 
+                            type="button"
+                            onClick={testConnection}
+                            size="sm"
+                            variant="outline"
+                            className="text-xs"
+                            disabled={testInProgress}
+                          >
+                            {testInProgress ? "Testing..." : "Test"}
+                          </Button>
+                        </div>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </form>
+              </Form>
+
+              <div className="mt-3 p-3 bg-amber-50 border border-amber-200 rounded-md">
+                <div className="flex gap-2 items-start">
+                  <AlertCircle className="h-4 w-4 text-amber-500 mt-0.5" />
+                  <div>
+                    <h4 className="text-xs font-medium text-amber-800">Troubleshooting 500 Errors</h4>
+                    <ul className="text-xs text-amber-700 mt-1 list-disc list-inside space-y-1">
+                      <li>Check your n8n workflow is published and active</li>
+                      <li>Verify your webhook node is correctly configured</li>
+                      <li>Make sure your workflow expects "message" and "history" in the payload</li>
+                      <li>Check if your workflow returns a JSON response with a "response" property</li>
+                      <li>View the n8n execution logs for more detailed error information</li>
+                    </ul>
+                  </div>
+                </div>
               </div>
-              <p className="text-xs text-gray-500 mt-1">
-                Your n8n workflow should accept a message and history and return a response.
-              </p>
             </div>
           </div>
         </div>
@@ -279,4 +374,3 @@ const ChatDemo = () => {
 };
 
 export default ChatDemo;
-
