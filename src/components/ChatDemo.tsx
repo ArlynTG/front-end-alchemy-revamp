@@ -18,7 +18,7 @@ type MessageType = {
 
 const ChatDemo = () => {
   const [chatHistory, setChatHistory] = useState<MessageType[]>([
-    { text: "Hi there! I'm an AI assistant. How can I help you today?", sender: "ai" }
+    { text: "Hi there! I'm your Tobey AI assistant. How can I help you today?", sender: "ai" }
   ]);
   const [isLoading, setIsLoading] = useState(false);
   const [apiKey, setApiKey] = useState<string>("");
@@ -44,6 +44,14 @@ const ChatDemo = () => {
       }
     }
   }, [chatHistory]);
+
+  // Clear thread when unmounting
+  useEffect(() => {
+    return () => {
+      // Clear the thread ID when component unmounts
+      sessionStorage.removeItem("openai_thread_id");
+    };
+  }, []);
 
   const saveApiKey = (key: string) => {
     if (!key.trim()) {
@@ -127,7 +135,7 @@ const ChatDemo = () => {
       
       toast({
         title: "Connection Successful",
-        description: "Successfully connected to OpenAI.",
+        description: "Successfully connected to your OpenAI Assistant.",
       });
     } catch (error) {
       console.error("Connection test failed:", error);
