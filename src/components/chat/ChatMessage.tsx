@@ -32,7 +32,7 @@ const ChatMessage: React.FC<ChatMessageProps> = ({ message }) => {
             <div className="font-medium text-sm text-right w-full">You</div>
           )}
         </div>
-        <p className="text-sm">{message.text}</p>
+        <p className="text-sm whitespace-pre-wrap">{message.text}</p>
       </div>
     </div>
   );
