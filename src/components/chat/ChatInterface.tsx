@@ -1,9 +1,14 @@
+
 import { useState, useEffect, useRef } from "react";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { useToast } from "@/hooks/use-toast";
 import ChatMessage from "@/components/chat/ChatMessage";
 import ChatInput from "@/components/chat/ChatInput";
 import { sendMessageToOpenAI } from "@/utils/openaiService";
+
+// Hardcoded API key for demo purposes
+// In a production environment, this would be handled server-side
+const DEMO_API_KEY = ""; // Add your API key here or handle in backend
 
 // Type for chat messages
 export type MessageType = {
@@ -13,7 +18,7 @@ export type MessageType = {
 };
 
 interface ChatInterfaceProps {
-  apiKey: string;
+  apiKey?: string; // Making this optional since we'll use the hardcoded key
 }
 
 const ChatInterface = ({ apiKey }: ChatInterfaceProps) => {
@@ -23,6 +28,9 @@ const ChatInterface = ({ apiKey }: ChatInterfaceProps) => {
   const [isLoading, setIsLoading] = useState(false);
   const { toast } = useToast();
   const scrollAreaRef = useRef<HTMLDivElement>(null);
+  
+  // Use hardcoded key if no apiKey prop is provided
+  const effectiveApiKey = apiKey || DEMO_API_KEY;
 
   // Scroll to bottom when chat history updates
   useEffect(() => {
@@ -43,10 +51,10 @@ const ChatInterface = ({ apiKey }: ChatInterfaceProps) => {
   }, []);
 
   const handleSendMessage = async (message: string) => {
-    if (!apiKey) {
+    if (!effectiveApiKey) {
       toast({
-        title: "Missing OpenAI API Key",
-        description: "Please enter your OpenAI API key below to connect the chat.",
+        title: "API Connection Error",
+        description: "Unable to connect to the AI service at this time.",
         variant: "destructive",
       });
       return;
@@ -59,7 +67,7 @@ const ChatInterface = ({ apiKey }: ChatInterfaceProps) => {
 
     try {
       // Call OpenAI service
-      const response = await sendMessageToOpenAI(apiKey, userMessage.text, chatHistory);
+      const response = await sendMessageToOpenAI(effectiveApiKey, userMessage.text, chatHistory);
       
       // Add AI response to chat
       setChatHistory(prev => [...prev, {
@@ -82,7 +90,7 @@ const ChatInterface = ({ apiKey }: ChatInterfaceProps) => {
       
       toast({
         title: "Connection Error",
-        description: "There was an error connecting to OpenAI. Please check your API key and try again.",
+        description: "There was an error connecting to the AI service. Please try again later.",
         variant: "destructive",
       });
     } finally {

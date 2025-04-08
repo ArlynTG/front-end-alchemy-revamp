@@ -1,10 +1,10 @@
 
 import { useState } from "react";
 import ChatInterface from "@/components/chat/ChatInterface";
-import ChatApiKeySection from "@/components/chat/ChatApiKeySection";
 
 const ChatDemo = () => {
-  const [apiKey, setApiKey] = useState<string>("");
+  // We'll use a hardcoded API key instead of requiring user input
+  const apiKey = ""; // Empty string as we'll handle this in ChatInterface
 
   return (
     <section id="demo" className="py-16 md:py-24 bg-white">
@@ -18,9 +18,6 @@ const ChatDemo = () => {
         
         <div className="max-w-2xl mx-auto bg-white rounded-xl shadow-md overflow-hidden border border-gray-200">
           <ChatInterface apiKey={apiKey} />
-          <div className="p-4 border-t border-gray-200 bg-white">
-            <ChatApiKeySection apiKey={apiKey} setApiKey={setApiKey} />
-          </div>
         </div>
       </div>
     </section>
