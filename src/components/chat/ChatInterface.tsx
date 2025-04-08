@@ -4,7 +4,9 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { useToast } from "@/hooks/use-toast";
 import ChatMessage from "@/components/chat/ChatMessage";
 import ChatInput from "@/components/chat/ChatInput";
+import ChatApiKeySection from "@/components/chat/ChatApiKeySection";
 import { sendMessageToOpenAI } from "@/utils/openaiService";
+import { ASSISTANT_ID, setAssistantId } from "@/utils/openaiApi";
 
 // Type for chat messages
 export type MessageType = {
@@ -18,11 +20,24 @@ const ChatInterface = () => {
     { text: "Hi there! I'm your Tobey AI assistant. How can I help you today?", sender: "ai" }
   ]);
   const [isLoading, setIsLoading] = useState(false);
+  const [apiKey, setApiKey] = useState("");
+  const [assistantId, setLocalAssistantId] = useState(ASSISTANT_ID);
   const { toast } = useToast();
   const scrollAreaRef = useRef<HTMLDivElement>(null);
-  
-  // IMPORTANT: Replace with a valid OpenAI API key - this is a dummy format
-  const apiKey = "sk-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx";
+
+  // Load API key and assistant ID from localStorage on mount
+  useEffect(() => {
+    const savedApiKey = localStorage.getItem("openai_api_key");
+    if (savedApiKey) {
+      setApiKey(savedApiKey);
+    }
+    
+    const savedAssistantId = localStorage.getItem("openai_assistant_id");
+    if (savedAssistantId) {
+      setLocalAssistantId(savedAssistantId);
+      setAssistantId(savedAssistantId);
+    }
+  }, []);
 
   // Scroll to bottom when chat history updates
   useEffect(() => {
@@ -42,6 +57,16 @@ const ChatInterface = () => {
     };
   }, []);
 
+  const handleUpdateAssistantId = (id: string) => {
+    setLocalAssistantId(id);
+    setAssistantId(id);
+    localStorage.setItem("openai_assistant_id", id);
+    toast({
+      title: "Assistant ID Updated",
+      description: "Your OpenAI Assistant ID has been saved successfully.",
+    });
+  };
+
   const handleSendMessage = async (message: string) => {
     // Add user message to chat
     const userMessage: MessageType = { text: message.trim(), sender: "user" };
@@ -49,7 +74,12 @@ const ChatInterface = () => {
     setIsLoading(true);
 
     try {
-      // Call OpenAI service with the hardcoded API key
+      // Check if API key is provided
+      if (!apiKey) {
+        throw new Error("Please enter your OpenAI API key first");
+      }
+      
+      // Call OpenAI service
       const response = await sendMessageToOpenAI(apiKey, userMessage.text, chatHistory);
       
       // Add AI response to chat
@@ -95,6 +125,13 @@ const ChatInterface = () => {
         <ChatInput 
           onSendMessage={handleSendMessage}
           isLoading={isLoading}
+        />
+        
+        <ChatApiKeySection 
+          apiKey={apiKey} 
+          setApiKey={setApiKey} 
+          assistantId={assistantId}
+          setAssistantId={handleUpdateAssistantId}
         />
       </div>
     </>

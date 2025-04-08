@@ -4,7 +4,12 @@
  */
 
 // IMPORTANT: Replace with your valid OpenAI Assistant ID
-export const ASSISTANT_ID = "asst_xxxxxxxxxxxxxxxxxxxxxxxx";
+export let ASSISTANT_ID = "asst_xxxxxxxxxxxxxxxxxxxxxxxx";
+
+// Function to set Assistant ID dynamically
+export const setAssistantId = (id: string): void => {
+  ASSISTANT_ID = id;
+};
 
 // Create a new thread
 export const createThread = async (apiKey: string): Promise<string> => {
