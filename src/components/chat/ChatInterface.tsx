@@ -6,10 +6,6 @@ import ChatMessage from "@/components/chat/ChatMessage";
 import ChatInput from "@/components/chat/ChatInput";
 import { sendMessageToOpenAI } from "@/utils/openaiService";
 
-// Hardcoded API key for demo purposes
-// In a production environment, this would be handled server-side
-const DEMO_API_KEY = ""; // Add your API key here or handle in backend
-
 // Type for chat messages
 export type MessageType = {
   text: string;
@@ -17,11 +13,7 @@ export type MessageType = {
   isError?: boolean;
 };
 
-interface ChatInterfaceProps {
-  apiKey?: string; // Making this optional since we'll use the hardcoded key
-}
-
-const ChatInterface = ({ apiKey }: ChatInterfaceProps) => {
+const ChatInterface = () => {
   const [chatHistory, setChatHistory] = useState<MessageType[]>([
     { text: "Hi there! I'm your Tobey AI assistant. How can I help you today?", sender: "ai" }
   ]);
@@ -29,8 +21,8 @@ const ChatInterface = ({ apiKey }: ChatInterfaceProps) => {
   const { toast } = useToast();
   const scrollAreaRef = useRef<HTMLDivElement>(null);
   
-  // Use hardcoded key if no apiKey prop is provided
-  const effectiveApiKey = apiKey || DEMO_API_KEY;
+  // Hardcoded API key - Replace with your actual API key
+  const apiKey = "your-openai-api-key-here";
 
   // Scroll to bottom when chat history updates
   useEffect(() => {
@@ -57,26 +49,14 @@ const ChatInterface = ({ apiKey }: ChatInterfaceProps) => {
     setIsLoading(true);
 
     try {
-      // For demo purposes, simulate a response if no API key is available
-      if (!effectiveApiKey) {
-        // Wait for a realistic delay
-        await new Promise(resolve => setTimeout(resolve, 1500));
-        
-        // Add demo response
-        setChatHistory(prev => [...prev, {
-          text: "This is a demo response. To use the real AI assistant, an OpenAI API key would be required.",
-          sender: "ai"
-        }]);
-      } else {
-        // Call OpenAI service with the effective API key
-        const response = await sendMessageToOpenAI(effectiveApiKey, userMessage.text, chatHistory);
-        
-        // Add AI response to chat
-        setChatHistory(prev => [...prev, {
-          text: response || "Sorry, I couldn't process your request at this time.",
-          sender: "ai"
-        }]);
-      }
+      // Call OpenAI service with the hardcoded API key
+      const response = await sendMessageToOpenAI(apiKey, userMessage.text, chatHistory);
+      
+      // Add AI response to chat
+      setChatHistory(prev => [...prev, {
+        text: response || "Sorry, I couldn't process your request at this time.",
+        sender: "ai"
+      }]);
     } catch (error) {
       console.error("Error calling OpenAI:", error);
       
