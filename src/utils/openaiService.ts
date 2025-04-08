@@ -1,12 +1,7 @@
-
 /**
  * Service for interacting with OpenAI Assistants API
  */
-interface ChatMessage {
-  text: string;
-  sender: "user" | "ai";
-  isError?: boolean;
-}
+import { MessageType } from "@/components/chat/ChatInterface";
 
 // OpenAI Assistant ID
 const ASSISTANT_ID = "asst_FqUDE3yX9ySYqb8eUxUkU4lZ";
@@ -17,7 +12,7 @@ const ASSISTANT_ID = "asst_FqUDE3yX9ySYqb8eUxUkU4lZ";
 export const sendMessageToOpenAI = async (
   apiKey: string,
   message: string,
-  history: ChatMessage[]
+  history: MessageType[]
 ): Promise<string> => {
   console.log("Sending request to OpenAI Assistant");
   

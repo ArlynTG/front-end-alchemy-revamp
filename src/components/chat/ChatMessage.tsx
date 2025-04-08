@@ -1,11 +1,6 @@
 
 import React from "react";
-
-type MessageType = {
-  text: string;
-  sender: "user" | "ai";
-  isError?: boolean;
-};
+import { MessageType } from "./ChatInterface";
 
 interface ChatMessageProps {
   message: MessageType;
