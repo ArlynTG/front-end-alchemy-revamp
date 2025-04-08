@@ -51,36 +51,39 @@ const ChatInterface = ({ apiKey }: ChatInterfaceProps) => {
   }, []);
 
   const handleSendMessage = async (message: string) => {
-    if (!effectiveApiKey) {
-      toast({
-        title: "API Connection Error",
-        description: "Unable to connect to the AI service at this time.",
-        variant: "destructive",
-      });
-      return;
-    }
-
     // Add user message to chat
     const userMessage: MessageType = { text: message.trim(), sender: "user" };
     setChatHistory(prev => [...prev, userMessage]);
     setIsLoading(true);
 
     try {
-      // Call OpenAI service
-      const response = await sendMessageToOpenAI(effectiveApiKey, userMessage.text, chatHistory);
-      
-      // Add AI response to chat
-      setChatHistory(prev => [...prev, {
-        text: response || "Sorry, I couldn't process your request at this time.",
-        sender: "ai"
-      }]);
+      // For demo purposes, simulate a response if no API key is available
+      if (!effectiveApiKey) {
+        // Wait for a realistic delay
+        await new Promise(resolve => setTimeout(resolve, 1500));
+        
+        // Add demo response
+        setChatHistory(prev => [...prev, {
+          text: "This is a demo response. To use the real AI assistant, an OpenAI API key would be required.",
+          sender: "ai"
+        }]);
+      } else {
+        // Call OpenAI service with the effective API key
+        const response = await sendMessageToOpenAI(effectiveApiKey, userMessage.text, chatHistory);
+        
+        // Add AI response to chat
+        setChatHistory(prev => [...prev, {
+          text: response || "Sorry, I couldn't process your request at this time.",
+          sender: "ai"
+        }]);
+      }
     } catch (error) {
       console.error("Error calling OpenAI:", error);
       
       // Add error message to the chat
       const errorMessage = error instanceof Error 
-        ? `Connection error: ${error.message}` 
-        : "Unknown connection error";
+        ? `I'm sorry, I couldn't process your request: ${error.message}` 
+        : "I'm sorry, I couldn't process your request right now.";
       
       setChatHistory(prev => [...prev, {
         text: errorMessage,
@@ -90,7 +93,7 @@ const ChatInterface = ({ apiKey }: ChatInterfaceProps) => {
       
       toast({
         title: "Connection Error",
-        description: "There was an error connecting to the AI service. Please try again later.",
+        description: "There was an error processing your message. Please try again later.",
         variant: "destructive",
       });
     } finally {
