@@ -1,3 +1,4 @@
+
 import { useState, useEffect, useRef } from "react";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { useToast } from "@/hooks/use-toast";
@@ -97,6 +98,16 @@ const ChatInterface = ({ apiKey }: ChatInterfaceProps) => {
           {chatHistory.map((chat, index) => (
             <ChatMessage key={index} message={chat} />
           ))}
+          {isLoading && (
+            <div className="flex justify-start">
+              <div className="max-w-[80%] rounded-2xl px-4 py-2 bg-gray-200 text-gray-800 rounded-tl-none">
+                <div className="flex items-center space-x-2 mb-1">
+                  <div className="font-medium text-sm">Tobey AI</div>
+                </div>
+                <p className="text-sm">Thinking...</p>
+              </div>
+            </div>
+          )}
         </div>
       </ScrollArea>
       
