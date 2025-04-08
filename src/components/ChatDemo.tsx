@@ -310,13 +310,15 @@ const ChatDemo = () => {
             </div>
           </div>
           
-          <style jsx>{`
-            @keyframes typing {
-              0% { transform: translateY(0px); }
-              50% { transform: translateY(-7px); }
-              100% { transform: translateY(0px); }
-            }
-          `}</style>
+          <style>
+            {`
+              @keyframes typing {
+                0% { transform: translateY(0px); }
+                50% { transform: translateY(-7px); }
+                100% { transform: translateY(0px); }
+              }
+            `}
+          </style>
         </div>
       </div>
     </section>
