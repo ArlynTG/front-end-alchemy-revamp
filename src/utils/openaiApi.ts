@@ -3,8 +3,8 @@
  * Low-level API communication with OpenAI
  */
 
-// Your actual OpenAI Assistant ID - Replace with your real Assistant ID
-export const ASSISTANT_ID = "asst_FqUDE3yX9ySYqb8eUxUkU4lZ";
+// IMPORTANT: Replace with your valid OpenAI Assistant ID
+export const ASSISTANT_ID = "asst_xxxxxxxxxxxxxxxxxxxxxxxx";
 
 // Create a new thread
 export const createThread = async (apiKey: string): Promise<string> => {

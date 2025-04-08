@@ -21,8 +21,8 @@ const ChatInterface = () => {
   const { toast } = useToast();
   const scrollAreaRef = useRef<HTMLDivElement>(null);
   
-  // Your actual OpenAI API key - Replace this with your real key
-  const apiKey = "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";
+  // IMPORTANT: Replace with a valid OpenAI API key - this is a dummy format
+  const apiKey = "sk-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx";
 
   // Scroll to bottom when chat history updates
   useEffect(() => {
