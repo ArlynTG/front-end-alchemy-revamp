@@ -33,7 +33,7 @@ const ChatDemo = () => {
     if (!userInput.trim()) return;
 
     // Add user message to chat
-    const userMessage = { text: userInput.trim(), sender: "user" };
+    const userMessage = { text: userInput.trim(), sender: "user" as const };
     setMessages(prev => [...prev, userMessage]);
     setUserInput("");
     setIsLoading(true);
