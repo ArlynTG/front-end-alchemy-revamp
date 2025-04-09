@@ -4,6 +4,7 @@ import { sendMessageToWorkflow } from "@/utils/n8nService";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { toast } from "@/hooks/use-toast";
 
 interface ChatMessage {
   text: string;
@@ -22,6 +23,11 @@ const ChatDemo = () => {
   // Webhook URL for the n8n workflow
   const WEBHOOK_URL = "https://tobiasedtech.app.n8n.cloud/webhook/eb528532-1df2-4d01-924e-69fb7b29dc25/chat";
 
+  // Add a console log when component mounts to check if it's loading
+  useEffect(() => {
+    console.log("ChatDemo component mounted", { version: "2025-04-09-1" });
+  }, []);
+
   // Auto-scroll to the bottom of chat when messages change
   useEffect(() => {
     if (chatContainerRef.current) {
@@ -39,6 +45,8 @@ const ChatDemo = () => {
     setIsLoading(true);
 
     try {
+      console.log("Sending message to webhook", { url: WEBHOOK_URL, message: userMessage.text });
+      
       // Send message to n8n workflow
       const response = await sendMessageToWorkflow(
         WEBHOOK_URL,
@@ -46,11 +54,19 @@ const ChatDemo = () => {
         messages
       );
 
+      console.log("Received response from webhook", { response });
+
       // Add AI response to chat
       setMessages(prev => [
         ...prev,
         { text: response.response, sender: "ai" }
       ]);
+
+      // Show toast notification that message was sent successfully
+      toast({
+        title: "Message sent successfully",
+        description: "Your message was processed by the AI",
+      });
     } catch (error) {
       console.error("Error sending message:", error);
       setMessages(prev => [
@@ -61,6 +77,13 @@ const ChatDemo = () => {
           isError: true 
         }
       ]);
+
+      // Show toast notification about the error
+      toast({
+        title: "Error",
+        description: "Failed to send message. Please try again.",
+        variant: "destructive",
+      });
     } finally {
       setIsLoading(false);
     }
