@@ -7,7 +7,7 @@ import ChatInput from "@/components/chat/ChatInput";
 import WorkflowUrlForm from "@/components/chat/WorkflowUrlForm";
 
 // Type for chat messages
-type MessageType = {
+export type MessageType = {
   text: string;
   sender: "user" | "ai";
   isError?: boolean;
@@ -139,13 +139,29 @@ const ChatInterface = () => {
       
       const data = await response.json();
       
-      if (!data.response) {
-        throw new Error("Invalid response from the workflow");
+      // Extract the AI response based on the structure returned from n8n
+      let aiResponse = "";
+      
+      // Check for OpenAI format with message.content
+      if (data.message && data.message.content) {
+        aiResponse = data.message.content;
+      }
+      // Check for simple response format
+      else if (data.response) {
+        aiResponse = data.response;
+      }
+      // Check for OpenAI completion format (with array)
+      else if (data.index !== undefined && data.message && data.message.content) {
+        aiResponse = data.message.content;
+      }
+      else {
+        console.log("Unexpected response format:", data);
+        throw new Error("Invalid response format from the workflow");
       }
       
       // Add AI response to chat
       setChatHistory(prev => [...prev, {
-        text: data.response,
+        text: aiResponse,
         sender: "ai"
       }]);
     } catch (error) {
