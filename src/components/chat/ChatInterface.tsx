@@ -1,5 +1,5 @@
 
-import React from "react";
+import React, { useState } from "react";
 import ChatHistory from "@/components/chat/ChatHistory";
 import ChatInput from "@/components/chat/ChatInput";
 import WorkflowUrlForm from "@/components/chat/WorkflowUrlForm";
@@ -9,6 +9,8 @@ import { useChatWithN8n } from "@/hooks/useChatWithN8n";
 const WEBHOOK_URL = "https://tobiasedtech.app.n8n.cloud/webhook/eb528532-1df2-4d01-924e-69fb7b29dc25/chat";
 
 const ChatInterface = () => {
+  const [showWorkflowUrlForm, setShowWorkflowUrlForm] = useState(false);
+
   const {
     chatHistory,
     isLoading,
@@ -29,12 +31,14 @@ const ChatInterface = () => {
           isLoading={isLoading}
         />
         
-        <WorkflowUrlForm 
-          initialUrl={webhookUrl} 
-          onSaveUrl={handleUpdateWebhookUrl}
-          onTestConnection={testConnection}
-          testInProgress={testingConnection}
-        />
+        {showWorkflowUrlForm && (
+          <WorkflowUrlForm 
+            initialUrl={webhookUrl} 
+            onSaveUrl={handleUpdateWebhookUrl}
+            onTestConnection={testConnection}
+            testInProgress={testingConnection}
+          />
+        )}
       </div>
     </>
   );
