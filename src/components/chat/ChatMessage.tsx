@@ -1,6 +1,12 @@
 
 import React from "react";
-import { MessageType } from "./ChatInterface";
+
+// This should match the type in ChatInterface.tsx
+export type MessageType = {
+  text: string;
+  sender: "user" | "ai";
+  isError?: boolean;
+};
 
 interface ChatMessageProps {
   message: MessageType;
