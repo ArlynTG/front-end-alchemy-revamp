@@ -1,11 +1,16 @@
 
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import PricingCard from "./pricing/PricingCard";
-import RegistrationForm from "./pricing/RegistrationForm";
 import { pricingPlans } from "./pricing/pricingData";
 
 const Pricing = () => {
-  const [selectedPlan, setSelectedPlan] = useState("early-adopter");
+  const navigate = useNavigate();
+  
+  const handlePlanSelect = (planId: string) => {
+    // Navigate to the beta registration page with the selected plan
+    navigate(`/beta-registration?plan=${planId}`);
+  };
   
   return (
     <section id="pricing" className="py-16 md:py-24">
@@ -22,14 +27,10 @@ const Pricing = () => {
             <PricingCard 
               key={plan.id} 
               plan={plan} 
-              onSelect={setSelectedPlan}
+              onSelect={handlePlanSelect}
             />
           ))}
         </div>
-        
-        {selectedPlan && (
-          <RegistrationForm selectedPlan={selectedPlan} />
-        )}
       </div>
     </section>
   );

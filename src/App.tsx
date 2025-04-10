@@ -12,6 +12,7 @@ import CookiePolicy from "./pages/CookiePolicy";
 import ParentLogin from "./pages/ParentLogin";
 import StudentLogin from "./pages/StudentLogin";
 import BetaConfirmed from "./pages/BetaConfirmed";
+import BetaRegistration from "./pages/BetaRegistration";
 import PasswordProtection from "./components/PasswordProtection";
 
 const queryClient = new QueryClient();
@@ -34,6 +35,7 @@ const App = () => (
             <Route path="/parent-login" element={<ParentLogin />} />
             <Route path="/student-login" element={<StudentLogin />} />
             <Route path="/beta-confirmed" element={<BetaConfirmed />} />
+            <Route path="/beta-registration" element={<BetaRegistration />} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
           </Routes>
