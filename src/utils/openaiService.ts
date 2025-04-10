@@ -2,7 +2,7 @@
 /**
  * Service for interacting with OpenAI Assistants API
  */
-import { MessageType } from "@/components/chat/ChatInterface";
+import { MessageType } from "@/components/chat/ChatMessage";
 import { 
   createThread, 
   addMessageToThread, 
