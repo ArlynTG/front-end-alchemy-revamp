@@ -4,44 +4,111 @@ import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { Card, CardContent } from "@/components/ui/card";
 import { Alert, AlertTitle, AlertDescription } from "@/components/ui/alert";
-import { AlertCircle, RefreshCw } from "lucide-react";
+import { AlertCircle, RefreshCw, SendHorizontal } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
+import { Textarea } from "@/components/ui/textarea";
+import { ScrollArea } from "@/components/ui/scroll-area";
+
+type Message = {
+  content: string;
+  isUser: boolean;
+  timestamp: Date;
+};
 
 const DemoV2 = () => {
-  const [iframeError, setIframeError] = useState<boolean>(false);
-  const [isLoading, setIsLoading] = useState<boolean>(true);
-  const [retryCount, setRetryCount] = useState<number>(0);
+  const [messages, setMessages] = useState<Message[]>([]);
+  const [inputMessage, setInputMessage] = useState<string>("");
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [hasError, setHasError] = useState<boolean>(false);
   const { toast } = useToast();
+  const messagesEndRef = React.useRef<HTMLDivElement>(null);
 
-  const handleIframeLoad = () => {
-    console.log("Iframe loaded successfully");
-    setIsLoading(false);
-    setIframeError(false);
-  };
-
-  const handleIframeError = () => {
-    console.error("Error loading iframe content");
-    setIsLoading(false);
-    setIframeError(true);
-    toast({
-      title: "Connection Error",
-      description: "Failed to load the chat interface. The service might be temporarily unavailable.",
-      variant: "destructive",
-    });
-  };
-
-  const handleRetry = () => {
-    console.log("Retrying iframe load");
-    setIsLoading(true);
-    setIframeError(false);
-    setRetryCount(prev => prev + 1);
-  };
-
-  // Log the current state for debugging
+  // Add initial greeting message
   useEffect(() => {
-    console.log("DemoV2 component state:", { iframeError, isLoading, retryCount });
-  }, [iframeError, isLoading, retryCount]);
+    setMessages([
+      {
+        content: "Hi there! I'm your Tobey AI assistant. How can I help you today?",
+        isUser: false,
+        timestamp: new Date(),
+      },
+    ]);
+  }, []);
+
+  // Scroll to bottom when messages change
+  useEffect(() => {
+    if (messagesEndRef.current) {
+      messagesEndRef.current.scrollIntoView({ behavior: "smooth" });
+    }
+  }, [messages]);
+
+  const handleSendMessage = async () => {
+    if (!inputMessage.trim()) return;
+    
+    const userMessage = {
+      content: inputMessage,
+      isUser: true,
+      timestamp: new Date(),
+    };
+    
+    setMessages(prev => [...prev, userMessage]);
+    setInputMessage("");
+    setIsLoading(true);
+    setHasError(false);
+    
+    try {
+      const response = await fetch("https://tobiasedtech.app.n8n.cloud/webhook-test/faq-chat-message", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          message: inputMessage
+        })
+      });
+      
+      const data = await response.json();
+      console.log("n8n replied:", data);
+      
+      if (!response.ok) {
+        throw new Error(data.message || "Failed to get response");
+      }
+      
+      const aiMessage = {
+        content: data.reply || "I'm sorry, I couldn't process that request.",
+        isUser: false,
+        timestamp: new Date(),
+      };
+      
+      setMessages(prev => [...prev, aiMessage]);
+    } catch (err) {
+      console.error("Error:", err);
+      setHasError(true);
+      
+      const errorMessage = {
+        content: "I'm sorry, I encountered an error while processing your request. Please try again later.",
+        isUser: false,
+        timestamp: new Date(),
+      };
+      
+      setMessages(prev => [...prev, errorMessage]);
+      
+      toast({
+        title: "Connection Error",
+        description: "Failed to connect to the AI service. It might be temporarily unavailable.",
+        variant: "destructive",
+      });
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleKeyDown = (e: React.KeyboardEvent) => {
+    if (e.key === 'Enter' && !e.shiftKey) {
+      e.preventDefault();
+      handleSendMessage();
+    }
+  };
 
   return (
     <div className="flex flex-col min-h-screen">
@@ -57,47 +124,72 @@ const DemoV2 = () => {
               Interact directly with our AI tutor through this live demo interface.
             </p>
             
-            {iframeError ? (
+            {hasError && (
               <Alert variant="destructive" className="mb-6">
                 <AlertCircle className="h-4 w-4" />
-                <AlertTitle>Error</AlertTitle>
+                <AlertTitle>Connection Error</AlertTitle>
                 <AlertDescription>
-                  There was a problem loading the demo interface. The service might be temporarily unavailable.
-                  <div className="mt-2">
-                    <Button 
-                      onClick={handleRetry}
-                      variant="outline" 
-                      size="sm"
-                      className="gap-2"
-                    >
-                      <RefreshCw className="h-4 w-4" />
-                      Retry Connection
-                    </Button>
-                  </div>
+                  There was a problem connecting to the AI service. The service might be temporarily unavailable.
                 </AlertDescription>
               </Alert>
-            ) : null}
+            )}
             
             <Card className="overflow-hidden shadow-xl border-gray-200">
-              <CardContent className="p-0 aspect-video relative">
-                {isLoading && (
-                  <div className="absolute inset-0 flex items-center justify-center bg-gray-50">
-                    <div className="text-center">
-                      <div className="animate-spin h-8 w-8 border-4 border-tobey-orange border-t-transparent rounded-full mx-auto mb-2"></div>
-                      <p className="text-gray-600">Loading demo...</p>
+              <CardContent className="p-4">
+                <div className="flex flex-col h-[600px]">
+                  <ScrollArea className="flex-grow mb-4 p-4 bg-gray-50 rounded-md">
+                    <div className="space-y-4">
+                      {messages.map((message, index) => (
+                        <div 
+                          key={index}
+                          className={`flex ${message.isUser ? 'justify-end' : 'justify-start'}`}
+                        >
+                          <div
+                            className={`max-w-[80%] rounded-2xl px-4 py-2 ${
+                              message.isUser
+                                ? 'bg-tobey-orange text-white rounded-tr-none'
+                                : 'bg-gray-200 text-gray-800 rounded-tl-none'
+                            }`}
+                          >
+                            <div className="flex items-center space-x-2 mb-1">
+                              {message.isUser ? (
+                                <div className="font-medium text-sm text-right w-full">You</div>
+                              ) : (
+                                <div className="font-medium text-sm">Tobey AI</div>
+                              )}
+                            </div>
+                            <p className="text-sm whitespace-pre-wrap">{message.content}</p>
+                          </div>
+                        </div>
+                      ))}
+                      <div ref={messagesEndRef} />
                     </div>
+                  </ScrollArea>
+                  
+                  <div className="flex space-x-2">
+                    <Textarea
+                      value={inputMessage}
+                      onChange={(e) => setInputMessage(e.target.value)}
+                      onKeyDown={handleKeyDown}
+                      placeholder="Type your question here..."
+                      className="flex-1 resize-none border-gray-300 focus:border-tobey-orange focus:ring-tobey-orange"
+                      rows={1}
+                      disabled={isLoading}
+                    />
+                    <Button
+                      onClick={handleSendMessage}
+                      className="bg-tobey-orange hover:bg-tobey-darkOrange text-white"
+                      type="submit"
+                      disabled={!inputMessage.trim() || isLoading}
+                    >
+                      {isLoading ? (
+                        <div className="h-4 w-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                      ) : (
+                        <SendHorizontal className="h-4 w-4" />
+                      )}
+                    </Button>
                   </div>
-                )}
-                <iframe 
-                  key={`iframe-${retryCount}`} // Force reload when retry is clicked
-                  src="https://tobiasedtech.app.n8n.cloud/webhook/eb528532-1df2-4d01-924e-69fb7b29dc25/chat" 
-                  className="w-full h-full min-h-[600px]"
-                  title="Tobey AI Demo"
-                  allow="microphone"
-                  loading="lazy"
-                  onLoad={handleIframeLoad}
-                  onError={handleIframeError}
-                />
+                </div>
               </CardContent>
             </Card>
             
