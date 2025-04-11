@@ -9,6 +9,7 @@ import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
 import { Textarea } from "@/components/ui/textarea";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import ChatInterface from "@/components/chat/ChatInterface";
 
 type Message = {
   content: string;
@@ -21,6 +22,7 @@ const DemoV2 = () => {
   const [inputMessage, setInputMessage] = useState<string>("");
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [hasError, setHasError] = useState<boolean>(false);
+  const [useAlternativeUI, setUseAlternativeUI] = useState<boolean>(false);
   const { toast } = useToast();
   const messagesEndRef = React.useRef<HTMLDivElement>(null);
 
@@ -57,6 +59,7 @@ const DemoV2 = () => {
     setHasError(false);
     
     try {
+      console.log("Sending message to n8n webhook");
       const response = await fetch("https://tobiasedtech.app.n8n.cloud/webhook-test/faq-chat-message", {
         method: "POST",
         headers: {
@@ -67,12 +70,12 @@ const DemoV2 = () => {
         })
       });
       
+      if (!response.ok) {
+        throw new Error(`HTTP error: ${response.status}`);
+      }
+      
       const data = await response.json();
       console.log("n8n replied:", data);
-      
-      if (!response.ok) {
-        throw new Error(data.message || "Failed to get response");
-      }
       
       const aiMessage = {
         content: data.reply || "I'm sorry, I couldn't process that request.",
@@ -86,7 +89,7 @@ const DemoV2 = () => {
       setHasError(true);
       
       const errorMessage = {
-        content: "I'm sorry, I encountered an error while processing your request. Please try again later.",
+        content: "I'm sorry, I encountered an error while processing your request. Please try again later or try the alternative chat interface.",
         isUser: false,
         timestamp: new Date(),
       };
@@ -95,7 +98,7 @@ const DemoV2 = () => {
       
       toast({
         title: "Connection Error",
-        description: "Failed to connect to the AI service. It might be temporarily unavailable.",
+        description: "Failed to connect to the AI service. You can try the alternative chat interface.",
         variant: "destructive",
       });
     } finally {
@@ -108,6 +111,10 @@ const DemoV2 = () => {
       e.preventDefault();
       handleSendMessage();
     }
+  };
+
+  const toggleInterface = () => {
+    setUseAlternativeUI(prev => !prev);
   };
 
   return (
@@ -128,73 +135,100 @@ const DemoV2 = () => {
               <Alert variant="destructive" className="mb-6">
                 <AlertCircle className="h-4 w-4" />
                 <AlertTitle>Connection Error</AlertTitle>
-                <AlertDescription>
-                  There was a problem connecting to the AI service. The service might be temporarily unavailable.
+                <AlertDescription className="flex flex-col gap-2">
+                  <p>There was a problem connecting to the AI service. The service might be temporarily unavailable.</p>
+                  <Button 
+                    variant="outline" 
+                    className="self-start mt-2"
+                    onClick={toggleInterface}
+                  >
+                    {useAlternativeUI ? "Try Primary Interface" : "Try Alternative Interface"}
+                  </Button>
                 </AlertDescription>
               </Alert>
             )}
             
-            <Card className="overflow-hidden shadow-xl border-gray-200">
-              <CardContent className="p-4">
-                <div className="flex flex-col h-[600px]">
-                  <ScrollArea className="flex-grow mb-4 p-4 bg-gray-50 rounded-md">
-                    <div className="space-y-4">
-                      {messages.map((message, index) => (
-                        <div 
-                          key={index}
-                          className={`flex ${message.isUser ? 'justify-end' : 'justify-start'}`}
-                        >
-                          <div
-                            className={`max-w-[80%] rounded-2xl px-4 py-2 ${
-                              message.isUser
-                                ? 'bg-tobey-orange text-white rounded-tr-none'
-                                : 'bg-gray-200 text-gray-800 rounded-tl-none'
-                            }`}
+            {!useAlternativeUI ? (
+              <Card className="overflow-hidden shadow-xl border-gray-200">
+                <CardContent className="p-4">
+                  <div className="flex flex-col h-[600px]">
+                    <ScrollArea className="flex-grow mb-4 p-4 bg-gray-50 rounded-md">
+                      <div className="space-y-4">
+                        {messages.map((message, index) => (
+                          <div 
+                            key={index}
+                            className={`flex ${message.isUser ? 'justify-end' : 'justify-start'}`}
                           >
-                            <div className="flex items-center space-x-2 mb-1">
-                              {message.isUser ? (
-                                <div className="font-medium text-sm text-right w-full">You</div>
-                              ) : (
-                                <div className="font-medium text-sm">Tobey AI</div>
-                              )}
+                            <div
+                              className={`max-w-[80%] rounded-2xl px-4 py-2 ${
+                                message.isUser
+                                  ? 'bg-tobey-orange text-white rounded-tr-none'
+                                  : 'bg-gray-200 text-gray-800 rounded-tl-none'
+                              }`}
+                            >
+                              <div className="flex items-center space-x-2 mb-1">
+                                {message.isUser ? (
+                                  <div className="font-medium text-sm text-right w-full">You</div>
+                                ) : (
+                                  <div className="font-medium text-sm">Tobey AI</div>
+                                )}
+                              </div>
+                              <p className="text-sm whitespace-pre-wrap">{message.content}</p>
                             </div>
-                            <p className="text-sm whitespace-pre-wrap">{message.content}</p>
                           </div>
-                        </div>
-                      ))}
-                      <div ref={messagesEndRef} />
+                        ))}
+                        <div ref={messagesEndRef} />
+                      </div>
+                    </ScrollArea>
+                    
+                    <div className="flex space-x-2">
+                      <Textarea
+                        value={inputMessage}
+                        onChange={(e) => setInputMessage(e.target.value)}
+                        onKeyDown={handleKeyDown}
+                        placeholder="Type your question here..."
+                        className="flex-1 resize-none border-gray-300 focus:border-tobey-orange focus:ring-tobey-orange"
+                        rows={1}
+                        disabled={isLoading}
+                      />
+                      <Button
+                        onClick={handleSendMessage}
+                        className="bg-tobey-orange hover:bg-tobey-darkOrange text-white"
+                        type="submit"
+                        disabled={!inputMessage.trim() || isLoading}
+                      >
+                        {isLoading ? (
+                          <div className="h-4 w-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                        ) : (
+                          <SendHorizontal className="h-4 w-4" />
+                        )}
+                      </Button>
                     </div>
-                  </ScrollArea>
-                  
-                  <div className="flex space-x-2">
-                    <Textarea
-                      value={inputMessage}
-                      onChange={(e) => setInputMessage(e.target.value)}
-                      onKeyDown={handleKeyDown}
-                      placeholder="Type your question here..."
-                      className="flex-1 resize-none border-gray-300 focus:border-tobey-orange focus:ring-tobey-orange"
-                      rows={1}
-                      disabled={isLoading}
-                    />
-                    <Button
-                      onClick={handleSendMessage}
-                      className="bg-tobey-orange hover:bg-tobey-darkOrange text-white"
-                      type="submit"
-                      disabled={!inputMessage.trim() || isLoading}
-                    >
-                      {isLoading ? (
-                        <div className="h-4 w-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
-                      ) : (
-                        <SendHorizontal className="h-4 w-4" />
-                      )}
-                    </Button>
                   </div>
-                </div>
-              </CardContent>
-            </Card>
+                </CardContent>
+              </Card>
+            ) : (
+              <Card className="overflow-hidden shadow-xl border-gray-200">
+                <CardContent className="p-4">
+                  <div className="h-[600px]">
+                    <ChatInterface />
+                  </div>
+                </CardContent>
+              </Card>
+            )}
             
             <div className="mt-4 text-sm text-gray-500 text-center">
-              <p>If you're experiencing issues with the demo, please try refreshing the page or visit again later.</p>
+              <p>
+                If you're experiencing issues with the demo, please try switching to the 
+                <Button 
+                  variant="link" 
+                  className="p-0 h-auto font-normal text-sm text-tobey-orange"
+                  onClick={toggleInterface}
+                >
+                  {useAlternativeUI ? " primary " : " alternative "}
+                </Button>
+                interface or visit again later.
+              </p>
             </div>
           </div>
         </section>
