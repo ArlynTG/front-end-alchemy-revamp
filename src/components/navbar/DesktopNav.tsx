@@ -58,6 +58,9 @@ const DesktopNav = ({ scrollToSection, onJoinBeta }: DesktopNavProps) => {
           </>
         )}
         
+        {/* New link to DemoV2 */}
+        <NavLink to="/demo-v2" label="Demo" />
+        
         <DropdownMenu>
           <DropdownMenuTrigger className="text-tobey-text hover:text-tobey-orange transition-colors font-medium flex items-center">
             Log In <ChevronDown size={16} className="ml-1" />

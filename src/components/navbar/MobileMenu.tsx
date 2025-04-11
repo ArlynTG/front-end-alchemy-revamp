@@ -1,3 +1,4 @@
+
 import { Button } from "@/components/ui/button";
 import NavLink from "./NavLink";
 import { useLocation } from "react-router-dom";
@@ -79,6 +80,14 @@ const MobileMenu = ({ isOpen, onClose, onJoinBeta, scrollToSection }: MobileMenu
             />
           </>
         )}
+        
+        {/* New link to DemoV2 */}
+        <NavLink 
+          to="/demo-v2" 
+          label="Demo"
+          onClick={onClose} 
+          className="text-black hover:text-tobey-orange"
+        />
       </nav>
       <div className="mt-8 flex flex-col gap-4">
         <Collapsible
