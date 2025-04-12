@@ -3,12 +3,10 @@ import React, { useState, useEffect, useRef } from "react";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { SendHorizontal, AlertCircle, RefreshCw } from "lucide-react";
+import { SendHorizontal, AlertCircle, RefreshCw, Settings, X } from "lucide-react";
 import { Alert, AlertTitle, AlertDescription } from "@/components/ui/alert";
 import { useToast } from "@/hooks/use-toast";
-
-// Using a CORS proxy to handle the cross-origin requests
-const WEBHOOK_URL = "https://corsproxy.io/?https%3A%2F%2Ftobiasedtech.app.n8n.cloud%2Fwebhook%2Feb528532-1df2-4d01-924e-69fb7b29dc25%2Fchat";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 
 interface Message {
   id: string;
@@ -16,6 +14,8 @@ interface Message {
   sender: "user" | "bot";
   timestamp: Date;
 }
+
+const DEFAULT_WEBHOOK_URL = "https://tobiasedtech.app.n8n.cloud/webhook/eb528532-1df2-4d01-924e-69fb7b29dc25/chat";
 
 const SimpleChatInterface = () => {
   const [messages, setMessages] = useState<Message[]>([{
@@ -27,6 +27,12 @@ const SimpleChatInterface = () => {
   const [inputMessage, setInputMessage] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [connectionError, setConnectionError] = useState<string | null>(null);
+  const [webhookUrl, setWebhookUrl] = useState(() => {
+    return localStorage.getItem("tobey_webhook_url") || DEFAULT_WEBHOOK_URL;
+  });
+  const [showSettings, setShowSettings] = useState(false);
+  const [tempWebhookUrl, setTempWebhookUrl] = useState(webhookUrl);
+  
   const scrollAreaRef = useRef<HTMLDivElement>(null);
   const { toast } = useToast();
 
@@ -39,6 +45,21 @@ const SimpleChatInterface = () => {
       }
     }
   }, [messages]);
+
+  const applyCorsProxy = (url: string) => {
+    // Check if the URL already has a CORS proxy
+    if (url.includes("corsproxy.io")) {
+      return url;
+    }
+    
+    // Try multiple CORS proxies to increase chances of success
+    // Option 1: corsproxy.io
+    return `https://corsproxy.io/?${encodeURIComponent(url)}`;
+    
+    // If one proxy fails, you could try others:
+    // Option 2: cors-anywhere (commented out as fallback example)
+    // return `https://cors-anywhere.herokuapp.com/${url}`;
+  };
 
   const sendMessage = async () => {
     if (!inputMessage.trim() || isLoading) return;
@@ -57,11 +78,14 @@ const SimpleChatInterface = () => {
     setMessages(prev => [...prev, userMessage]);
     setInputMessage("");
     setIsLoading(true);
+    setConnectionError(null);
     
     try {
+      const proxiedUrl = applyCorsProxy(webhookUrl);
       console.log("Sending message to webhook:", inputMessage);
+      console.log("Using proxied URL:", proxiedUrl);
       
-      const response = await fetch(WEBHOOK_URL, {
+      const response = await fetch(proxiedUrl, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -84,23 +108,29 @@ const SimpleChatInterface = () => {
           sender: "bot",
           timestamp: new Date()
         }]);
-        setConnectionError(null);
       } else {
         throw new Error("Invalid response format: missing 'reply' field");
       }
     } catch (error) {
       console.error("Error sending message:", error);
       
-      // Show error in UI
-      setConnectionError(
-        error instanceof Error 
-          ? error.message 
-          : "Failed to connect to the chat service"
-      );
+      // Show error in UI and add error message to chat
+      const errorMessage = error instanceof Error 
+        ? error.message 
+        : "Failed to connect to the chat service";
+      
+      setConnectionError(errorMessage);
+      
+      setMessages(prev => [...prev, {
+        id: `error-${messageId}`,
+        text: "I'm sorry, I couldn't process your message right now. Please try again later.",
+        sender: "bot",
+        timestamp: new Date()
+      }]);
       
       toast({
-        title: "Error",
-        description: "There was a problem sending your message. Please try again.",
+        title: "Connection Error",
+        description: errorMessage,
         variant: "destructive",
       });
     } finally {
@@ -123,13 +153,16 @@ const SimpleChatInterface = () => {
     });
     
     try {
+      const proxiedUrl = applyCorsProxy(webhookUrl);
+      console.log("Testing connection with URL:", proxiedUrl);
+      
       // Send a simple test message
-      const response = await fetch(WEBHOOK_URL, {
+      const response = await fetch(proxiedUrl, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ message: "Hello" }),
+        body: JSON.stringify({ message: "connection_test" }),
       });
       
       if (!response.ok) {
@@ -153,22 +186,56 @@ const SimpleChatInterface = () => {
     } catch (error) {
       console.error("Error testing connection:", error);
       
-      setConnectionError(
-        error instanceof Error 
-          ? error.message 
-          : "Failed to connect to the chat service"
-      );
+      const errorMessage = error instanceof Error 
+        ? error.message 
+        : "Failed to connect to the chat service";
+      
+      setConnectionError(errorMessage);
       
       toast({
         title: "Connection error",
-        description: "Still unable to connect to the chat service. Please try again later.",
+        description: "Still unable to connect to the chat service. Please check settings or try again later.",
         variant: "destructive",
       });
     }
   };
 
+  const saveWebhookUrl = () => {
+    setWebhookUrl(tempWebhookUrl);
+    localStorage.setItem("tobey_webhook_url", tempWebhookUrl);
+    setShowSettings(false);
+    toast({
+      title: "Settings Saved",
+      description: "Webhook URL has been updated.",
+    });
+  };
+
+  const resetToDefault = () => {
+    setTempWebhookUrl(DEFAULT_WEBHOOK_URL);
+    setWebhookUrl(DEFAULT_WEBHOOK_URL);
+    localStorage.setItem("tobey_webhook_url", DEFAULT_WEBHOOK_URL);
+    setShowSettings(false);
+    toast({
+      title: "Settings Reset",
+      description: "Webhook URL has been reset to default.",
+    });
+  };
+
   return (
     <div className="flex flex-col h-full">
+      <div className="flex justify-end mb-2">
+        <Button 
+          variant="ghost" 
+          size="sm" 
+          onClick={() => {
+            setTempWebhookUrl(webhookUrl);
+            setShowSettings(true);
+          }}
+        >
+          <Settings className="h-4 w-4" />
+        </Button>
+      </div>
+      
       {connectionError && (
         <Alert variant="destructive" className="mb-4">
           <AlertCircle className="h-4 w-4" />
@@ -248,6 +315,47 @@ const SimpleChatInterface = () => {
           </Button>
         </div>
       </div>
+
+      {/* Settings Dialog */}
+      <Dialog open={showSettings} onOpenChange={setShowSettings}>
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle>Chat Settings</DialogTitle>
+            <DialogDescription>
+              Configure the chat connection settings
+            </DialogDescription>
+          </DialogHeader>
+          <div className="space-y-4 py-4">
+            <div className="space-y-2">
+              <label className="text-sm font-medium" htmlFor="webhook-url">
+                Webhook URL
+              </label>
+              <Input
+                id="webhook-url"
+                value={tempWebhookUrl}
+                onChange={(e) => setTempWebhookUrl(e.target.value)}
+                placeholder="Enter webhook URL"
+              />
+              <p className="text-xs text-gray-500">
+                The URL for the n8n webhook that handles chat messages
+              </p>
+            </div>
+          </div>
+          <div className="flex justify-between">
+            <Button variant="outline" onClick={resetToDefault}>
+              Reset to Default
+            </Button>
+            <div className="flex space-x-2">
+              <Button variant="outline" onClick={() => setShowSettings(false)}>
+                Cancel
+              </Button>
+              <Button onClick={saveWebhookUrl}>
+                Save Changes
+              </Button>
+            </div>
+          </div>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };
