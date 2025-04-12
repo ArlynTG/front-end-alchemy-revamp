@@ -9,6 +9,13 @@ import { useToast } from "@/hooks/use-toast";
 // Define the n8n webhook URL
 const DEFAULT_WEBHOOK_URL = "https://tobiasedtech.app.n8n.cloud/webhook/eb528532-1df2-4d01-924e-69fb7b29dc25/chat";
 
+// Available CORS proxies for fallback
+const CORS_PROXIES = [
+  "https://corsproxy.io/?",
+  "https://api.allorigins.win/raw?url=",
+  "https://cors-anywhere.herokuapp.com/"
+];
+
 // Define message types
 interface Message {
   id: string;
@@ -31,6 +38,7 @@ const N8nChatInterface: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
   const [webhookUrl, setWebhookUrl] = useState(DEFAULT_WEBHOOK_URL);
   const [showSettings, setShowSettings] = useState(false);
+  const [currentProxyIndex, setCurrentProxyIndex] = useState(0);
   const { toast } = useToast();
   const scrollAreaRef = useRef<HTMLDivElement>(null);
 
@@ -43,6 +51,36 @@ const N8nChatInterface: React.FC = () => {
       }
     }
   }, [messages]);
+
+  // Function to get a proxied URL
+  const getProxiedUrl = (url: string, proxyIndex: number) => {
+    if (proxyIndex >= CORS_PROXIES.length) {
+      // If we've tried all proxies, try direct connection
+      return url;
+    }
+    return `${CORS_PROXIES[proxyIndex]}${encodeURIComponent(url)}`;
+  };
+
+  // Try the next proxy if available
+  const tryNextProxy = () => {
+    const nextIndex = currentProxyIndex + 1;
+    if (nextIndex <= CORS_PROXIES.length) {
+      setCurrentProxyIndex(nextIndex);
+      toast({
+        title: "Trying different proxy",
+        description: nextIndex >= CORS_PROXIES.length 
+          ? "Trying direct connection" 
+          : `Using proxy ${nextIndex + 1} of ${CORS_PROXIES.length}`,
+      });
+      setError(null);
+    } else {
+      toast({
+        title: "All proxies failed",
+        description: "Please check webhook URL or try again later",
+        variant: "destructive",
+      });
+    }
+  };
 
   // Handle sending a message
   const sendMessage = async () => {
@@ -63,10 +101,11 @@ const N8nChatInterface: React.FC = () => {
     setError(null);
 
     try {
-      // Send message to n8n webhook
-      console.log("Sending message to n8n webhook:", webhookUrl);
+      // Get proxied URL
+      const proxiedUrl = getProxiedUrl(webhookUrl, currentProxyIndex);
+      console.log("Sending message using URL:", proxiedUrl);
       
-      const response = await fetch(webhookUrl, {
+      const response = await fetch(proxiedUrl, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -111,11 +150,17 @@ const N8nChatInterface: React.FC = () => {
     } catch (err) {
       console.error("Error sending message:", err);
       setError(`Failed to send message: ${err instanceof Error ? err.message : "Unknown error"}`);
-      toast({
-        title: "Error",
-        description: "Failed to send message to Tobey AI. Please try again.",
-        variant: "destructive",
-      });
+      
+      if (currentProxyIndex < CORS_PROXIES.length) {
+        // Try next proxy automatically if this one failed
+        tryNextProxy();
+      } else {
+        toast({
+          title: "Error",
+          description: "Failed to send message to Tobey AI. Please try again or check webhook URL.",
+          variant: "destructive",
+        });
+      }
     } finally {
       setIsLoading(false);
     }
@@ -131,6 +176,8 @@ const N8nChatInterface: React.FC = () => {
 
   // Handle settings changes
   const updateWebhookUrl = (url: string) => {
+    // Reset proxy index when URL changes
+    setCurrentProxyIndex(0);
     setWebhookUrl(url);
     localStorage.setItem("n8n_webhook_url", url);
     toast({
@@ -143,6 +190,7 @@ const N8nChatInterface: React.FC = () => {
   // Reset to default webhook URL
   const resetToDefault = () => {
     setWebhookUrl(DEFAULT_WEBHOOK_URL);
+    setCurrentProxyIndex(0);
     localStorage.removeItem("n8n_webhook_url");
     toast({
       title: "Settings reset",
@@ -181,12 +229,12 @@ const N8nChatInterface: React.FC = () => {
         <div className="bg-red-50 text-red-800 p-3 mb-3 rounded-md border border-red-200 flex items-start">
           <div className="flex-grow">
             <p className="text-sm font-medium">{error}</p>
-            <p className="text-xs mt-1">Please check the webhook URL in settings or try again later.</p>
+            <p className="text-xs mt-1">Click retry to try a different connection method.</p>
           </div>
           <Button 
             variant="ghost" 
             size="sm"
-            onClick={() => setError(null)} 
+            onClick={tryNextProxy} 
             className="text-red-600 hover:text-red-800"
           >
             <RefreshCw className="h-4 w-4" />
