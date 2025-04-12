@@ -40,28 +40,33 @@ export function useChatWithN8n(initialWebhookUrl: string) {
     }
 
     setTestingConnection(true);
+    console.log("Testing connection to URL:", webhookUrl);
 
     try {
-      // Ensure we use 'prompt' consistently here
       const response = await fetch(webhookUrl, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          prompt: "Hello, this is a test message",
+          prompt: "connection_test",
           history: []
         }),
       });
 
+      console.log("Test connection response status:", response.status);
+      
       if (response.ok) {
-        await response.json();
+        const data = await response.json();
+        console.log("Test connection successful response:", data);
+        
         toast({
           title: "Connection Successful",
           description: "Successfully connected to your n8n workflow",
         });
       } else {
         const errorText = await response.text();
+        console.error("Test connection error response:", errorText);
         throw new Error(`HTTP error ${response.status}: ${errorText}`);
       }
     } catch (error) {
@@ -92,6 +97,9 @@ export function useChatWithN8n(initialWebhookUrl: string) {
         throw new Error("Please enter your n8n webhook URL first");
       }
       
+      // Log the actual URL being used
+      console.log("Sending message to URL:", webhookUrl);
+      
       // Detailed log of the payload for debugging
       console.log("Sending payload to n8n:", {
         prompt: message,
@@ -116,8 +124,11 @@ export function useChatWithN8n(initialWebhookUrl: string) {
         }),
       });
       
+      console.log("Message response status:", response.status);
+      
       if (!response.ok) {
         const errorText = await response.text();
+        console.error("Error response from n8n:", errorText);
         throw new Error(`HTTP error ${response.status}: ${errorText}`);
       }
       

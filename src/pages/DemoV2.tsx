@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from "react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
@@ -17,6 +18,7 @@ const DemoV2 = () => {
   useEffect(() => {
     const checkConnection = async () => {
       try {
+        console.log("Testing initial connection to n8n webhook");
         const response = await fetch("https://tobiasedtech.app.n8n.cloud/webhook/eb528532-1df2-4d01-924e-69fb7b29dc25/chat", {
           method: "POST",
           headers: {
@@ -27,6 +29,8 @@ const DemoV2 = () => {
             history: []
           })
         });
+        
+        console.log("Initial connection test status:", response.status);
         
         if (!response.ok) {
           throw new Error(`HTTP error: ${response.status}`);
@@ -60,6 +64,7 @@ const DemoV2 = () => {
     });
     
     try {
+      console.log("Retrying connection to n8n webhook");
       const response = await fetch("https://tobiasedtech.app.n8n.cloud/webhook/eb528532-1df2-4d01-924e-69fb7b29dc25/chat", {
         method: "POST",
         headers: {
@@ -70,6 +75,8 @@ const DemoV2 = () => {
           history: []
         })
       });
+      
+      console.log("Retry connection test status:", response.status);
       
       if (!response.ok) {
         throw new Error(`HTTP error: ${response.status}`);
