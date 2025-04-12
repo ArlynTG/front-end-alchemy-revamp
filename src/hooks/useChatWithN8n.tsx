@@ -16,16 +16,26 @@ export function useChatWithN8n(initialWebhookUrl: string) {
   useEffect(() => {
     const savedWebhookUrl = localStorage.getItem("n8n_webhook_url");
     if (savedWebhookUrl) {
-      setWebhookUrl(savedWebhookUrl);
+      // If there's a saved URL, add the CORS proxy to it
+      const proxyUrl = savedWebhookUrl.includes("corsproxy.io") 
+        ? savedWebhookUrl 
+        : `https://corsproxy.io/?${encodeURIComponent(savedWebhookUrl)}`;
+      setWebhookUrl(proxyUrl);
     }
   }, []);
 
   const handleUpdateWebhookUrl = (url: string) => {
-    setWebhookUrl(url);
-    localStorage.setItem("n8n_webhook_url", url);
+    // Add CORS proxy if not already present
+    const proxyUrl = url.includes("corsproxy.io") 
+      ? url 
+      : `https://corsproxy.io/?${encodeURIComponent(url)}`;
+    
+    setWebhookUrl(proxyUrl);
+    localStorage.setItem("n8n_webhook_url", proxyUrl);
+    
     toast({
       title: "Webhook URL Updated",
-      description: "Your n8n workflow URL has been saved.",
+      description: "Your n8n workflow URL has been saved with CORS proxy.",
     });
   };
 
@@ -40,7 +50,7 @@ export function useChatWithN8n(initialWebhookUrl: string) {
     }
 
     setTestingConnection(true);
-    console.log("Testing connection to URL:", webhookUrl);
+    console.log("Testing connection to URL with CORS proxy:", webhookUrl);
 
     try {
       const response = await fetch(webhookUrl, {
@@ -98,7 +108,7 @@ export function useChatWithN8n(initialWebhookUrl: string) {
       }
       
       // Log the actual URL being used
-      console.log("Sending message to URL:", webhookUrl);
+      console.log("Sending message to URL with CORS proxy:", webhookUrl);
       
       // Detailed log of the payload for debugging
       console.log("Sending payload to n8n:", {

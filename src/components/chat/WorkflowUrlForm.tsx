@@ -95,13 +95,14 @@ const WorkflowUrlForm: React.FC<WorkflowUrlFormProps> = ({
         <div className="flex gap-2 items-start">
           <AlertCircle className="h-4 w-4 text-amber-500 mt-0.5" />
           <div>
-            <h4 className="text-xs font-medium text-amber-800">Troubleshooting 500 Errors</h4>
+            <h4 className="text-xs font-medium text-amber-800">Troubleshooting Connection Issues</h4>
             <ul className="text-xs text-amber-700 mt-1 list-disc list-inside space-y-1">
+              <li>We're using a CORS proxy to connect to your n8n workflow</li>
               <li>Check your n8n workflow is published and active</li>
               <li>Verify your webhook node is correctly configured</li>
-              <li>Make sure your workflow expects "message" and "history" in the payload</li>
+              <li>Make sure your workflow expects "prompt" and "history" in the payload</li>
               <li>Check if your workflow returns a JSON response with a "response" property</li>
-              <li>View the n8n execution logs for more detailed error information</li>
+              <li>Enable "Respond to Webhook" option in your n8n HTTP node</li>
             </ul>
           </div>
         </div>

@@ -9,8 +9,10 @@ import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
 import ChatInterface from "@/components/chat/ChatInterface";
 
-// Updated to use the workflow URL provided by the user
-const WORKFLOW_URL = "https://tobiasedtech.app.n8n.cloud/workflow/C8smCHXCM3WITZmL";
+// Original workflow URL
+const ORIGINAL_WORKFLOW_URL = "https://tobiasedtech.app.n8n.cloud/workflow/C8smCHXCM3WITZmL";
+// Using a CORS proxy to handle the cross-origin requests
+const WORKFLOW_URL = `https://corsproxy.io/?${encodeURIComponent(ORIGINAL_WORKFLOW_URL)}`;
 
 const DemoV2 = () => {
   const [hasError, setHasError] = useState<boolean>(false);
@@ -20,7 +22,7 @@ const DemoV2 = () => {
   useEffect(() => {
     const checkConnection = async () => {
       try {
-        console.log("Testing initial connection to n8n workflow");
+        console.log("Testing initial connection to n8n workflow with CORS proxy");
         const response = await fetch(WORKFLOW_URL, {
           method: "POST",
           headers: {
@@ -40,6 +42,11 @@ const DemoV2 = () => {
         
         await response.json();
         setHasError(false);
+        
+        toast({
+          title: "Connection Success",
+          description: "Successfully connected to the chat service.",
+        });
       } catch (err) {
         console.error("Connection test error:", err);
         setHasError(true);
@@ -62,7 +69,7 @@ const DemoV2 = () => {
     });
     
     try {
-      console.log("Retrying connection to n8n workflow");
+      console.log("Retrying connection to n8n workflow with CORS proxy");
       const response = await fetch(WORKFLOW_URL, {
         method: "POST",
         headers: {

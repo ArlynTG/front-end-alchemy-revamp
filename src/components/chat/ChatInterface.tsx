@@ -7,8 +7,10 @@ import { useChatWithN8n } from "@/hooks/useChatWithN8n";
 import { Button } from "@/components/ui/button";
 import { Settings } from "lucide-react";
 
-// Updated to use the workflow URL provided by the user
-const WEBHOOK_URL = "https://tobiasedtech.app.n8n.cloud/workflow/C8smCHXCM3WITZmL";
+// Original workflow URL
+const ORIGINAL_WEBHOOK_URL = "https://tobiasedtech.app.n8n.cloud/workflow/C8smCHXCM3WITZmL";
+// Using a CORS proxy to handle the cross-origin requests
+const WEBHOOK_URL = `https://corsproxy.io/?${encodeURIComponent(ORIGINAL_WEBHOOK_URL)}`;
 
 const ChatInterface = () => {
   const [showWorkflowUrlForm, setShowWorkflowUrlForm] = useState(false);
