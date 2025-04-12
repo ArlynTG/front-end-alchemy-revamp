@@ -14,7 +14,6 @@ const WORKFLOW_URL = "https://tobiasedtech.app.n8n.cloud/workflow/C8smCHXCM3WITZ
 
 const DemoV2 = () => {
   const [hasError, setHasError] = useState<boolean>(false);
-  const [useAlternativeUI, setUseAlternativeUI] = useState<boolean>(false);
   const { toast } = useToast();
 
   // Check connection on load
@@ -47,7 +46,7 @@ const DemoV2 = () => {
         
         toast({
           title: "Connection Notice",
-          description: "Using the fallback chat interface. You can still try the primary interface if you wish.",
+          description: "There was an issue connecting to the n8n workflow. You can try again by clicking the refresh button.",
           variant: "destructive",
         });
       }
@@ -55,10 +54,6 @@ const DemoV2 = () => {
     
     checkConnection();
   }, [toast]);
-
-  const toggleInterface = () => {
-    setUseAlternativeUI(prev => !prev);
-  };
 
   const handleRetryConnection = async () => {
     toast({
@@ -98,7 +93,7 @@ const DemoV2 = () => {
       
       toast({
         title: "Connection Error",
-        description: "Still unable to connect to the chat service. Using the fallback interface.",
+        description: "Still unable to connect to the chat service. Please try again later.",
         variant: "destructive",
       });
     }
@@ -123,7 +118,7 @@ const DemoV2 = () => {
                 <AlertCircle className="h-4 w-4" />
                 <AlertTitle>Connection Status</AlertTitle>
                 <AlertDescription className="flex flex-col gap-2">
-                  <p>There was a problem connecting to the primary AI service. We've switched to the fallback interface.</p>
+                  <p>There was a problem connecting to the AI service.</p>
                   <div className="flex gap-2 mt-2">
                     <Button 
                       variant="outline" 
@@ -132,13 +127,6 @@ const DemoV2 = () => {
                     >
                       <RefreshCw className="h-4 w-4 mr-2" />
                       Retry Connection
-                    </Button>
-                    <Button 
-                      variant="outline" 
-                      className="self-start"
-                      onClick={toggleInterface}
-                    >
-                      {useAlternativeUI ? "Try Primary Interface" : "Try Alternative Interface"}
                     </Button>
                   </div>
                 </AlertDescription>
