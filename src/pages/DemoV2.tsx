@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from "react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
@@ -24,7 +23,7 @@ const DemoV2 = () => {
             "Content-Type": "application/json"
           },
           body: JSON.stringify({
-            message: "connection_test",
+            prompt: "connection_test",
             history: []
           })
         });
@@ -67,7 +66,7 @@ const DemoV2 = () => {
           "Content-Type": "application/json"
         },
         body: JSON.stringify({
-          message: "connection_test",
+          prompt: "connection_test",
           history: []
         })
       });

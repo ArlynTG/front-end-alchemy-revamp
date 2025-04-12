@@ -42,7 +42,7 @@ export function useChatWithN8n(initialWebhookUrl: string) {
     setTestingConnection(true);
 
     try {
-      // Updated test connection to match the correct format
+      // Ensure we use 'prompt' consistently here
       const response = await fetch(webhookUrl, {
         method: "POST",
         headers: {
