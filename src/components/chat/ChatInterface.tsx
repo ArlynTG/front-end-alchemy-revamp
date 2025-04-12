@@ -7,8 +7,8 @@ import { useChatWithN8n } from "@/hooks/useChatWithN8n";
 import { Button } from "@/components/ui/button";
 import { Settings } from "lucide-react";
 
-// Default webhook URL for the chat
-const WEBHOOK_URL = "https://tobiasedtech.app.n8n.cloud/webhook/eb528532-1df2-4d01-924e-69fb7b29dc25/chat";
+// Updated to use the workflow URL provided by the user
+const WEBHOOK_URL = "https://tobiasedtech.app.n8n.cloud/workflow/C8smCHXCM3WITZmL";
 
 const ChatInterface = () => {
   const [showWorkflowUrlForm, setShowWorkflowUrlForm] = useState(false);

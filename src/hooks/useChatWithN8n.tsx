@@ -149,7 +149,8 @@ export function useChatWithN8n(initialWebhookUrl: string) {
       } else if (data.error) {
         throw new Error(data.error);
       } else {
-        throw new Error("Unexpected response format from the workflow");
+        // For direct text response without wrapping
+        aiResponse = typeof data === 'string' ? data : JSON.stringify(data);
       }
       
       // Add AI response to chat

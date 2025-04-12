@@ -9,6 +9,9 @@ import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
 import ChatInterface from "@/components/chat/ChatInterface";
 
+// Updated to use the workflow URL provided by the user
+const WORKFLOW_URL = "https://tobiasedtech.app.n8n.cloud/workflow/C8smCHXCM3WITZmL";
+
 const DemoV2 = () => {
   const [hasError, setHasError] = useState<boolean>(false);
   const [useAlternativeUI, setUseAlternativeUI] = useState<boolean>(false);
@@ -18,8 +21,8 @@ const DemoV2 = () => {
   useEffect(() => {
     const checkConnection = async () => {
       try {
-        console.log("Testing initial connection to n8n webhook");
-        const response = await fetch("https://tobiasedtech.app.n8n.cloud/webhook/eb528532-1df2-4d01-924e-69fb7b29dc25/chat", {
+        console.log("Testing initial connection to n8n workflow");
+        const response = await fetch(WORKFLOW_URL, {
           method: "POST",
           headers: {
             "Content-Type": "application/json"
@@ -64,8 +67,8 @@ const DemoV2 = () => {
     });
     
     try {
-      console.log("Retrying connection to n8n webhook");
-      const response = await fetch("https://tobiasedtech.app.n8n.cloud/webhook/eb528532-1df2-4d01-924e-69fb7b29dc25/chat", {
+      console.log("Retrying connection to n8n workflow");
+      const response = await fetch(WORKFLOW_URL, {
         method: "POST",
         headers: {
           "Content-Type": "application/json"
