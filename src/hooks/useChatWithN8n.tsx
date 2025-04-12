@@ -91,11 +91,14 @@ export function useChatWithN8n(initialWebhookUrl: string) {
         throw new Error("Please enter your n8n webhook URL first");
       }
       
-      // Format history for the n8n workflow
-      const history = chatHistory.map(msg => ({
-        content: msg.text,
-        role: msg.sender === "user" ? "user" : "assistant"
-      }));
+      // More detailed logging of the payload
+      console.log("Sending payload to n8n:", {
+        message: message,
+        history: chatHistory.map(msg => ({
+          content: msg.text,
+          role: msg.sender === "user" ? "user" : "assistant"
+        }))
+      });
       
       // Call n8n webhook
       const response = await fetch(webhookUrl, {
@@ -104,8 +107,11 @@ export function useChatWithN8n(initialWebhookUrl: string) {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          message: message,
-          history: history
+          prompt: message, // Changed from 'message' to 'prompt'
+          history: chatHistory.map(msg => ({
+            content: msg.text,
+            role: msg.sender === "user" ? "user" : "assistant"
+          }))
         }),
       });
       
@@ -116,24 +122,18 @@ export function useChatWithN8n(initialWebhookUrl: string) {
       
       const data = await response.json();
       
-      // Extract the AI response based on the structure returned from n8n
+      // More detailed logging of the response
+      console.log("Received response from n8n:", data);
+      
+      // Handle different possible response formats
       let aiResponse = "";
       
-      // Check for OpenAI format with message.content
-      if (data.message && data.message.content) {
-        aiResponse = data.message.content;
-      }
-      // Check for simple response format
-      else if (data.response) {
+      if (data.response) {
         aiResponse = data.response;
-      }
-      // Check for OpenAI completion format (with array)
-      else if (data.index !== undefined && data.message && data.message.content) {
-        aiResponse = data.message.content;
-      }
-      else {
-        console.log("Unexpected response format:", data);
-        throw new Error("Invalid response format from the workflow");
+      } else if (data.error) {
+        throw new Error(data.error);
+      } else {
+        throw new Error("Unexpected response format from the workflow");
       }
       
       // Add AI response to chat
@@ -142,9 +142,9 @@ export function useChatWithN8n(initialWebhookUrl: string) {
         sender: "ai"
       }]);
     } catch (error) {
-      console.error("Error calling n8n workflow:", error);
+      console.error("Detailed error calling n8n workflow:", error);
       
-      // Add error message to the chat
+      // More informative error message
       const errorMessage = error instanceof Error 
         ? `I'm sorry, I couldn't process your request: ${error.message}` 
         : "I'm sorry, I couldn't process your request right now.";
@@ -157,7 +157,7 @@ export function useChatWithN8n(initialWebhookUrl: string) {
       
       toast({
         title: "Connection Error",
-        description: "There was an error processing your message. Please check the workflow URL.",
+        description: error instanceof Error ? error.message : "Unable to connect to the AI service",
         variant: "destructive",
       });
     } finally {
@@ -175,3 +175,4 @@ export function useChatWithN8n(initialWebhookUrl: string) {
     handleSendMessage
   };
 }
+
