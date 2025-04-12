@@ -2,6 +2,17 @@
 import { useState, useEffect } from "react";
 import { useToast } from "@/hooks/use-toast";
 
+// Define the n8n webhook URL
+export const DEFAULT_WEBHOOK_URL = "https://tobiasedtech.app.n8n.cloud/webhook/eb528532-1df2-4d01-924e-69fb7b29dc25/chat";
+
+// Available CORS proxies for fallback
+const CORS_PROXIES = [
+  "https://corsproxy.io/?",
+  "https://api.allorigins.win/raw?url=",
+  "https://cors-anywhere.herokuapp.com/"
+];
+
+// Define message types
 export interface Message {
   id: string;
   text: string;
@@ -9,224 +20,166 @@ export interface Message {
   timestamp: Date;
 }
 
-export const DEFAULT_WEBHOOK_URL = "https://tobiasedtech.app.n8n.cloud/webhook/eb528532-1df2-4d01-924e-69fb7b29dc25/chat";
-
-// Array of CORS proxies to try in order
-const CORS_PROXIES = [
-  (url: string) => `https://corsproxy.io/?${encodeURIComponent(url)}`,
-  (url: string) => `https://cors-anywhere.herokuapp.com/${url}`,
-  (url: string) => `https://cors-proxy.fringe.zone/${url}`
-];
-
-export function useChatWithWebhook() {
-  const [messages, setMessages] = useState<Message[]>([{
-    id: "welcome",
-    text: "Hello! I'm Tobey, your AI tutor. How can I help you today?",
-    sender: "bot",
-    timestamp: new Date()
-  }]);
+export const useChatWithWebhook = () => {
+  const [messages, setMessages] = useState<Message[]>([
+    {
+      id: "welcome",
+      text: "Hi there! I'm Tobey, your AI tutor. How can I help you today?",
+      sender: "bot",
+      timestamp: new Date(),
+    },
+  ]);
   const [inputMessage, setInputMessage] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [connectionError, setConnectionError] = useState<string | null>(null);
-  const [webhookUrl, setWebhookUrl] = useState(() => {
-    return localStorage.getItem("tobey_webhook_url") || DEFAULT_WEBHOOK_URL;
-  });
+  const [webhookUrl, setWebhookUrl] = useState(DEFAULT_WEBHOOK_URL);
   const [currentProxyIndex, setCurrentProxyIndex] = useState(0);
-  
   const { toast } = useToast();
 
-  const getNextProxy = () => {
-    const nextIndex = (currentProxyIndex + 1) % CORS_PROXIES.length;
-    setCurrentProxyIndex(nextIndex);
-    return nextIndex;
+  // Function to get a proxied URL
+  const getProxiedUrl = (url: string, proxyIndex: number) => {
+    if (proxyIndex >= CORS_PROXIES.length) {
+      // If we've tried all proxies, try direct connection
+      return url;
+    }
+    return `${CORS_PROXIES[proxyIndex]}${encodeURIComponent(url)}`;
   };
 
-  const applyCorsProxy = (url: string) => {
-    // If the URL already has a CORS proxy, remove it first
-    let cleanUrl = url;
-    CORS_PROXIES.forEach(proxyFn => {
-      const proxyPrefix = proxyFn('').replace(/\?$/, '');
-      if (url.startsWith(proxyPrefix)) {
-        cleanUrl = decodeURIComponent(url.substring(proxyPrefix.length));
-      }
-    });
-    
-    // Apply the current proxy
-    return CORS_PROXIES[currentProxyIndex](cleanUrl);
-  };
-
-  const sendMessage = async () => {
-    if (!inputMessage.trim() || isLoading) return;
-    
-    // Generate a unique ID for the message
-    const messageId = Date.now().toString();
-    
-    // Add user message to chat
-    const userMessage: Message = {
-      id: messageId,
-      text: inputMessage.trim(),
-      sender: "user",
-      timestamp: new Date()
-    };
-    
-    setMessages(prev => [...prev, userMessage]);
-    setInputMessage("");
-    setIsLoading(true);
-    setConnectionError(null);
-    
-    let attemptCount = 0;
-    const maxAttempts = CORS_PROXIES.length;
-    
-    const attemptSend = async (proxyIndex: number): Promise<any> => {
-      try {
-        const proxiedUrl = CORS_PROXIES[proxyIndex](webhookUrl);
-        console.log(`Sending message to webhook (Attempt ${attemptCount + 1}/${maxAttempts}, Proxy ${proxyIndex + 1}/${CORS_PROXIES.length})`);
-        console.log("Using proxied URL:", proxiedUrl);
-        
-        const response = await fetch(proxiedUrl, {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({ message: inputMessage }),
-        });
-        
-        if (!response.ok) {
-          throw new Error(`Server responded with ${response.status}: ${response.statusText}`);
-        }
-        
-        return await response.json();
-      } catch (error) {
-        console.error(`Error sending message with proxy ${proxyIndex + 1}:`, error);
-        
-        // If we have more proxies to try
-        if (attemptCount < maxAttempts - 1) {
-          attemptCount++;
-          const nextProxyIndex = getNextProxy();
-          return attemptSend(nextProxyIndex);
-        }
-        
-        // If all proxies failed
-        throw error;
-      }
-    };
-    
-    try {
-      const data = await attemptSend(currentProxyIndex);
-      console.log("Received response:", data);
-      
-      if (data.reply) {
-        // Add bot response to chat
-        setMessages(prev => [...prev, {
-          id: `response-${messageId}`,
-          text: data.reply,
-          sender: "bot",
-          timestamp: new Date()
-        }]);
-      } else {
-        throw new Error("Invalid response format: missing 'reply' field");
-      }
-    } catch (error) {
-      console.error("Error sending message after all retries:", error);
-      
-      // Show error in UI and add error message to chat
-      const errorMessage = error instanceof Error 
-        ? error.message 
-        : "Failed to connect to the chat service";
-      
-      setConnectionError(`Failed to connect after trying multiple proxies. ${errorMessage}`);
-      
-      setMessages(prev => [...prev, {
-        id: `error-${messageId}`,
-        text: "I'm sorry, I couldn't process your message right now. Please try again later or check your connection settings.",
-        sender: "bot",
-        timestamp: new Date()
-      }]);
-      
+  // Try the next proxy if available
+  const retryConnection = () => {
+    const nextIndex = currentProxyIndex + 1;
+    if (nextIndex <= CORS_PROXIES.length) {
+      setCurrentProxyIndex(nextIndex);
       toast({
-        title: "Connection Error",
-        description: `Failed to connect after trying ${maxAttempts} different proxies. Please check your webhook URL or try again later.`,
+        title: "Trying different proxy",
+        description: nextIndex >= CORS_PROXIES.length 
+          ? "Trying direct connection" 
+          : `Using proxy ${nextIndex + 1} of ${CORS_PROXIES.length}`,
+      });
+      setConnectionError(null);
+    } else {
+      toast({
+        title: "All proxies failed",
+        description: "Please check webhook URL or try again later",
         variant: "destructive",
       });
-    } finally {
-      setIsLoading(false);
     }
   };
 
-  const retryConnection = async () => {
+  // Handle sending a message
+  const sendMessage = async () => {
+    if (!inputMessage.trim() || isLoading) return;
+
+    // Create a new user message
+    const userMessage: Message = {
+      id: Date.now().toString(),
+      text: inputMessage.trim(),
+      sender: "user",
+      timestamp: new Date(),
+    };
+
+    // Add user message to chat
+    setMessages((prev) => [...prev, userMessage]);
+    setInputMessage("");
+    setIsLoading(true);
     setConnectionError(null);
-    toast({
-      title: "Retrying connection",
-      description: "Attempting to reconnect to the chat service using a different proxy...",
-    });
-    
-    const nextProxyIndex = getNextProxy();
-    
+
     try {
-      const proxiedUrl = CORS_PROXIES[nextProxyIndex](webhookUrl);
-      console.log(`Testing connection with URL (Proxy ${nextProxyIndex + 1}/${CORS_PROXIES.length}):`, proxiedUrl);
+      // Get proxied URL
+      const proxiedUrl = getProxiedUrl(webhookUrl, currentProxyIndex);
+      console.log("Sending message using URL:", proxiedUrl);
       
-      // Send a simple test message
       const response = await fetch(proxiedUrl, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ message: "connection_test" }),
+        body: JSON.stringify({ 
+          prompt: userMessage.text,
+          history: messages.map(msg => ({
+            content: msg.text,
+            role: msg.sender === "user" ? "user" : "assistant"
+          }))
+        }),
       });
-      
+
       if (!response.ok) {
-        throw new Error(`Server responded with ${response.status}: ${response.statusText}`);
+        throw new Error(`HTTP error ${response.status}`);
       }
-      
-      await response.json();
-      
-      toast({
-        title: "Connection restored",
-        description: `Successfully connected to the chat service using proxy ${nextProxyIndex + 1}.`,
-      });
-      
-      // Add a system message indicating connection restored
-      setMessages(prev => [...prev, {
-        id: `system-${Date.now()}`,
-        text: "Connection to the chat service has been restored.",
+
+      const data = await response.json();
+      console.log("Response from n8n:", data);
+
+      // Extract the bot's reply from the response
+      let botReply = "";
+      if (data.reply) {
+        botReply = data.reply;
+      } else if (data.response) {
+        botReply = data.response;
+      } else if (typeof data === "string") {
+        botReply = data;
+      } else {
+        botReply = "I received your message but couldn't process it properly.";
+      }
+
+      // Add bot message to chat
+      const botMessage: Message = {
+        id: (Date.now() + 1).toString(),
+        text: botReply,
         sender: "bot",
-        timestamp: new Date()
-      }]);
-    } catch (error) {
-      console.error("Error testing connection:", error);
+        timestamp: new Date(),
+      };
+
+      setMessages((prev) => [...prev, botMessage]);
+    } catch (err) {
+      console.error("Error sending message:", err);
+      setConnectionError(`Failed to send message: ${err instanceof Error ? err.message : "Unknown error"}`);
       
-      const errorMessage = error instanceof Error 
-        ? error.message 
-        : "Failed to connect to the chat service";
-      
-      setConnectionError(errorMessage);
-      
-      toast({
-        title: "Connection error",
-        description: "Still unable to connect to the chat service. Please check settings or try again later.",
-        variant: "destructive",
-      });
+      if (currentProxyIndex < CORS_PROXIES.length) {
+        // Don't automatically retry to avoid confusion
+        // Just show the error message with retry option
+      } else {
+        toast({
+          title: "Error",
+          description: "Failed to send message to Tobey AI. Please try again or check webhook URL.",
+          variant: "destructive",
+        });
+      }
+    } finally {
+      setIsLoading(false);
     }
   };
 
-  const saveWebhookUrl = (newUrl: string) => {
-    setWebhookUrl(newUrl);
-    localStorage.setItem("tobey_webhook_url", newUrl);
+  // Save webhook URL
+  const saveWebhookUrl = (url: string) => {
+    // Reset proxy index when URL changes
+    setCurrentProxyIndex(0);
+    setWebhookUrl(url);
+    localStorage.setItem("n8n_webhook_url", url);
     toast({
-      title: "Settings Saved",
-      description: "Webhook URL has been updated. The next message will use the new URL.",
+      title: "Settings updated",
+      description: "Webhook URL has been updated.",
     });
   };
 
+  // Reset to default webhook URL
   const resetToDefault = () => {
     setWebhookUrl(DEFAULT_WEBHOOK_URL);
-    localStorage.setItem("tobey_webhook_url", DEFAULT_WEBHOOK_URL);
+    setCurrentProxyIndex(0);
+    localStorage.removeItem("n8n_webhook_url");
     toast({
-      title: "Settings Reset",
+      title: "Settings reset",
       description: "Webhook URL has been reset to default.",
     });
   };
+
+  // Load webhook URL from localStorage on mount
+  useEffect(() => {
+    const savedUrl = localStorage.getItem("n8n_webhook_url");
+    if (savedUrl) {
+      setWebhookUrl(savedUrl);
+    }
+  }, []);
 
   return {
     messages,
@@ -240,4 +193,4 @@ export function useChatWithWebhook() {
     saveWebhookUrl,
     resetToDefault
   };
-}
+};

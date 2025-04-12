@@ -75,7 +75,7 @@ const SettingsDialog: React.FC<SettingsDialogProps> = ({
                   <li>Make sure your webhook URL is publicly accessible</li>
                   <li>The app will try multiple CORS proxies if one fails</li>
                   <li>If all proxies fail, try using a different webhook URL</li>
-                  <li>Check that your webhook expects a "message" field and returns a "reply" field</li>
+                  <li>Check that your webhook expects a "prompt" field and returns a "reply" field</li>
                   <li>Verify your n8n workflow is active and properly configured</li>
                 </ul>
               </div>
