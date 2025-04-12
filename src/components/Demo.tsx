@@ -1,7 +1,7 @@
 
-import ChatInterface from "@/components/chat/ChatInterface";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
+import SimpleChatInterface from "@/components/chat/SimpleChatInterface";
 
 const Demo = () => {
   return (
@@ -15,7 +15,7 @@ const Demo = () => {
         
         <div className="relative rounded-xl overflow-hidden shadow-xl mb-16 bg-white border border-gray-200">
           <div className="p-4">
-            <ChatInterface />
+            <SimpleChatInterface />
           </div>
         </div>
         
