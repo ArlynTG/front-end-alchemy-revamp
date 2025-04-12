@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect, useRef } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -111,7 +110,7 @@ const N8nChatInterface: React.FC = () => {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({ 
-          message: userMessage.text,
+          prompt: userMessage.text,
           history: messages.map(msg => ({
             content: msg.text,
             role: msg.sender === "user" ? "user" : "assistant"
