@@ -42,13 +42,14 @@ export function useChatWithN8n(initialWebhookUrl: string) {
     setTestingConnection(true);
 
     try {
+      // Updated test connection to match the correct format
       const response = await fetch(webhookUrl, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          message: "Hello, this is a test message",
+          prompt: "Hello, this is a test message",
           history: []
         }),
       });
@@ -91,23 +92,23 @@ export function useChatWithN8n(initialWebhookUrl: string) {
         throw new Error("Please enter your n8n webhook URL first");
       }
       
-      // More detailed logging of the payload
+      // Detailed log of the payload for debugging
       console.log("Sending payload to n8n:", {
-        message: message,
+        prompt: message,
         history: chatHistory.map(msg => ({
           content: msg.text,
           role: msg.sender === "user" ? "user" : "assistant"
         }))
       });
       
-      // Call n8n webhook
+      // Call n8n webhook with the correct payload structure
       const response = await fetch(webhookUrl, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          prompt: message, // Changed from 'message' to 'prompt'
+          prompt: message,
           history: chatHistory.map(msg => ({
             content: msg.text,
             role: msg.sender === "user" ? "user" : "assistant"
@@ -122,7 +123,7 @@ export function useChatWithN8n(initialWebhookUrl: string) {
       
       const data = await response.json();
       
-      // More detailed logging of the response
+      // Log the full response for debugging
       console.log("Received response from n8n:", data);
       
       // Handle different possible response formats
@@ -130,6 +131,10 @@ export function useChatWithN8n(initialWebhookUrl: string) {
       
       if (data.response) {
         aiResponse = data.response;
+      } else if (data.message) {
+        // Additional check for different response formats
+        aiResponse = typeof data.message === 'string' ? data.message : 
+                   (data.message.content ? data.message.content : JSON.stringify(data.message));
       } else if (data.error) {
         throw new Error(data.error);
       } else {
@@ -175,4 +180,3 @@ export function useChatWithN8n(initialWebhookUrl: string) {
     handleSendMessage
   };
 }
-
