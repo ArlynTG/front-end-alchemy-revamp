@@ -11,6 +11,13 @@ export interface Message {
 
 export const DEFAULT_WEBHOOK_URL = "https://tobiasedtech.app.n8n.cloud/webhook/eb528532-1df2-4d01-924e-69fb7b29dc25/chat";
 
+// Array of CORS proxies to try in order
+const CORS_PROXIES = [
+  (url: string) => `https://corsproxy.io/?${encodeURIComponent(url)}`,
+  (url: string) => `https://cors-anywhere.herokuapp.com/${url}`,
+  (url: string) => `https://cors-proxy.fringe.zone/${url}`
+];
+
 export function useChatWithWebhook() {
   const [messages, setMessages] = useState<Message[]>([{
     id: "welcome",
@@ -24,18 +31,28 @@ export function useChatWithWebhook() {
   const [webhookUrl, setWebhookUrl] = useState(() => {
     return localStorage.getItem("tobey_webhook_url") || DEFAULT_WEBHOOK_URL;
   });
+  const [currentProxyIndex, setCurrentProxyIndex] = useState(0);
   
   const { toast } = useToast();
 
+  const getNextProxy = () => {
+    const nextIndex = (currentProxyIndex + 1) % CORS_PROXIES.length;
+    setCurrentProxyIndex(nextIndex);
+    return nextIndex;
+  };
+
   const applyCorsProxy = (url: string) => {
-    // Check if the URL already has a CORS proxy
-    if (url.includes("corsproxy.io")) {
-      return url;
-    }
+    // If the URL already has a CORS proxy, remove it first
+    let cleanUrl = url;
+    CORS_PROXIES.forEach(proxyFn => {
+      const proxyPrefix = proxyFn('').replace(/\?$/, '');
+      if (url.startsWith(proxyPrefix)) {
+        cleanUrl = decodeURIComponent(url.substring(proxyPrefix.length));
+      }
+    });
     
-    // Try multiple CORS proxies to increase chances of success
-    // Option 1: corsproxy.io
-    return `https://corsproxy.io/?${encodeURIComponent(url)}`;
+    // Apply the current proxy
+    return CORS_PROXIES[currentProxyIndex](cleanUrl);
   };
 
   const sendMessage = async () => {
@@ -57,24 +74,45 @@ export function useChatWithWebhook() {
     setIsLoading(true);
     setConnectionError(null);
     
-    try {
-      const proxiedUrl = applyCorsProxy(webhookUrl);
-      console.log("Sending message to webhook:", inputMessage);
-      console.log("Using proxied URL:", proxiedUrl);
-      
-      const response = await fetch(proxiedUrl, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ message: inputMessage }),
-      });
-      
-      if (!response.ok) {
-        throw new Error(`Server responded with ${response.status}: ${response.statusText}`);
+    let attemptCount = 0;
+    const maxAttempts = CORS_PROXIES.length;
+    
+    const attemptSend = async (proxyIndex: number): Promise<any> => {
+      try {
+        const proxiedUrl = CORS_PROXIES[proxyIndex](webhookUrl);
+        console.log(`Sending message to webhook (Attempt ${attemptCount + 1}/${maxAttempts}, Proxy ${proxyIndex + 1}/${CORS_PROXIES.length})`);
+        console.log("Using proxied URL:", proxiedUrl);
+        
+        const response = await fetch(proxiedUrl, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ message: inputMessage }),
+        });
+        
+        if (!response.ok) {
+          throw new Error(`Server responded with ${response.status}: ${response.statusText}`);
+        }
+        
+        return await response.json();
+      } catch (error) {
+        console.error(`Error sending message with proxy ${proxyIndex + 1}:`, error);
+        
+        // If we have more proxies to try
+        if (attemptCount < maxAttempts - 1) {
+          attemptCount++;
+          const nextProxyIndex = getNextProxy();
+          return attemptSend(nextProxyIndex);
+        }
+        
+        // If all proxies failed
+        throw error;
       }
-      
-      const data = await response.json();
+    };
+    
+    try {
+      const data = await attemptSend(currentProxyIndex);
       console.log("Received response:", data);
       
       if (data.reply) {
@@ -89,25 +127,25 @@ export function useChatWithWebhook() {
         throw new Error("Invalid response format: missing 'reply' field");
       }
     } catch (error) {
-      console.error("Error sending message:", error);
+      console.error("Error sending message after all retries:", error);
       
       // Show error in UI and add error message to chat
       const errorMessage = error instanceof Error 
         ? error.message 
         : "Failed to connect to the chat service";
       
-      setConnectionError(errorMessage);
+      setConnectionError(`Failed to connect after trying multiple proxies. ${errorMessage}`);
       
       setMessages(prev => [...prev, {
         id: `error-${messageId}`,
-        text: "I'm sorry, I couldn't process your message right now. Please try again later.",
+        text: "I'm sorry, I couldn't process your message right now. Please try again later or check your connection settings.",
         sender: "bot",
         timestamp: new Date()
       }]);
       
       toast({
         title: "Connection Error",
-        description: errorMessage,
+        description: `Failed to connect after trying ${maxAttempts} different proxies. Please check your webhook URL or try again later.`,
         variant: "destructive",
       });
     } finally {
@@ -119,12 +157,14 @@ export function useChatWithWebhook() {
     setConnectionError(null);
     toast({
       title: "Retrying connection",
-      description: "Attempting to reconnect to the chat service...",
+      description: "Attempting to reconnect to the chat service using a different proxy...",
     });
     
+    const nextProxyIndex = getNextProxy();
+    
     try {
-      const proxiedUrl = applyCorsProxy(webhookUrl);
-      console.log("Testing connection with URL:", proxiedUrl);
+      const proxiedUrl = CORS_PROXIES[nextProxyIndex](webhookUrl);
+      console.log(`Testing connection with URL (Proxy ${nextProxyIndex + 1}/${CORS_PROXIES.length}):`, proxiedUrl);
       
       // Send a simple test message
       const response = await fetch(proxiedUrl, {
@@ -143,7 +183,7 @@ export function useChatWithWebhook() {
       
       toast({
         title: "Connection restored",
-        description: "Successfully connected to the chat service.",
+        description: `Successfully connected to the chat service using proxy ${nextProxyIndex + 1}.`,
       });
       
       // Add a system message indicating connection restored
@@ -175,7 +215,7 @@ export function useChatWithWebhook() {
     localStorage.setItem("tobey_webhook_url", newUrl);
     toast({
       title: "Settings Saved",
-      description: "Webhook URL has been updated.",
+      description: "Webhook URL has been updated. The next message will use the new URL.",
     });
   };
 

@@ -1,5 +1,5 @@
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { 
   Dialog, 
   DialogContent, 
@@ -9,6 +9,7 @@ import {
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+import { AlertCircle } from "lucide-react";
 import { DEFAULT_WEBHOOK_URL } from "@/hooks/useChatWithWebhook";
 
 interface SettingsDialogProps {
@@ -29,7 +30,7 @@ const SettingsDialog: React.FC<SettingsDialogProps> = ({
   const [tempWebhookUrl, setTempWebhookUrl] = useState(currentWebhookUrl);
 
   // Update the temp URL when the dialog opens
-  React.useEffect(() => {
+  useEffect(() => {
     if (open) {
       setTempWebhookUrl(currentWebhookUrl);
     }
@@ -63,6 +64,22 @@ const SettingsDialog: React.FC<SettingsDialogProps> = ({
             <p className="text-xs text-gray-500">
               The URL for the n8n webhook that handles chat messages
             </p>
+          </div>
+          
+          <div className="bg-amber-50 border border-amber-200 rounded-md p-3 text-amber-800">
+            <div className="flex gap-2">
+              <AlertCircle className="h-4 w-4 text-amber-600 mt-0.5 flex-shrink-0" />
+              <div className="text-xs space-y-1">
+                <h4 className="font-medium">Troubleshooting Connection Issues</h4>
+                <ul className="list-disc list-inside space-y-1">
+                  <li>Make sure your webhook URL is publicly accessible</li>
+                  <li>The app will try multiple CORS proxies if one fails</li>
+                  <li>If all proxies fail, try using a different webhook URL</li>
+                  <li>Check that your webhook expects a "message" field and returns a "reply" field</li>
+                  <li>Verify your n8n workflow is active and properly configured</li>
+                </ul>
+              </div>
+            </div>
           </div>
         </div>
         <div className="flex justify-between">

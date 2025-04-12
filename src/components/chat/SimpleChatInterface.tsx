@@ -38,7 +38,8 @@ const SimpleChatInterface = () => {
       {connectionError && (
         <ConnectionErrorAlert 
           errorMessage={connectionError} 
-          onRetry={retryConnection} 
+          onRetry={retryConnection}
+          onShowSettings={() => setShowSettings(true)}
         />
       )}
       
