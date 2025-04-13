@@ -1,4 +1,3 @@
-
 import React from "react";
 import { Button } from "@/components/ui/button";
 import { ArrowRight } from "lucide-react";
@@ -14,9 +13,7 @@ const FullWidthCTA = () => {
               See for yourself
             </h2>
             <p className="text-lg mb-6 md:pr-12 opacity-90">
-              Try out the demo version of Tobey's Tutor which can answer your questions about 
-              the platform, how it works, and even provide a sample session for your child. 
-              Give it a try.
+              Try out the demo version of Tobey's Tutor. See how we use AI to level up your kids skills in a fun and supportive way. Give it a try.
             </p>
             <Link to="/demo-v2">
               <Button 
