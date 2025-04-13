@@ -2,8 +2,6 @@
 import React from "react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
-import { Card, CardContent } from "@/components/ui/card";
-import N8nChatInterface from "@/components/chat/N8nChatInterface";
 
 const DemoV2 = () => {
   return (
@@ -12,27 +10,21 @@ const DemoV2 = () => {
       <main className="flex-grow">
         <section className="py-16 md:py-24 bg-white">
           <div className="container max-w-6xl mx-auto px-4">
-            <span className="section-tag block text-left">Try it</span>
+            <span className="section-tag block text-left">Demo</span>
             <h2 className="section-title mb-4">
-              <strong>Experience Tobey In Action</strong>
+              <strong>Tobey AI Demo</strong>
             </h2>
             <p className="text-center text-xl text-gray-600 mb-12 max-w-2xl mx-auto">
-              Interact directly with our AI tutor through this live demo interface.
+              This demo page is currently under construction. Please check back later for our interactive demo.
             </p>
             
-            <Card className="overflow-hidden shadow-xl border-gray-200">
-              <CardContent className="p-4">
-                <div className="h-[600px]">
-                  <N8nChatInterface />
-                </div>
-              </CardContent>
-            </Card>
-            
-            <div className="mt-4 text-sm text-gray-500 text-center">
-              <p>
-                Experience our AI tutor in action. This demo connects directly to our AI service.
+            <div className="bg-gray-100 rounded-lg p-8 text-center">
+              <p className="text-gray-700">
+                Our interactive demo is being updated. In the meantime, you can learn more about Tobey AI's features 
+                on our homepage.
               </p>
             </div>
+            
           </div>
         </section>
       </main>
