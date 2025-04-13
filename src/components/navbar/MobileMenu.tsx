@@ -48,15 +48,6 @@ const MobileMenu = ({ isOpen, onClose, onJoinBeta, scrollToSection }: MobileMenu
               }}
               className="text-black hover:text-tobey-orange"
             />
-            <NavLink 
-              to="#demo" 
-              label="FAQ"
-              onClick={(e) => {
-                e.preventDefault();
-                scrollToSection('demo');
-              }}
-              className="text-black hover:text-tobey-orange"
-            />
           </>
         ) : (
           <>
@@ -69,12 +60,6 @@ const MobileMenu = ({ isOpen, onClose, onJoinBeta, scrollToSection }: MobileMenu
             <NavLink 
               to="/#story" 
               label="Origin Story" 
-              onClick={onClose}
-              className="text-black hover:text-tobey-orange"
-            />
-            <NavLink 
-              to="/#demo" 
-              label="FAQ" 
               onClick={onClose}
               className="text-black hover:text-tobey-orange"
             />
