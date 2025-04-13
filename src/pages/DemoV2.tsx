@@ -28,9 +28,6 @@ const DemoV2 = () => {
               <p className="text-sm">
                 This demo connects to our AI tutor service. Try asking Tobey about school subjects, learning concepts, or homework help.
               </p>
-              <p className="text-sm mt-2">
-                If you encounter connection issues, the chat interface includes options to try alternative connection methods.
-              </p>
             </div>
           </div>
         </section>
