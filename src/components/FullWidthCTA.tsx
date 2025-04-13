@@ -11,7 +11,7 @@ const FullWidthCTA = () => {
         <div className="flex flex-col md:flex-row items-center justify-between gap-10">
           <div className="md:w-1/2">
             <h2 className="text-3xl md:text-4xl font-bold mb-4">
-              Curious?
+              See for yourself
             </h2>
             <p className="text-lg mb-6 md:pr-12 opacity-90">
               Try out the demo version of Tobey's Tutor which can answer your questions about 
