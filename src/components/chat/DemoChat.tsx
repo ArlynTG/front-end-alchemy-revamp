@@ -12,6 +12,20 @@ interface Message {
   sender: "user" | "assistant";
 }
 
+/**
+ * Send message to the tutor service
+ */
+async function sendMessageToTutor(userInput: string): Promise<string> {
+  const response = await fetch("https://n8n.tobeystutor.com/webhook/demo-chat", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ message: userInput })
+  });
+
+  const data = await response.json();
+  return data.message;
+}
+
 const DemoChat: React.FC = () => {
   const [messages, setMessages] = useState<Message[]>([
     {
@@ -51,26 +65,13 @@ const DemoChat: React.FC = () => {
     setIsLoading(true);
 
     try {
-      const response = await fetch("https://n8n.tobeystutor.com/webhook/demo-chat", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ 
-          message: textToSend
-        }),
-      });
-
-      if (!response.ok) {
-        throw new Error(`Server responded with status: ${response.status}`);
-      }
-      
-      const data = await response.json();
+      // Use the provided function to send the message
+      const responseText = await sendMessageToTutor(textToSend);
       
       // Add assistant message to chat
       const assistantMessage: Message = {
         id: (Date.now() + 1).toString(),
-        text: data.message || "Sorry, I couldn't process your message.",
+        text: responseText || "Sorry, I couldn't process your message.",
         sender: "assistant",
       };
 
