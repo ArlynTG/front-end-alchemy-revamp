@@ -2,8 +2,8 @@
 import React from "react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
-import TobeyChat from "@/components/chat/TobeyChat";
 import { Toaster } from "@/components/ui/toaster";
+import DemoChat from "@/components/chat/DemoChat";
 
 const DemoV2 = () => {
   return (
@@ -21,7 +21,7 @@ const DemoV2 = () => {
             </p>
             
             <div className="max-w-2xl mx-auto h-[600px] shadow-xl rounded-lg overflow-hidden">
-              <TobeyChat />
+              <DemoChat />
             </div>
             
             <div className="mt-6 text-center text-gray-600 max-w-lg mx-auto">
