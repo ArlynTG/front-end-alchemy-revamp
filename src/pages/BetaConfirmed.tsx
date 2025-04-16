@@ -42,7 +42,7 @@ const BetaConfirmed = () => {
             </li>
             <li className="flex items-start gap-2">
               <span className="text-tobey-orange font-bold">•</span>
-              <span>You'll receive an invitation email when we launch in May 2025</span>
+              <span>You'll receive an invitation email when we launch in June 2025</span>
             </li>
             <li className="flex items-start gap-2">
               <span className="text-tobey-orange font-bold">•</span>
@@ -62,3 +62,4 @@ const BetaConfirmed = () => {
 };
 
 export default BetaConfirmed;
+
