@@ -24,8 +24,8 @@ export const pricingPlans: PricingPlan[] = [
     period: "mo",
     description: "Pay monthly, cancel anytime",
     features: [
-      "Unlimited 24/7 AI tutoring personalized to your child's learning style and pace",
-      "Comprehensive parental dashboard with easy-to-understand progress reports (daily, weekly & monthly)",
+      "Everything in Early Adopter Special (Except the introductory pricing)",
+      "Speech-to-text interactions",
       "Access to \"Different Minds, Brilliant Futures\" — our research-backed weekly newsletter on breakthrough approaches for children with learning differences"
     ],
     highlighted: false,
