@@ -21,7 +21,7 @@ const FullWidthCTA = () => {
                 size="lg" 
                 className="bg-tobey-orange hover:bg-tobey-darkOrange text-white font-medium"
               >
-                Try Demo Now <ArrowRight className="ml-2 h-4 w-4" />
+                Try the Demo Now <ArrowRight className="ml-2 h-4 w-4" />
               </Button>
             </Link>
           </div>
@@ -42,3 +42,4 @@ const FullWidthCTA = () => {
 };
 
 export default FullWidthCTA;
+
