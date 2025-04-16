@@ -57,7 +57,10 @@ const PricingCard = ({ plan, onSelect }: PricingCardProps) => {
         <div className="space-y-4 mb-8 text-left">
           {plan.features.map((feature, index) => (
             <div key={index} className="flex items-start gap-3">
-              <Check className={`h-5 w-5 ${plan.highlighted ? 'text-tobey-orange' : 'text-gray-500'} mt-0.5`} />
+              <Check 
+                className={`h-5 w-5 flex-shrink-0 ${plan.highlighted ? 'text-tobey-orange' : 'text-gray-500'} mt-0.5`} 
+                strokeWidth={2} 
+              />
               <span>{feature}</span>
             </div>
           ))}
