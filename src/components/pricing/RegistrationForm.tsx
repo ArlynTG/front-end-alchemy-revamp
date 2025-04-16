@@ -21,7 +21,7 @@ const RegistrationForm = ({ selectedPlan }: RegistrationFormProps) => {
     defaultValues: {
       firstName: "",
       lastName: "",
-      studentFirstName: "",
+      studentName: "",
       email: "",
     },
   });
@@ -38,7 +38,7 @@ const RegistrationForm = ({ selectedPlan }: RegistrationFormProps) => {
           firstName: data.firstName, 
           lastName: data.lastName, 
           email: data.email, 
-          studentFirstName: data.studentFirstName,
+          studentName: data.studentName,
           planType: selectedPlan
         } 
       });
@@ -66,7 +66,7 @@ const RegistrationForm = ({ selectedPlan }: RegistrationFormProps) => {
           
           <InputField
             control={form.control}
-            name="studentFirstName"
+            name="studentName"
             label="Student's First Name (Optional)"
             placeholder="Student's First Name (Optional)"
           />
