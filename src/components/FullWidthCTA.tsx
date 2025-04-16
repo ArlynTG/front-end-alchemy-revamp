@@ -11,7 +11,7 @@ const FullWidthCTA = () => {
         <div className="flex flex-col md:flex-row items-center justify-between gap-10">
           <div className="md:w-1/2">
             <h2 className="text-3xl md:text-4xl font-bold mb-4">
-              See for yourself
+              See For Yourself
             </h2>
             <p className="text-lg mb-6 md:pr-12 opacity-90">
               Try out the demo version of Tobey's Tutor. See how we use AI to level up your kids skills in a fun and supportive way. Give it a try.
