@@ -1,4 +1,3 @@
-
 import { PricingPlan } from "./PricingCard";
 
 export const pricingPlans: PricingPlan[] = [
@@ -39,9 +38,7 @@ export const pricingPlans: PricingPlan[] = [
     description: "Save $49 compared to monthly",
     features: [
       "Everything in Launch Plan",
-      "2 months free",
-      "Premium learning resources",
-      "Exclusive webinars for parents"
+      "2 months free"
     ],
     highlighted: false,
     disabled: true
