@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -234,7 +233,7 @@ const BetaSignupModal = ({ isOpen, onClose, planId }: BetaSignupModalProps) => {
               name="learningDifference"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Learning Difference (Optional)</FormLabel>
+                  <FormLabel>Primary Learning Difference (Optional)</FormLabel>
                   <FormControl>
                     <Select onValueChange={field.onChange} value={field.value}>
                       <SelectTrigger>
