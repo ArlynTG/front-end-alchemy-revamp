@@ -1,3 +1,4 @@
+
 import { PricingPlan } from "./PricingCard";
 
 export const pricingPlans: PricingPlan[] = [
@@ -8,9 +9,9 @@ export const pricingPlans: PricingPlan[] = [
     period: "mo",
     description: "Starting with a 7-day free trial",
     features: [
-      "Unlimited personalized AI tutoring sessions",
-      "Parental dashboard to track progress",
-      "The first 200 subscribers will be permanently locked in at our exclusive $29/mo beta pricing"
+      "Unlimited 24/7 AI tutoring personalized to your child's learning style",
+      "Parental dashboard with progress insights and weekly reports", 
+      "Founder's Offer: Be one of just 200 beta subscribers to lock in our $29/month rate for life — 70% off future pricing!"
     ],
     highlighted: true,
     disabled: false
