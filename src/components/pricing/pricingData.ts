@@ -11,7 +11,7 @@ export const pricingPlans: PricingPlan[] = [
     features: [
       "Unlimited 24/7 AI tutoring personalized to your child's learning style",
       "Parental dashboard with progress insights and weekly reports", 
-      "LIMITED TIME: Join our founding community of 200 families and lock in the beta pricing of $29/month for life -- 25% off future pricing",
+      "LIMITED OFFER: The first 200 families lock in the beta pricing of $29/month for life -- 25% off future pricing!",
       "Free access to future enhancements and features"
     ],
     highlighted: true,
