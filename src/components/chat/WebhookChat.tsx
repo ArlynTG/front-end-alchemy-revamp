@@ -18,10 +18,11 @@ interface ChatResponse {
   status: "success" | "error";
 }
 
+// Updated webhook URLs to try: http, https, and https with CORS proxy
 const WEBHOOK_URLS = [
+  "https://corsproxy.io/?http%3A%2F%2F174.138.51.74%3A5678%2Fwebhook%2Fdemo-chat",
   "http://174.138.51.74:5678/webhook/demo-chat",
-  "https://174.138.51.74:5678/webhook/demo-chat",
-  "https://cors-anywhere.herokuapp.com/http://174.138.51.74:5678/webhook/demo-chat"
+  "https://174.138.51.74:5678/webhook/demo-chat"
 ];
 
 const WebhookChat: React.FC = () => {
@@ -88,12 +89,18 @@ const WebhookChat: React.FC = () => {
         content: msg.content
       }));
 
-      console.log("Sending message to webhook:", getCurrentWebhookUrl());
+      const url = getCurrentWebhookUrl();
+      console.log("Sending message to webhook:", url);
 
       // Send the message to the webhook
-      const response = await fetch(getCurrentWebhookUrl(), {
+      const response = await fetch(url, {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: { 
+          "Content-Type": "application/json",
+          // Add these headers to help with CORS
+          "Accept": "application/json",
+          "Access-Control-Allow-Origin": "*"
+        },
         body: JSON.stringify({
           currentMessage: messageText,
           chatHistory: chatHistory
@@ -202,6 +209,15 @@ const WebhookChat: React.FC = () => {
                   <div className="text-xs text-gray-500 mb-3">
                     Current endpoint: {getCurrentWebhookUrl()}
                   </div>
+                  <p className="text-xs text-gray-500">
+                    <strong>Note:</strong> Your n8n webhook should include these CORS headers:
+                    <br />
+                    - Access-Control-Allow-Origin: *
+                    <br />
+                    - Access-Control-Allow-Methods: POST, OPTIONS
+                    <br />
+                    - Access-Control-Allow-Headers: Content-Type
+                  </p>
                 </div>
                 <div className="flex justify-end space-x-2">
                   <Button 
