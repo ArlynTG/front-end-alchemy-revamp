@@ -1,11 +1,12 @@
 
 import React, { useState, useRef, useEffect } from "react";
-import { SendHorizontal, Loader2, RefreshCw } from "lucide-react";
+import { SendHorizontal, Loader2, RefreshCw, Settings } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { useToast } from "@/hooks/use-toast";
 import { Alert, AlertDescription } from "@/components/ui/alert";
+import ConnectionErrorAlert from "@/components/chat/ConnectionErrorAlert";
 
 interface Message {
   role: "user" | "assistant";
@@ -17,6 +18,12 @@ interface ChatResponse {
   status: "success" | "error";
 }
 
+const WEBHOOK_URLS = [
+  "http://174.138.51.74:5678/webhook/demo-chat",
+  "https://174.138.51.74:5678/webhook/demo-chat",
+  "https://cors-anywhere.herokuapp.com/http://174.138.51.74:5678/webhook/demo-chat"
+];
+
 const WebhookChat: React.FC = () => {
   const [messages, setMessages] = useState<Message[]>([
     {
@@ -27,6 +34,9 @@ const WebhookChat: React.FC = () => {
   const [inputMessage, setInputMessage] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [webhookUrlIndex, setWebhookUrlIndex] = useState(0);
+  const [showSettings, setShowSettings] = useState(false);
+  const [customWebhookUrl, setCustomWebhookUrl] = useState("");
   const scrollAreaRef = useRef<HTMLDivElement>(null);
   const { toast } = useToast();
 
@@ -39,6 +49,22 @@ const WebhookChat: React.FC = () => {
       }
     }
   }, [messages]);
+
+  const getCurrentWebhookUrl = () => {
+    if (customWebhookUrl) return customWebhookUrl;
+    return WEBHOOK_URLS[webhookUrlIndex];
+  };
+
+  const tryNextWebhookUrl = () => {
+    const nextIndex = (webhookUrlIndex + 1) % WEBHOOK_URLS.length;
+    setWebhookUrlIndex(nextIndex);
+    setError(`Trying alternative connection method (${nextIndex + 1}/${WEBHOOK_URLS.length})...`);
+    
+    toast({
+      title: "Changing Connection Method",
+      description: `Switching to alternative endpoint (${nextIndex + 1}/${WEBHOOK_URLS.length})`,
+    });
+  };
 
   const sendMessage = async () => {
     const messageText = inputMessage.trim();
@@ -62,8 +88,10 @@ const WebhookChat: React.FC = () => {
         content: msg.content
       }));
 
+      console.log("Sending message to webhook:", getCurrentWebhookUrl());
+
       // Send the message to the webhook
-      const response = await fetch("http://174.138.51.74:5678/webhook/demo-chat", {
+      const response = await fetch(getCurrentWebhookUrl(), {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -95,7 +123,7 @@ const WebhookChat: React.FC = () => {
       }
     } catch (error) {
       console.error("Error sending message:", error);
-      setError("Failed to connect to the chat service. Please try again later.");
+      setError("Failed to connect to the chat service. Please try again later or try a different connection method.");
       
       toast({
         title: "Connection Error",
@@ -124,6 +152,16 @@ const WebhookChat: React.FC = () => {
     setError(null);
   };
 
+  const handleSaveCustomWebhook = () => {
+    if (customWebhookUrl.trim()) {
+      toast({
+        title: "Webhook URL Updated",
+        description: "Your custom webhook URL has been saved.",
+      });
+    }
+    setShowSettings(false);
+  };
+
   return (
     <div className="flex flex-col h-full rounded-lg border shadow-lg bg-white overflow-hidden">
       <div className="bg-gradient-to-r from-tobey-orange to-tobey-darkOrange text-white py-3 px-4 flex justify-between items-center">
@@ -141,6 +179,49 @@ const WebhookChat: React.FC = () => {
       
       <ScrollArea ref={scrollAreaRef} className="flex-1 p-4 overflow-auto">
         <div className="space-y-4">
+          {error && (
+            <ConnectionErrorAlert 
+              errorMessage={error}
+              onRetry={tryNextWebhookUrl} 
+              onShowSettings={() => setShowSettings(true)}
+            />
+          )}
+
+          {showSettings && (
+            <div className="mb-4 p-4 bg-gray-100 rounded-lg">
+              <h4 className="font-medium mb-2">Chat Settings</h4>
+              <div className="space-y-4">
+                <div>
+                  <label className="block text-sm mb-1">Custom Webhook URL:</label>
+                  <Input 
+                    value={customWebhookUrl} 
+                    onChange={(e) => setCustomWebhookUrl(e.target.value)}
+                    placeholder="Enter custom webhook URL"
+                    className="mb-2"
+                  />
+                  <div className="text-xs text-gray-500 mb-3">
+                    Current endpoint: {getCurrentWebhookUrl()}
+                  </div>
+                </div>
+                <div className="flex justify-end space-x-2">
+                  <Button 
+                    variant="outline" 
+                    size="sm" 
+                    onClick={() => setShowSettings(false)}
+                  >
+                    Cancel
+                  </Button>
+                  <Button 
+                    size="sm" 
+                    onClick={handleSaveCustomWebhook}
+                  >
+                    Save Settings
+                  </Button>
+                </div>
+              </div>
+            </div>
+          )}
+        
           {messages.map((message, index) => (
             <div
               key={index}
@@ -176,16 +257,6 @@ const WebhookChat: React.FC = () => {
                   <div className="w-2 h-2 bg-gray-500 rounded-full animate-bounce" style={{ animationDelay: '600ms' }}></div>
                 </div>
               </div>
-            </div>
-          )}
-
-          {error && (
-            <div className="my-2">
-              <Alert variant="destructive">
-                <AlertDescription>
-                  {error}
-                </AlertDescription>
-              </Alert>
             </div>
           )}
         </div>
