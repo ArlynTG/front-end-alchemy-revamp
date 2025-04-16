@@ -2,30 +2,10 @@
 import { useState } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
-import { z } from "zod";
 import { Button } from "@/components/ui/button";
-import {
-  Form,
-} from "@/components/ui/form";
+import { Form } from "@/components/ui/form";
 import { InputField, SelectField } from "@/components/form/FormField";
-
-const formSchema = z.object({
-  firstName: z.string().min(1, "First name is required"),
-  lastName: z.string().min(1, "Last name is required"),
-  email: z.string().email("Please enter a valid email address"),
-  phone: z.string().min(10, "Please enter a valid phone number"),
-  studentName: z.string().min(1, "Student's name is required"),
-  studentAge: z.string().min(1, "Student's age is required"),
-  learningDifference: z.string().optional(),
-});
-
-export type BetaSignupFormValues = z.infer<typeof formSchema>;
-
-interface BetaSignupFormProps {
-  onSubmit: (data: BetaSignupFormValues) => Promise<void>;
-  onCancel: () => void;
-  isSubmitting: boolean;
-}
+import { detailedSignupSchema, DetailedSignupFormValues } from "@/utils/formSchemas";
 
 const studentAgeOptions = Array.from({ length: 18 }, (_, i) => {
   const age = i + 5;
@@ -42,15 +22,21 @@ const learningDifferenceOptions = [
   { value: "Other", label: "Other" },
 ];
 
+interface BetaSignupFormProps {
+  onSubmit: (data: DetailedSignupFormValues) => Promise<void>;
+  onCancel: () => void;
+  isSubmitting: boolean;
+}
+
 const BetaSignupForm = ({ onSubmit, onCancel, isSubmitting }: BetaSignupFormProps) => {
-  const form = useForm<BetaSignupFormValues>({
-    resolver: zodResolver(formSchema),
+  const form = useForm<DetailedSignupFormValues>({
+    resolver: zodResolver(detailedSignupSchema),
     defaultValues: {
       firstName: "",
       lastName: "",
       email: "",
       phone: "",
-      studentName: "",
+      studentFirstName: "",
       studentAge: "",
       learningDifference: "",
     },
@@ -98,7 +84,7 @@ const BetaSignupForm = ({ onSubmit, onCancel, isSubmitting }: BetaSignupFormProp
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <InputField
             control={form.control}
-            name="studentName"
+            name="studentFirstName"
             label="Student's Name"
             placeholder="Student's first name"
           />

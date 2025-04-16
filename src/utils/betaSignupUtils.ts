@@ -1,9 +1,9 @@
 
 import { toast } from "@/components/ui/use-toast";
-import { BetaSignupFormValues } from "@/components/pricing/BetaSignupForm";
+import { DetailedSignupFormValues } from "@/utils/formSchemas";
 
 export const submitBetaSignup = async (
-  data: BetaSignupFormValues, 
+  data: DetailedSignupFormValues, 
   planId: string
 ): Promise<{ success: boolean; payload?: any }> => {
   try {

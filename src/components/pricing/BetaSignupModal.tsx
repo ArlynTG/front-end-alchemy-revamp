@@ -8,8 +8,9 @@ import {
   DialogTitle, 
   DialogDescription 
 } from "@/components/ui/dialog";
-import BetaSignupForm, { BetaSignupFormValues } from "./BetaSignupForm";
+import BetaSignupForm from "./BetaSignupForm";
 import { submitBetaSignup } from "@/utils/betaSignupUtils";
+import { DetailedSignupFormValues } from "@/utils/formSchemas";
 
 interface BetaSignupModalProps {
   isOpen: boolean;
@@ -21,7 +22,7 @@ const BetaSignupModal = ({ isOpen, onClose, planId }: BetaSignupModalProps) => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const navigate = useNavigate();
 
-  const handleSubmit = async (data: BetaSignupFormValues) => {
+  const handleSubmit = async (data: DetailedSignupFormValues) => {
     setIsSubmitting(true);
     
     const result = await submitBetaSignup(data, planId);
@@ -33,7 +34,7 @@ const BetaSignupModal = ({ isOpen, onClose, planId }: BetaSignupModalProps) => {
           firstName: data.firstName, 
           lastName: data.lastName, 
           email: data.email,
-          studentFirstName: data.studentName,
+          studentFirstName: data.studentFirstName,
           planType: planId
         } 
       });

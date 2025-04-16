@@ -2,31 +2,22 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
-import { z } from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Form } from "@/components/ui/form";
 import { InputField } from "@/components/form/FormField";
+import { registrationSchema, RegistrationFormValues } from "@/utils/formSchemas";
 
 interface RegistrationFormProps {
   selectedPlan: string;
 }
-
-const formSchema = z.object({
-  firstName: z.string().min(1, "First name is required"),
-  lastName: z.string().min(1, "Last name is required"),
-  studentFirstName: z.string().optional(),
-  email: z.string().email("Please enter a valid email address"),
-});
-
-type RegistrationFormValues = z.infer<typeof formSchema>;
 
 const RegistrationForm = ({ selectedPlan }: RegistrationFormProps) => {
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
   
   const form = useForm<RegistrationFormValues>({
-    resolver: zodResolver(formSchema),
+    resolver: zodResolver(registrationSchema),
     defaultValues: {
       firstName: "",
       lastName: "",
