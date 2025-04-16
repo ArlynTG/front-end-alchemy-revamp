@@ -7,8 +7,8 @@ export const submitBetaSignup = async (
   planId: string
 ): Promise<{ success: boolean; payload?: any }> => {
   try {
-    // Use the specified webhook URL
-    const webhookUrl = "http://174.138.51.74:5678/webhook/beta-signup";
+    // Use the specified secure webhook URL
+    const webhookUrl = "https://n8n.tobeystutor.com/webhook/beta-signup";
     
     const payload = {
       ...data,
@@ -27,6 +27,11 @@ export const submitBetaSignup = async (
     if (!response.ok) {
       throw new Error("Failed to submit form");
     }
+    
+    toast({
+      title: "Submission successful",
+      description: "Your information has been submitted successfully.",
+    });
     
     return { success: true, payload };
   } catch (error) {
