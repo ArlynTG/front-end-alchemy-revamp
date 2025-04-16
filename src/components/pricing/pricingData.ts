@@ -1,4 +1,3 @@
-
 import { PricingPlan } from "./PricingCard";
 
 export const pricingPlans: PricingPlan[] = [
@@ -23,10 +22,9 @@ export const pricingPlans: PricingPlan[] = [
     period: "mo",
     description: "Pay monthly, cancel anytime",
     features: [
-      "Everything in Early Adopter",
-      "Priority support",
-      "Advanced analytics",
-      "Custom learning paths"
+      "Unlimited 24/7 AI tutoring personalized to your child's learning style and pace",
+      "Comprehensive parental dashboard with easy-to-understand progress reports (daily, weekly & monthly)",
+      "Access to \"Different Minds, Brilliant Futures\" — our research-backed weekly newsletter on breakthrough approaches for children with learning differences"
     ],
     highlighted: false,
     disabled: true
