@@ -96,3 +96,4 @@ const RegistrationForm = ({ selectedPlan }: RegistrationFormProps) => {
 };
 
 export default RegistrationForm;
+
