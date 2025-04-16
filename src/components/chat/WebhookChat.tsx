@@ -13,17 +13,8 @@ interface Message {
   content: string;
 }
 
-interface ChatResponse {
-  response: string;
-  status: "success" | "error";
-}
-
-// Updated webhook URLs to try: http, https, and https with CORS proxy
-const WEBHOOK_URLS = [
-  "https://corsproxy.io/?http%3A%2F%2F174.138.51.74%3A5678%2Fwebhook%2Fdemo-chat",
-  "http://174.138.51.74:5678/webhook/demo-chat",
-  "https://174.138.51.74:5678/webhook/demo-chat"
-];
+// The webhook endpoint
+const WEBHOOK_URL = "https://n8n.tobeystutor.com/webhook/chat";
 
 const WebhookChat: React.FC = () => {
   const [messages, setMessages] = useState<Message[]>([
@@ -35,9 +26,6 @@ const WebhookChat: React.FC = () => {
   const [inputMessage, setInputMessage] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [webhookUrlIndex, setWebhookUrlIndex] = useState(0);
-  const [showSettings, setShowSettings] = useState(false);
-  const [customWebhookUrl, setCustomWebhookUrl] = useState("");
   const scrollAreaRef = useRef<HTMLDivElement>(null);
   const { toast } = useToast();
 
@@ -50,22 +38,6 @@ const WebhookChat: React.FC = () => {
       }
     }
   }, [messages]);
-
-  const getCurrentWebhookUrl = () => {
-    if (customWebhookUrl) return customWebhookUrl;
-    return WEBHOOK_URLS[webhookUrlIndex];
-  };
-
-  const tryNextWebhookUrl = () => {
-    const nextIndex = (webhookUrlIndex + 1) % WEBHOOK_URLS.length;
-    setWebhookUrlIndex(nextIndex);
-    setError(`Trying alternative connection method (${nextIndex + 1}/${WEBHOOK_URLS.length})...`);
-    
-    toast({
-      title: "Changing Connection Method",
-      description: `Switching to alternative endpoint (${nextIndex + 1}/${WEBHOOK_URLS.length})`,
-    });
-  };
 
   const sendMessage = async () => {
     const messageText = inputMessage.trim();
@@ -83,27 +55,16 @@ const WebhookChat: React.FC = () => {
     setError(null);
 
     try {
-      // Convert messages to the required format
-      const chatHistory = messages.map(msg => ({
-        role: msg.role,
-        content: msg.content
-      }));
+      console.log("Sending message to webhook:", WEBHOOK_URL);
 
-      const url = getCurrentWebhookUrl();
-      console.log("Sending message to webhook:", url);
-
-      // Send the message to the webhook
-      const response = await fetch(url, {
+      // Send the message to the webhook with the required format
+      const response = await fetch(WEBHOOK_URL, {
         method: "POST",
         headers: { 
-          "Content-Type": "application/json",
-          // Add these headers to help with CORS
-          "Accept": "application/json",
-          "Access-Control-Allow-Origin": "*"
+          "Content-Type": "application/json"
         },
         body: JSON.stringify({
-          currentMessage: messageText,
-          chatHistory: chatHistory
+          message: messageText
         })
       });
 
@@ -111,26 +72,18 @@ const WebhookChat: React.FC = () => {
         throw new Error(`HTTP error! Status: ${response.status}`);
       }
 
-      const data: ChatResponse = await response.json();
+      // Get plain text response
+      const textResponse = await response.text();
       
-      if (data.status === "error") {
-        setError(data.response);
-        toast({
-          title: "Error",
-          description: "There was an issue processing your request.",
-          variant: "destructive",
-        });
-      } else {
-        // Add assistant message to chat
-        const assistantMessage: Message = {
-          role: "assistant",
-          content: data.response,
-        };
-        setMessages((prev) => [...prev, assistantMessage]);
-      }
+      // Add assistant message to chat
+      const assistantMessage: Message = {
+        role: "assistant",
+        content: textResponse,
+      };
+      setMessages((prev) => [...prev, assistantMessage]);
     } catch (error) {
       console.error("Error sending message:", error);
-      setError("Failed to connect to the chat service. Please try again later or try a different connection method.");
+      setError("Failed to connect to the chat service. Please try again later.");
       
       toast({
         title: "Connection Error",
@@ -159,16 +112,6 @@ const WebhookChat: React.FC = () => {
     setError(null);
   };
 
-  const handleSaveCustomWebhook = () => {
-    if (customWebhookUrl.trim()) {
-      toast({
-        title: "Webhook URL Updated",
-        description: "Your custom webhook URL has been saved.",
-      });
-    }
-    setShowSettings(false);
-  };
-
   return (
     <div className="flex flex-col h-full rounded-lg border shadow-lg bg-white overflow-hidden">
       <div className="bg-gradient-to-r from-tobey-orange to-tobey-darkOrange text-white py-3 px-4 flex justify-between items-center">
@@ -189,53 +132,9 @@ const WebhookChat: React.FC = () => {
           {error && (
             <ConnectionErrorAlert 
               errorMessage={error}
-              onRetry={tryNextWebhookUrl} 
-              onShowSettings={() => setShowSettings(true)}
+              onRetry={sendMessage} 
+              onShowSettings={() => {}}
             />
-          )}
-
-          {showSettings && (
-            <div className="mb-4 p-4 bg-gray-100 rounded-lg">
-              <h4 className="font-medium mb-2">Chat Settings</h4>
-              <div className="space-y-4">
-                <div>
-                  <label className="block text-sm mb-1">Custom Webhook URL:</label>
-                  <Input 
-                    value={customWebhookUrl} 
-                    onChange={(e) => setCustomWebhookUrl(e.target.value)}
-                    placeholder="Enter custom webhook URL"
-                    className="mb-2"
-                  />
-                  <div className="text-xs text-gray-500 mb-3">
-                    Current endpoint: {getCurrentWebhookUrl()}
-                  </div>
-                  <p className="text-xs text-gray-500">
-                    <strong>Note:</strong> Your n8n webhook should include these CORS headers:
-                    <br />
-                    - Access-Control-Allow-Origin: *
-                    <br />
-                    - Access-Control-Allow-Methods: POST, OPTIONS
-                    <br />
-                    - Access-Control-Allow-Headers: Content-Type
-                  </p>
-                </div>
-                <div className="flex justify-end space-x-2">
-                  <Button 
-                    variant="outline" 
-                    size="sm" 
-                    onClick={() => setShowSettings(false)}
-                  >
-                    Cancel
-                  </Button>
-                  <Button 
-                    size="sm" 
-                    onClick={handleSaveCustomWebhook}
-                  >
-                    Save Settings
-                  </Button>
-                </div>
-              </div>
-            </div>
           )}
         
           {messages.map((message, index) => (
