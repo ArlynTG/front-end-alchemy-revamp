@@ -1,4 +1,3 @@
-
 import React from "react";
 import { Mail } from "lucide-react";
 
@@ -14,10 +13,9 @@ const Contact = ({ id }: ContactProps) => {
           {/* Left Column with Text and Contact Info */}
           <div className="w-full md:w-1/2 space-y-8">
             <div className="max-w-md">
-              <h2 className="text-3xl font-bold mb-4">Get in Touch with Us</h2>
+              <h2 className="text-3xl font-bold mb-4">Got more questions?</h2>
               <div className="space-y-2 text-gray-600">
-                <p>Have more questions or comments?</p>
-                <p>Get in touch with our team and we'll get back to you as soon as possible.</p>
+                <p>Drop us a line and we'll get back to you as soon as possible.</p>
               </div>
             </div>
 
