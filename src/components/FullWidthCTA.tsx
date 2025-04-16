@@ -7,7 +7,7 @@ import { Link } from "react-router-dom";
 const FullWidthCTA = () => {
   return (
     <section className="py-16 bg-gradient-to-r from-tobey-blue to-soft-purple text-tobey-text">
-      <div className="container max-w-7xl mx-auto px-4">
+      <div className="container">
         <div className="flex flex-col md:flex-row items-center justify-between gap-10">
           <div className="md:w-1/2">
             <h2 className="text-3xl md:text-4xl font-bold mb-4">
