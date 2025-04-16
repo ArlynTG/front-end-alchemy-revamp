@@ -1,27 +1,13 @@
 
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import {
   Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
 } from "@/components/ui/form";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import { toast } from "@/components/ui/use-toast";
+import { InputField, SelectField } from "@/components/form/FormField";
 
 const formSchema = z.object({
   firstName: z.string().min(1, "First name is required"),
@@ -40,6 +26,21 @@ interface BetaSignupFormProps {
   onCancel: () => void;
   isSubmitting: boolean;
 }
+
+const studentAgeOptions = Array.from({ length: 18 }, (_, i) => {
+  const age = i + 5;
+  return { value: age.toString(), label: `${age} years` };
+});
+
+const learningDifferenceOptions = [
+  { value: "Dyslexia", label: "Dyslexia" },
+  { value: "ADHD", label: "ADHD" },
+  { value: "Dysgraphia", label: "Dysgraphia" },
+  { value: "Auditory Processing", label: "Auditory Processing" },
+  { value: "Executive Function", label: "Executive Function" },
+  { value: "Autism Spectrum", label: "Autism Spectrum" },
+  { value: "Other", label: "Other" },
+];
 
 const BetaSignupForm = ({ onSubmit, onCancel, isSubmitting }: BetaSignupFormProps) => {
   const form = useForm<BetaSignupFormValues>({
@@ -61,131 +62,63 @@ const BetaSignupForm = ({ onSubmit, onCancel, isSubmitting }: BetaSignupFormProp
     <Form {...form}>
       <form onSubmit={handleSubmit} className="space-y-4 py-4">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <FormField
+          <InputField
             control={form.control}
             name="firstName"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>First Name</FormLabel>
-                <FormControl>
-                  <Input placeholder="Your first name" {...field} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
+            label="First Name"
+            placeholder="Your first name"
           />
           
-          <FormField
+          <InputField
             control={form.control}
             name="lastName"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Last Name</FormLabel>
-                <FormControl>
-                  <Input placeholder="Your last name" {...field} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
+            label="Last Name"
+            placeholder="Your last name"
           />
         </div>
         
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <FormField
+          <InputField
             control={form.control}
             name="email"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Email Address</FormLabel>
-                <FormControl>
-                  <Input type="email" placeholder="your.email@example.com" {...field} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
+            label="Email Address"
+            placeholder="your.email@example.com"
+            type="email"
           />
           
-          <FormField
+          <InputField
             control={form.control}
             name="phone"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Phone Number</FormLabel>
-                <FormControl>
-                  <Input type="tel" placeholder="(555) 123-4567" {...field} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
+            label="Phone Number"
+            placeholder="(555) 123-4567"
+            type="tel"
           />
         </div>
         
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <FormField
+          <InputField
             control={form.control}
             name="studentName"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Student's Name</FormLabel>
-                <FormControl>
-                  <Input placeholder="Student's first name" {...field} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
+            label="Student's Name"
+            placeholder="Student's first name"
           />
           
-          <FormField
+          <SelectField
             control={form.control}
             name="studentAge"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Student's Age</FormLabel>
-                <FormControl>
-                  <Select onValueChange={field.onChange} value={field.value}>
-                    <SelectTrigger>
-                      <SelectValue placeholder="Select age" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {Array.from({ length: 18 }, (_, i) => i + 5).map((age) => (
-                        <SelectItem key={age} value={age.toString()}>
-                          {age} years
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
+            label="Student's Age"
+            placeholder="Select age"
+            options={studentAgeOptions}
           />
         </div>
         
-        <FormField
+        <SelectField
           control={form.control}
           name="learningDifference"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Primary Learning Difference (Optional)</FormLabel>
-              <FormControl>
-                <Select onValueChange={field.onChange} value={field.value}>
-                  <SelectTrigger>
-                    <SelectValue placeholder="Select if applicable" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="Dyslexia">Dyslexia</SelectItem>
-                    <SelectItem value="ADHD">ADHD</SelectItem>
-                    <SelectItem value="Dysgraphia">Dysgraphia</SelectItem>
-                    <SelectItem value="Auditory Processing">Auditory Processing</SelectItem>
-                    <SelectItem value="Executive Function">Executive Function</SelectItem>
-                    <SelectItem value="Autism Spectrum">Autism Spectrum</SelectItem>
-                    <SelectItem value="Other">Other</SelectItem>
-                  </SelectContent>
-                </Select>
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
+          label="Primary Learning Difference"
+          placeholder="Select if applicable"
+          options={learningDifferenceOptions}
+          optional={true}
         />
         
         <div className="flex justify-end pt-4">
