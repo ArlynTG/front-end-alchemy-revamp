@@ -14,7 +14,7 @@ const FullWidthCTA = () => {
               See For Yourself
             </h2>
             <p className="text-lg mb-6 md:pr-12 opacity-90">
-              Try out the demo version of Tobey's Tutor. See how we use AI to level up your kids skills in a fun and supportive way. Give it a try.
+              Try out the demo version of Tobey's Tutor. See how our patent pending AI-powered technology can level up your kids skills in a fun and supportive way. Give it a try, for free!
             </p>
             <Link to="/demo-v2">
               <Button 
