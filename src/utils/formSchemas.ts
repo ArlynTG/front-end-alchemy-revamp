@@ -6,21 +6,21 @@ export const baseSignupSchema = z.object({
   firstName: z.string().min(1, "First name is required"),
   lastName: z.string().min(1, "Last name is required"),
   email: z.string().email("Please enter a valid email address"),
-  studentFirstName: z.string().min(1, "Student's name is required"),
+  studentName: z.string().min(1, "Student's name is required"),
 });
 
 // Extended schema with additional fields for detailed signup
 export const detailedSignupSchema = baseSignupSchema.extend({
   phone: z.string().min(10, "Please enter a valid phone number"),
   studentAge: z.string().min(1, "Student's age is required"),
-  learningDifference: z.string().optional(),
+  primaryLearningDifference: z.string().optional(),
 });
 
 // Registration-specific schema with optional student name
 export const registrationSchema = z.object({
   firstName: z.string().min(1, "First name is required"),
   lastName: z.string().min(1, "Last name is required"),
-  studentFirstName: z.string().optional(),
+  studentName: z.string().optional(),
   email: z.string().email("Please enter a valid email address"),
 });
 

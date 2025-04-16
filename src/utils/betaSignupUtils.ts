@@ -7,8 +7,8 @@ export const submitBetaSignup = async (
   planId: string
 ): Promise<{ success: boolean; payload?: any }> => {
   try {
-    // This would be replaced with your actual webhook URL
-    const webhookUrl = "https://replace-with-your-n8n-url.com/webhook/beta-signup";
+    // Use the specified webhook URL
+    const webhookUrl = "http://174.138.51.74:5678/webhook/beta-signup";
     
     const payload = {
       ...data,

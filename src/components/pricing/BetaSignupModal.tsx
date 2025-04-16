@@ -34,7 +34,7 @@ const BetaSignupModal = ({ isOpen, onClose, planId }: BetaSignupModalProps) => {
           firstName: data.firstName, 
           lastName: data.lastName, 
           email: data.email,
-          studentFirstName: data.studentFirstName,
+          studentName: data.studentName,
           planType: planId
         } 
       });

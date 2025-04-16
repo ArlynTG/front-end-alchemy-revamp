@@ -36,9 +36,9 @@ const BetaSignupForm = ({ onSubmit, onCancel, isSubmitting }: BetaSignupFormProp
       lastName: "",
       email: "",
       phone: "",
-      studentFirstName: "",
+      studentName: "",
       studentAge: "",
-      learningDifference: "",
+      primaryLearningDifference: "",
     },
   });
 
@@ -84,7 +84,7 @@ const BetaSignupForm = ({ onSubmit, onCancel, isSubmitting }: BetaSignupFormProp
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <InputField
             control={form.control}
-            name="studentFirstName"
+            name="studentName"
             label="Student's Name"
             placeholder="Student's first name"
           />
@@ -100,7 +100,7 @@ const BetaSignupForm = ({ onSubmit, onCancel, isSubmitting }: BetaSignupFormProp
         
         <SelectField
           control={form.control}
-          name="learningDifference"
+          name="primaryLearningDifference"
           label="Primary Learning Difference"
           placeholder="Select if applicable"
           options={learningDifferenceOptions}
