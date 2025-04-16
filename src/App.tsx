@@ -13,6 +13,7 @@ import ParentLogin from "./pages/ParentLogin";
 import StudentLogin from "./pages/StudentLogin";
 import BetaConfirmed from "./pages/BetaConfirmed";
 import BetaRegistration from "./pages/BetaRegistration";
+import BetaConfirmation from "./pages/BetaConfirmation";
 import DemoV2 from "./pages/DemoV2";
 import PasswordProtection from "./components/PasswordProtection";
 
@@ -38,6 +39,7 @@ const App = () => (
             <Route path="/demo-v2" element={<DemoV2 />} />
             <Route path="/beta-confirmed" element={<BetaConfirmed />} />
             <Route path="/beta-registration" element={<BetaRegistration />} />
+            <Route path="/beta-confirmation" element={<BetaConfirmation />} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
           </Routes>

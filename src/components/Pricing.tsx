@@ -3,13 +3,16 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import PricingCard from "./pricing/PricingCard";
 import { pricingPlans } from "./pricing/pricingData";
+import BetaSignupModal from "./pricing/BetaSignupModal";
 
 const Pricing = () => {
   const navigate = useNavigate();
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [selectedPlanId, setSelectedPlanId] = useState("");
   
   const handlePlanSelect = (planId: string) => {
-    // Navigate to the beta registration page with the selected plan
-    navigate(`/beta-registration?plan=${planId}`);
+    setSelectedPlanId(planId);
+    setIsModalOpen(true);
   };
   
   return (
@@ -30,6 +33,12 @@ const Pricing = () => {
           ))}
         </div>
       </div>
+      
+      <BetaSignupModal 
+        isOpen={isModalOpen} 
+        onClose={() => setIsModalOpen(false)} 
+        planId={selectedPlanId}
+      />
     </section>
   );
 };
