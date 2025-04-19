@@ -17,6 +17,7 @@ export type Database = {
           id: string
           last_name: string
           plan_type: string
+          primary_learning_difference: string | null
           student_name: string | null
           updated_at: string
         }
@@ -27,6 +28,7 @@ export type Database = {
           id?: string
           last_name: string
           plan_type: string
+          primary_learning_difference?: string | null
           student_name?: string | null
           updated_at?: string
         }
@@ -37,6 +39,7 @@ export type Database = {
           id?: string
           last_name?: string
           plan_type?: string
+          primary_learning_difference?: string | null
           student_name?: string | null
           updated_at?: string
         }

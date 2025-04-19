@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
@@ -21,7 +20,6 @@ const learningDifferenceOptions = [
   { value: "Dysgraphia", label: "Dysgraphia" },
   { value: "Auditory Processing", label: "Auditory Processing" },
   { value: "Executive Function", label: "Executive Function" },
-  { value: "Autism Spectrum", label: "Autism Spectrum" },
   { value: "Other", label: "Other" },
 ];
 
