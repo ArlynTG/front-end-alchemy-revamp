@@ -48,9 +48,11 @@ const RegistrationForm = ({ selectedPlan }: RegistrationFormProps) => {
 
   const handleSubmit = form.handleSubmit(async (data) => {
     setIsLoading(true);
+    console.log("Form submitted with data:", data);
     
     try {
-      await submitBetaRegistration(data, selectedPlan);
+      const result = await submitBetaRegistration(data, selectedPlan);
+      console.log("Registration result:", result);
       
       toast({
         title: "Registration successful!",
@@ -67,6 +69,7 @@ const RegistrationForm = ({ selectedPlan }: RegistrationFormProps) => {
         } 
       });
     } catch (error) {
+      console.error("Registration error:", error);
       toast({
         title: "Registration failed",
         description: error instanceof Error ? error.message : "There was an error submitting your registration. Please try again.",
