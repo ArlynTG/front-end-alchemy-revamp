@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
@@ -42,7 +43,7 @@ const RegistrationForm = ({ selectedPlan }: RegistrationFormProps) => {
       email: "",
       phone: "",
       studentAge: "",
-      primaryLearningDifference: "",
+      primaryLearningDifference: undefined, // Changed from empty string to undefined
     },
   });
 

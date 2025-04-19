@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
@@ -18,7 +17,6 @@ const learningDifferenceOptions = [
   { value: "Dysgraphia", label: "Dysgraphia" },
   { value: "Auditory Processing", label: "Auditory Processing" },
   { value: "Executive Function", label: "Executive Function" },
-  { value: "Autism Spectrum", label: "Autism Spectrum" },
   { value: "Other", label: "Other" },
 ];
 
@@ -38,7 +36,7 @@ const BetaSignupForm = ({ onSubmit, onCancel, isSubmitting }: BetaSignupFormProp
       phone: "",
       studentName: "",
       studentAge: "",
-      primaryLearningDifference: "",
+      primaryLearningDifference: undefined,
     },
   });
 
