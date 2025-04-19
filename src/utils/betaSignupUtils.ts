@@ -1,46 +1,76 @@
 
+import { supabase } from "@/integrations/supabase/client";
 import { toast } from "@/components/ui/use-toast";
 import { DetailedSignupFormValues } from "@/utils/formSchemas";
+import { Database } from "@/integrations/supabase/types";
 
-export const submitBetaSignup = async (
-  data: DetailedSignupFormValues, 
-  planId: string
-): Promise<{ success: boolean; payload?: any }> => {
+// Define a type for the beta_registrations table
+type BetaSignup = {
+  id?: string;
+  first_name: string;
+  last_name: string;
+  email: string;
+  student_name: string;
+  phone: string;
+  student_age: string;
+  primary_learning_difference: Database["public"]["Enums"]["learning_difference"] | null;
+  plan_type: string;
+  created_at?: string;
+  updated_at?: string;
+}
+
+export const submitBetaSignup = async (data: DetailedSignupFormValues, planType: string) => {
+  console.log("Utils - Starting beta signup submission");
+  console.log("Utils - Data received:", data);
+  console.log("Utils - Plan type:", planType);
+  
   try {
-    // Use the specified secure webhook URL
-    const webhookUrl = "https://n8n.tobeystutor.com/webhook/beta-signup";
-    
-    const payload = {
-      ...data,
-      planType: planId,
-      submittedAt: new Date().toISOString(),
-    };
-    
-    const response = await fetch(webhookUrl, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(payload),
-    });
-    
-    if (!response.ok) {
-      throw new Error("Failed to submit form");
+    // Validate the input data
+    if (!data.firstName || !data.lastName || !data.email || !planType) {
+      console.error("Utils - Missing required fields:", { 
+        firstName: data.firstName, 
+        lastName: data.lastName, 
+        email: data.email, 
+        planType 
+      });
+      throw new Error('Missing required fields for registration');
     }
     
-    toast({
-      title: "Submission successful",
-      description: "Your information has been submitted successfully.",
-    });
+    // Create the insertion object with all necessary fields
+    const insertData: BetaSignup = {
+      first_name: data.firstName,
+      last_name: data.lastName,
+      email: data.email,
+      student_name: data.studentName || "",
+      phone: data.phone,
+      student_age: data.studentAge,
+      primary_learning_difference: data.primaryLearningDifference || null,
+      plan_type: planType
+    };
     
-    return { success: true, payload };
+    console.log("Utils - Insertion data for Supabase:", insertData);
+    
+    const { data: insertedData, error } = await supabase
+      .from('beta_registrations')
+      .insert(insertData)
+      .select()
+      .single();
+
+    if (error) {
+      console.error("Utils - Supabase insert error:", error);
+      
+      if (error.code === '23505') {
+        throw new Error('This email has already been registered for the beta.');
+      }
+      
+      throw new Error(`Failed to submit registration: ${error.message || 'Unknown error'}`);
+    }
+
+    console.log("Utils - Registration successful with inserted data:", insertedData);
+    
+    return { success: true, data: insertedData };
   } catch (error) {
-    console.error("Error submitting form:", error);
-    toast({
-      title: "Submission failed",
-      description: "There was an error submitting your information. Please try again.",
-      variant: "destructive",
-    });
-    return { success: false };
+    console.error('Utils - Error submitting beta signup:', error);
+    throw error;
   }
 };

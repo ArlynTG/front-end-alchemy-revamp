@@ -21,23 +21,17 @@ type BetaRegistration = {
 
 export const submitBetaRegistration = async (data: RegistrationFormValues, planType: string) => {
   try {
-    console.log("Submitting beta registration:", { data, planType });
+    console.log("Service - Submitting beta registration:", { data, planType });
     
     // Validate the input data
     if (!data.firstName || !data.lastName || !data.email || !planType) {
-      console.error("Missing required fields:", { 
+      console.error("Service - Missing required fields:", { 
         firstName: data.firstName, 
         lastName: data.lastName, 
         email: data.email, 
         planType 
       });
       throw new Error('Missing required fields for registration');
-    }
-    
-    // Validate student age is within the allowed range
-    const validStudentAges = ['8', '9', '10', '11', '12', '13', '14', '15', '16'];
-    if (!validStudentAges.includes(data.studentAge)) {
-      throw new Error('Student age must be between 8 and 16');
     }
     
     // Create the insertion object with all necessary fields
@@ -48,11 +42,11 @@ export const submitBetaRegistration = async (data: RegistrationFormValues, planT
       student_name: data.studentName || null,
       phone: data.phone,
       student_age: data.studentAge,
-      primary_learning_difference: data.primaryLearningDifference as Database["public"]["Enums"]["learning_difference"] || null,
+      primary_learning_difference: data.primaryLearningDifference || null,
       plan_type: planType
     };
     
-    console.log("Insertion data to be sent to Supabase:", insertData);
+    console.log("Service - Insertion data to be sent to Supabase:", insertData);
     
     const { data: insertedData, error } = await supabase
       .from('beta_registrations')
@@ -61,7 +55,7 @@ export const submitBetaRegistration = async (data: RegistrationFormValues, planT
       .single();
 
     if (error) {
-      console.error("Supabase insert error:", error);
+      console.error("Service - Supabase insert error:", error);
       
       if (error.code === '23505') {
         throw new Error('This email has already been registered for the beta.');
@@ -70,11 +64,11 @@ export const submitBetaRegistration = async (data: RegistrationFormValues, planT
       throw new Error(`Failed to submit registration: ${error.message || 'Unknown error'}`);
     }
 
-    console.log("Registration successful with inserted data:", insertedData);
+    console.log("Service - Registration successful with inserted data:", insertedData);
     
     return { success: true, data: insertedData };
   } catch (error) {
-    console.error('Error submitting beta registration:', error);
+    console.error('Service - Error submitting beta registration:', error);
     throw error;
   }
 };
