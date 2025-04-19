@@ -54,10 +54,11 @@ export const submitBetaRegistration = async (data: RegistrationFormValues, planT
     console.log("Insertion data to be sent to Supabase:", insertData);
     
     // Perform the insert with detailed error handling
+    // Use 'any' type assertion to bypass the TypeScript errors since Supabase types aren't properly set up
     const { error, data: insertedData } = await supabase
-      .from('beta_registrations')
-      .insert(insertData)
-      .select();
+      .from('beta_registrations' as any)
+      .insert(insertData as any)
+      .select() as any;
 
     if (error) {
       console.error("Supabase insert error:", error);
