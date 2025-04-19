@@ -49,6 +49,7 @@ export const submitBetaRegistration = async (data: RegistrationFormValues, planT
     
     console.log("Insertion data to be sent to Supabase:", insertData);
     
+    // Ensure we are using the exact table name that exists in Supabase
     const { data: insertedData, error } = await supabase
       .from('beta_registrations')
       .insert(insertData)
@@ -57,6 +58,11 @@ export const submitBetaRegistration = async (data: RegistrationFormValues, planT
 
     if (error) {
       console.error("Supabase insert error:", error);
+      
+      // Additional logging to help debug the issue
+      console.log("Error code:", error.code);
+      console.log("Error message:", error.message);
+      console.log("Error details:", error.details);
       
       if (error.code === '23505') {
         throw new Error('This email has already been registered for the beta.');
