@@ -12,6 +12,9 @@ export const submitBetaRegistration = async (data: RegistrationFormValues, planT
         last_name: data.lastName,
         email: data.email,
         student_name: data.studentName || null,
+        phone: data.phone,
+        student_age: data.studentAge,
+        primary_learning_difference: data.primaryLearningDifference || null,
         plan_type: planType
       });
 

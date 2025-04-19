@@ -5,10 +5,25 @@ import { useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Form } from "@/components/ui/form";
-import { InputField } from "@/components/form/FormField";
+import { InputField, SelectField } from "@/components/form/FormField";
 import { registrationSchema, RegistrationFormValues } from "@/utils/formSchemas";
 import { submitBetaRegistration } from "@/utils/betaRegistrationService";
 import { toast } from "@/components/ui/use-toast";
+
+const studentAgeOptions = Array.from({ length: 18 }, (_, i) => {
+  const age = i + 5;
+  return { value: age.toString(), label: `${age} years` };
+});
+
+const learningDifferenceOptions = [
+  { value: "Dyslexia", label: "Dyslexia" },
+  { value: "ADHD", label: "ADHD" },
+  { value: "Dysgraphia", label: "Dysgraphia" },
+  { value: "Auditory Processing", label: "Auditory Processing" },
+  { value: "Executive Function", label: "Executive Function" },
+  { value: "Autism Spectrum", label: "Autism Spectrum" },
+  { value: "Other", label: "Other" },
+];
 
 interface RegistrationFormProps {
   selectedPlan: string;
@@ -25,6 +40,9 @@ const RegistrationForm = ({ selectedPlan }: RegistrationFormProps) => {
       lastName: "",
       studentName: "",
       email: "",
+      phone: "",
+      studentAge: "",
+      primaryLearningDifference: "",
     },
   });
 
@@ -34,13 +52,11 @@ const RegistrationForm = ({ selectedPlan }: RegistrationFormProps) => {
     try {
       await submitBetaRegistration(data, selectedPlan);
       
-      // Show success toast
       toast({
         title: "Registration successful!",
         description: "Thank you for joining our beta program.",
       });
 
-      // Navigate to confirmation page with state data
       navigate("/beta-confirmed", { 
         state: { 
           firstName: data.firstName, 
@@ -93,6 +109,31 @@ const RegistrationForm = ({ selectedPlan }: RegistrationFormProps) => {
             label="Email Address"
             placeholder="Your email address"
             type="email"
+          />
+
+          <InputField
+            control={form.control}
+            name="phone"
+            label="Phone Number"
+            placeholder="(555) 123-4567"
+            type="tel"
+          />
+          
+          <SelectField
+            control={form.control}
+            name="studentAge"
+            label="Student's Age"
+            placeholder="Select age"
+            options={studentAgeOptions}
+          />
+          
+          <SelectField
+            control={form.control}
+            name="primaryLearningDifference"
+            label="Primary Learning Difference"
+            placeholder="Select if applicable"
+            options={learningDifferenceOptions}
+            optional={true}
           />
           
           <Button 

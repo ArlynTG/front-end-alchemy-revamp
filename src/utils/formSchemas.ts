@@ -22,6 +22,9 @@ export const registrationSchema = z.object({
   lastName: z.string().min(1, "Last name is required"),
   studentName: z.string().optional(),
   email: z.string().email("Please enter a valid email address"),
+  phone: z.string().min(10, "Please enter a valid phone number"),
+  studentAge: z.string().min(1, "Student's age is required"),
+  primaryLearningDifference: z.string().optional(),
 });
 
 // Export types for use in components
