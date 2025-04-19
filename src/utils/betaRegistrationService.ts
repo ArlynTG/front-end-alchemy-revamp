@@ -33,6 +33,12 @@ export const submitBetaRegistration = async (data: RegistrationFormValues, planT
       throw new Error('Missing required fields for registration');
     }
     
+    // Validate student age is within the allowed range
+    const validStudentAges = ['8', '9', '10', '11', '12', '13', '14', '15', '16'];
+    if (!validStudentAges.includes(data.studentAge)) {
+      throw new Error('Student age must be between 8 and 16');
+    }
+    
     // Create the insertion object with all necessary fields
     const insertData: BetaRegistration = {
       first_name: data.firstName,
@@ -47,22 +53,11 @@ export const submitBetaRegistration = async (data: RegistrationFormValues, planT
     
     console.log("Insertion data to be sent to Supabase:", insertData);
     
-    // Test the connection to Supabase with a simple query
-    const { error: connectionError } = await supabase
-      .from('beta_registrations')
-      .select('count')
-      .limit(1) as any;
-      
-    if (connectionError) {
-      console.error("Supabase connection test failed:", connectionError);
-      throw new Error(`Failed to connect to Supabase: ${connectionError.message}`);
-    }
-    
     // Perform the insert with detailed error handling
     const { error, data: insertedData } = await supabase
       .from('beta_registrations')
       .insert(insertData)
-      .select() as any;
+      .select();
 
     if (error) {
       console.error("Supabase insert error:", error);
@@ -74,11 +69,7 @@ export const submitBetaRegistration = async (data: RegistrationFormValues, planT
       throw new Error(`Failed to submit registration: ${error.message || 'Unknown error'}`);
     }
 
-    if (!insertedData || insertedData.length === 0) {
-      console.warn("No data returned from successful insert");
-    } else {
-      console.log("Registration successful with inserted data:", insertedData);
-    }
+    console.log("Registration successful with inserted data:", insertedData);
     
     return { success: true, data: insertedData };
   } catch (error) {
