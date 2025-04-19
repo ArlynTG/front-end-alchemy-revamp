@@ -32,8 +32,12 @@ export const submitBetaRegistration = async (data: RegistrationFormValues, planT
     
     console.log("Insertion data to be sent to Supabase:", insertData);
     
-    // Test the connection to Supabase
-    const { error: connectionError } = await supabase.from('beta_registrations').select('count').limit(1);
+    // Test the connection to Supabase with a simple query
+    const { error: connectionError } = await supabase
+      .from('beta_registrations' as any)
+      .select('count')
+      .limit(1);
+      
     if (connectionError) {
       console.error("Supabase connection test failed:", connectionError);
       throw new Error(`Failed to connect to Supabase: ${connectionError.message}`);
@@ -41,8 +45,8 @@ export const submitBetaRegistration = async (data: RegistrationFormValues, planT
     
     // Perform the insert with detailed error handling
     const { error, data: insertedData } = await supabase
-      .from('beta_registrations')
-      .insert(insertData)
+      .from('beta_registrations' as any)
+      .insert(insertData as any)
       .select();
 
     if (error) {
