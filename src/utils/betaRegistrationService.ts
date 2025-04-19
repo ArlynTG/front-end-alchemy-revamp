@@ -3,6 +3,21 @@ import { supabase } from "@/integrations/supabase/client";
 import { toast } from "@/components/ui/use-toast";
 import { RegistrationFormValues } from "@/utils/formSchemas";
 
+// Define a type for the beta_registrations table
+type BetaRegistration = {
+  id?: string;
+  first_name: string;
+  last_name: string;
+  email: string;
+  student_name: string | null;
+  phone: string;
+  student_age: string;
+  primary_learning_difference: string | null;
+  plan_type: string;
+  created_at?: string;
+  updated_at?: string;
+}
+
 export const submitBetaRegistration = async (data: RegistrationFormValues, planType: string) => {
   try {
     console.log("Submitting beta registration:", { data, planType });
@@ -19,7 +34,7 @@ export const submitBetaRegistration = async (data: RegistrationFormValues, planT
     }
     
     // Create the insertion object with all necessary fields
-    const insertData = {
+    const insertData: BetaRegistration = {
       first_name: data.firstName,
       last_name: data.lastName,
       email: data.email,
@@ -34,9 +49,9 @@ export const submitBetaRegistration = async (data: RegistrationFormValues, planT
     
     // Test the connection to Supabase with a simple query
     const { error: connectionError } = await supabase
-      .from('beta_registrations' as any)
+      .from('beta_registrations')
       .select('count')
-      .limit(1);
+      .limit(1) as any;
       
     if (connectionError) {
       console.error("Supabase connection test failed:", connectionError);
@@ -45,9 +60,9 @@ export const submitBetaRegistration = async (data: RegistrationFormValues, planT
     
     // Perform the insert with detailed error handling
     const { error, data: insertedData } = await supabase
-      .from('beta_registrations' as any)
-      .insert(insertData as any)
-      .select();
+      .from('beta_registrations')
+      .insert(insertData)
+      .select() as any;
 
     if (error) {
       console.error("Supabase insert error:", error);
