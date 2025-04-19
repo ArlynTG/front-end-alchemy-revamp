@@ -53,32 +53,25 @@ export const submitBetaRegistration = async (data: RegistrationFormValues, planT
     
     console.log("Insertion data to be sent to Supabase:", insertData);
     
-    // Use a different approach to bypass the TypeScript errors
-    // Cast the response directly without casting the method calls
-    const response = await supabase
+    const { data: insertedData, error } = await supabase
       .from('beta_registrations')
       .insert(insertData)
-      .select();
-      
-    // Cast the response after receiving it
-    const result = response as unknown as {
-      error: { code?: string, message?: string } | null;
-      data: any[] | null;
-    };
+      .select()
+      .single();
 
-    if (result.error) {
-      console.error("Supabase insert error:", result.error);
+    if (error) {
+      console.error("Supabase insert error:", error);
       
-      if (result.error.code === '23505') {
+      if (error.code === '23505') {
         throw new Error('This email has already been registered for the beta.');
       }
       
-      throw new Error(`Failed to submit registration: ${result.error.message || 'Unknown error'}`);
+      throw new Error(`Failed to submit registration: ${error.message || 'Unknown error'}`);
     }
 
-    console.log("Registration successful with inserted data:", result.data);
+    console.log("Registration successful with inserted data:", insertedData);
     
-    return { success: true, data: result.data };
+    return { success: true, data: insertedData };
   } catch (error) {
     console.error('Error submitting beta registration:', error);
     throw error;
