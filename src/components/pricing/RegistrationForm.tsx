@@ -7,6 +7,8 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { Form } from "@/components/ui/form";
 import { InputField } from "@/components/form/FormField";
 import { registrationSchema, RegistrationFormValues } from "@/utils/formSchemas";
+import { submitBetaRegistration } from "@/utils/betaRegistrationService";
+import { toast } from "@/components/ui/use-toast";
 
 interface RegistrationFormProps {
   selectedPlan: string;
@@ -26,12 +28,18 @@ const RegistrationForm = ({ selectedPlan }: RegistrationFormProps) => {
     },
   });
 
-  const handleSubmit = form.handleSubmit((data) => {
+  const handleSubmit = form.handleSubmit(async (data) => {
     setIsLoading(true);
     
-    // Simulate API call
-    setTimeout(() => {
-      setIsLoading(false);
+    try {
+      await submitBetaRegistration(data, selectedPlan);
+      
+      // Show success toast
+      toast({
+        title: "Registration successful!",
+        description: "Thank you for joining our beta program.",
+      });
+
       // Navigate to confirmation page with state data
       navigate("/beta-confirmed", { 
         state: { 
@@ -42,7 +50,15 @@ const RegistrationForm = ({ selectedPlan }: RegistrationFormProps) => {
           planType: selectedPlan
         } 
       });
-    }, 1000);
+    } catch (error) {
+      toast({
+        title: "Registration failed",
+        description: error instanceof Error ? error.message : "There was an error submitting your registration. Please try again.",
+        variant: "destructive",
+      });
+    } finally {
+      setIsLoading(false);
+    }
   });
 
   return (
@@ -96,4 +112,3 @@ const RegistrationForm = ({ selectedPlan }: RegistrationFormProps) => {
 };
 
 export default RegistrationForm;
-
