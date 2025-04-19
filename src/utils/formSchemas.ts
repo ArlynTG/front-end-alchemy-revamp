@@ -1,5 +1,9 @@
 
 import { z } from "zod";
+import { Database } from "@/integrations/supabase/types";
+
+// Get learning difference options from the database types
+type LearningDifference = Database["public"]["Enums"]["learning_difference"];
 
 // Base schema with common fields
 export const baseSignupSchema = z.object({
@@ -13,7 +17,7 @@ export const baseSignupSchema = z.object({
 export const detailedSignupSchema = baseSignupSchema.extend({
   phone: z.string().min(10, "Please enter a valid phone number"),
   studentAge: z.string().min(1, "Student's age is required"),
-  primaryLearningDifference: z.string().optional(),
+  primaryLearningDifference: z.enum(['Dyslexia', 'ADHD', 'Dysgraphia', 'Auditory Processing', 'Executive Function', 'Other'] as [LearningDifference, ...LearningDifference[]]).optional(),
 });
 
 // Registration-specific schema with optional student name
@@ -24,7 +28,7 @@ export const registrationSchema = z.object({
   email: z.string().email("Please enter a valid email address"),
   phone: z.string().min(10, "Please enter a valid phone number"),
   studentAge: z.string().min(1, "Student's age is required"),
-  primaryLearningDifference: z.string().optional(),
+  primaryLearningDifference: z.enum(['Dyslexia', 'ADHD', 'Dysgraphia', 'Auditory Processing', 'Executive Function', 'Other'] as [LearningDifference, ...LearningDifference[]]).optional(),
 });
 
 // Export types for use in components

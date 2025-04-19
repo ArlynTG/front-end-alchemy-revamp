@@ -2,6 +2,7 @@
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "@/components/ui/use-toast";
 import { RegistrationFormValues } from "@/utils/formSchemas";
+import { Database } from "@/integrations/supabase/types";
 
 // Define a type for the beta_registrations table
 type BetaRegistration = {
@@ -12,7 +13,7 @@ type BetaRegistration = {
   student_name: string | null;
   phone: string;
   student_age: string;
-  primary_learning_difference: string | null;
+  primary_learning_difference: Database["public"]["Enums"]["learning_difference"] | null;
   plan_type: string;
   created_at?: string;
   updated_at?: string;
@@ -47,7 +48,7 @@ export const submitBetaRegistration = async (data: RegistrationFormValues, planT
       student_name: data.studentName || null,
       phone: data.phone,
       student_age: data.studentAge,
-      primary_learning_difference: data.primaryLearningDifference || null,
+      primary_learning_difference: data.primaryLearningDifference as Database["public"]["Enums"]["learning_difference"] || null,
       plan_type: planType
     };
     
