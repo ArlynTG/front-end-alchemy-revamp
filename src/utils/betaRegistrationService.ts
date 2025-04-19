@@ -7,6 +7,17 @@ export const submitBetaRegistration = async (data: RegistrationFormValues, planT
   try {
     console.log("Submitting beta registration:", { data, planType });
     
+    // Validate the input data
+    if (!data.firstName || !data.lastName || !data.email || !planType) {
+      console.error("Missing required fields:", { 
+        firstName: data.firstName, 
+        lastName: data.lastName, 
+        email: data.email, 
+        planType 
+      });
+      throw new Error('Missing required fields for registration');
+    }
+    
     // Create the insertion object with all necessary fields
     const insertData = {
       first_name: data.firstName,
@@ -19,7 +30,14 @@ export const submitBetaRegistration = async (data: RegistrationFormValues, planT
       plan_type: planType
     };
     
-    console.log("Insertion data:", insertData);
+    console.log("Insertion data to be sent to Supabase:", insertData);
+    
+    // Test the connection to Supabase
+    const { error: connectionError } = await supabase.from('beta_registrations').select('count').limit(1);
+    if (connectionError) {
+      console.error("Supabase connection test failed:", connectionError);
+      throw new Error(`Failed to connect to Supabase: ${connectionError.message}`);
+    }
     
     // Perform the insert with detailed error handling
     const { error, data: insertedData } = await supabase
@@ -28,15 +46,21 @@ export const submitBetaRegistration = async (data: RegistrationFormValues, planT
       .select();
 
     if (error) {
-      console.error("Supabase error:", error);
+      console.error("Supabase insert error:", error);
       
       if (error.code === '23505') {
         throw new Error('This email has already been registered for the beta.');
       }
-      throw new Error(`Failed to submit registration: ${error.message}`);
+      
+      throw new Error(`Failed to submit registration: ${error.message || 'Unknown error'}`);
     }
 
-    console.log("Registration successful:", insertedData);
+    if (!insertedData || insertedData.length === 0) {
+      console.warn("No data returned from successful insert");
+    } else {
+      console.log("Registration successful with inserted data:", insertedData);
+    }
+    
     return { success: true, data: insertedData };
   } catch (error) {
     console.error('Error submitting beta registration:', error);

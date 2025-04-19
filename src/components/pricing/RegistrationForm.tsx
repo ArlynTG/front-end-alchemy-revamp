@@ -33,6 +33,8 @@ const RegistrationForm = ({ selectedPlan }: RegistrationFormProps) => {
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
   
+  console.log("RegistrationForm initializing with plan:", selectedPlan);
+  
   const form = useForm<RegistrationFormValues>({
     resolver: zodResolver(registrationSchema),
     defaultValues: {
@@ -49,9 +51,13 @@ const RegistrationForm = ({ selectedPlan }: RegistrationFormProps) => {
   const handleSubmit = form.handleSubmit(async (data) => {
     setIsLoading(true);
     console.log("Form submitted with data:", data);
-    console.log("Selected plan:", selectedPlan);
+    console.log("Selected plan being sent to Supabase:", selectedPlan);
     
     try {
+      if (!selectedPlan) {
+        throw new Error("No plan selected. Please select a plan first.");
+      }
+      
       const result = await submitBetaRegistration(data, selectedPlan);
       console.log("Registration result:", result);
       
@@ -84,6 +90,9 @@ const RegistrationForm = ({ selectedPlan }: RegistrationFormProps) => {
   return (
     <div className="bg-white rounded-2xl shadow-md p-8 max-w-md mx-auto">
       <h3 className="text-2xl font-medium mb-6">Complete Your Registration</h3>
+      <p className="text-sm text-gray-600 mb-4">
+        Selected plan: <span className="font-medium">{selectedPlan}</span>
+      </p>
       <Form {...form}>
         <form onSubmit={handleSubmit} className="flex flex-col space-y-4">
           <InputField

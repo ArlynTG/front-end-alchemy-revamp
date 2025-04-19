@@ -15,6 +15,8 @@ const BetaRegistration = () => {
     const params = new URLSearchParams(location.search);
     const plan = params.get("plan");
     
+    console.log("BetaRegistration page loaded, URL params:", location.search);
+    
     if (plan) {
       console.log("Plan from URL:", plan);
       setSelectedPlan(plan);
@@ -35,8 +37,13 @@ const BetaRegistration = () => {
             Complete your registration to reserve your spot in our exclusive beta program.
           </p>
           
-          {selectedPlan && (
-            <RegistrationForm selectedPlan={selectedPlan} />
+          {selectedPlan ? (
+            <>
+              <p className="text-center mb-6">You're registering for the <strong>{selectedPlan}</strong> plan</p>
+              <RegistrationForm selectedPlan={selectedPlan} />
+            </>
+          ) : (
+            <p className="text-center">Loading plan information...</p>
           )}
         </div>
       </main>
