@@ -21,11 +21,12 @@ type BetaRegistration = {
 
 export const submitBetaRegistration = async (data: RegistrationFormValues, planType: string) => {
   try {
-    console.log("Service - Submitting beta registration:", { data, planType });
+    console.group("Beta Registration Service");
+    console.log("Submitting beta registration:", { data, planType });
     
     // Validate the input data
     if (!data.firstName || !data.lastName || !data.email || !planType) {
-      console.error("Service - Missing required fields:", { 
+      console.error("Missing required fields:", { 
         firstName: data.firstName, 
         lastName: data.lastName, 
         email: data.email, 
@@ -46,7 +47,7 @@ export const submitBetaRegistration = async (data: RegistrationFormValues, planT
       plan_type: planType
     };
     
-    console.log("Service - Insertion data to be sent to Supabase:", insertData);
+    console.log("Insertion data to be sent to Supabase:", insertData);
     
     const { data: insertedData, error } = await supabase
       .from('beta_registrations')
@@ -55,7 +56,7 @@ export const submitBetaRegistration = async (data: RegistrationFormValues, planT
       .single();
 
     if (error) {
-      console.error("Service - Supabase insert error:", error);
+      console.error("Supabase insert error:", error);
       
       if (error.code === '23505') {
         throw new Error('This email has already been registered for the beta.');
@@ -64,11 +65,13 @@ export const submitBetaRegistration = async (data: RegistrationFormValues, planT
       throw new Error(`Failed to submit registration: ${error.message || 'Unknown error'}`);
     }
 
-    console.log("Service - Registration successful with inserted data:", insertedData);
+    console.log("Registration successful with inserted data:", insertedData);
+    console.groupEnd();
     
     return { success: true, data: insertedData };
   } catch (error) {
-    console.error('Service - Error submitting beta registration:', error);
+    console.error('Error submitting beta registration:', error);
+    console.groupEnd();
     throw error;
   }
 };

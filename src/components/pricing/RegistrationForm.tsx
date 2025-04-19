@@ -1,7 +1,6 @@
-
 import { useState } from "react";
-import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
+import { Button } from "@/components/ui/button";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Form } from "@/components/ui/form";
@@ -32,7 +31,7 @@ const RegistrationForm = ({ selectedPlan }: RegistrationFormProps) => {
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
   
-  console.log("RegistrationForm initializing with plan:", selectedPlan);
+  console.log("RegistrationForm - Initializing with plan:", selectedPlan);
   
   const form = useForm<RegistrationFormValues>({
     resolver: zodResolver(registrationSchema),
@@ -43,20 +42,23 @@ const RegistrationForm = ({ selectedPlan }: RegistrationFormProps) => {
       email: "",
       phone: "",
       studentAge: "",
-      primaryLearningDifference: undefined, // Changed from empty string to undefined
+      primaryLearningDifference: undefined,
     },
   });
 
   const handleSubmit = form.handleSubmit(async (data) => {
+    console.group("Registration Form Submission");
+    console.log("Form Data:", data);
+    console.log("Selected Plan:", selectedPlan);
     setIsLoading(true);
-    console.log("Form submitted with data:", data);
-    console.log("Selected plan being sent to Supabase:", selectedPlan);
     
     try {
       if (!selectedPlan) {
+        console.error("No plan selected!");
         throw new Error("No plan selected. Please select a plan first.");
       }
       
+      console.log("Attempting to submit registration...");
       const result = await submitBetaRegistration(data, selectedPlan);
       console.log("Registration result:", result);
       
@@ -75,13 +77,14 @@ const RegistrationForm = ({ selectedPlan }: RegistrationFormProps) => {
         } 
       });
     } catch (error) {
-      console.error("Registration error:", error);
+      console.error("Registration Error:", error);
       toast({
         title: "Registration failed",
         description: error instanceof Error ? error.message : "There was an error submitting your registration. Please try again.",
         variant: "destructive",
       });
     } finally {
+      console.groupEnd();
       setIsLoading(false);
     }
   });
