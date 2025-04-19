@@ -18,7 +18,9 @@ export type Database = {
           last_name: string
           phone: string
           plan_type: string
-          primary_learning_difference: string | null
+          primary_learning_difference:
+            | Database["public"]["Enums"]["learning_difference"]
+            | null
           student_age: string
           student_name: string | null
           updated_at: string
@@ -31,7 +33,9 @@ export type Database = {
           last_name: string
           phone: string
           plan_type: string
-          primary_learning_difference?: string | null
+          primary_learning_difference?:
+            | Database["public"]["Enums"]["learning_difference"]
+            | null
           student_age: string
           student_name?: string | null
           updated_at?: string
@@ -44,7 +48,9 @@ export type Database = {
           last_name?: string
           phone?: string
           plan_type?: string
-          primary_learning_difference?: string | null
+          primary_learning_difference?:
+            | Database["public"]["Enums"]["learning_difference"]
+            | null
           student_age?: string
           student_name?: string | null
           updated_at?: string
@@ -59,7 +65,13 @@ export type Database = {
       [_ in never]: never
     }
     Enums: {
-      [_ in never]: never
+      learning_difference:
+        | "Dyslexia"
+        | "ADHD"
+        | "Dysgraphia"
+        | "Auditory Processing"
+        | "Executive Function"
+        | "Other"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -174,6 +186,15 @@ export type CompositeTypes<
 
 export const Constants = {
   public: {
-    Enums: {},
+    Enums: {
+      learning_difference: [
+        "Dyslexia",
+        "ADHD",
+        "Dysgraphia",
+        "Auditory Processing",
+        "Executive Function",
+        "Other",
+      ],
+    },
   },
 } as const
