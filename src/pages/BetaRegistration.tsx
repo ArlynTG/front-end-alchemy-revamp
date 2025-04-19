@@ -16,9 +16,11 @@ const BetaRegistration = () => {
     const plan = params.get("plan");
     
     if (plan) {
+      console.log("Plan from URL:", plan);
       setSelectedPlan(plan);
     } else {
       // If no plan is selected, redirect to pricing
+      console.log("No plan selected, redirecting to pricing");
       navigate("/#pricing");
     }
   }, [location, navigate]);

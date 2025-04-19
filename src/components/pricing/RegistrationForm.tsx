@@ -49,6 +49,7 @@ const RegistrationForm = ({ selectedPlan }: RegistrationFormProps) => {
   const handleSubmit = form.handleSubmit(async (data) => {
     setIsLoading(true);
     console.log("Form submitted with data:", data);
+    console.log("Selected plan:", selectedPlan);
     
     try {
       const result = await submitBetaRegistration(data, selectedPlan);

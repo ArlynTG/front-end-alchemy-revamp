@@ -7,18 +7,24 @@ export const submitBetaRegistration = async (data: RegistrationFormValues, planT
   try {
     console.log("Submitting beta registration:", { data, planType });
     
+    // Create the insertion object with all necessary fields
+    const insertData = {
+      first_name: data.firstName,
+      last_name: data.lastName,
+      email: data.email,
+      student_name: data.studentName || null,
+      phone: data.phone,
+      student_age: data.studentAge,
+      primary_learning_difference: data.primaryLearningDifference || null,
+      plan_type: planType
+    };
+    
+    console.log("Insertion data:", insertData);
+    
+    // Perform the insert with detailed error handling
     const { error, data: insertedData } = await supabase
       .from('beta_registrations')
-      .insert({
-        first_name: data.firstName,
-        last_name: data.lastName,
-        email: data.email,
-        student_name: data.studentName || null,
-        phone: data.phone,
-        student_age: data.studentAge,
-        primary_learning_difference: data.primaryLearningDifference || null,
-        plan_type: planType
-      })
+      .insert(insertData)
       .select();
 
     if (error) {
@@ -31,7 +37,7 @@ export const submitBetaRegistration = async (data: RegistrationFormValues, planT
     }
 
     console.log("Registration successful:", insertedData);
-    return { success: true };
+    return { success: true, data: insertedData };
   } catch (error) {
     console.error('Error submitting beta registration:', error);
     throw error;
