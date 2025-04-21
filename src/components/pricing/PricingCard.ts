@@ -1,5 +1,6 @@
 
-export interface PricingPlan {
+import { PricingCardProps } from "./PricingCard.tsx";
+export type PricingPlan = {
   id: string;
   name: string;
   price: string;
@@ -8,4 +9,7 @@ export interface PricingPlan {
   features: string[];
   highlighted?: boolean;
   disabled?: boolean;
-}
+};
+
+// Add a default export for compatibility
+export default PricingCardProps;

@@ -1,7 +1,7 @@
 
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import PricingCard from "./pricing/PricingCard";
+import PricingCard from "./pricing/PricingCard.tsx";
 import { pricingPlans } from "./pricing/pricingData";
 import BetaSignupModal from "./pricing/BetaSignupModal";
 
