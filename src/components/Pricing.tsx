@@ -26,7 +26,7 @@ const Pricing = () => {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-12">
           {pricingPlans.map((plan) => (
             <PricingCard 
-              key={plan.id} 
+              key={plan.id} // This is a special React prop, not passed to component
               plan={plan} 
               onSelect={handlePlanSelect}
             />
