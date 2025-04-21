@@ -24,11 +24,7 @@ const PricingCard: React.FC<PricingCardProps> = ({ plan, onSelect }) => {
         plan.popular ? 'border-tobey-orange ring-2 ring-tobey-orange/20' : 'border-gray-200'
       }`}
     >
-      {plan.popular && (
-        <div className="py-1 px-3 text-xs bg-tobey-orange text-white rounded-full self-start mb-2">
-          Most Popular
-        </div>
-      )}
+      {/* Removed the Most Popular button */}
       
       <h3 className="text-xl font-semibold mb-1">{plan.name}</h3>
       <div className="mb-4">
