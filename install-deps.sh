@@ -23,3 +23,4 @@ npm install --no-save @radix-ui/react-toast @radix-ui/react-tooltip @radix-ui/re
 chmod +x ./install-deps.sh
 
 echo "Core dependencies installed. Run 'npm run dev' to start the application."
+

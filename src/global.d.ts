@@ -18,3 +18,4 @@ declare module 'lovable-tagger' {
 
 // Ensure this is treated as a module
 export {};
+

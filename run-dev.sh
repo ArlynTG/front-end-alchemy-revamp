@@ -9,3 +9,4 @@ chmod +x install-deps.sh
 
 # Run Vite directly from node_modules
 npx vite
+
