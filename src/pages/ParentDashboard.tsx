@@ -12,6 +12,7 @@ import { useToast } from "@/hooks/use-toast";
 import ChatInterface from "@/components/chat/ChatInterface";
 import Navbar from "@/components/Navbar";
 import { Book, Clock, CalendarIcon, MessageSquare, Bell } from "lucide-react";
+import { ResizablePanelGroup, ResizablePanel, ResizableHandle } from "@/components/ui/resizable";
 
 const ParentDashboard = () => {
   const [selectedDays, setSelectedDays] = useState<number[]>([1, 3, 5]); // Monday, Wednesday, Friday
@@ -103,63 +104,75 @@ const ParentDashboard = () => {
         </div>
         
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-          {/* Left Section */}
-          <div className="space-y-6">
-            {/* Schedule Tab */}
-            <Card>
-              <CardHeader>
-                <CardTitle>Tutoring Schedule</CardTitle>
-                <CardDescription>Set which days {studentData.name} should be tutored</CardDescription>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-4">
-                  {/* Days of Week Checkboxes */}
-                  <div className="grid grid-cols-2 gap-4">
-                    {daysOfWeek.map((day, index) => (
-                      <div key={day} className="flex items-center space-x-2">
-                        <Checkbox 
-                          id={`day-${index}`}
-                          checked={selectedDays.includes(index)}
-                          onCheckedChange={(checked) => {
-                            if (checked) {
-                              setSelectedDays([...selectedDays, index].sort());
-                            } else {
-                              setSelectedDays(selectedDays.filter(d => d !== index));
-                            }
-                          }}
-                        />
-                        <Label htmlFor={`day-${index}`}>{day}</Label>
-                      </div>
-                    ))}
+          {/* Left Section - Combined Schedule and Calendar */}
+          <Card className="overflow-hidden">
+            <CardHeader>
+              <CardTitle className="flex items-center">
+                <CalendarIcon className="h-5 w-5 mr-2 text-green-500" />
+                Tutoring Schedule & Calendar
+              </CardTitle>
+              <CardDescription>Manage when {studentData.name} should be tutored</CardDescription>
+            </CardHeader>
+            <CardContent className="p-0">
+              <ResizablePanelGroup direction="horizontal" className="min-h-[400px]">
+                {/* Schedule Panel */}
+                <ResizablePanel defaultSize={40} minSize={30}>
+                  <div className="p-6 h-full">
+                    <h4 className="text-sm font-medium mb-4">Weekly Schedule</h4>
+                    {/* Days of Week Checkboxes */}
+                    <div className="grid grid-cols-1 gap-2 mb-6">
+                      {daysOfWeek.map((day, index) => (
+                        <div key={day} className="flex items-center space-x-2">
+                          <Checkbox 
+                            id={`day-${index}`}
+                            checked={selectedDays.includes(index)}
+                            onCheckedChange={(checked) => {
+                              if (checked) {
+                                setSelectedDays([...selectedDays, index].sort());
+                              } else {
+                                setSelectedDays(selectedDays.filter(d => d !== index));
+                              }
+                            }}
+                          />
+                          <Label htmlFor={`day-${index}`}>{day}</Label>
+                        </div>
+                      ))}
+                    </div>
+                    
+                    <Button 
+                      onClick={handleSaveSchedule} 
+                      className="w-full"
+                    >
+                      Save Schedule
+                    </Button>
                   </div>
-                  
-                  <div className="pt-4">
-                    <Button onClick={handleSaveSchedule}>Save Schedule</Button>
+                </ResizablePanel>
+                
+                {/* Resizable Handle */}
+                <ResizableHandle withHandle />
+                
+                {/* Calendar Panel */}
+                <ResizablePanel defaultSize={60}>
+                  <div className="p-6 h-full flex flex-col">
+                    <h4 className="text-sm font-medium mb-4">Session Calendar</h4>
+                    <div className="flex-grow flex items-center justify-center">
+                      <Calendar 
+                        mode="single"
+                        disabled={{
+                          dayOfWeek: [0, 2, 4, 6].filter(day => !selectedDays.includes(day))
+                        }}
+                        className="rounded-md border"
+                      />
+                    </div>
+                    <div className="flex items-center mt-4">
+                      <div className="w-4 h-4 bg-purple-200 rounded-full mr-2"></div>
+                      <span className="text-sm text-gray-600">Scheduled Session Days</span>
+                    </div>
                   </div>
-                </div>
-              </CardContent>
-            </Card>
-            
-            {/* Calendar Card */}
-            <Card>
-              <CardHeader>
-                <CardTitle>Calendar</CardTitle>
-                <CardDescription>View upcoming tutoring sessions</CardDescription>
-              </CardHeader>
-              <CardContent>
-                <Calendar 
-                  mode="single"
-                  disabled={{
-                    dayOfWeek: [0, 2, 4, 6].filter(day => !selectedDays.includes(day))
-                  }}
-                />
-                <div className="flex items-center mt-4">
-                  <div className="w-4 h-4 bg-purple-200 rounded-full mr-2"></div>
-                  <span className="text-sm text-gray-600">Scheduled Session Days</span>
-                </div>
-              </CardContent>
-            </Card>
-          </div>
+                </ResizablePanel>
+              </ResizablePanelGroup>
+            </CardContent>
+          </Card>
           
           {/* Right Section */}
           <div className="space-y-6">
