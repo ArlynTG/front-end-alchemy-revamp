@@ -3,18 +3,17 @@ import React from 'react';
 import { Button } from "@/components/ui/button";
 import { Check } from "lucide-react";
 
-export interface PricingPlan {
-  id: string;
-  name: string;
-  price: string;
-  description: string;
-  callToAction: string;
-  features: string[];
-  popular?: boolean;
-}
-
+// Define the interface for the component props
 export interface PricingCardProps {
-  plan: PricingPlan;
+  plan: {
+    id: string;
+    name: string;
+    price: string;
+    description: string;
+    callToAction: string;
+    features: string[];
+    popular?: boolean;
+  };
   onSelect: (planId: string) => void;
 }
 
