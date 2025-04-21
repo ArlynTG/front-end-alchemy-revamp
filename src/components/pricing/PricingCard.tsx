@@ -24,10 +24,22 @@ const PricingCard: React.FC<PricingCardProps> = ({ plan, onSelect }) => {
       <div className="relative z-10 flex flex-col h-full">
         <div className="flex-grow">
           <h3 className="text-xl font-semibold mb-1 text-left">{plan.name}</h3>
-          <div className="mb-4 text-left">
-            <span className="text-3xl font-bold">${plan.price}</span>
-            {plan.period && <span className="text-gray-500">/{plan.period}</span>}
-          </div>
+          
+          {isHighlighted && (
+            <div className="bg-tobey-peach/20 px-3 py-2 rounded-lg mb-4">
+              <div className="text-left">
+                <span className="text-3xl font-bold">${plan.price}</span>
+                {plan.period && <span className="text-gray-500">/{plan.period}</span>}
+              </div>
+            </div>
+          )}
+          
+          {!isHighlighted && (
+            <div className="mb-4 text-left">
+              <span className="text-3xl font-bold">${plan.price}</span>
+              {plan.period && <span className="text-gray-500">/{plan.period}</span>}
+            </div>
+          )}
           
           <p className="text-gray-600 mb-6 text-left">{plan.description}</p>
           
