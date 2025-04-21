@@ -24,10 +24,6 @@ const PricingCard: React.FC<PricingCardProps> = ({ plan, onSelect }) => {
       }`}
     >
       <div className="relative z-10 flex flex-col h-full">
-        {isHighlighted && (
-          <div className="absolute top-0 left-0 right-0 h-24 bg-tobey-peach/20 -mx-2 -mt-2"></div>
-        )}
-        
         <div className="relative z-20 flex-grow">
           <h3 className="text-xl font-semibold mb-1 text-left">{plan.name}</h3>
           
