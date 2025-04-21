@@ -44,7 +44,7 @@ const Hero = () => {
           <div className="feature-highlight bg-gradient-to-br from-white to-tobey-peach/60 p-6 rounded-xl shadow-sm relative overflow-hidden backdrop-blur-sm">
             <div className="relative z-10">
               <h4 className="font-medium mb-2">Proven</h4>
-              <p className="text-sm text-gray-600">Guided by research-backed approaches like Orton Gillingham and structured literacy techniques.</p>
+              <p className="text-sm text-gray-600">Research-backed methodologies including Orton Gillingham and structured literacy techniques inform our comprehensive learning approach</p>
             </div>
             <div className="absolute -bottom-2 -right-2 w-16 h-16 bg-tobey-peach rounded-full opacity-40 blur-md"></div>
           </div>
