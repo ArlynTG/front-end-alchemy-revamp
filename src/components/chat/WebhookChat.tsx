@@ -1,11 +1,9 @@
-
 import React, { useState, useRef, useEffect } from "react";
-import { SendHorizontal, Loader2, RefreshCw, Settings } from "lucide-react";
+import { SendHorizontal, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { useToast } from "@/hooks/use-toast";
-import { Alert, AlertDescription } from "@/components/ui/alert";
 import ConnectionErrorAlert from "@/components/chat/ConnectionErrorAlert";
 
 interface Message {
@@ -119,29 +117,10 @@ const WebhookChat: React.FC = () => {
     }
   };
 
-  const handleStartOver = () => {
-    setMessages([
-      {
-        role: "assistant",
-        content: "Hi there! I'm Tobey AI. How can I help you today?",
-      },
-    ]);
-    setError(null);
-  };
-
   return (
     <div className="flex flex-col h-full rounded-lg border shadow-lg bg-white overflow-hidden">
       <div className="bg-gradient-to-r from-tobey-orange to-tobey-darkOrange text-white py-3 px-4 flex justify-between items-center">
         <h3 className="font-medium">Tobey AI Assistant</h3>
-        <Button 
-          variant="ghost" 
-          size="sm" 
-          onClick={handleStartOver}
-          className="text-white hover:bg-tobey-orange/20"
-        >
-          <RefreshCw className="h-4 w-4 mr-1" />
-          Start Over
-        </Button>
       </div>
       
       <ScrollArea ref={scrollAreaRef} className="flex-1 p-4 overflow-auto">
