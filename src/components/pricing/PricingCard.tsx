@@ -55,4 +55,5 @@ const PricingCard: React.FC<PricingCardProps> = ({ plan, onSelect }) => {
   );
 };
 
+// Add explicit default export
 export default PricingCard;
