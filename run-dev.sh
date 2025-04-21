@@ -1,11 +1,8 @@
 
 #!/bin/bash
 
-# Make sure scripts are executable
-chmod +x install-deps.sh
+# Make sure dependencies are installed
+npm install
 
-# Install dependencies if needed
-./install-deps.sh
-
-# Run Vite directly
-npx vite
+# Run the development server
+npx vite --port 8080
