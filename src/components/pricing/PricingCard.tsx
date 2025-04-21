@@ -19,21 +19,15 @@ const PricingCard: React.FC<PricingCardProps> = ({ plan, onSelect }) => {
         isHighlighted ? 'border-tobey-orange ring-2 ring-tobey-orange/20' : 'border-gray-200'
       }`}
     >
-      {isHighlighted && (
-        <div className="bg-tobey-orange text-white text-sm font-medium px-3 py-1 rounded-full self-start mb-4">
-          Most Popular
-        </div>
-      )}
-      
-      <h3 className="text-xl font-semibold mb-1">{plan.name}</h3>
-      <div className="mb-4">
+      <h3 className="text-xl font-semibold mb-1 text-left">{plan.name}</h3>
+      <div className="mb-4 text-left">
         <span className="text-3xl font-bold">${plan.price}</span>
         {plan.period && <span className="text-gray-500">/{plan.period}</span>}
       </div>
       
-      <p className="text-gray-600 mb-6">{plan.description}</p>
+      <p className="text-gray-600 mb-6 text-left">{plan.description}</p>
       
-      <ul className="mb-8 space-y-3 flex-grow">
+      <ul className="mb-8 space-y-3 flex-grow text-left">
         {plan.features.map((feature, index) => (
           <li key={index} className="flex items-start">
             <Check className="h-5 w-5 text-tobey-orange mt-0.5 mr-2 flex-shrink-0" />
