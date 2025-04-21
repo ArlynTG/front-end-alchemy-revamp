@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { Button } from "@/components/ui/button";
 import { Check } from "lucide-react";
@@ -32,7 +33,6 @@ const PricingCard: React.FC<PricingCardProps> = ({ plan, onSelect }) => {
                 <span className="text-3xl font-bold">${plan.price}</span>
                 {plan.period && <span className="text-gray-500">/{plan.period}</span>}
               </div>
-              <p className="text-gray-600 text-sm mt-1">Start with a 7-day free trial</p>
             </div>
           )}
           
@@ -75,3 +75,4 @@ const PricingCard: React.FC<PricingCardProps> = ({ plan, onSelect }) => {
 };
 
 export default PricingCard;
+
