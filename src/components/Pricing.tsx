@@ -27,15 +27,7 @@ const Pricing = () => {
           {pricingPlans.map((plan) => (
             <PricingCard 
               key={plan.id}
-              plan={{
-                id: plan.id,
-                name: plan.name,
-                price: `$${plan.price}`,
-                description: plan.description,
-                features: plan.features,
-                callToAction: "Reserve Your Spot",
-                popular: plan.highlighted
-              }}
+              plan={plan}
               onSelect={handlePlanSelect}
             />
           ))}

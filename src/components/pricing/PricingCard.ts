@@ -1,5 +1,5 @@
 
-import { PricingCardProps } from "./PricingCard.tsx";
+// Define the interface for the PricingPlan data structure
 export type PricingPlan = {
   id: string;
   name: string;
@@ -11,5 +11,5 @@ export type PricingPlan = {
   disabled?: boolean;
 };
 
-// Add a default export for compatibility
-export default PricingCardProps;
+// Export the type as the default export
+export type { PricingPlan as default };
