@@ -1,7 +1,7 @@
 
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import PricingCard from "./pricing/PricingCard.tsx";
+import PricingCard from "./pricing/PricingCard";
 import { pricingPlans } from "./pricing/pricingData";
 import BetaSignupModal from "./pricing/BetaSignupModal";
 
@@ -33,7 +33,7 @@ const Pricing = () => {
                 price: `$${plan.price}`,
                 description: plan.description,
                 features: plan.features,
-                callToAction: plan.highlighted ? "Get Started" : "Join Waitlist",
+                callToAction: "Reserve Your Spot",
                 popular: plan.highlighted
               }}
               onSelect={handlePlanSelect}

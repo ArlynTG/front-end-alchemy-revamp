@@ -49,7 +49,7 @@ const PricingCard: React.FC<PricingCardProps> = ({ plan, onSelect }) => {
         }`}
         onClick={() => onSelect(plan.id)}
       >
-        {plan.callToAction}
+        Reserve Your Spot
       </Button>
     </div>
   );
