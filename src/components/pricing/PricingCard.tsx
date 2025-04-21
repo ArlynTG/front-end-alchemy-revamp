@@ -15,9 +15,11 @@ const PricingCard: React.FC<PricingCardProps> = ({ plan, onSelect }) => {
   
   return (
     <div 
-      className={`p-6 rounded-xl shadow-sm relative overflow-hidden backdrop-blur-sm ${
-        isHighlighted ? 'bg-white border border-tobey-orange/20' : 'bg-gradient-to-br from-white to-tobey-peach/60'
-      } ${
+      className={`p-6 rounded-xl relative overflow-hidden 
+        ${isHighlighted 
+          ? 'bg-white border-2 border-tobey-orange/20 shadow-md' 
+          : 'bg-gradient-to-br from-white to-tobey-peach/60'
+        } ${
         isDisabled ? 'opacity-60' : ''
       }`}
     >
