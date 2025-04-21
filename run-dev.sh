@@ -7,6 +7,5 @@ chmod +x install-deps.sh
 # Install dependencies if needed
 ./install-deps.sh
 
-# Run Vite directly from node_modules
+# Run Vite directly
 npx vite
-
