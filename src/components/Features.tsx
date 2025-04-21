@@ -38,17 +38,22 @@ const Features = () => {
   return (
     <section id="features" className="py-16 md:py-24 bg-white">
       <div className="container">
-        <span className="section-tag">Features</span>
-        <h2 className="section-title"><strong>Tailored Learning. Limitless Potential.</strong></h2>
+        <span className="section-tag animate-fade-in">Features</span>
+        <h2 className="section-title animate-fade-in opacity-0" style={{ animationDelay: '200ms', animationFillMode: 'forwards' }}>
+          <strong>Tailored Learning. Limitless Potential.</strong>
+        </h2>
         
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
           {features.map((feature, index) => (
             <div 
               key={index} 
-              className="feature-card hover:shadow-md transition-shadow animate-fade-in"
-              style={{ animationDelay: `${index * 100}ms` }}
+              className="feature-card hover:shadow-lg transition-all duration-300 animate-fade-in opacity-0"
+              style={{ 
+                animationDelay: `${(index + 2) * 200}ms`,
+                animationFillMode: 'forwards'
+              }}
             >
-              <div className="mb-4">{feature.icon}</div>
+              <div className="mb-4 transform transition-transform duration-300 group-hover:scale-110">{feature.icon}</div>
               <h3 className="text-xl font-medium mb-2">{feature.title}</h3>
               <p className="text-gray-600">{feature.description}</p>
             </div>
