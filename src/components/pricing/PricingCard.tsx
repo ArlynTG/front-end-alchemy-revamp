@@ -15,8 +15,8 @@ const PricingCard: React.FC<PricingCardProps> = ({ plan, onSelect }) => {
   
   return (
     <div 
-      className={`feature-highlight bg-gradient-to-br from-white to-tobey-peach/60 p-6 rounded-xl shadow-sm relative overflow-hidden backdrop-blur-sm ${
-        isHighlighted ? 'ring-2 ring-tobey-orange/20' : ''
+      className={`p-6 rounded-xl shadow-sm relative overflow-hidden backdrop-blur-sm ${
+        isHighlighted ? 'bg-white border border-tobey-orange/20' : 'bg-gradient-to-br from-white to-tobey-peach/60'
       } ${
         isDisabled ? 'opacity-60' : ''
       }`}
@@ -53,7 +53,9 @@ const PricingCard: React.FC<PricingCardProps> = ({ plan, onSelect }) => {
           {isDisabled ? "Coming Soon" : "Reserve Your Spot"}
         </Button>
       </div>
-      <div className="absolute -bottom-2 -right-2 w-16 h-16 bg-tobey-peach rounded-full opacity-40 blur-md"></div>
+      {!isHighlighted && (
+        <div className="absolute -bottom-2 -right-2 w-16 h-16 bg-tobey-peach rounded-full opacity-40 blur-md"></div>
+      )}
     </div>
   );
 };
