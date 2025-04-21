@@ -71,7 +71,8 @@ export default {
 					orange: '#FF7518',
 					darkOrange: '#FF7518',
 					text: '#333333',
-				}
+				},
+				'soft-gray': '#F1F0FB',
 			},
 			borderRadius: {
 				lg: 'var(--radius)',
