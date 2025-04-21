@@ -5,7 +5,7 @@ export const pricingPlans: PricingPlan[] = [
   {
     id: "early-adopter",
     name: "Early Adopter Special",
-    price: 29,
+    price: "29",
     period: "mo",
     description: "Starting with a 7-day free trial",
     features: [
@@ -20,7 +20,7 @@ export const pricingPlans: PricingPlan[] = [
   {
     id: "launch",
     name: "Launch Plan",
-    price: 39,
+    price: "39",
     period: "mo",
     description: "Pay monthly, cancel anytime",
     features: [
@@ -34,7 +34,7 @@ export const pricingPlans: PricingPlan[] = [
   {
     id: "annual",
     name: "Annual Plan",
-    price: 299,
+    price: "299",
     period: "yr",
     description: "Save $49 compared to monthly",
     features: [

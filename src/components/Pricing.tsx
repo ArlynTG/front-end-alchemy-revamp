@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import PricingCard from "./pricing/PricingCard";
@@ -27,15 +26,7 @@ const Pricing = () => {
           {pricingPlans.map((plan) => (
             <PricingCard 
               key={plan.id}
-              plan={{
-                id: plan.id,
-                name: plan.name,
-                price: `$${plan.price}`,
-                description: plan.description,
-                features: plan.features,
-                callToAction: plan.highlighted ? "Get Started" : "Join Waitlist",
-                popular: plan.highlighted
-              }}
+              plan={plan}
               onSelect={handlePlanSelect}
             />
           ))}
