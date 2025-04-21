@@ -21,23 +21,25 @@ const PricingCard: React.FC<PricingCardProps> = ({ plan, onSelect }) => {
         isDisabled ? 'opacity-60' : ''
       }`}
     >
-      <div className="relative z-10">
-        <h3 className="text-xl font-semibold mb-1 text-left">{plan.name}</h3>
-        <div className="mb-4 text-left">
-          <span className="text-3xl font-bold">${plan.price}</span>
-          {plan.period && <span className="text-gray-500">/{plan.period}</span>}
+      <div className="relative z-10 flex flex-col h-full">
+        <div className="flex-grow">
+          <h3 className="text-xl font-semibold mb-1 text-left">{plan.name}</h3>
+          <div className="mb-4 text-left">
+            <span className="text-3xl font-bold">${plan.price}</span>
+            {plan.period && <span className="text-gray-500">/{plan.period}</span>}
+          </div>
+          
+          <p className="text-gray-600 mb-6 text-left">{plan.description}</p>
+          
+          <ul className="mb-8 space-y-3 text-left">
+            {plan.features.map((feature, index) => (
+              <li key={index} className="flex items-start">
+                <Check className="h-5 w-5 text-tobey-orange mt-0.5 mr-2 flex-shrink-0" />
+                <span className={`text-gray-600 ${isDisabled ? 'opacity-60' : ''}`}>{feature}</span>
+              </li>
+            ))}
+          </ul>
         </div>
-        
-        <p className="text-gray-600 mb-6 text-left">{plan.description}</p>
-        
-        <ul className="mb-8 space-y-3 flex-grow text-left">
-          {plan.features.map((feature, index) => (
-            <li key={index} className="flex items-start">
-              <Check className="h-5 w-5 text-tobey-orange mt-0.5 mr-2 flex-shrink-0" />
-              <span className={`text-gray-600 ${isDisabled ? 'opacity-60' : ''}`}>{feature}</span>
-            </li>
-          ))}
-        </ul>
         
         <Button
           className={`mt-auto w-full ${
