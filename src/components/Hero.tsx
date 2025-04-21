@@ -30,7 +30,7 @@ const Hero = () => {
           <div className="feature-highlight bg-gradient-to-br from-white to-tobey-peach/60 p-6 rounded-xl shadow-sm relative overflow-hidden backdrop-blur-sm">
             <div className="relative z-10">
               <h4 className="font-medium mb-2">Personalized</h4>
-              <p className="text-sm text-gray-600">Effective lesson plans can be based on recent school reports, neuropsychological evaluations, and other data.</p>
+              <p className="text-sm text-gray-600">Tailor lesson plans using school reports, neuropsychological evaluations, and performance data to target individual learning needs</p>
             </div>
             <div className="absolute -bottom-2 -right-2 w-16 h-16 bg-tobey-peach rounded-full opacity-40 blur-md"></div>
           </div>
