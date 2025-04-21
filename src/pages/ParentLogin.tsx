@@ -3,7 +3,7 @@ import React, { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useToast } from "@/hooks/use-toast";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import Navbar from "@/components/Navbar";
 
 const ParentLogin = () => {
@@ -11,6 +11,7 @@ const ParentLogin = () => {
   const [password, setPassword] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const { toast } = useToast();
+  const navigate = useNavigate();
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -20,9 +21,10 @@ const ParentLogin = () => {
     setTimeout(() => {
       setIsLoading(false);
       toast({
-        title: "Login Attempted",
-        description: "This is a demo login. Authentication functionality will be implemented when connected to a backend.",
+        title: "Login Successful",
+        description: "You have been logged in successfully.",
       });
+      navigate("/parent-dashboard"); // Redirect to dashboard
     }, 1500);
   };
 
@@ -83,6 +85,12 @@ const ParentLogin = () => {
           >
             {isLoading ? "Signing in..." : "Sign in"}
           </Button>
+
+          <div className="text-center text-sm text-gray-500">
+            <Link to="/parent-dashboard" className="text-tobey-orange hover:underline">
+              Demo: View Dashboard
+            </Link>
+          </div>
         </form>
         
         <div className="mt-6 text-center">

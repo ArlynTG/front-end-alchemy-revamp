@@ -15,6 +15,7 @@ import BetaConfirmed from "./pages/BetaConfirmed";
 import BetaRegistration from "./pages/BetaRegistration";
 import BetaConfirmation from "./pages/BetaConfirmation";
 import DemoV2 from "./pages/DemoV2";
+import ParentDashboard from "./pages/ParentDashboard";
 import PasswordProtection from "./components/PasswordProtection";
 
 const queryClient = new QueryClient();
@@ -37,6 +38,7 @@ const App = () => (
             <Route path="/parent-login" element={<ParentLogin />} />
             <Route path="/student-login" element={<StudentLogin />} />
             <Route path="/demo-v2" element={<DemoV2 />} />
+            <Route path="/parent-dashboard" element={<ParentDashboard />} />
             <Route path="/beta-confirmed" element={<BetaConfirmed />} />
             <Route path="/beta-registration" element={<BetaRegistration />} />
             <Route path="/beta-confirmation" element={<BetaConfirmation />} />
