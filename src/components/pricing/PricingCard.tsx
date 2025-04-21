@@ -1,82 +1,62 @@
 
+import React from 'react';
 import { Button } from "@/components/ui/button";
 import { Check } from "lucide-react";
-import { Card, CardContent, CardDescription, CardFooter, CardHeader } from "@/components/ui/card";
 
 export interface PricingPlan {
   id: string;
   name: string;
-  price: number;
-  period: string;
+  price: string;
   description: string;
+  callToAction: string;
   features: string[];
-  highlighted: boolean;
-  disabled: boolean;
+  popular?: boolean;
 }
 
-interface PricingCardProps {
+export interface PricingCardProps {
   plan: PricingPlan;
   onSelect: (planId: string) => void;
 }
 
-const PricingCard = ({ plan, onSelect }: PricingCardProps) => {
+const PricingCard: React.FC<PricingCardProps> = ({ plan, onSelect }) => {
   return (
-    <Card 
-      className={`overflow-hidden 
-        ${plan.highlighted ? 'ring-2 ring-tobey-orange shadow-lg' : 'shadow-md'}
-        ${plan.disabled ? 'opacity-50 cursor-not-allowed' : ''}
-      `}
+    <div 
+      className={`border rounded-xl p-6 flex flex-col ${
+        plan.popular ? 'border-tobey-orange ring-2 ring-tobey-orange/20' : 'border-gray-200'
+      }`}
     >
-      <CardHeader className={`pb-4 ${plan.highlighted ? 'bg-tobey-orange/10' : ''}`}>
-        <div className="flex items-center justify-center gap-2 mb-2">
-          <div className={`${plan.highlighted ? 'bg-tobey-orange/20' : 'bg-gray-100'} p-2 rounded-full`}>
-            <svg 
-              viewBox="0 0 24 24" 
-              fill="none" 
-              className={`h-6 w-6 ${plan.highlighted ? 'text-tobey-orange' : 'text-gray-500'}`}
-              stroke="currentColor" 
-              strokeWidth="2"
-            >
-              <path d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
-            </svg>
-          </div>
-          <span className="text-xl font-medium">{plan.name}</span>
+      {plan.popular && (
+        <div className="py-1 px-3 text-xs bg-tobey-orange text-white rounded-full self-start mb-2">
+          Most Popular
         </div>
-        
-        <div className="flex items-baseline justify-center gap-1 my-6">
-          <h3 className="text-5xl font-bold">${plan.price}</h3>
-          <span className="text-xl text-gray-500 font-normal">/{plan.period}</span>
-        </div>
-        
-        <CardDescription className="text-gray-600">
-          {plan.description}
-        </CardDescription>
-      </CardHeader>
+      )}
       
-      <CardContent className="pt-6">
-        <div className="space-y-4 mb-8 text-left">
-          {plan.features.map((feature, index) => (
-            <div key={index} className="flex items-start gap-3">
-              <Check 
-                className={`h-5 w-5 flex-shrink-0 ${plan.highlighted ? 'text-tobey-orange' : 'text-gray-500'} mt-0.5`} 
-                strokeWidth={2} 
-              />
-              <span>{feature}</span>
-            </div>
-          ))}
-        </div>
-      </CardContent>
+      <h3 className="text-xl font-semibold mb-1">{plan.name}</h3>
+      <div className="mb-4">
+        <span className="text-3xl font-bold">{plan.price}</span>
+        {plan.price !== 'Free' && <span className="text-gray-500">/mo</span>}
+      </div>
       
-      <CardFooter>
-        <Button 
-          className={`w-full ${plan.highlighted ? 'btn-primary' : 'btn-secondary'} text-lg py-6`}
-          onClick={() => onSelect(plan.id)}
-          disabled={plan.disabled}
-        >
-          {plan.highlighted ? "Reserve Your Spot →" : "Coming Soon"}
-        </Button>
-      </CardFooter>
-    </Card>
+      <p className="text-gray-600 mb-6">{plan.description}</p>
+      
+      <ul className="mb-8 space-y-3">
+        {plan.features.map((feature, index) => (
+          <li key={index} className="flex items-start">
+            <Check className="h-5 w-5 text-tobey-orange mt-0.5 mr-2 flex-shrink-0" />
+            <span className="text-gray-600">{feature}</span>
+          </li>
+        ))}
+      </ul>
+      
+      <Button
+        className={`mt-auto w-full ${
+          plan.popular ? 'bg-tobey-orange hover:bg-tobey-darkOrange' : 'bg-white text-tobey-orange border border-tobey-orange hover:bg-tobey-orange/10'
+        }`}
+        onClick={() => onSelect(plan.id)}
+      >
+        {plan.callToAction}
+      </Button>
+    </div>
   );
 };
 
