@@ -26,6 +26,15 @@ async function sendMessageToTutor(userInput: string): Promise<string> {
   return data.message;
 }
 
+// Format message text - handle newlines and escape characters
+const formatMessageText = (text: string): string => {
+  // Replace escaped newlines with actual line breaks for rendering
+  return text
+    .replace(/\\n/g, '\n')
+    .replace(/\\"/g, '"')
+    .replace(/\\'/g, "'");
+};
+
 const DemoChat: React.FC = () => {
   const [messages, setMessages] = useState<Message[]>([
     {
@@ -123,7 +132,7 @@ const DemoChat: React.FC = () => {
                     <div className="font-medium text-sm text-right w-full">You</div>
                   )}
                 </div>
-                <p className="text-sm whitespace-pre-wrap">{message.text}</p>
+                <p className="text-sm whitespace-pre-wrap">{formatMessageText(message.text)}</p>
               </div>
             </div>
           ))}

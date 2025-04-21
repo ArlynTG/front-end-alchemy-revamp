@@ -39,6 +39,15 @@ const WebhookChat: React.FC = () => {
     }
   }, [messages]);
 
+  // Format message text - handle newlines and escape characters
+  const formatMessageText = (text: string): string => {
+    // Replace escaped newlines with actual line breaks for rendering
+    return text
+      .replace(/\\n/g, '\n')
+      .replace(/\\"/g, '"')
+      .replace(/\\'/g, "'");
+  };
+
   const sendMessage = async () => {
     const messageText = inputMessage.trim();
     if (!messageText || isLoading) return;
@@ -72,13 +81,21 @@ const WebhookChat: React.FC = () => {
         throw new Error(`HTTP error! Status: ${response.status}`);
       }
 
-      // Get plain text response
-      const textResponse = await response.text();
+      // Parse JSON response
+      const jsonResponse = await response.json();
+      
+      // Extract the reply field from the response or use the raw response
+      let responseText = "";
+      if (jsonResponse && jsonResponse.reply) {
+        responseText = jsonResponse.reply;
+      } else {
+        responseText = JSON.stringify(jsonResponse);
+      }
       
       // Add assistant message to chat
       const assistantMessage: Message = {
         role: "assistant",
-        content: textResponse,
+        content: responseText,
       };
       setMessages((prev) => [...prev, assistantMessage]);
     } catch (error) {
@@ -156,7 +173,7 @@ const WebhookChat: React.FC = () => {
                     <div className="font-medium text-sm text-right w-full">You</div>
                   )}
                 </div>
-                <p className="text-sm whitespace-pre-wrap">{message.content}</p>
+                <p className="text-sm whitespace-pre-wrap">{formatMessageText(message.content)}</p>
               </div>
             </div>
           ))}
