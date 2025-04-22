@@ -2,8 +2,16 @@
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 import SimpleChatInterface from "@/components/chat/SimpleChatInterface";
+import ReportCardUpload from "@/components/chat/ReportCardUpload";
+import { useState } from "react";
 
 const Demo = () => {
+  const [reportText, setReportText] = useState<string | null>(null);
+
+  const handleUploadComplete = (text: string) => {
+    setReportText(text);
+  };
+
   return (
     <section id="demo-faq" className="py-16 md:py-24 bg-white">
       <div className="container max-w-5xl mx-auto">
@@ -15,9 +23,11 @@ const Demo = () => {
         
         <div className="relative rounded-xl overflow-hidden shadow-xl mb-16 bg-white border border-gray-200">
           <div className="p-4">
-            <SimpleChatInterface />
+            <SimpleChatInterface reportText={reportText} />
           </div>
         </div>
+
+        <ReportCardUpload onUploadComplete={handleUploadComplete} />
         
         <div className="text-center mt-8">
           <Link to="/demo-v2">

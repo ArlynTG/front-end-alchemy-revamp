@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { useToast } from "@/hooks/use-toast";
 
@@ -7,7 +6,7 @@ export interface Message {
   content: string;
 }
 
-export const useChatWebhook = () => {
+export const useChatWebhook = (reportText?: string | null) => {
   const [messages, setMessages] = useState<Message[]>([
     {
       role: "assistant",
@@ -48,7 +47,8 @@ export const useChatWebhook = () => {
         },
         body: JSON.stringify({
           message: messageText,
-          threadId: threadId
+          threadId: threadId,
+          reportText: reportText || undefined
         })
       });
 
