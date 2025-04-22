@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from "react";
 import { useToast } from "@/hooks/use-toast";
 
@@ -58,16 +59,11 @@ export const useChatWebhook = (reportText?: string | null) => {
 
       const jsonResponse = await response.json();
       
-      if (jsonResponse[0]?.threadId) {
-        setThreadId(jsonResponse[0].threadId);
+      if (jsonResponse.threadId) {
+        setThreadId(jsonResponse.threadId);
       }
       
-      let responseText = "";
-      if (jsonResponse[0]?.reply) {
-        responseText = jsonResponse[0].reply;
-      } else {
-        responseText = "I couldn't process that response.";
-      }
+      const responseText = jsonResponse.reply || "I couldn't process that response.";
       
       const assistantMessage: Message = {
         role: "assistant",
