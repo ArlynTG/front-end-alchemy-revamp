@@ -1,3 +1,4 @@
+
 import React, { useState, useRef, useEffect } from "react";
 import { SendHorizontal, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -179,7 +180,7 @@ const WebhookChat: React.FC = () => {
             value={inputMessage}
             onChange={(e) => setInputMessage(e.target.value)}
             onKeyDown={handleKeyDown}
-            placeholder="Ask Tobey a question..."
+            placeholder="Ask me anything..."
             className="flex-1"
             disabled={isLoading}
           />
