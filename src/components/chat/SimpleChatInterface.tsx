@@ -28,6 +28,12 @@ const SimpleChatInterface: React.FC<SimpleChatInterfaceProps> = ({ reportText })
     // Implement retry logic if needed
   };
 
+  const handleSendMessage = () => {
+    if (inputMessage.trim()) {
+      sendMessage(inputMessage);
+    }
+  };
+
   return (
     <div className="flex flex-col h-full">
       <div className="flex justify-end mb-2">
@@ -56,7 +62,7 @@ const SimpleChatInterface: React.FC<SimpleChatInterfaceProps> = ({ reportText })
       <MessageInput
         value={inputMessage}
         onChange={setInputMessage}
-        onSend={sendMessage}
+        onSend={handleSendMessage}
         disabled={isLoading}
       />
 

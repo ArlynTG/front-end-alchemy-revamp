@@ -1,47 +1,46 @@
 
-import React from "react";
-import { Input } from "@/components/ui/input";
+import React, { KeyboardEvent } from "react";
+import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
-import { SendHorizontal } from "lucide-react";
+import { Send } from "lucide-react";
 
 interface MessageInputProps {
   value: string;
   onChange: (value: string) => void;
   onSend: () => void;
-  disabled: boolean;
+  disabled?: boolean;
 }
 
 const MessageInput: React.FC<MessageInputProps> = ({
   value,
   onChange,
   onSend,
-  disabled
+  disabled = false,
 }) => {
-  const handleKeyDown = (e: React.KeyboardEvent) => {
-    if (e.key === 'Enter' && !e.shiftKey) {
-      e.preventDefault();
+  const handleKeyPress = (event: KeyboardEvent<HTMLTextAreaElement>) => {
+    if (event.key === "Enter" && !event.shiftKey) {
+      event.preventDefault();
       onSend();
     }
   };
 
   return (
-    <div className="p-4 border-t border-gray-200 bg-white">
-      <div className="flex space-x-2">
-        <Input
+    <div className="border-t border-gray-200 p-4 bg-white">
+      <div className="flex items-end gap-2">
+        <Textarea
+          placeholder="Type a message..."
           value={value}
           onChange={(e) => onChange(e.target.value)}
-          onKeyDown={handleKeyDown}
-          placeholder="Type your message here..."
-          className="flex-1"
+          onKeyDown={handleKeyPress}
           disabled={disabled}
+          className="flex-1 min-h-[80px] resize-none"
         />
         <Button
           onClick={onSend}
+          disabled={disabled || !value.trim()}
           className="bg-tobey-orange hover:bg-tobey-darkOrange text-white"
-          type="submit"
-          disabled={!value.trim() || disabled}
         >
-          <SendHorizontal className="h-4 w-4" />
+          <Send className="h-4 w-4" />
         </Button>
       </div>
     </div>
