@@ -1,3 +1,4 @@
+
 import React, { useState, useRef, useEffect } from "react";
 import { SendHorizontal, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -138,7 +139,7 @@ const WebhookChat: React.FC = () => {
               >
                 <div className="flex items-center space-x-2 mb-1">
                   {message.role === 'assistant' ? (
-                    <div className="font-medium text-sm">Tobey</div>
+                    <div className="font-medium text-sm">Tobey's Tutor</div>
                   ) : (
                     <div className="font-medium text-sm text-right w-full">You</div>
                   )}
@@ -151,7 +152,7 @@ const WebhookChat: React.FC = () => {
           {isLoading && (
             <div className="flex justify-start">
               <div className="bg-gray-200 text-gray-800 rounded-2xl rounded-tl-none px-4 py-2 max-w-[80%]">
-                <div className="font-medium text-sm mb-1">Tobey</div>
+                <div className="font-medium text-sm mb-1">Tobey's Tutor</div>
                 <div className="flex items-center space-x-2">
                   <span className="text-sm">Thinking</span>
                   <div className="w-2 h-2 bg-gray-500 rounded-full animate-bounce" style={{ animationDelay: '0ms' }}></div>
