@@ -30,6 +30,7 @@ const WebhookChat: React.FC = () => {
   const [inputMessage, setInputMessage] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [threadId, setThreadId] = useState<string | null>(null);
   const scrollAreaRef = useRef<HTMLDivElement>(null);
   const { toast } = useToast();
 
@@ -86,7 +87,8 @@ const WebhookChat: React.FC = () => {
           "Content-Type": "application/json"
         },
         body: JSON.stringify({
-          message: messageText
+          message: messageText,
+          threadId: threadId
         })
       });
 
@@ -95,6 +97,11 @@ const WebhookChat: React.FC = () => {
       }
 
       const jsonResponse = await response.json();
+      
+      // Save threadId from response if present
+      if (jsonResponse.threadId) {
+        setThreadId(jsonResponse.threadId);
+      }
       
       let responseText = "";
       if (jsonResponse && jsonResponse.reply) {
@@ -213,3 +220,4 @@ const WebhookChat: React.FC = () => {
 };
 
 export default WebhookChat;
+
