@@ -120,7 +120,7 @@ const WebhookChat: React.FC = () => {
   return (
     <div className="flex flex-col h-full rounded-lg border shadow-lg bg-white overflow-hidden">
       <div className="bg-gradient-to-r from-tobey-orange to-tobey-darkOrange text-white py-3 px-4 flex justify-between items-center">
-        <h3 className="font-medium">Tobey AI Assistant</h3>
+        <h3 className="font-medium">Interactive Demo</h3>
       </div>
       
       <ScrollArea ref={scrollAreaRef} className="flex-1 p-4 overflow-auto">

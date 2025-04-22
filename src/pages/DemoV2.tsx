@@ -13,9 +13,6 @@ const DemoV2 = () => {
       <main className="flex-grow">
         <section className="py-16 md:py-24">
           <div className="container max-w-6xl mx-auto px-4">
-            <span className="section-tag block text-center mb-2 animate-fade-in opacity-0" style={{ animationDelay: '200ms', animationFillMode: 'forwards' }}>
-              Interactive Demo
-            </span>
             <h2 className="section-title text-center mb-4 animate-fade-in opacity-0" style={{ animationDelay: '400ms', animationFillMode: 'forwards' }}>
               <strong>See How Tobey's Tutor Works</strong>
             </h2>
