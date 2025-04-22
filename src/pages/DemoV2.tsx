@@ -17,10 +17,10 @@ const DemoV2 = () => {
               Interactive Demo
             </span>
             <h2 className="section-title text-center mb-4 animate-fade-in opacity-0" style={{ animationDelay: '400ms', animationFillMode: 'forwards' }}>
-              <strong>Experience Tobey AI</strong>
+              <strong>See How Tobey's Tutor Works</strong>
             </h2>
             <p className="text-center text-xl text-gray-600 mb-12 max-w-2xl mx-auto animate-fade-in opacity-0" style={{ animationDelay: '600ms', animationFillMode: 'forwards' }}>
-              Dive into a conversation with our AI tutor. Ask questions about any subject or explore how Tobey can help with learning.
+              Curious if this could help your child? Chat with our AI tutor and get a feel for how we support bright kids with dyslexia, ADHD, and learning differences—one smart, personalized step at a time.
             </p>
             
             <div className="max-w-3xl mx-auto animate-fade-in opacity-0" style={{ animationDelay: '800ms', animationFillMode: 'forwards' }}>
