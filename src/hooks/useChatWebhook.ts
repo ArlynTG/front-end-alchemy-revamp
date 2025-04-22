@@ -58,15 +58,15 @@ export const useChatWebhook = () => {
 
       const jsonResponse = await response.json();
       
-      if (jsonResponse.threadId) {
-        setThreadId(jsonResponse.threadId);
+      if (jsonResponse[0]?.threadId) {
+        setThreadId(jsonResponse[0].threadId);
       }
       
       let responseText = "";
-      if (jsonResponse && jsonResponse.reply) {
-        responseText = jsonResponse.reply;
+      if (jsonResponse[0]?.reply) {
+        responseText = jsonResponse[0].reply;
       } else {
-        responseText = JSON.stringify(jsonResponse);
+        responseText = "I couldn't process that response.";
       }
       
       const assistantMessage: Message = {
