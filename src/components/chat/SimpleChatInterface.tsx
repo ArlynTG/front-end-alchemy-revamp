@@ -2,26 +2,31 @@
 import React, { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Settings } from "lucide-react";
-import { useChatWithWebhook } from "@/hooks/useChatWithWebhook";
+import { useChatWebhook } from "@/hooks/useChatWebhook";
 import ChatMessageList from "@/components/chat/ChatMessageList";
 import ConnectionErrorAlert from "@/components/chat/ConnectionErrorAlert";
 import SettingsDialog from "@/components/chat/SettingsDialog";
 import MessageInput from "@/components/chat/MessageInput";
 
-const SimpleChatInterface = () => {
+interface SimpleChatInterfaceProps {
+  reportText?: string | null;
+}
+
+const SimpleChatInterface: React.FC<SimpleChatInterfaceProps> = ({ reportText }) => {
   const [showSettings, setShowSettings] = useState(false);
   const {
     messages,
     inputMessage,
     setInputMessage,
     isLoading,
-    connectionError,
-    webhookUrl,
+    error: connectionError,
     sendMessage,
-    retryConnection,
-    saveWebhookUrl,
-    resetToDefault
-  } = useChatWithWebhook();
+    formatMessageText
+  } = useChatWebhook(reportText);
+
+  const handleRetry = () => {
+    // Implement retry logic if needed
+  };
 
   return (
     <div className="flex flex-col h-full">
@@ -38,7 +43,7 @@ const SimpleChatInterface = () => {
       {connectionError && (
         <ConnectionErrorAlert 
           errorMessage={connectionError} 
-          onRetry={retryConnection}
+          onRetry={handleRetry}
           onShowSettings={() => setShowSettings(true)}
         />
       )}
@@ -58,9 +63,9 @@ const SimpleChatInterface = () => {
       <SettingsDialog
         open={showSettings}
         onOpenChange={setShowSettings}
-        currentWebhookUrl={webhookUrl}
-        onSave={saveWebhookUrl}
-        onReset={resetToDefault}
+        currentWebhookUrl=""
+        onSave={() => {}}
+        onReset={() => {}}
       />
     </div>
   );
