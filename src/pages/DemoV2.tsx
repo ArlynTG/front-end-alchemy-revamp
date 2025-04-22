@@ -3,7 +3,7 @@ import React from "react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { Toaster } from "@/components/ui/toaster";
-import WebhookChat from "@/components/chat/WebhookChat";
+import WebhookChat, { selectSampleQuestion } from "@/components/chat/WebhookChat";
 import { Card } from "@/components/ui/card";
 
 const DemoV2 = () => {
@@ -38,13 +38,7 @@ const DemoV2 = () => {
                 {sampleQuestions.map((question, index) => (
                   <button
                     key={index}
-                    onClick={() => {
-                      const inputElement = document.querySelector('input[placeholder="Ask me anything..."]') as HTMLInputElement;
-                      if (inputElement) {
-                        inputElement.value = question;
-                        inputElement.focus();
-                      }
-                    }}
+                    onClick={() => selectSampleQuestion(question)}
                     className="p-4 text-left text-sm bg-white/80 backdrop-blur-sm rounded-lg shadow-sm border border-gray-100 hover:border-tobey-orange/50 hover:bg-white transition-all duration-300"
                   >
                     {question}
@@ -62,4 +56,3 @@ const DemoV2 = () => {
 };
 
 export default DemoV2;
-

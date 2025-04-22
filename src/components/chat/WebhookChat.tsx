@@ -14,6 +14,12 @@ interface Message {
 
 const WEBHOOK_URL = "https://n8n.tobeystutor.com/webhook/chat";
 
+// Create a custom event for sample question selection
+export const selectSampleQuestion = (question: string) => {
+  const event = new CustomEvent('sampleQuestionSelected', { detail: question });
+  document.dispatchEvent(event);
+};
+
 const WebhookChat: React.FC = () => {
   const [messages, setMessages] = useState<Message[]>([
     {
@@ -26,6 +32,20 @@ const WebhookChat: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
   const scrollAreaRef = useRef<HTMLDivElement>(null);
   const { toast } = useToast();
+
+  // Listen for sample question selection events
+  useEffect(() => {
+    const handleSampleQuestion = (e: Event) => {
+      const customEvent = e as CustomEvent;
+      setInputMessage(customEvent.detail);
+    };
+    
+    document.addEventListener('sampleQuestionSelected', handleSampleQuestion);
+    
+    return () => {
+      document.removeEventListener('sampleQuestionSelected', handleSampleQuestion);
+    };
+  }, []);
 
   useEffect(() => {
     if (scrollAreaRef.current) {
