@@ -1,15 +1,15 @@
-
 import { useState, useEffect } from "react";
 import { useToast } from "@/hooks/use-toast";
 
 // Define the n8n webhook URL
-export const DEFAULT_WEBHOOK_URL = "https://tobiasedtech.app.n8n.cloud/webhook/eb528532-1df2-4d01-924e-69fb7b29dc25/chat";
+export const DEFAULT_WEBHOOK_URL =
+  "https://tobiasedtech.app.n8n.cloud/webhook/eb528532-1df2-4d01-924e-69fb7b29dc25/chat";
 
 // Available CORS proxies for fallback
 const CORS_PROXIES = [
   "https://corsproxy.io/?",
   "https://api.allorigins.win/raw?url=",
-  "https://cors-anywhere.herokuapp.com/"
+  "https://cors-anywhere.herokuapp.com/",
 ];
 
 // Define message types
@@ -34,6 +34,7 @@ export const useChatWithWebhook = () => {
   const [connectionError, setConnectionError] = useState<string | null>(null);
   const [webhookUrl, setWebhookUrl] = useState(DEFAULT_WEBHOOK_URL);
   const [currentProxyIndex, setCurrentProxyIndex] = useState(0);
+  const [threadId, setThreadId] = useState<string>(""); // ← new for threaded memory
   const { toast } = useToast();
 
   // Function to get a proxied URL
@@ -52,9 +53,10 @@ export const useChatWithWebhook = () => {
       setCurrentProxyIndex(nextIndex);
       toast({
         title: "Trying different proxy",
-        description: nextIndex >= CORS_PROXIES.length 
-          ? "Trying direct connection" 
-          : `Using proxy ${nextIndex + 1} of ${CORS_PROXIES.length}`,
+        description:
+          nextIndex >= CORS_PROXIES.length
+            ? "Trying direct connection"
+            : `Using proxy ${nextIndex + 1} of ${CORS_PROXIES.length}`,
       });
       setConnectionError(null);
     } else {
@@ -88,18 +90,14 @@ export const useChatWithWebhook = () => {
       // Get proxied URL
       const proxiedUrl = getProxiedUrl(webhookUrl, currentProxyIndex);
       console.log("Sending message using URL:", proxiedUrl);
-      
+
+      // POST with message + threadId
       const response = await fetch(proxiedUrl, {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ 
-          prompt: userMessage.text,
-          history: messages.map(msg => ({
-            content: msg.text,
-            role: msg.sender === "user" ? "user" : "assistant"
-          }))
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          message: userMessage.text,
+          threadId, // send the last thread ID (empty on first call)
         }),
       });
 
@@ -110,17 +108,13 @@ export const useChatWithWebhook = () => {
       const data = await response.json();
       console.log("Response from n8n:", data);
 
-      // Extract the bot's reply from the response
-      let botReply = "";
-      if (data.reply) {
-        botReply = data.reply;
-      } else if (data.response) {
-        botReply = data.response;
-      } else if (typeof data === "string") {
-        botReply = data;
-      } else {
-        botReply = "I received your message but couldn't process it properly.";
+      // Store the returned threadId for follow‑ups
+      if (data.threadId) {
+        setThreadId(data.threadId);
       }
+
+      // Use the reply field for the bot’s text
+      const botReply: string = data.reply ?? "I couldn't process that properly.";
 
       // Add bot message to chat
       const botMessage: Message = {
@@ -133,18 +127,15 @@ export const useChatWithWebhook = () => {
       setMessages((prev) => [...prev, botMessage]);
     } catch (err) {
       console.error("Error sending message:", err);
-      setConnectionError(`Failed to send message: ${err instanceof Error ? err.message : "Unknown error"}`);
-      
-      if (currentProxyIndex < CORS_PROXIES.length) {
-        // Don't automatically retry to avoid confusion
-        // Just show the error message with retry option
-      } else {
-        toast({
-          title: "Error",
-          description: "Failed to send message to Tobey AI. Please try again or check webhook URL.",
-          variant: "destructive",
-        });
-      }
+      setConnectionError(
+        `Failed to send message: ${err instanceof Error ? err.message : "Unknown error"}`
+      );
+      toast({
+        title: "Error",
+        description:
+          "Failed to send message to Tobey AI. Please try again or check webhook URL.",
+        variant: "destructive",
+      });
     } finally {
       setIsLoading(false);
     }
@@ -152,7 +143,6 @@ export const useChatWithWebhook = () => {
 
   // Save webhook URL
   const saveWebhookUrl = (url: string) => {
-    // Reset proxy index when URL changes
     setCurrentProxyIndex(0);
     setWebhookUrl(url);
     localStorage.setItem("n8n_webhook_url", url);
@@ -191,6 +181,6 @@ export const useChatWithWebhook = () => {
     sendMessage,
     retryConnection,
     saveWebhookUrl,
-    resetToDefault
+    resetToDefault,
   };
 };
