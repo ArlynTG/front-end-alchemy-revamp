@@ -9,12 +9,16 @@ import MessageBubble from "@/components/chat/MessageBubble";
 import LoadingIndicator from "@/components/chat/LoadingIndicator";
 import { useChatWebhook } from "@/hooks/useChatWebhook";
 
+interface WebhookChatProps {
+  reportText?: string | null;
+}
+
 export const selectSampleQuestion = (question: string) => {
   const event = new CustomEvent('sampleQuestionSelected', { detail: question });
   document.dispatchEvent(event);
 };
 
-const WebhookChat: React.FC = () => {
+const WebhookChat: React.FC<WebhookChatProps> = ({ reportText }) => {
   const {
     messages,
     inputMessage,
@@ -23,7 +27,7 @@ const WebhookChat: React.FC = () => {
     error,
     sendMessage,
     formatMessageText
-  } = useChatWebhook();
+  } = useChatWebhook(reportText);
   
   const scrollAreaRef = useRef<HTMLDivElement>(null);
 
