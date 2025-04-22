@@ -26,18 +26,6 @@ const DemoV2 = () => {
                   <WebhookChat />
                 </div>
               </Card>
-              
-              <div className="mt-8 text-center text-gray-600 max-w-lg mx-auto space-y-4 animate-fade-in opacity-0" style={{ animationDelay: '1000ms', animationFillMode: 'forwards' }}>
-                <p className="text-sm bg-white/80 backdrop-blur-sm rounded-lg p-4 shadow-sm border border-gray-100">
-                  This is a live demo of our AI tutor service. Try asking Tobey about:
-                  <br />
-                  🎯 School subjects and concepts
-                  <br />
-                  📚 Homework help and explanations
-                  <br />
-                  🤔 Learning strategies and study tips
-                </p>
-              </div>
             </div>
           </div>
         </section>
@@ -49,3 +37,4 @@ const DemoV2 = () => {
 };
 
 export default DemoV2;
+
