@@ -7,6 +7,13 @@ import WebhookChat from "@/components/chat/WebhookChat";
 import { Card } from "@/components/ui/card";
 
 const DemoV2 = () => {
+  const sampleQuestions = [
+    "How do you help dyslexic students?",
+    "What do parent reports look like?",
+    "How do you incorporate my child's interests in lessons?",
+    "Can you help kids with ADHD and dyslexia?"
+  ];
+
   return (
     <div className="flex flex-col min-h-screen bg-gradient-to-br from-white to-tobey-peach/30">
       <Navbar />
@@ -26,6 +33,24 @@ const DemoV2 = () => {
                   <WebhookChat />
                 </div>
               </Card>
+              
+              <div className="mt-8 grid grid-cols-1 md:grid-cols-2 gap-4 animate-fade-in opacity-0" style={{ animationDelay: '1000ms', animationFillMode: 'forwards' }}>
+                {sampleQuestions.map((question, index) => (
+                  <button
+                    key={index}
+                    onClick={() => {
+                      const inputElement = document.querySelector('input[placeholder="Ask me anything..."]') as HTMLInputElement;
+                      if (inputElement) {
+                        inputElement.value = question;
+                        inputElement.focus();
+                      }
+                    }}
+                    className="p-4 text-left text-sm bg-white/80 backdrop-blur-sm rounded-lg shadow-sm border border-gray-100 hover:border-tobey-orange/50 hover:bg-white transition-all duration-300"
+                  >
+                    {question}
+                  </button>
+                ))}
+              </div>
             </div>
           </div>
         </section>
