@@ -1,4 +1,3 @@
-
 import React, { useState, useRef, useEffect } from "react";
 import { SendHorizontal, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -12,14 +11,13 @@ interface Message {
   content: string;
 }
 
-// The webhook endpoint
 const WEBHOOK_URL = "https://n8n.tobeystutor.com/webhook/chat";
 
 const WebhookChat: React.FC = () => {
   const [messages, setMessages] = useState<Message[]>([
     {
       role: "assistant",
-      content: "Hi there! I'm Tobey AI. How can I help you today?",
+      content: "I'm here to help...",
     },
   ]);
   const [inputMessage, setInputMessage] = useState("");
@@ -28,7 +26,6 @@ const WebhookChat: React.FC = () => {
   const scrollAreaRef = useRef<HTMLDivElement>(null);
   const { toast } = useToast();
 
-  // Scroll to bottom when messages update
   useEffect(() => {
     if (scrollAreaRef.current) {
       const scrollableArea = scrollAreaRef.current.querySelector('[data-radix-scroll-area-viewport]');
@@ -38,9 +35,7 @@ const WebhookChat: React.FC = () => {
     }
   }, [messages]);
 
-  // Format message text - handle newlines and escape characters
   const formatMessageText = (text: string): string => {
-    // Replace escaped newlines with actual line breaks for rendering
     return text
       .replace(/\\n/g, '\n')
       .replace(/\\"/g, '"')
@@ -51,7 +46,6 @@ const WebhookChat: React.FC = () => {
     const messageText = inputMessage.trim();
     if (!messageText || isLoading) return;
 
-    // Add user message to chat
     const userMessage: Message = {
       role: "user",
       content: messageText,
@@ -65,7 +59,6 @@ const WebhookChat: React.FC = () => {
     try {
       console.log("Sending message to webhook:", WEBHOOK_URL);
 
-      // Send the message to the webhook with the required format
       const response = await fetch(WEBHOOK_URL, {
         method: "POST",
         headers: { 
@@ -80,10 +73,8 @@ const WebhookChat: React.FC = () => {
         throw new Error(`HTTP error! Status: ${response.status}`);
       }
 
-      // Parse JSON response
       const jsonResponse = await response.json();
       
-      // Extract the reply field from the response or use the raw response
       let responseText = "";
       if (jsonResponse && jsonResponse.reply) {
         responseText = jsonResponse.reply;
@@ -91,7 +82,6 @@ const WebhookChat: React.FC = () => {
         responseText = JSON.stringify(jsonResponse);
       }
       
-      // Add assistant message to chat
       const assistantMessage: Message = {
         role: "assistant",
         content: responseText,
