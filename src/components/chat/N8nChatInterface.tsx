@@ -7,6 +7,7 @@ import ChatMessageList from "@/components/chat/ChatMessageList";
 import ConnectionErrorAlert from "@/components/chat/ConnectionErrorAlert";
 import SettingsDialog from "@/components/chat/SettingsDialog";
 import MessageInput from "@/components/chat/MessageInput";
+import { Message as WebhookMessage } from "@/hooks/useChatWebhook";
 
 const N8nChatInterface: React.FC = () => {
   const [showSettings, setShowSettings] = useState(false);
@@ -22,6 +23,18 @@ const N8nChatInterface: React.FC = () => {
     saveWebhookUrl,
     resetToDefault
   } = useChatWithWebhook();
+
+  // Transform messages from useChatWithWebhook format to useChatWebhook format
+  const transformedMessages: WebhookMessage[] = messages.map(message => ({
+    role: message.sender === 'user' ? 'user' : 'assistant',
+    content: message.text
+  }));
+
+  const handleSendMessage = () => {
+    if (inputMessage.trim()) {
+      sendMessage();
+    }
+  };
 
   return (
     <div className="flex flex-col h-full">
@@ -46,14 +59,14 @@ const N8nChatInterface: React.FC = () => {
       )}
       
       <ChatMessageList 
-        messages={messages} 
+        messages={transformedMessages} 
         isLoading={isLoading} 
       />
       
       <MessageInput
         value={inputMessage}
         onChange={setInputMessage}
-        onSend={sendMessage}
+        onSend={handleSendMessage}
         disabled={isLoading}
       />
 
