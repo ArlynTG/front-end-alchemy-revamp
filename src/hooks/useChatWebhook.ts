@@ -1,5 +1,5 @@
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useToast } from "@/hooks/use-toast";
 
 export interface Message {
@@ -43,13 +43,12 @@ export const useChatWebhook = (reportText?: string | null) => {
     try {
       const response = await fetch("https://n8n.tobeystutor.com/webhook/chat", {
         method: "POST",
-        headers: { 
+        headers: {
           "Content-Type": "application/json"
         },
         body: JSON.stringify({
           message: messageText,
-          threadId: threadId,
-          reportText: reportText || undefined
+          threadId: threadId
         })
       });
 
@@ -63,12 +62,11 @@ export const useChatWebhook = (reportText?: string | null) => {
         setThreadId(jsonResponse.threadId);
       }
       
-      const responseText = jsonResponse.reply || "I couldn't process that response.";
-      
       const assistantMessage: Message = {
         role: "assistant",
-        content: responseText,
+        content: jsonResponse.reply || "I couldn't process that response.",
       };
+      
       setMessages((prev) => [...prev, assistantMessage]);
     } catch (error) {
       console.error("Error sending message:", error);
@@ -94,3 +92,4 @@ export const useChatWebhook = (reportText?: string | null) => {
     formatMessageText
   };
 };
+
