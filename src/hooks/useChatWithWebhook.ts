@@ -6,11 +6,7 @@ export const DEFAULT_WEBHOOK_URL =
   "https://tobiasedtech.app.n8n.cloud/webhook/eb528532-1df2-4d01-924e-69fb7b29dc25/chat";
 
 // Available CORS proxies for fallback
-const CORS_PROXIES = [
-  "https://corsproxy.io/?",
-  "https://api.allorigins.win/raw?url=",
-  "https://cors-anywhere.herokuapp.com/",
-];
+const CORS_PROXIES: string[] = [];
 
 // Define message types
 export interface Message {
@@ -20,7 +16,7 @@ export interface Message {
   timestamp: Date;
 }
 
-export const useChatWithWebhook = () => {
+export const useChatWithWebhook = (reportText?: string | null) => {
   const [messages, setMessages] = useState<Message[]>([
     {
       id: "welcome",
@@ -33,7 +29,7 @@ export const useChatWithWebhook = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [connectionError, setConnectionError] = useState<string | null>(null);
   const [webhookUrl, setWebhookUrl] = useState(DEFAULT_WEBHOOK_URL);
-  const [currentProxyIndex, setCurrentProxyIndex] = useState(0);
+  const [currentProxyIndex, setCurrentProxyIndex] = useState(CORS_PROXIES.length);
   const [threadId, setThreadId] = useState<string>(""); // ← new for threaded memory
   const { toast } = useToast();
 
@@ -97,7 +93,8 @@ export const useChatWithWebhook = () => {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           message: userMessage.text,
-          threadId, // send the last thread ID (empty on first call)
+          threadId,
+          reportText,
         }),
       });
 
@@ -113,7 +110,7 @@ export const useChatWithWebhook = () => {
         setThreadId(data.threadId);
       }
 
-      // Use the reply field for the bot’s text
+      // Use the reply field for the bot's text
       const botReply: string = data.reply ?? "I couldn't process that properly.";
 
       // Add bot message to chat
