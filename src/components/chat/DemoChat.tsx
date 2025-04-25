@@ -16,7 +16,7 @@ interface Message {
  * Send message to the tutor service
  */
 async function sendMessageToTutor(userInput: string): Promise<string> {
-  const response = await fetch("https://n8n.tobeystutor.com/webhook/demo-chat", {
+  const response = await fetch("https://n8n.tobeystutor.com:5678/webhook/chat", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ message: userInput })
