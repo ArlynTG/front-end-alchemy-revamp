@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { Toaster } from "@/components/ui/toaster";
-import N8nChatInterface, { selectSampleQuestion } from "@/components/chat/N8nChatInterface";
+import DemoChat from "@/components/chat/DemoChat";
 import { Card } from "@/components/ui/card";
 import ReportCardUpload from "@/components/chat/ReportCardUpload";
 
@@ -36,24 +36,12 @@ const DemoV2 = () => {
             <div className="max-w-3xl mx-auto animate-fade-in opacity-0" style={{ animationDelay: '800ms', animationFillMode: 'forwards' }}>
               <Card className="shadow-xl rounded-xl border border-gray-200/50 backdrop-blur-sm bg-white/90 hover:shadow-2xl transition-all duration-300">
                 <div className="h-[600px] overflow-hidden">
-                  <N8nChatInterface reportText={reportText} />
+                  <DemoChat />
                 </div>
               </Card>
               
               <div className="mt-8">
                 <ReportCardUpload onUploadComplete={handleUploadComplete} />
-              </div>
-              
-              <div className="mt-8 grid grid-cols-1 md:grid-cols-2 gap-4 animate-fade-in opacity-0" style={{ animationDelay: '1000ms', animationFillMode: 'forwards' }}>
-                {sampleQuestions.map((question, index) => (
-                  <button
-                    key={index}
-                    onClick={() => selectSampleQuestion(question)}
-                    className="p-4 text-left text-sm bg-white/80 backdrop-blur-sm rounded-lg shadow-sm border border-gray-100 hover:border-tobey-orange/50 hover:bg-white transition-all duration-300"
-                  >
-                    {question}
-                  </button>
-                ))}
               </div>
             </div>
           </div>

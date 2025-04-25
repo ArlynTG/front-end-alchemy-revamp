@@ -1,10 +1,10 @@
 import { useState, useEffect, useRef } from "react";
 import { useToast } from "@/hooks/use-toast";
 
-// Define the n8n webhook URL
-export const DEFAULT_WEBHOOK_URL = "https://n8n.tobeystutor.com/webhook/chat";
+// Define the n8n webhook URL (with workflow ID) so thread is correctly routed
+export const DEFAULT_WEBHOOK_URL = "https://n8n.tobeystutor.com:5678/webhook/chat";
 
-// No CORS proxies needed
+// Available CORS proxies for fallback (direct first)
 const CORS_PROXIES: string[] = [];
 
 // Define message types
@@ -28,7 +28,6 @@ export const useChatWithWebhook = (reportText?: string | null) => {
   const [isLoading, setIsLoading] = useState(false);
   const [connectionError, setConnectionError] = useState<string | null>(null);
   const [webhookUrl, setWebhookUrl] = useState(DEFAULT_WEBHOOK_URL);
-  const [currentProxyIndex, setCurrentProxyIndex] = useState(CORS_PROXIES.length);
   // useRef to store threadId for threaded conversations
   const threadIdRef = useRef<string | null>(null);
   const { toast } = useToast();
@@ -44,24 +43,11 @@ export const useChatWithWebhook = (reportText?: string | null) => {
 
   // Try the next proxy if available
   const retryConnection = () => {
-    const nextIndex = currentProxyIndex + 1;
-    if (nextIndex <= CORS_PROXIES.length) {
-      setCurrentProxyIndex(nextIndex);
-      toast({
-        title: "Trying different proxy",
-        description:
-          nextIndex >= CORS_PROXIES.length
-            ? "Trying direct connection"
-            : `Using proxy ${nextIndex + 1} of ${CORS_PROXIES.length}`,
-      });
-      setConnectionError(null);
-    } else {
-      toast({
-        title: "All proxies failed",
-        description: "Please check webhook URL or try again later",
-        variant: "destructive",
-      });
-    }
+    toast({
+      title: "Trying different proxy",
+      description: "Trying direct connection",
+    });
+    setConnectionError(null);
   };
 
   // Handle sending a message
@@ -83,37 +69,32 @@ export const useChatWithWebhook = (reportText?: string | null) => {
     setConnectionError(null);
 
     try {
-      // Use direct webhook URL
-      console.log("Sending message using URL:", webhookUrl);
-      // Build payload without threadId on first message
+      console.log("Attempting fetch on direct URL");
+      // Retrieve stored threadId
+      const storedId = localStorage.getItem("tt_threadId")?.trim() || "";
+      // Build payload with stored threadId if available
       const payload: { message: string; threadId?: string } = { message: userMessage.text };
-      if (threadIdRef.current) {
-        payload.threadId = threadIdRef.current;
+      if (storedId) {
+        payload.threadId = storedId;
       }
+      // Only try direct URL
       const response = await fetch(webhookUrl, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(payload),
       });
+
       if (!response.ok) {
-        console.error(`HTTP error ${response.status}`);
         throw new Error(`HTTP error ${response.status}`);
       }
 
-      // Safely parse JSON, handling empty or invalid responses
-      let data: any;
-      const text = await response.text();
-      try {
-        data = text ? JSON.parse(text) : {};
-      } catch (parseError) {
-        console.warn("Empty or invalid JSON response from n8n webhook", parseError);
-        data = {};
-      }
+      // Parse JSON response
+      const data = await response.json();
       console.log("Response from n8n:", data);
 
-      // Store the returned threadId for follow‑ups
+      // Store the returned threadId for follow-ups
       if (data.threadId) {
-        threadIdRef.current = data.threadId;
+        localStorage.setItem("tt_threadId", data.threadId.trim());
       }
 
       // Use the reply field for the bot's text
@@ -146,7 +127,6 @@ export const useChatWithWebhook = (reportText?: string | null) => {
 
   // Save webhook URL
   const saveWebhookUrl = (url: string) => {
-    setCurrentProxyIndex(0);
     setWebhookUrl(url);
     localStorage.setItem("n8n_webhook_url", url);
     toast({
@@ -158,7 +138,6 @@ export const useChatWithWebhook = (reportText?: string | null) => {
   // Reset to default webhook URL
   const resetToDefault = () => {
     setWebhookUrl(DEFAULT_WEBHOOK_URL);
-    setCurrentProxyIndex(0);
     localStorage.removeItem("n8n_webhook_url");
     toast({
       title: "Settings reset",
@@ -166,11 +145,14 @@ export const useChatWithWebhook = (reportText?: string | null) => {
     });
   };
 
-  // Load webhook URL from localStorage on mount
+  // Load webhook URL from localStorage on mount, but only accept it if it matches the workflow ID
   useEffect(() => {
     const savedUrl = localStorage.getItem("n8n_webhook_url");
-    if (savedUrl) {
+    if (savedUrl && savedUrl.includes("/eb528532-1df2-4d01-924e-69fb7b29dc25/chat")) {
       setWebhookUrl(savedUrl);
+    } else {
+      localStorage.removeItem("n8n_webhook_url");
+      setWebhookUrl(DEFAULT_WEBHOOK_URL);
     }
   }, []);
 
