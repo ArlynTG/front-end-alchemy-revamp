@@ -45,7 +45,7 @@ export const useChatWebhook = (reportText?: string | null) => {
     setError(null);
 
     try {
-      const webhookUrl = "https://n8n.tobeystutor.com/webhook/demo-chat";
+      const webhookUrl = "https://n8n.tobeystutor.com/webhook/chat";
       const urlsToTry = CORS_PROXIES.map(proxy => `${proxy}${encodeURIComponent(webhookUrl)}`).concat(webhookUrl);
       let response: Response | undefined;
       let lastError: any;
