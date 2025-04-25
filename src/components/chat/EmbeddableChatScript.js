@@ -1,4 +1,3 @@
-
 /**
  * Tobey AI Chat Widget
  * 
@@ -372,7 +371,7 @@
     
     try {
       // Send message to webhook
-      const response = await fetch('http://174.138.51.74:5678/webhook/demo-chat', {
+      const response = await fetch('https://n8n.tobeystutor.com/webhook/chat', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
