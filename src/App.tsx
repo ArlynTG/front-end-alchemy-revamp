@@ -38,6 +38,7 @@ const App = () => (
             <Route path="/parent-login" element={<ParentLogin />} />
             <Route path="/student-login" element={<StudentLogin />} />
             <Route path="/demo-v2" element={<DemoV2 />} />
+            <Route path="/demo-v3" element={<DemoV3 />} />
             <Route path="/parent-dashboard" element={<ParentDashboard />} />
             <Route path="/beta-confirmed" element={<BetaConfirmed />} />
             <Route path="/beta-registration" element={<BetaRegistration />} />
