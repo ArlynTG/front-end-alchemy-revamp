@@ -2,10 +2,9 @@ import { useState, useEffect } from "react";
 import { useToast } from "@/hooks/use-toast";
 
 // Define the n8n webhook URL
-export const DEFAULT_WEBHOOK_URL =
-  "https://tobiasedtech.app.n8n.cloud/webhook/eb528532-1df2-4d01-924e-69fb7b29dc25/chat";
+export const DEFAULT_WEBHOOK_URL = "https://n8n.tobeystutor.com/webhook/chat";
 
-// Available CORS proxies for fallback
+// No CORS proxies needed
 const CORS_PROXIES: string[] = [];
 
 // Define message types
@@ -83,22 +82,15 @@ export const useChatWithWebhook = (reportText?: string | null) => {
     setConnectionError(null);
 
     try {
-      // Get proxied URL
-      const proxiedUrl = getProxiedUrl(webhookUrl, currentProxyIndex);
-      console.log("Sending message using URL:", proxiedUrl);
-
-      // POST with message + threadId
-      const response = await fetch(proxiedUrl, {
+      // Use direct webhook URL
+      console.log("Sending message using URL:", webhookUrl);
+      const response = await fetch(webhookUrl, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          message: userMessage.text,
-          threadId,
-          reportText,
-        }),
+        body: JSON.stringify({ message: userMessage.text, threadId }),
       });
-
       if (!response.ok) {
+        console.error(`HTTP error ${response.status}`);
         throw new Error(`HTTP error ${response.status}`);
       }
 
