@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useToast } from "@/hooks/use-toast";
 
 // Define the n8n webhook URL
@@ -29,7 +29,8 @@ export const useChatWithWebhook = (reportText?: string | null) => {
   const [connectionError, setConnectionError] = useState<string | null>(null);
   const [webhookUrl, setWebhookUrl] = useState(DEFAULT_WEBHOOK_URL);
   const [currentProxyIndex, setCurrentProxyIndex] = useState(CORS_PROXIES.length);
-  const [threadId, setThreadId] = useState<string>(""); // ← new for threaded memory
+  // useRef to store threadId for threaded conversations
+  const threadIdRef = useRef<string | null>(null);
   const { toast } = useToast();
 
   // Function to get a proxied URL
@@ -84,22 +85,35 @@ export const useChatWithWebhook = (reportText?: string | null) => {
     try {
       // Use direct webhook URL
       console.log("Sending message using URL:", webhookUrl);
+      // Build payload without threadId on first message
+      const payload: { message: string; threadId?: string } = { message: userMessage.text };
+      if (threadIdRef.current) {
+        payload.threadId = threadIdRef.current;
+      }
       const response = await fetch(webhookUrl, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ message: userMessage.text, threadId }),
+        body: JSON.stringify(payload),
       });
       if (!response.ok) {
         console.error(`HTTP error ${response.status}`);
         throw new Error(`HTTP error ${response.status}`);
       }
 
-      const data = await response.json();
+      // Safely parse JSON, handling empty or invalid responses
+      let data: any;
+      const text = await response.text();
+      try {
+        data = text ? JSON.parse(text) : {};
+      } catch (parseError) {
+        console.warn("Empty or invalid JSON response from n8n webhook", parseError);
+        data = {};
+      }
       console.log("Response from n8n:", data);
 
       // Store the returned threadId for follow‑ups
       if (data.threadId) {
-        setThreadId(data.threadId);
+        threadIdRef.current = data.threadId;
       }
 
       // Use the reply field for the bot's text

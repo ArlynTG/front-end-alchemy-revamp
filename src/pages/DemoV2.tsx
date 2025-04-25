@@ -1,9 +1,8 @@
-
 import React, { useState } from "react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { Toaster } from "@/components/ui/toaster";
-import WebhookChat, { selectSampleQuestion } from "@/components/chat/WebhookChat";
+import N8nChatInterface, { selectSampleQuestion } from "@/components/chat/N8nChatInterface";
 import { Card } from "@/components/ui/card";
 import ReportCardUpload from "@/components/chat/ReportCardUpload";
 
@@ -37,7 +36,7 @@ const DemoV2 = () => {
             <div className="max-w-3xl mx-auto animate-fade-in opacity-0" style={{ animationDelay: '800ms', animationFillMode: 'forwards' }}>
               <Card className="shadow-xl rounded-xl border border-gray-200/50 backdrop-blur-sm bg-white/90 hover:shadow-2xl transition-all duration-300">
                 <div className="h-[600px] overflow-hidden">
-                  <WebhookChat reportText={reportText} />
+                  <N8nChatInterface reportText={reportText} />
                 </div>
               </Card>
               
