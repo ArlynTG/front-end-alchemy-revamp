@@ -10,7 +10,6 @@ import {
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { AlertCircle } from "lucide-react";
-import { DEFAULT_WEBHOOK_URL } from "@/hooks/useChatWithWebhook";
 
 interface SettingsDialogProps {
   open: boolean;

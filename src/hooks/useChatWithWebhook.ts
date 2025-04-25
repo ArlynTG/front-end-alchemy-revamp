@@ -1,8 +1,6 @@
+
 import { useState, useEffect, useRef } from "react";
 import { useToast } from "@/hooks/use-toast";
-
-// Define the n8n webhook URL (with workflow ID) so thread is correctly routed
-export const DEFAULT_WEBHOOK_URL = "https://n8n.tobeystutor.com/webhook/chat";
 
 // Available CORS proxies for fallback (direct first)
 const CORS_PROXIES: string[] = [];
@@ -27,7 +25,7 @@ export const useChatWithWebhook = (reportText?: string | null) => {
   const [inputMessage, setInputMessage] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [connectionError, setConnectionError] = useState<string | null>(null);
-  const [webhookUrl, setWebhookUrl] = useState(DEFAULT_WEBHOOK_URL);
+  const [webhookUrl, setWebhookUrl] = useState("https://n8n.tobeystutor.com/webhook/chat");
   // useRef to store threadId for threaded conversations
   const threadIdRef = useRef<string | null>(null);
   const { toast } = useToast();
@@ -137,7 +135,8 @@ export const useChatWithWebhook = (reportText?: string | null) => {
 
   // Reset to default webhook URL
   const resetToDefault = () => {
-    setWebhookUrl(DEFAULT_WEBHOOK_URL);
+    const defaultUrl = "https://n8n.tobeystutor.com/webhook/chat";
+    setWebhookUrl(defaultUrl);
     localStorage.removeItem("n8n_webhook_url");
     toast({
       title: "Settings reset",
@@ -151,7 +150,7 @@ export const useChatWithWebhook = (reportText?: string | null) => {
     if (savedUrl) {
       setWebhookUrl(savedUrl);
     } else {
-      setWebhookUrl(DEFAULT_WEBHOOK_URL);
+      setWebhookUrl("https://n8n.tobeystutor.com/webhook/chat");
     }
   }, []);
 
