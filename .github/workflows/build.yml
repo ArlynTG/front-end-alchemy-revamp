@@ -3,7 +3,8 @@ name: build
 on:
   push:
     branches: [ main ]   # adjust if your default branch is master
-
+permissions:
+  contents: write      # allow the action to push to gh-pages
 jobs:
   build:
     runs-on: ubuntu-latest
