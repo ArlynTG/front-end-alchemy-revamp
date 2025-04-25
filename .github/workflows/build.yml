@@ -1,0 +1,31 @@
+name: build
+
+on:
+  push:
+    branches: [ main ]   # adjust if your default branch is master
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Use Node 20
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Install deps
+        run: npm ci
+
+      - name: Build bundle
+        run: npm run build          # outputs to dist/ or build/
+
+      - name: Upload bundle
+        uses: actions/upload-artifact@v4
+        with:
+          name: chat-bundle
+          path: |
+            dist/**
+            build/**
