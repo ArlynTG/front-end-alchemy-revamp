@@ -18,7 +18,7 @@ const Hero = () => {
               Tobey's Tutor
             </h1>
             <h2 className="text-2xl mb-4 text-black flex flex-col space-y-2">
-              {['Unlock potential.', 'Celebrate neurodiversity.', 'Transform Learning.'].map((text, index) => (
+              {['Unlock potential.', 'Celebrate neurodiversity.', 'Transform learning.'].map((text, index) => (
                 <span 
                   key={index} 
                   className="animate-fade-in opacity-0"
