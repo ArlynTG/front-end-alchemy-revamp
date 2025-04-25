@@ -15,6 +15,7 @@ import BetaConfirmed from "./pages/BetaConfirmed";
 import BetaRegistration from "./pages/BetaRegistration";
 import BetaConfirmation from "./pages/BetaConfirmation";
 import DemoV2 from "./pages/DemoV2";
+import DemoV3 from "./pages/DemoV3";
 import ParentDashboard from "./pages/ParentDashboard";
 import PasswordProtection from "./components/PasswordProtection";
 
