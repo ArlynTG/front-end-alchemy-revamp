@@ -2,7 +2,7 @@ import { useState, useEffect, useRef } from "react";
 import { useToast } from "@/hooks/use-toast";
 
 // Define the n8n webhook URL (with workflow ID) so thread is correctly routed
-export const DEFAULT_WEBHOOK_URL = "https://n8n.tobeystutor.com:5678/webhook/chat";
+export const DEFAULT_WEBHOOK_URL = "https://n8n.tobeystutor.com/webhook/chat";
 
 // Available CORS proxies for fallback (direct first)
 const CORS_PROXIES: string[] = [];
@@ -145,13 +145,12 @@ export const useChatWithWebhook = (reportText?: string | null) => {
     });
   };
 
-  // Load webhook URL from localStorage on mount, but only accept it if it matches the workflow ID
+  // Load webhook URL from localStorage on mount
   useEffect(() => {
     const savedUrl = localStorage.getItem("n8n_webhook_url");
-    if (savedUrl && savedUrl.includes("/eb528532-1df2-4d01-924e-69fb7b29dc25/chat")) {
+    if (savedUrl) {
       setWebhookUrl(savedUrl);
     } else {
-      localStorage.removeItem("n8n_webhook_url");
       setWebhookUrl(DEFAULT_WEBHOOK_URL);
     }
   }, []);
