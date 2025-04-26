@@ -41,7 +41,7 @@ export const useChatWebhook = (reportText?: string | null) => {
     setError(null);
 
     try {
-      const response = await fetch("https://tobeys-proxy.vercel.app/api/chat", {
+      const response = await fetch("https://v0-new-project-ea6ovpm0brm.vercel.app/api/chat", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ 

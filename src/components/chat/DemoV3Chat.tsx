@@ -1,3 +1,4 @@
+
 import React, { useState, useRef, useEffect } from "react";
 import { SendHorizontal, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -15,7 +16,7 @@ interface Message {
  * Send message to the tutor service
  */
 async function sendMessageToTutor(userInput: string): Promise<string> {
-  const response = await fetch("https://tobeys-proxy.vercel.app/api/chat", {
+  const response = await fetch("https://v0-new-project-ea6ovpm0brm.vercel.app/api/chat", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ message: userInput })
