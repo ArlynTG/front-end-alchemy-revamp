@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { useToast } from "@/hooks/use-toast";
 
@@ -18,11 +19,6 @@ export const useChatWebhook = (reportText?: string | null) => {
   const [error, setError] = useState<string | null>(null);
   const [threadId, setThreadId] = useState<string | null>(null);
   const { toast } = useToast();
-  const CORS_PROXIES = [
-    "https://corsproxy.io/?",
-    "https://api.allorigins.win/raw?url=",
-    "https://cors-anywhere.herokuapp.com/",
-  ];
 
   const formatMessageText = (text: string): string => {
     return text
@@ -45,63 +41,29 @@ export const useChatWebhook = (reportText?: string | null) => {
     setError(null);
 
     try {
-      const webhookUrl = "https://n8n.tobeystutor.com/webhook/chat";
-      const urlsToTry = CORS_PROXIES.map(proxy => `${proxy}${encodeURIComponent(webhookUrl)}`).concat(webhookUrl);
-      let response: Response | undefined;
-      let lastError: any;
-      
-      // First try direct connection with no-cors
-      try {
-        console.log("Trying direct URL with no-cors:", webhookUrl);
-        response = await fetch(webhookUrl, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ message: messageText, threadId, reportText }),
-          mode: 'no-cors'
-        });
-        if (response.status === 0 && response.type === 'opaque') {
-          console.log("Received opaque response from no-cors request");
-          // Successfully got an opaque response, but we can't read it
-          // Create a synthetic response for the UI
-          const assistantMessage: Message = {
-            role: "assistant",
-            content: "I received your message but can't show the response due to CORS restrictions. The conversation is working, but try refreshing the page if you need to see my responses.",
-          };
-          setMessages((prev) => [...prev, assistantMessage]);
-          setIsLoading(false);
-          return;
-        }
-      } catch (err) {
-        console.log("Direct no-cors request failed:", err);
-        // Continue to try proxies
+      const response = await fetch("https://tobeys-proxy.vercel.app/api/chat", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ 
+          message: messageText, 
+          threadId, 
+          reportText 
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! Status: ${response.status}`);
       }
       
-      // Try CORS proxies as fallback
-      for (const url of urlsToTry) {
-        try {
-          response = await fetch(url, {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ message: messageText, threadId, reportText }),
-          });
-          if (response.ok) break;
-          lastError = new Error(`HTTP error! Status: ${response.status}`);
-        } catch (err) {
-          lastError = err;
-        }
-      }
-      if (!response || !response.ok) {
-        throw lastError || new Error("Unknown error");
-      }
-      const jsonResponse = await response.json();
+      const data = await response.json();
       
-      if (jsonResponse.threadId) {
-        setThreadId(jsonResponse.threadId);
+      if (data.threadId) {
+        setThreadId(data.threadId);
       }
       
       const assistantMessage: Message = {
         role: "assistant",
-        content: jsonResponse.reply || "I couldn't process that response.",
+        content: data.reply || "I couldn't process that properly.",
       };
       
       setMessages((prev) => [...prev, assistantMessage]);
@@ -129,4 +91,3 @@ export const useChatWebhook = (reportText?: string | null) => {
     formatMessageText
   };
 };
-

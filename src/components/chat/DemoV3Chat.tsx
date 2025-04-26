@@ -1,4 +1,3 @@
-
 import React, { useState, useRef, useEffect } from "react";
 import { SendHorizontal, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -16,14 +15,14 @@ interface Message {
  * Send message to the tutor service
  */
 async function sendMessageToTutor(userInput: string): Promise<string> {
-  const response = await fetch("https://n8n.tobeystutor.com/webhook/chat", {
+  const response = await fetch("https://tobeys-proxy.vercel.app/api/chat", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ message: userInput })
   });
 
   const data = await response.json();
-  return data.message;
+  return data.reply || "I couldn't process that properly.";
 }
 
 // Format message text - handle newlines and escape characters
@@ -76,7 +75,7 @@ const DemoV3Chat: React.FC = () => {
       
       const assistantMessage: Message = {
         id: (Date.now() + 1).toString(),
-        text: responseText || "Sorry, I couldn't process your message.",
+        text: responseText,
         sender: "assistant",
       };
 
