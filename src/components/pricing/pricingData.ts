@@ -34,14 +34,14 @@ export const pricingPlans: PricingPlan[] = [
   {
     id: "annual",
     name: "Annual Plan",
-    price: "299",
+    price: "390",
     period: "yr",
-    description: "Save $49 compared to monthly",
+    description: "A savings of over 16%",
     features: [
       "Everything in Launch Plan",
       "2 months free"
     ],
     highlighted: false,
-    disabled: true  // This was already true, but making it explicit
+    disabled: true
   }
 ];
