@@ -78,10 +78,7 @@
     3. We read upload files as base64 and send them along for analysis in the same thread.
   -->
   <script>
-    // ========== CONFIGURATION ==========
-    // Replace with your own keys in production or use environment injection
-    const OPENAI_API_KEY = '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';    // ← Insert your OpenAI API Key here
-    const ASSISTANT_ID    = 'asst_ybm7FkHg4WMJv6150D6XHzuf';     // ← Insert your OpenAI Assistant ID here
+    // NOTE: API key and Assistant ID are handled securely server-side.
     const CHAT_ENDPOINT    = '/api/chat';             // Lovable proxy route
 
     // Conversation context
@@ -136,14 +133,10 @@
     async function sendMessage(payload) {
       try {
         showTyping();
-        // send threadId, text, optional fileData
+        // Send message to server proxy; it injects OpenAI secrets at runtime
         const res = await fetch(CHAT_ENDPOINT, {
           method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${OPENAI_API_KEY}`,
-            'X-Assistant-ID': ASSISTANT_ID,
-          },
+          headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(payload)
         });
         
