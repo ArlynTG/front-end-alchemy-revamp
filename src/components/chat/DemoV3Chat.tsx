@@ -1,4 +1,3 @@
-
 import React, { useState, useRef, useEffect } from "react";
 import { SendHorizontal, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -12,18 +11,36 @@ interface Message {
   sender: "user" | "assistant";
 }
 
+// Feature flag for chat
+const isChatEnabled = process.env.NEXT_PUBLIC_CHAT_ENABLED === "true";
+
 /**
  * Send message to the tutor service
  */
-async function sendMessageToTutor(userInput: string, threadId?: string | null): Promise<string> {
-  const response = await fetch("https://v0-new-project-ea6ovpm0brm.vercel.app/api/chat", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ message: userInput, threadId })
-  });
-
-  const data = await response.json();
-  return data.message;
+async function sendMessageToTutor(
+  userInput: string,
+  threadId?: string | null
+): Promise<string | null> {
+  // Guard against missing fetch
+  if (typeof fetch !== "function") {
+    console.warn("fetch is not available in this environment");
+    return null;
+  }
+  try {
+    const response = await fetch("https://v0-new-project-ea6ovpm0brm.vercel.app/api/chat", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ message: userInput, threadId }),
+    });
+    if (!response.ok) {
+      throw new Error(`HTTP error ${response.status}`);
+    }
+    const data = await response.json();
+    return data.message;
+  } catch (error) {
+    console.error("Error in sendMessageToTutor:", error);
+    return null;
+  }
 }
 
 // Format message text - handle newlines and escape characters
@@ -44,11 +61,17 @@ const DemoV3Chat: React.FC = () => {
   ]);
   const [inputMessage, setInputMessage] = useState("");
   const [isLoading, setIsLoading] = useState(false);
-  const [threadId, setThreadId] = useState<string | null>(() => 
-    localStorage.getItem("tt_threadId") || localStorage.getItem("threadId")
-  );
+  const [threadId, setThreadId] = useState<string | null>(null);
   const scrollAreaRef = useRef<HTMLDivElement>(null);
   const { toast } = useToast();
+
+  // Initialize threadId from localStorage on client side
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    const saved =
+      localStorage.getItem("tt_threadId") || localStorage.getItem("threadId");
+    setThreadId(saved);
+  }, []);
 
   // Scroll to bottom when messages update
   useEffect(() => {
@@ -79,7 +102,9 @@ const DemoV3Chat: React.FC = () => {
       
       const assistantMessage: Message = {
         id: (Date.now() + 1).toString(),
-        text: responseText || "Sorry, I couldn't process your message.",
+        text:
+          responseText ??
+          "Chat is warming up, please try later.", // fallback message
         sender: "assistant",
       };
 
@@ -92,6 +117,15 @@ const DemoV3Chat: React.FC = () => {
         description: "Failed to connect to Tobey AI service. Please try again later.",
         variant: "destructive",
       });
+      // Add fallback assistant message
+      setMessages((prev) => [
+        ...prev,
+        {
+          id: (Date.now() + 1).toString(),
+          text: "Chat is warming up, please try later.",
+          sender: "assistant",
+        },
+      ]);
     } finally {
       setIsLoading(false);
     }
@@ -103,6 +137,15 @@ const DemoV3Chat: React.FC = () => {
       sendMessage();
     }
   };
+
+  // Feature flag guard
+  if (!isChatEnabled) {
+    return (
+      <div className="p-4 border-t border-gray-200">
+        <p>Chat is warming up, please try later.</p>
+      </div>
+    );
+  }
 
   return (
     <div className="flex flex-col h-full rounded-lg border shadow-lg bg-white overflow-hidden">

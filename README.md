@@ -1,73 +1,103 @@
-# Welcome to your Lovable project
+# Tobey's Tutor Chat
 
-## Project info
+This project is a Next.js + TypeScript web application that provides an AI-powered chat tutor called **Tobey**. Students (and parents) can chat with the AI, upload PDF/image report cards, and receive personalized learning plans. The backend uses `createStreamHandler` from the `ai` package to securely proxy OpenAI Assistant API calls.
 
-**URL**: https://lovable.dev/projects/6c9ee1b9-b8e6-4e66-860b-5a957c238292
+---
 
-## How can I edit this code?
+## 1. Installation
 
-There are several ways of editing your application.
+### Prerequisites
+- Node.js v16 or newer (LTS recommended)
+- npm or Yarn
 
-**Use Lovable**
+### Install dependencies
+```bash
+# Using npm
+npm install
 
-Simply visit the [Lovable Project](https://lovable.dev/projects/6c9ee1b9-b8e6-4e66-860b-5a957c238292) and start prompting.
-
-Changes made via Lovable will be committed automatically to this repo.
-
-**Use your preferred IDE**
-
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
-
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
-
-Follow these steps:
-
-```sh
-# Step 1: Clone the repository using the project's Git URL.
-git clone <YOUR_GIT_URL>
-
-# Step 2: Navigate to the project directory.
-cd <YOUR_PROJECT_NAME>
-
-# Step 3: Install the necessary dependencies.
-npm i
-
-# Step 4: Start the development server with auto-reloading and an instant preview.
-npm run dev
+# Or using yarn
+yarn install
 ```
 
-**Edit a file directly in GitHub**
+---
 
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
+## 2. Environment Variables
 
-**Use GitHub Codespaces**
+### Local Setup
+1. Copy the template:
+   ```bash
+   cp .env.template .env.local
+   ```
+2. Open `.env.local` and fill in your credentials:
+   ```dotenv
+   OPENAI_API_KEY=your_openai_api_key_here
+   OPENAI_ASSISTANT_ID=your_openai_assistant_id_here
+   ```
+3. Save the file. These variables will be available at `process.env.*`.
 
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
+### Vercel Deployment
+1. In your Vercel dashboard, select your project and go to **Settings > Environment Variables**.
+2. Add two new variables:
+   - **Key**: `OPENAI_API_KEY`
+     **Value**: _your production API key_
+     **Environment**: `Production` (and `Preview` if desired)
+   - **Key**: `OPENAI_ASSISTANT_ID`
+     **Value**: _your live assistant ID_
+     **Environment**: `Production` (and `Preview` if desired)
+3. Deploy or trigger a new build. Vercel will inject these variables at build/runtime.
 
-## What technologies are used for this project?
+---
 
-This project is built with:
+## 3. Running & Testing
 
-- Vite
-- TypeScript
-- React
-- shadcn-ui
-- Tailwind CSS
+### Start the development server
+```bash
+npm run dev
+# or
+yarn dev
+```
+Open [http://localhost:3000/chat](http://localhost:3000/chat) in your browser.
 
-## How can I deploy this project?
+### Chat & File Upload Testing
+1. Type a question in the input box and press **Enter** or click **Send**.  
+2. Verify that the **Tobey is typing…** indicator appears and you see a streamed response.  
+3. Click the 📎 icon and upload a PDF or image file (report card).  
+4. Confirm that a preview thumbnail appears, then click **Send**.  
+5. Ensure the assistant incorporates the attachment into its response and sends a learning plan.
+6. Send multiple messages and verify the conversation context persists (threading) across turns.
 
-Simply open [Lovable](https://lovable.dev/projects/6c9ee1b9-b8e6-4e66-860b-5a957c238292) and click on Share -> Publish.
+---
 
-## Can I connect a custom domain to my Lovable project?
+## 4. Common Troubleshooting
 
-Yes it is!
+- **No response or 500 error**  
+  - Check that your `.env.local` has the correct `OPENAI_API_KEY` and `OPENAI_ASSISTANT_ID`.  
+  - Inspect server logs (e.g. `npm run dev` console) for error messages from the `/api/chat` route.  
+  - Make sure your OpenAI account has available quota and the assistant ID is correct.
 
-To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
+- **`bodyParser` size limit exceeded**  
+  - If uploading large PDFs, you may need to increase `sizeLimit` in `src/app/api/chat/route.ts` under `config.api.bodyParser`.
 
-Read more here: [Setting up a custom domain](https://docs.lovable.dev/tips-tricks/custom-domain#step-by-step-guide)
+- **CORS or network errors**  
+  - Ensure your browser requests to `/api/chat` are same-origin.  
+  - Verify that any custom proxy or rewrites in `next.config.js` (if present) allow `/api/chat`.
+
+- **TypeScript / Linter errors**  
+  - Run `npm run lint` to view errors.  
+  - Install missing types: `npm install --save-dev @types/node @types/react`.
+
+- **Styling mismatch**  
+  - Tailwind CSS classes can be tweaked in the components (e.g., `ChatInterface.tsx`, `Navbar.tsx`) to match brand exactness.  
+
+- **Deployment fails**  
+  - Double-check Vercel Environment Variables.  
+  - Clear build cache or trigger a fresh deploy.
+
+---
+
+## 5. Next Steps
+- Refine the AI system prompt to tailor responses for students with dyslexia, ADHD, and learning differences.  
+- Add user authentication if you need to store conversation history.  
+- Integrate a database to log chat transcripts for analytics.  
+
+Happy coding! 🚀

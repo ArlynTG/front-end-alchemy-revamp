@@ -1,4 +1,3 @@
-
 import { Button } from "@/components/ui/button";
 import NavLink from "./NavLink";
 import { useLocation } from "react-router-dom";
@@ -51,6 +50,8 @@ const DesktopNav = ({ scrollToSection, onJoinBeta }: DesktopNavProps) => {
         
         {/* New link to DemoV2 */}
         <NavLink to="/demo-v2" label="Demo" />
+        {/* Chat page link */}
+        <NavLink to="/chat" label="Chat" />
         
         <DropdownMenu>
           <DropdownMenuTrigger className="text-tobey-text hover:text-tobey-orange transition-colors font-medium flex items-center">
