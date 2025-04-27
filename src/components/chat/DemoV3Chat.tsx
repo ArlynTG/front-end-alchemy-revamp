@@ -14,14 +14,15 @@ interface Message {
 /**
  * Send message to the tutor service
  */
-async function sendMessageToTutor(userInput: string, threadId?: string): Promise<{ reply: string; threadId?: string }> {
-  const response = await fetch("https://v0-new-project-ea6ovpm0brm.vercel.app/api/chat", {
+async function sendMessageToTutor(userInput: string): Promise<string> {
+  const response = await fetch("https://n8n.tobeystutor.com/webhook/chat", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ message: userInput, threadId })
+    body: JSON.stringify({ message: userInput })
   });
 
-  return await response.json();
+  const data = await response.json();
+  return data.message;
 }
 
 // Format message text - handle newlines and escape characters
@@ -45,6 +46,7 @@ const DemoV3Chat: React.FC = () => {
   const [threadId, setThreadId] = useState<string | null>(() => localStorage.getItem("tt_threadId"));
   const scrollAreaRef = useRef<HTMLDivElement>(null);
   const { toast } = useToast();
+  const [threadId, setThreadId] = useState<string>(localStorage.getItem("threadId") || "");
 
   // Scroll to bottom when messages update
   useEffect(() => {
@@ -71,16 +73,11 @@ const DemoV3Chat: React.FC = () => {
     setIsLoading(true);
 
     try {
-      const { reply, threadId: newThreadId } = await sendMessageToTutor(textToSend, threadId);
-      
-      if (newThreadId) {
-        setThreadId(newThreadId);
-        localStorage.setItem("tt_threadId", newThreadId);
-      }
+      const responseText = await sendMessageToTutor(textToSend);
       
       const assistantMessage: Message = {
         id: (Date.now() + 1).toString(),
-        text: reply || "I couldn't process that properly.",
+        text: responseText || "Sorry, I couldn't process your message.",
         sender: "assistant",
       };
 
