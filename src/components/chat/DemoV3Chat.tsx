@@ -1,3 +1,4 @@
+
 import React, { useState, useRef, useEffect } from "react";
 import { SendHorizontal, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -14,11 +15,11 @@ interface Message {
 /**
  * Send message to the tutor service
  */
-async function sendMessageToTutor(userInput: string): Promise<string> {
-  const response = await fetch("https://n8n.tobeystutor.com/webhook/chat", {
+async function sendMessageToTutor(userInput: string, threadId?: string | null): Promise<string> {
+  const response = await fetch("https://v0-new-project-ea6ovpm0brm.vercel.app/api/chat", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ message: userInput })
+    body: JSON.stringify({ message: userInput, threadId })
   });
 
   const data = await response.json();
@@ -43,10 +44,11 @@ const DemoV3Chat: React.FC = () => {
   ]);
   const [inputMessage, setInputMessage] = useState("");
   const [isLoading, setIsLoading] = useState(false);
-  const [threadId, setThreadId] = useState<string | null>(() => localStorage.getItem("tt_threadId"));
+  const [threadId, setThreadId] = useState<string | null>(() => 
+    localStorage.getItem("tt_threadId") || localStorage.getItem("threadId")
+  );
   const scrollAreaRef = useRef<HTMLDivElement>(null);
   const { toast } = useToast();
-  const [threadId, setThreadId] = useState<string>(localStorage.getItem("threadId") || "");
 
   // Scroll to bottom when messages update
   useEffect(() => {
@@ -73,7 +75,7 @@ const DemoV3Chat: React.FC = () => {
     setIsLoading(true);
 
     try {
-      const responseText = await sendMessageToTutor(textToSend);
+      const responseText = await sendMessageToTutor(textToSend, threadId);
       
       const assistantMessage: Message = {
         id: (Date.now() + 1).toString(),
@@ -178,3 +180,4 @@ const DemoV3Chat: React.FC = () => {
 };
 
 export default DemoV3Chat;
+
