@@ -17,10 +17,7 @@ export const useChatWebhook = (reportText?: string | null) => {
   const [inputMessage, setInputMessage] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [threadId, setThreadId] = useState<string | null>(() => {
-    if (typeof window === "undefined") return null;
-    return localStorage.getItem("tt_threadId") || localStorage.getItem("threadId") || null;
-  });
+  const [threadId, setThreadId] = useState<string | null>(null);
   const { toast } = useToast();
 
   const formatMessageText = (text: string): string => {
@@ -62,11 +59,6 @@ export const useChatWebhook = (reportText?: string | null) => {
       
       if (data.threadId) {
         setThreadId(data.threadId);
-        // Save threadId to localStorage for persistence
-        if (typeof window !== "undefined") {
-          localStorage.setItem("tt_threadId", data.threadId);
-          localStorage.setItem("threadId", data.threadId);
-        }
       }
       
       const assistantMessage: Message = {
@@ -96,7 +88,6 @@ export const useChatWebhook = (reportText?: string | null) => {
     isLoading,
     error,
     sendMessage,
-    formatMessageText,
-    threadId
+    formatMessageText
   };
 };
