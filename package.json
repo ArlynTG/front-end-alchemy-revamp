@@ -9,19 +9,20 @@
     "start": "next start"
   },
   "dependencies": {
+    "ai": "^4.3.10",
+    "lucide-react": "latest",
     "next": "latest",
+    "openai": "latest",
     "react": "latest",
     "react-dom": "latest",
-    "openai": "latest",
-    "react-router-dom": "latest",
-    "lucide-react": "latest"
+    "react-router-dom": "latest"
   },
   "devDependencies": {
-    "typescript": "latest",
     "@types/node": "latest",
     "@types/react": "latest",
     "@types/react-dom": "latest",
     "eslint": "latest",
-    "eslint-config-next": "latest"
+    "eslint-config-next": "latest",
+    "typescript": "latest"
   }
 }
