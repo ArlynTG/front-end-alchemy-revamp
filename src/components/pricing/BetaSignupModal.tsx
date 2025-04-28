@@ -10,10 +10,10 @@ import {
 } from "@/components/ui/dialog";
 import { DetailedSignupFormValues } from "@/utils/formSchemas";
 import { toast } from "@/components/ui/use-toast";
-import StripePaymentElement from "../payment/StripePaymentElement";
 import { Button } from "@/components/ui/button";
 import BetaSignupForm from "./BetaSignupForm";
 import { useIsMobile } from "@/hooks/use-mobile";
+import { supabase } from "@/integrations/supabase/client";
 
 interface BetaSignupModalProps {
   isOpen: boolean;
@@ -23,60 +23,75 @@ interface BetaSignupModalProps {
 
 const BetaSignupModal = ({ isOpen, onClose, planId }: BetaSignupModalProps) => {
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [formStep, setFormStep] = useState<'details' | 'payment'>('details');
   const [formData, setFormData] = useState<DetailedSignupFormValues | null>(null);
   const navigate = useNavigate();
   const isMobile = useIsMobile();
 
   const handleDetailsSubmit = async (data: DetailedSignupFormValues) => {
     console.log("Modal - Form data:", data);
-    setFormData(data);
-    setFormStep('payment');
-  };
-
-  const handlePaymentSuccess = async (paymentId: string) => {
-    if (!formData) return;
-    
     setIsSubmitting(true);
-    
+
     try {
-      console.log("Payment successful with ID:", paymentId);
+      // Create the insertion object with all necessary fields
+      const insertData = {
+        first_name: data.firstName,
+        last_name: data.lastName,
+        email: data.email,
+        student_name: data.studentName || "",
+        phone: data.phone,
+        student_age: data.studentAge,
+        primary_learning_difference: data.primaryLearningDifference || null,
+        plan_type: planId
+      };
       
-      navigate("/beta-confirmed", { 
-        state: { 
-          firstName: formData.firstName, 
-          lastName: formData.lastName, 
-          email: formData.email, 
-          studentName: formData.studentName,
-          planType: planId,
-          paymentId: paymentId
-        } 
-      });
+      // Insert data into Supabase
+      const { data: insertedData, error } = await supabase
+        .from('beta_registrations')
+        .insert(insertData)
+        .select()
+        .single();
+
+      if (error) {
+        console.error("Supabase insert error:", error);
+        
+        if (error.code === '23505') {
+          throw new Error('This email has already been registered for the beta.');
+        }
+        
+        throw new Error(`Failed to submit registration: ${error.message || 'Unknown error'}`);
+      }
+
+      console.log("Registration successful with inserted data:", insertedData);
       
-      // Close modal
+      // Get the UUID from the inserted data
+      const userId = insertedData.id;
+      
+      // Construct the Stripe payment link with the client_reference_id
+      const stripePaymentLink = `https://buy.stripe.com/aEU29XbjrclwgO49AC?client_reference_id=${userId}`;
+      
+      // Redirect to the Stripe payment link
+      window.location.href = stripePaymentLink;
+      
+      // Close modal (this will run if the redirect doesn't happen immediately)
       onClose();
       
     } catch (error) {
-      console.error("Error during registration completion:", error);
+      console.error("Error during registration:", error);
       toast({
         title: "Error",
         description: error instanceof Error ? error.message : "An unexpected error occurred",
         variant: "destructive",
       });
-    } finally {
       setIsSubmitting(false);
     }
   };
 
-  const handleBackToDetails = () => {
-    setFormStep('details');
-  };
-
-  // Reset form step when modal is closed or opened
+  // Reset form when modal is closed or opened
   const handleOpenChange = (open: boolean) => {
     if (!open) {
-      // Reset to details step when closing
-      setTimeout(() => setFormStep('details'), 300); // Delay to avoid visual glitch
+      // Reset when closing
+      setFormData(null);
+      setIsSubmitting(false);
       onClose();
     }
   };
@@ -92,43 +107,11 @@ const BetaSignupModal = ({ isOpen, onClose, planId }: BetaSignupModalProps) => {
         </DialogHeader>
         
         <div className={isMobile ? 'overflow-y-auto max-h-[calc(100vh-12rem)] pb-4' : ''}>
-          {formStep === 'details' ? (
-            <BetaSignupForm 
-              onSubmit={handleDetailsSubmit}
-              onCancel={onClose}
-              isSubmitting={isSubmitting}
-            />
-          ) : (
-            <div className="py-4">
-              <div className="mb-6 p-4 bg-gray-50 rounded-lg">
-                <h4 className="font-medium mb-2">Your Information</h4>
-                {formData && (
-                  <>
-                    <p className="text-sm text-gray-700">{formData.firstName} {formData.lastName}</p>
-                    <p className="text-sm text-gray-700">{formData.email}</p>
-                  </>
-                )}
-              </div>
-              
-              {formData && (
-                <StripePaymentElement 
-                  firstName={formData.firstName}
-                  lastName={formData.lastName}
-                  email={formData.email}
-                  onPaymentSuccess={handlePaymentSuccess}
-                />
-              )}
-              
-              <Button
-                variant="outline"
-                className="w-full mt-4"
-                onClick={handleBackToDetails}
-                disabled={isSubmitting}
-              >
-                Back to Personal Details
-              </Button>
-            </div>
-          )}
+          <BetaSignupForm 
+            onSubmit={handleDetailsSubmit}
+            onCancel={onClose}
+            isSubmitting={isSubmitting}
+          />
         </div>
       </DialogContent>
     </Dialog>
