@@ -1,32 +1,12 @@
 
-import React, { useEffect } from "react";
+import React from "react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { Toaster } from "@/components/ui/toaster";
 import { Card } from "@/components/ui/card";
-import { useIsMobile } from "@/hooks/use-mobile";
 import { Helmet } from "react-helmet-async";
 
 const DemoV4 = () => {
-  const isMobile = useIsMobile();
-
-  // Dynamically set appropriate iframe height based on viewport
-  useEffect(() => {
-    const setOptimalIframeHeight = () => {
-      const viewport = window.innerHeight;
-      const headerFooterSpace = 280; // Approximate space for header, footer, margins
-      document.documentElement.style.setProperty(
-        '--iframe-height', 
-        `${Math.max(500, viewport - headerFooterSpace)}px`
-      );
-    };
-
-    setOptimalIframeHeight();
-    window.addEventListener('resize', setOptimalIframeHeight);
-
-    return () => window.removeEventListener('resize', setOptimalIframeHeight);
-  }, []);
-
   return (
     <div className="flex flex-col min-h-screen bg-gradient-to-br from-white to-tobey-peach/30">
       <Helmet>
@@ -52,25 +32,23 @@ const DemoV4 = () => {
             
             <div className="max-w-3xl mx-auto animate-fade-in opacity-0" style={{ animationDelay: '800ms', animationFillMode: 'forwards' }}>
               <Card className="shadow-xl rounded-xl border border-gray-200/50 backdrop-blur-sm bg-gradient-to-br from-white to-tobey-peach/30 hover:shadow-2xl transition-all duration-300">
-                <div className={`${isMobile ? 'h-[500px]' : 'var(--iframe-height, 600px)'} overflow-hidden flex justify-center items-center p-4`}>
+                <div className="flex justify-center items-center p-4">
                   <iframe 
                     src="https://www.openassistantgpt.io/embed/cma0hswmg0007wqm6cgyt5khc/window?chatbox=false"
-                    className="w-[100%] h-[100%] border-2 border-gray-200 rounded-md shadow-sm"
                     style={{
                       overflow: 'hidden',
-                      maxWidth: '100%',
+                      height: '80vh',
+                      width: '480px',
+                      bottom: '-30px',
+                      border: '2px solid #e2e8f0',
                       borderRadius: '0.375rem',
-                      boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)',
-                      fontSize: '18px',
-                      display: 'block',
-                      margin: '0 auto',
-                      padding: '0'
+                      boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)'
                     }}
-                    loading="lazy"
-                    title="Tobey's Tutor Interactive Demo"
                     allowFullScreen
                     allow="clipboard-read; clipboard-write"
+                    title="Tobey's Tutor Interactive Demo"
                   />
+                  {/* This chatbot is build using https://openassistantgpt.io/ */}
                 </div>
               </Card>
             </div>
