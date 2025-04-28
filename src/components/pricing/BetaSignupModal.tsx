@@ -141,18 +141,18 @@ const BetaSignupModal = ({ isOpen, onClose, planId }: BetaSignupModalProps) => {
               isSubmitting={isSubmitting}
             />
           ) : (
-            <div className="flex flex-col items-center">
+            <div className="flex flex-col items-center text-center w-full">
               <div className="mb-6 text-center">
                 <h3 className="text-lg font-medium mb-2">Almost there!</h3>
                 <p className="text-muted-foreground">Complete your payment to secure your spot.</p>
               </div>
               
-              {/* Payment button container with centering styles */}
+              {/* Payment button container with enhanced centering styles */}
               <div 
                 id="payment-button-container" 
                 ref={containerRef} 
                 style={{display: 'none'}} 
-                className="w-full flex justify-center items-center"
+                className="w-full flex justify-center items-center mx-auto"
               >
                 <stripe-buy-button
                   buy-button-id="buy_btn_1RJ0FPBpB9LJmKwiQfros2F2"

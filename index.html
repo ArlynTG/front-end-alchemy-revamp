@@ -42,6 +42,16 @@
       /* Additional styling for the Stripe iframe */
       stripe-buy-button iframe {
         margin: 0 auto !important;
+        width: 100% !important;
+        max-width: 400px !important;
+      }
+      
+      /* Center the payment form content within the stripe button */
+      stripe-buy-button > * {
+        display: flex !important;
+        flex-direction: column !important;
+        align-items: center !important;
+        justify-content: center !important;
       }
     </style>
     
