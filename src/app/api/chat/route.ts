@@ -1,8 +1,0 @@
-
-import { createStreamHandler } from "ai";
-
-export const runtime = "edge"; // Required by Vercel
-
-export const POST = createStreamHandler({
-  provider: "openai" // SDK reads OPENAI_API_KEY & OPENAI_ASSISTANT_ID from env
-});
