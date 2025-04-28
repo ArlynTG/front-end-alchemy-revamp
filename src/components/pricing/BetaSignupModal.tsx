@@ -147,8 +147,13 @@ const BetaSignupModal = ({ isOpen, onClose, planId }: BetaSignupModalProps) => {
                 <p className="text-muted-foreground">Complete your payment to secure your spot.</p>
               </div>
               
-              {/* Hidden payment button container that will be shown after form submission */}
-              <div id="payment-button-container" ref={containerRef} style={{display: 'none'}} className="w-full">
+              {/* Payment button container with centering styles */}
+              <div 
+                id="payment-button-container" 
+                ref={containerRef} 
+                style={{display: 'none'}} 
+                className="w-full flex justify-center items-center"
+              >
                 <stripe-buy-button
                   buy-button-id="buy_btn_1RJ0FPBpB9LJmKwiQfros2F2"
                   publishable-key="pk_live_51R96NFBpB9LJmKwiof8LfkfsDcBtzx8sl21tqETJoiiuMSNh0yGHOuZscRLgo8NykCYscFtFGZ3Ghh29hR3Emo0W00vAw5C1Nu"
