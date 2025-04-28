@@ -2,9 +2,7 @@
 import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react-swc";
 import path from "path";
-
-// Note: We're not importing componentTagger due to ESM compatibility
-// The functionality is enabled via environment variables instead
+import { componentTagger } from "lovable-tagger";
 
 export default defineConfig(({ mode }) => ({
   server: {
@@ -19,6 +17,7 @@ export default defineConfig(({ mode }) => ({
       jsxImportSource: 'react',
       plugins: [],
     }),
+    mode === 'development' && componentTagger(),
   ].filter(Boolean),
   resolve: {
     alias: {
@@ -31,6 +30,7 @@ export default defineConfig(({ mode }) => ({
   // Define environment variables that need to be available in client code
   define: {
     'import.meta.env.VITE_CHAT_ENABLED': JSON.stringify(true),
-    'import.meta.env.VITE_COMPONENT_TAGGER_ENABLED': JSON.stringify(true) // Enable component tagger functionality
+    'import.meta.env.VITE_COMPONENT_TAGGER_ENABLED': JSON.stringify(true)
   }
 }));
+
