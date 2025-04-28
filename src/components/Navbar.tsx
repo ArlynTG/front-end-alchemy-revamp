@@ -6,6 +6,7 @@ import { useNavbarScroll } from "@/hooks/useNavbarScroll";
 import NavbarLogo from "./navbar/NavbarLogo";
 import DesktopNav from "./navbar/DesktopNav";
 import MobileMenu from "./navbar/MobileMenu";
+import { usePricing, PricingContext } from "./Pricing";
 
 const Navbar = () => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -33,7 +34,34 @@ const Navbar = () => {
   const handleJoinBeta = () => {
     setMobileMenuOpen(false);
 
-    // If we're not on the homepage, navigate to homepage with pricing hash
+    try {
+      // Try to use the pricing context if we're on the homepage
+      if (location.pathname === "/" && document.getElementById("pricing")) {
+        // If we're on the homepage, try to find and use the pricing context
+        const pricingElement = document.getElementById("pricing");
+        
+        if (pricingElement) {
+          // Scroll to pricing section first
+          pricingElement.scrollIntoView({ behavior: "smooth" });
+          
+          // Try to access the pricing context
+          try {
+            const pricingContext = usePricing();
+            setTimeout(() => {
+              pricingContext.openEarlyAdopterModal();
+            }, 500); // Small delay to allow for smooth scrolling
+            return;
+          } catch (error) {
+            console.log("Pricing context not available yet, falling back to scroll");
+          }
+        }
+      }
+    } catch (error) {
+      // If any error occurs, fall back to the default behavior
+      console.log("Error accessing pricing context:", error);
+    }
+    
+    // Default behavior: navigate to pricing section if not already there
     if (location.pathname !== "/") {
       window.location.href = "/#pricing";
       return;

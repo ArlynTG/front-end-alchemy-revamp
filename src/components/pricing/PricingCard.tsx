@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Button } from "@/components/ui/button";
 import { Check } from "lucide-react";
@@ -22,6 +21,7 @@ const PricingCard: React.FC<PricingCardProps> = ({ plan, onSelect }) => {
         } ${
         isDisabled ? 'opacity-60' : ''
       }`}
+      data-plan-id={plan.id}
     >
       <div className="relative z-10 flex flex-col h-full">
         <div className="relative z-20 flex-grow">
