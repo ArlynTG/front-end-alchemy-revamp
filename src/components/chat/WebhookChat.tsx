@@ -1,5 +1,5 @@
 
-import React, { useRef, useEffect } from "react";
+import React, { useRef, useEffect, useCallback, memo } from "react";
 import { SendHorizontal, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -18,6 +18,9 @@ export const selectSampleQuestion = (question: string) => {
   document.dispatchEvent(event);
 };
 
+// Memoized message bubble to prevent unnecessary re-renders
+const MemoizedMessageBubble = memo(MessageBubble);
+
 const WebhookChat: React.FC<WebhookChatProps> = ({ reportText }) => {
   const {
     messages,
@@ -30,11 +33,17 @@ const WebhookChat: React.FC<WebhookChatProps> = ({ reportText }) => {
   } = useChatWebhook(reportText);
   
   const scrollAreaRef = useRef<HTMLDivElement>(null);
+  const inputRef = useRef<HTMLInputElement>(null);
 
+  // Handle sample question event
   useEffect(() => {
     const handleSampleQuestion = (e: Event) => {
       const customEvent = e as CustomEvent;
       setInputMessage(customEvent.detail);
+      // Focus the input after setting a sample question
+      if (inputRef.current) {
+        inputRef.current.focus();
+      }
     };
     
     document.addEventListener('sampleQuestionSelected', handleSampleQuestion);
@@ -44,21 +53,32 @@ const WebhookChat: React.FC<WebhookChatProps> = ({ reportText }) => {
     };
   }, [setInputMessage]);
 
+  // Scroll to bottom when messages change
   useEffect(() => {
     if (scrollAreaRef.current) {
       const scrollableArea = scrollAreaRef.current.querySelector('[data-radix-scroll-area-viewport]');
       if (scrollableArea) {
-        scrollableArea.scrollTop = scrollableArea.scrollHeight;
+        // Use requestAnimationFrame to ensure DOM has updated before scrolling
+        requestAnimationFrame(() => {
+          scrollableArea.scrollTop = scrollableArea.scrollHeight;
+        });
       }
     }
   }, [messages]);
 
-  const handleKeyDown = (e: React.KeyboardEvent) => {
-    if (e.key === 'Enter' && !e.shiftKey) {
-      e.preventDefault();
+  // Memoized event handlers to prevent recreation on each render
+  const handleSubmit = useCallback(() => {
+    if (inputMessage.trim()) {
       sendMessage(inputMessage);
     }
-  };
+  }, [inputMessage, sendMessage]);
+
+  const handleKeyDown = useCallback((e: React.KeyboardEvent) => {
+    if (e.key === 'Enter' && !e.shiftKey) {
+      e.preventDefault();
+      handleSubmit();
+    }
+  }, [handleSubmit]);
 
   return (
     <div className="flex flex-col h-full rounded-lg border shadow-lg bg-white overflow-hidden">
@@ -77,7 +97,7 @@ const WebhookChat: React.FC<WebhookChatProps> = ({ reportText }) => {
           )}
         
           {messages.map((message, index) => (
-            <MessageBubble
+            <MemoizedMessageBubble
               key={index}
               role={message.role}
               content={message.content}
@@ -92,17 +112,20 @@ const WebhookChat: React.FC<WebhookChatProps> = ({ reportText }) => {
       <div className="p-4 border-t border-gray-200">
         <div className="flex space-x-2">
           <Input
+            ref={inputRef}
             value={inputMessage}
             onChange={(e) => setInputMessage(e.target.value)}
             onKeyDown={handleKeyDown}
             placeholder="Ask me anything..."
             className="flex-1"
             disabled={isLoading}
+            aria-label="Chat message input"
           />
           <Button
-            onClick={() => sendMessage(inputMessage)}
+            onClick={handleSubmit}
             className="bg-tobey-orange hover:bg-tobey-darkOrange text-white"
             disabled={!inputMessage.trim() || isLoading}
+            aria-label="Send message"
           >
             {isLoading ? (
               <Loader2 className="h-4 w-4 animate-spin" />

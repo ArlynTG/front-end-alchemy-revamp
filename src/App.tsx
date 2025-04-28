@@ -1,24 +1,41 @@
 
+import { Suspense, lazy } from "react";
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import Index from "./pages/Index";
-import NotFound from "./pages/NotFound";
-import PrivacyPolicy from "./pages/PrivacyPolicy";
-import TermsOfService from "./pages/TermsOfService";
-import CookiePolicy from "./pages/CookiePolicy";
-import ParentLogin from "./pages/ParentLogin";
-import StudentLogin from "./pages/StudentLogin";
-import BetaConfirmed from "./pages/BetaConfirmed";
-import BetaRegistration from "./pages/BetaRegistration";
-import BetaConfirmation from "./pages/BetaConfirmation";
-import DemoV4 from "./pages/DemoV4";
-import ParentDashboard from "./pages/ParentDashboard";
 import PasswordProtection from "@/components/PasswordProtection";
 
-const queryClient = new QueryClient();
+// Optimized imports using React.lazy for code splitting
+const Index = lazy(() => import("./pages/Index"));
+const NotFound = lazy(() => import("./pages/NotFound"));
+const PrivacyPolicy = lazy(() => import("./pages/PrivacyPolicy"));
+const TermsOfService = lazy(() => import("./pages/TermsOfService"));
+const CookiePolicy = lazy(() => import("./pages/CookiePolicy"));
+const ParentLogin = lazy(() => import("./pages/ParentLogin"));
+const StudentLogin = lazy(() => import("./pages/StudentLogin"));
+const BetaConfirmed = lazy(() => import("./pages/BetaConfirmed"));
+const BetaRegistration = lazy(() => import("./pages/BetaRegistration"));
+const BetaConfirmation = lazy(() => import("./pages/BetaConfirmation"));
+const DemoV4 = lazy(() => import("./pages/DemoV4"));
+const ParentDashboard = lazy(() => import("./pages/ParentDashboard"));
+
+// Create a reusable loading component
+const PageLoader = () => (
+  <div className="flex items-center justify-center min-h-screen">
+    <div className="w-16 h-16 border-4 border-dashed rounded-full animate-spin border-tobey-orange"></div>
+  </div>
+);
+
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      staleTime: 60 * 1000, // 1 minute stale time for better cache performance
+      retry: 1, // Limit retries to reduce network load on failure
+    },
+  },
+});
 
 // You can change this password to anything you want
 const SITE_PASSWORD = "tobey2025";
@@ -30,21 +47,23 @@ const App = () => (
       <Sonner />
       <PasswordProtection password={SITE_PASSWORD}>
         <BrowserRouter>
-          <Routes>
-            <Route path="/" element={<Index />} />
-            <Route path="/privacy-policy" element={<PrivacyPolicy />} />
-            <Route path="/terms-of-service" element={<TermsOfService />} />
-            <Route path="/cookie-policy" element={<CookiePolicy />} />
-            <Route path="/parent-login" element={<ParentLogin />} />
-            <Route path="/student-login" element={<StudentLogin />} />
-            <Route path="/demo-v4" element={<DemoV4 />} />
-            <Route path="/parent-dashboard" element={<ParentDashboard />} />
-            <Route path="/beta-confirmed" element={<BetaConfirmed />} />
-            <Route path="/beta-registration" element={<BetaRegistration />} />
-            <Route path="/beta-confirmation" element={<BetaConfirmation />} />
-            {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
-            <Route path="*" element={<NotFound />} />
-          </Routes>
+          <Suspense fallback={<PageLoader />}>
+            <Routes>
+              <Route path="/" element={<Index />} />
+              <Route path="/privacy-policy" element={<PrivacyPolicy />} />
+              <Route path="/terms-of-service" element={<TermsOfService />} />
+              <Route path="/cookie-policy" element={<CookiePolicy />} />
+              <Route path="/parent-login" element={<ParentLogin />} />
+              <Route path="/student-login" element={<StudentLogin />} />
+              <Route path="/demo-v4" element={<DemoV4 />} />
+              <Route path="/parent-dashboard" element={<ParentDashboard />} />
+              <Route path="/beta-confirmed" element={<BetaConfirmed />} />
+              <Route path="/beta-registration" element={<BetaRegistration />} />
+              <Route path="/beta-confirmation" element={<BetaConfirmation />} />
+              {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
+              <Route path="*" element={<NotFound />} />
+            </Routes>
+          </Suspense>
         </BrowserRouter>
       </PasswordProtection>
     </TooltipProvider>
