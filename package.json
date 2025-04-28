@@ -13,7 +13,6 @@
     "lucide-react": "latest",
     "next": "latest",
     "openai": "latest",
-    "openai-edge": "^1.2.3",
     "react": "latest",
     "react-dom": "latest",
     "react-router-dom": "latest"

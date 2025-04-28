@@ -1,11 +1,10 @@
 // app/api/chat/route.ts
-import OpenAI from "openai-edge";
-import { NextResponse } from "next/server";
+import OpenAI from "openai";
 
 // Allow larger request bodies for Base64 uploads
 export const config = { api: { bodyParser: { sizeLimit: "10mb" } } };
 
-// Initialize edge-compatible OpenAI client (reads OPENAI_API_KEY & OPENAI_ASSISTANT_ID from env)
+// Initialize OpenAI client (reads OPENAI_API_KEY & OPENAI_ASSISTANT_ID from env)
 const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
 
 // POST /api/chat
@@ -27,7 +26,5 @@ export async function POST(request: Request) {
   });
 
   // Return the raw streaming response
-  return new Response(response.body, {
-    headers: { "Content-Type": "text/event-stream" }
-  });
+  return new Response(response.body, { headers: { "Content-Type": "text/event-stream" } });
 }
