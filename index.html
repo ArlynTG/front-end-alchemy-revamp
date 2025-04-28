@@ -29,7 +29,21 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link rel="preconnect" href="https://js.stripe.com" crossorigin>
     
-    <!-- Stripe Buy Button Script - moved to body for better loading -->
+    <!-- Custom styling for Stripe payment button -->
+    <style>
+      /* Force Stripe Buy Button to be centered and take 100% available width */
+      stripe-buy-button {
+        display: block !important;
+        margin: 0 auto !important;
+        max-width: 400px !important;
+        width: 100% !important;
+      }
+      
+      /* Additional styling for the Stripe iframe */
+      stripe-buy-button iframe {
+        margin: 0 auto !important;
+      }
+    </style>
     
     <!-- Theme color for browser UI -->
     <meta name="theme-color" content="#FF9E44">
