@@ -30,19 +30,25 @@ const BetaSignupModal = ({ isOpen, onClose, planId }: BetaSignupModalProps) => {
   const [userId, setUserId] = useState<string | null>(null);
   const navigate = useNavigate();
   const isMobile = useIsMobile();
-  const stripeButtonRef = useRef<HTMLElement | null>(null);
+  const stripeButtonContainerRef = useRef<HTMLDivElement>(null);
 
-  // Effect to update the client-reference-id attribute after successful submission
+  // Effect to create and set up the Stripe Buy Button after successful submission
   useEffect(() => {
-    if (formSubmitted && userId) {
-      // Find the stripe-buy-button element and update its attributes
-      const stripeButton = document.querySelector('stripe-buy-button');
-      if (stripeButton) {
-        stripeButton.setAttribute('client-reference-id', userId);
-        console.log("Stripe button client-reference-id updated:", userId);
-      } else {
-        console.error("Could not find stripe-buy-button element");
+    if (formSubmitted && userId && stripeButtonContainerRef.current) {
+      // Clear any existing content
+      if (stripeButtonContainerRef.current.firstChild) {
+        stripeButtonContainerRef.current.innerHTML = '';
       }
+
+      // Create the Stripe button element manually
+      const stripeButton = document.createElement('stripe-buy-button');
+      stripeButton.setAttribute('buy-button-id', STRIPE_BUY_BUTTON_ID);
+      stripeButton.setAttribute('client-reference-id', userId);
+      
+      // Append the button to our container
+      stripeButtonContainerRef.current.appendChild(stripeButton);
+      
+      console.log("Stripe button created with client-reference-id:", userId);
     }
   }, [formSubmitted, userId]);
 
@@ -141,11 +147,16 @@ const BetaSignupModal = ({ isOpen, onClose, planId }: BetaSignupModalProps) => {
                 <p className="text-muted-foreground">Complete your payment to secure your spot.</p>
               </div>
               
-              <div id="payment-button-container" className="w-full flex justify-center">
-                <stripe-buy-button
-                  buy-button-id={STRIPE_BUY_BUTTON_ID}
-                  client-reference-id={userId || ""}
-                />
+              <div 
+                ref={stripeButtonContainerRef} 
+                id="payment-button-container" 
+                className="w-full flex justify-center"
+              >
+                {/* Stripe Button will be inserted here dynamically */}
+              </div>
+              
+              <div className="mt-6 text-sm text-muted-foreground text-center">
+                <p>Having trouble with payment? Try refreshing the page or contact support.</p>
               </div>
             </div>
           )}

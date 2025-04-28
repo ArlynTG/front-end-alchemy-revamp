@@ -27,9 +27,9 @@
     <!-- Preconnect to important domains to speed up loading -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preconnect" href="https://js.stripe.com" crossorigin>
     
-    <!-- Stripe Buy Button Script -->
-    <script async src="https://js.stripe.com/v3/buy-button.js"></script>
+    <!-- Stripe Buy Button Script - moved to body for better loading -->
     
     <!-- Theme color for browser UI -->
     <meta name="theme-color" content="#FF9E44">
@@ -37,6 +37,9 @@
 
   <body>
     <div id="root"></div>
+
+    <!-- Stripe Buy Button Script - moved here for better loading -->
+    <script async src="https://js.stripe.com/v3/buy-button.js"></script>
 
     <!-- Lovable helper (required) -->
     <script src="https://cdn.gpteng.co/gptengineer.js" type="module"></script>
