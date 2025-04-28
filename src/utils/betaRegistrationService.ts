@@ -15,14 +15,49 @@ type BetaRegistration = {
   student_age: string;
   primary_learning_difference: Database["public"]["Enums"]["learning_difference"] | null;
   plan_type: string;
+  payment_id?: string;
+  payment_status?: string;
   created_at?: string;
   updated_at?: string;
 }
 
-export const submitBetaRegistration = async (data: RegistrationFormValues, planType: string) => {
+export const checkAvailableSpots = async (): Promise<number> => {
+  try {
+    const { count, error } = await supabase
+      .from('beta_registrations')
+      .select('*', { count: 'exact', head: true });
+    
+    if (error) {
+      console.error("Error checking available spots:", error);
+      throw error;
+    }
+    
+    // Calculate remaining spots (out of 200)
+    const totalSpots = 200;
+    const takenSpots = count || 0;
+    const remainingSpots = Math.max(0, totalSpots - takenSpots);
+    
+    return remainingSpots;
+  } catch (error) {
+    console.error("Error in checkAvailableSpots:", error);
+    return 0; // Default to 0 available spots on error
+  }
+};
+
+export const submitBetaRegistration = async (
+  data: RegistrationFormValues, 
+  planType: string,
+  paymentId?: string
+) => {
   try {
     console.group("Beta Registration Service");
-    console.log("Submitting beta registration:", { data, planType });
+    console.log("Submitting beta registration:", { data, planType, paymentId });
+    
+    // Check if we still have spots available
+    const availableSpots = await checkAvailableSpots();
+    if (availableSpots <= 0) {
+      throw new Error("All beta spots have been filled. Please join our waitlist instead.");
+    }
     
     // Validate the input data
     if (!data.firstName || !data.lastName || !data.email || !planType) {
@@ -44,7 +79,9 @@ export const submitBetaRegistration = async (data: RegistrationFormValues, planT
       phone: data.phone,
       student_age: data.studentAge,
       primary_learning_difference: data.primaryLearningDifference || null,
-      plan_type: planType
+      plan_type: planType,
+      payment_id: paymentId,
+      payment_status: paymentId ? "paid" : "pending"
     };
     
     console.log("Insertion data to be sent to Supabase:", insertData);
