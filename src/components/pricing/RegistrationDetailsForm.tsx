@@ -5,8 +5,9 @@ import { Form } from "@/components/ui/form";
 import { InputField, SelectField } from "@/components/form/FormField";
 import { RegistrationFormValues } from "@/utils/formSchemas";
 
-const studentAgeOptions = Array.from({ length: 18 }, (_, i) => {
-  const age = i + 5;
+// Updated age options to only include ages 8-16
+const studentAgeOptions = Array.from({ length: 9 }, (_, i) => {
+  const age = i + 8;
   return { value: age.toString(), label: `${age} years` };
 });
 

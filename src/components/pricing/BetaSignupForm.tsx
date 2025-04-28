@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
@@ -7,8 +6,8 @@ import { Form } from "@/components/ui/form";
 import { InputField, SelectField } from "@/components/form/FormField";
 import { detailedSignupSchema, DetailedSignupFormValues } from "@/utils/formSchemas";
 
-const studentAgeOptions = Array.from({ length: 18 }, (_, i) => {
-  const age = i + 5;
+const studentAgeOptions = Array.from({ length: 9 }, (_, i) => {
+  const age = i + 8;
   return { value: age.toString(), label: `${age} years` };
 });
 
