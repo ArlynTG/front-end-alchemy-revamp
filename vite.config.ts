@@ -29,6 +29,7 @@ export default defineConfig(({ mode }) => ({
   },
   // Define environment variables that need to be available in client code
   define: {
-    'import.meta.env.VITE_CHAT_ENABLED': JSON.stringify(true)
+    'import.meta.env.VITE_CHAT_ENABLED': JSON.stringify(true),
+    'import.meta.env.VITE_COMPONENT_TAGGER_ENABLED': JSON.stringify(true) // Add this to enable component tagger functionality
   }
 }));
