@@ -16,7 +16,7 @@ const DemoV4 = () => {
               <strong>See How Tobey's Tutor Works</strong>
             </h2>
             <p className="text-center text-xl text-gray-600 mb-12 max-w-2xl mx-auto animate-fade-in opacity-0" style={{ animationDelay: '600ms', animationFillMode: 'forwards' }}>
-              Curious if this could help your child? Chat with our patent-pending AI tutor and get a feel for how we support bright kids with dyslexia, ADHD, and related learning differences—one smart, personalized step at a time.
+              Curious if this could help your child? Chat with our patent pending AI tutor and get a feel for how we support bright kids with dyslexia, ADHD, and related learning differences—one smart, personalized step at a time.
             </p>
             
             <div className="max-w-3xl mx-auto animate-fade-in opacity-0" style={{ animationDelay: '800ms', animationFillMode: 'forwards' }}>
@@ -32,14 +32,19 @@ const DemoV4 = () => {
                       border: '2px solid #e2e8f0',
                       borderRadius: '0.375rem',
                       boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)',
-                      fontSize: '18px',
                       display: 'block',
                       margin: '0 auto'
                     }}
                     allowFullScreen
                     allow="clipboard-read; clipboard-write"
+                    onLoad={(e) => {
+                      e.currentTarget.contentWindow?.postMessage({
+                        type: 'CUSTOM_STYLE', 
+                        payload: `.text-sm, .text-base, .text-xs, .text-lg, .text-xl, p, div, span {font-size: 16px !important;} .prose :where(p):not(:where([class~='not-prose'] *)) {margin-top: 0.5em; margin-bottom: 0.5em;}`
+                      }, '*')
+                    }}
                   />
-                  {/* This chatbot is build using https://openassistantgpt.io/ */}
+                  {/* This chatbot is built using https://openassistantgpt.io/ */}
                 </div>
               </Card>
             </div>
