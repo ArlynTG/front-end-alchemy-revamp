@@ -43,4 +43,3 @@ const FullWidthCTA = () => {
 };
 
 export default FullWidthCTA;
-
