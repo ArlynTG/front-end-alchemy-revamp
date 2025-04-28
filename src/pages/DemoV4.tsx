@@ -21,21 +21,19 @@ const DemoV4 = () => {
             
             <div className="max-w-3xl mx-auto animate-fade-in opacity-0" style={{ animationDelay: '800ms', animationFillMode: 'forwards' }}>
               <Card className="shadow-xl rounded-xl border border-gray-200/50 backdrop-blur-sm bg-white/90 hover:shadow-2xl transition-all duration-300">
-                <div className="h-[600px] overflow-hidden flex justify-center items-center">
+                <div className="h-[600px] overflow-hidden flex justify-center items-center p-4">
                   <iframe 
                     src="https://www.openassistantgpt.io/embed/cma0hswmg0007wqm6cgyt5khc/window?chatbox=false"
+                    className="w-[95%] h-[75vh] border-2 border-gray-200 rounded-md shadow-sm"
                     style={{
                       overflow: 'hidden',
-                      height: '75vh', // Changed from 90vh to 75vh as requested
-                      width: '95%', // Changed from 100% to 95% as requested
                       maxWidth: '100%',
-                      border: '2px solid #e2e8f0',
                       borderRadius: '0.375rem',
                       boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)',
                       fontSize: '18px',
                       display: 'block',
                       margin: '0 auto',
-                      padding: '10px' // Added padding around the content
+                      padding: '10px'
                     }}
                     allowFullScreen
                     allow="clipboard-read; clipboard-write"
