@@ -8,11 +8,11 @@ import {
   DialogTitle, 
   DialogDescription 
 } from "@/components/ui/dialog";
-import BetaSignupForm from "./BetaSignupForm";
 import { DetailedSignupFormValues } from "@/utils/formSchemas";
 import { toast } from "@/components/ui/use-toast";
 import StripePaymentElement from "../payment/StripePaymentElement";
 import { Button } from "@/components/ui/button";
+import BetaSignupForm from "./BetaSignupForm";
 
 interface BetaSignupModalProps {
   isOpen: boolean;
@@ -70,8 +70,17 @@ const BetaSignupModal = ({ isOpen, onClose, planId }: BetaSignupModalProps) => {
     setFormStep('details');
   };
 
+  // Reset form step when modal is closed or opened
+  const handleOpenChange = (open: boolean) => {
+    if (!open) {
+      // Reset to details step when closing
+      setTimeout(() => setFormStep('details'), 300); // Delay to avoid visual glitch
+      onClose();
+    }
+  };
+
   return (
-    <Dialog open={isOpen} onOpenChange={onClose}>
+    <Dialog open={isOpen} onOpenChange={handleOpenChange}>
       <DialogContent className="sm:max-w-md md:max-w-xl">
         <DialogHeader>
           <DialogTitle className="text-2xl font-medium">Reserve Your Spot</DialogTitle>
