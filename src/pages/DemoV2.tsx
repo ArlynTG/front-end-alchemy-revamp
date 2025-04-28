@@ -30,18 +30,20 @@ const DemoV2 = () => {
               <Card className="shadow-xl rounded-xl border border-gray-200/50 backdrop-blur-sm bg-white/90 hover:shadow-2xl transition-all duration-300">
                 <div className="h-[600px] overflow-hidden flex justify-center items-center">
                   <iframe 
-                    src="https://www.openassistantgpt.io/embed/1234123/window?chatbox=false&clientSidePrompt=You are currently talking to {User X}. Help him to understand the book {Book Name X}." 
+                    src="https://www.openassistantgpt.io/embed/1234123/window?chatbox=false&clientSidePrompt=You%20are%20currently%20talking%20to%20%7BUser%20X%7D.%20Help%20him%20to%20understand%20the%20book%20%7BBook%20Name%20X%7D." 
                     style={{
-                      margin: '0 auto',
+                      marginRight: '1rem',
+                      marginBottom: '6rem',
                       display: 'block',
-                      width: '100%',
-                      maxWidth: '100%',
+                      position: 'relative',
+                      overflow: 'hidden',
                       height: '65vh',
                       border: '2px solid #e2e8f0',
                       borderRadius: '0.375rem',
                       boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)',
-                      fontSize: '16px',
-                      overflow: 'hidden'
+                      width: '100%',
+                      maxWidth: '100%',
+                      fontSize: '16px'
                     }}
                     allowFullScreen
                     id="openassistantgpt-chatbot-iframe"
