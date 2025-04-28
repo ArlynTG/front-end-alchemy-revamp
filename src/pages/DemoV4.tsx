@@ -24,7 +24,7 @@ const DemoV4 = () => {
                 <div className="h-[600px] overflow-hidden flex justify-center items-center p-4">
                   <iframe 
                     src="https://www.openassistantgpt.io/embed/cma0hswmg0007wqm6cgyt5khc/window?chatbox=false"
-                    className="w-[95%] h-[75vh] border-2 border-gray-200 rounded-md shadow-sm"
+                    className="w-[100%] h-[70vh] border-2 border-gray-200 rounded-md shadow-sm"
                     style={{
                       overflow: 'hidden',
                       maxWidth: '100%',
