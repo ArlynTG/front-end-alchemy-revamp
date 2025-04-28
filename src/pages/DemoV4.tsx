@@ -32,13 +32,14 @@ const DemoV4 = () => {
                       border: '2px solid #e2e8f0',
                       borderRadius: '0.375rem',
                       boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)',
-                      fontSize: '16px',
+                      fontSize: '18px',
                       display: 'block',
                       margin: '0 auto'
                     }}
                     allowFullScreen
                     allow="clipboard-read; clipboard-write"
                   />
+                  {/* This chatbot is build using https://openassistantgpt.io/ */}
                 </div>
               </Card>
             </div>
