@@ -16,7 +16,7 @@ const FullWidthCTA = () => {
             <p className="text-lg mb-6 md:pr-12 opacity-90 animate-fade-in opacity-0" style={{ animationDelay: '400ms', animationFillMode: 'forwards' }}>
               Try out the demo version of Tobey's Tutor. See how our patent pending AI-powered technology can level up your kids skills in a fun and supportive way. Give it a try, for free!
             </p>
-            <Link to="/demo-v2">
+            <Link to="/demo-v4">
               <Button 
                 size="lg" 
                 className="bg-tobey-orange hover:bg-tobey-darkOrange text-white font-medium transform transition-transform duration-300 hover:scale-105 animate-fade-in opacity-0"
@@ -43,3 +43,4 @@ const FullWidthCTA = () => {
 };
 
 export default FullWidthCTA;
+

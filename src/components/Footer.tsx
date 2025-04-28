@@ -40,7 +40,7 @@ const Footer = () => {
         </div>
         
         <div className="border-t border-gray-200 pt-4 flex flex-col md:flex-row justify-between items-center">
-          <p className="text-gray-600 text-sm">© 2025 Tobey's Tutor, Inc. All rights reserved.</p>
+          <p className="text-gray-600 text-sm">© 2025 Tobey's Tutor, Inc. All rights reserved. | Patent Pending</p>
           <div className="flex gap-4 mt-2 md:mt-0">
             <Link to="/privacy-policy" className="text-gray-600 hover:text-tobey-orange transition-colors text-sm">Privacy Policy</Link>
             <Link to="/terms-of-service" className="text-gray-600 hover:text-tobey-orange transition-colors text-sm">Terms of Service</Link>

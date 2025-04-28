@@ -49,7 +49,7 @@ const Hero = () => {
             >
               <div className="relative z-10">
                 <h4 className="font-medium mb-2">{title}</h4>
-                <p className="text-sm text-gray-600">{title === 'Personalized' ? 'Tailored lesson plans using school reports, neuropsychological evaluations, and performance data to target individual learning needs' : title === 'Adaptive' ? 'Our patent-pending AI platform uses engaging games tailored to your child\'s interests to automatically adjust difficulty, pace, and focus based on real-time performance' : 'Research-backed methodologies including Orton Gillingham and structured literacy techniques inform our comprehensive learning approach'}</p>
+                <p className="text-sm text-gray-600">{title === 'Personalized' ? 'Tailored lesson plans using school reports, neuropsychological evaluations, and performance data to target individual learning needs' : title === 'Adaptive' ? 'Our patent pending AI platform uses engaging games tailored to your child\'s interests to automatically adjust difficulty, pace, and focus based on real-time performance' : 'Research-backed methodologies including Orton Gillingham and structured literacy techniques inform our comprehensive learning approach'}</p>
               </div>
               <div className="absolute -bottom-2 -right-2 w-16 h-16 bg-tobey-peach rounded-full opacity-40 blur-md"></div>
             </div>

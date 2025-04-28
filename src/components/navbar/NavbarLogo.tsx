@@ -1,9 +1,19 @@
 
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 
 const NavbarLogo = () => {
+  const location = useLocation();
+  
+  const handleLogoClick = (e: React.MouseEvent) => {
+    // If already on homepage, scroll to top
+    if (location.pathname === '/') {
+      e.preventDefault();
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+  };
+
   return (
-    <Link to="/" className="flex items-center gap-2">
+    <Link to="/" className="flex items-center gap-2" onClick={handleLogoClick}>
       <svg 
         viewBox="0 0 24 24" 
         fill="none" 
