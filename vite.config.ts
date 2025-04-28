@@ -2,7 +2,7 @@
 import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react-swc";
 import path from "path";
-// Remove the import of componentTagger since it causes ESM compatibility issues
+import { componentTagger } from "lovable-tagger";
 
 export default defineConfig(({ mode }) => ({
   server: {
@@ -17,7 +17,7 @@ export default defineConfig(({ mode }) => ({
       jsxImportSource: 'react',
       plugins: [],
     }),
-    // Removing componentTagger plugin since it causes ESM compatibility issues
+    mode === 'development' && componentTagger(),
   ].filter(Boolean),
   resolve: {
     alias: {
