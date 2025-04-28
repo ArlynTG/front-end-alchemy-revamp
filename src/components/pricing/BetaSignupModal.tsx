@@ -1,5 +1,5 @@
 
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { 
   Dialog, 
@@ -21,11 +21,30 @@ interface BetaSignupModalProps {
   planId: string;
 }
 
+// Replace with your actual Stripe buy button ID
+const STRIPE_BUY_BUTTON_ID = "buy_btn_1Plwn6DjKFQ93aSCeBnwjNq1";
+
 const BetaSignupModal = ({ isOpen, onClose, planId }: BetaSignupModalProps) => {
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [formData, setFormData] = useState<DetailedSignupFormValues | null>(null);
+  const [formSubmitted, setFormSubmitted] = useState(false);
+  const [userId, setUserId] = useState<string | null>(null);
   const navigate = useNavigate();
   const isMobile = useIsMobile();
+  const stripeButtonRef = useRef<HTMLElement | null>(null);
+
+  // Effect to update the client-reference-id attribute after successful submission
+  useEffect(() => {
+    if (formSubmitted && userId) {
+      // Find the stripe-buy-button element and update its attributes
+      const stripeButton = document.querySelector('stripe-buy-button');
+      if (stripeButton) {
+        stripeButton.setAttribute('client-reference-id', userId);
+        console.log("Stripe button client-reference-id updated:", userId);
+      } else {
+        console.error("Could not find stripe-buy-button element");
+      }
+    }
+  }, [formSubmitted, userId]);
 
   const handleDetailsSubmit = async (data: DetailedSignupFormValues) => {
     console.log("Modal - Form data:", data);
@@ -63,22 +82,18 @@ const BetaSignupModal = ({ isOpen, onClose, planId }: BetaSignupModalProps) => {
 
       console.log("Registration successful with inserted data:", insertedData);
       
-      // Get the UUID from the inserted data
-      const userId = insertedData.id;
+      // Get the UUID from the inserted data and set it for the Stripe button
+      const newUserId = insertedData.id;
+      setUserId(newUserId);
       
-      // Construct the Stripe payment link with the client_reference_id
-      const stripePaymentLink = `https://buy.stripe.com/aEU29XbjrclwgO49AC?client_reference_id=${userId}`;
-      console.log("Redirecting to Stripe with URL:", stripePaymentLink);
+      // Set form as submitted to show payment button
+      setFormSubmitted(true);
+      setIsSubmitting(false);
       
-      // Close modal before redirecting
-      onClose();
-      
-      // Use a larger delay before redirecting to ensure modal closes completely
-      setTimeout(() => {
-        console.log("Executing redirect now...");
-        // Use direct window location assignment for reliable navigation
-        window.location.assign(stripePaymentLink);
-      }, 300);
+      toast({
+        title: "Registration successful!",
+        description: "Please complete your payment to secure your spot.",
+      });
       
     } catch (error) {
       console.error("Error during registration:", error);
@@ -95,7 +110,8 @@ const BetaSignupModal = ({ isOpen, onClose, planId }: BetaSignupModalProps) => {
   const handleOpenChange = (open: boolean) => {
     if (!open) {
       // Reset when closing
-      setFormData(null);
+      setFormSubmitted(false);
+      setUserId(null);
       setIsSubmitting(false);
       onClose();
     }
@@ -112,11 +128,27 @@ const BetaSignupModal = ({ isOpen, onClose, planId }: BetaSignupModalProps) => {
         </DialogHeader>
         
         <div className={isMobile ? 'overflow-y-auto max-h-[calc(100vh-12rem)] pb-4' : ''}>
-          <BetaSignupForm 
-            onSubmit={handleDetailsSubmit}
-            onCancel={onClose}
-            isSubmitting={isSubmitting}
-          />
+          {!formSubmitted ? (
+            <BetaSignupForm 
+              onSubmit={handleDetailsSubmit}
+              onCancel={onClose}
+              isSubmitting={isSubmitting}
+            />
+          ) : (
+            <div className="flex flex-col items-center">
+              <div className="mb-6 text-center">
+                <h3 className="text-lg font-medium mb-2">Almost there!</h3>
+                <p className="text-muted-foreground">Complete your payment to secure your spot.</p>
+              </div>
+              
+              <div id="payment-button-container" className="w-full flex justify-center">
+                <stripe-buy-button
+                  buy-button-id={STRIPE_BUY_BUTTON_ID}
+                  client-reference-id={userId || ""}
+                />
+              </div>
+            </div>
+          )}
         </div>
       </DialogContent>
     </Dialog>
