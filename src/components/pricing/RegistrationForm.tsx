@@ -36,7 +36,18 @@ const RegistrationForm = ({ selectedPlan }: RegistrationFormProps) => {
   const [formData, setFormData] = useState<RegistrationFormValues | null>(null);
   const navigate = useNavigate();
   
-  console.log("RegistrationForm - Initializing with plan:", selectedPlan);
+  // Get any stored signup data from localStorage
+  const getStoredSignupData = () => {
+    const storedData = localStorage.getItem("betaSignupData");
+    if (storedData) {
+      try {
+        return JSON.parse(storedData);
+      } catch (e) {
+        console.error("Error parsing stored signup data:", e);
+      }
+    }
+    return null;
+  };
   
   const form = useForm<RegistrationFormValues>({
     resolver: zodResolver(registrationSchema),
@@ -50,6 +61,22 @@ const RegistrationForm = ({ selectedPlan }: RegistrationFormProps) => {
       primaryLearningDifference: undefined,
     },
   });
+
+  // Pre-fill form with stored data if available
+  useEffect(() => {
+    const storedData = getStoredSignupData();
+    if (storedData) {
+      Object.keys(storedData).forEach(key => {
+        // Only set form values for fields that exist and have values
+        if (storedData[key]) {
+          form.setValue(key as any, storedData[key]);
+        }
+      });
+      
+      // Clear the stored data after using it
+      localStorage.removeItem("betaSignupData");
+    }
+  }, [form]);
 
   useEffect(() => {
     const fetchAvailableSpots = async () => {

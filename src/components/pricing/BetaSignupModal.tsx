@@ -9,7 +9,6 @@ import {
   DialogDescription 
 } from "@/components/ui/dialog";
 import BetaSignupForm from "./BetaSignupForm";
-import { submitBetaSignup } from "@/utils/betaSignupUtils";
 import { DetailedSignupFormValues } from "@/utils/formSchemas";
 import { toast } from "@/components/ui/use-toast";
 
@@ -25,40 +24,31 @@ const BetaSignupModal = ({ isOpen, onClose, planId }: BetaSignupModalProps) => {
 
   const handleSubmit = async (data: DetailedSignupFormValues) => {
     setIsSubmitting(true);
-    console.log("Modal - Submitting form with data:", data);
-    console.log("Modal - Plan ID:", planId);
+    console.log("Modal - Form data:", data);
     
     try {
-      const result = await submitBetaSignup(data, planId);
-      console.log("Modal - Submission result:", result);
+      // Store form data in localStorage for the registration page to use
+      localStorage.setItem("betaSignupData", JSON.stringify({
+        firstName: data.firstName,
+        lastName: data.lastName,
+        email: data.email,
+        phone: data.phone,
+        studentName: data.studentName,
+        studentAge: data.studentAge,
+        primaryLearningDifference: data.primaryLearningDifference
+      }));
       
-      if (result.success) {
-        toast({
-          title: "Registration successful!",
-          description: "Thank you for joining our beta program.",
-        });
-        
-        // Redirect to confirmation page with user data
-        navigate("/beta-confirmed", { 
-          state: { 
-            firstName: data.firstName, 
-            lastName: data.lastName, 
-            email: data.email,
-            studentName: data.studentName,
-            planType: planId
-          } 
-        });
-        
-        // Close modal
-        onClose();
-      } else {
-        throw new Error("Unknown error occurred during submission");
-      }
+      // Redirect to the registration page with the plan ID
+      navigate(`/beta-registration?plan=${planId}`);
+      
+      // Close modal
+      onClose();
+      
     } catch (error) {
       console.error("Modal - Error during submission:", error);
       toast({
-        title: "Registration failed",
-        description: error instanceof Error ? error.message : "There was an error submitting your registration. Please try again.",
+        title: "Error",
+        description: error instanceof Error ? error.message : "An unexpected error occurred",
         variant: "destructive",
       });
     } finally {
