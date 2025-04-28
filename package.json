@@ -15,5 +15,13 @@
     "openai": "latest",
     "react-router-dom": "latest",
     "lucide-react": "latest"
+  },
+  "devDependencies": {
+    "typescript": "latest",
+    "@types/node": "latest",
+    "@types/react": "latest",
+    "@types/react-dom": "latest",
+    "eslint": "latest",
+    "eslint-config-next": "latest"
   }
 }
