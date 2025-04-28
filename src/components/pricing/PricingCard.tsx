@@ -64,7 +64,7 @@ const PricingCard: React.FC<PricingCardProps> = ({ plan, onSelect }) => {
           onClick={() => onSelect(plan.id)}
           disabled={isDisabled}
         >
-          {isDisabled ? "Coming Soon" : "Reserve Your Spot"}
+          {isDisabled ? "Coming Soon" : "Reserve Your Spot for $1"}
         </Button>
       </div>
       {!isHighlighted && (
@@ -75,4 +75,3 @@ const PricingCard: React.FC<PricingCardProps> = ({ plan, onSelect }) => {
 };
 
 export default PricingCard;
-
