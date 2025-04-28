@@ -26,7 +26,7 @@ const DemoV4 = () => {
                     src="https://www.openassistantgpt.io/embed/cma0hswmg0007wqm6cgyt5khc/window?chatbox=false"
                     style={{
                       overflow: 'hidden',
-                      height: '90vh', // Changed back to 90vh as requested
+                      height: '75vh', // Changed from 90vh to 75vh as requested
                       width: '100%',
                       maxWidth: '100%',
                       border: '2px solid #e2e8f0',
