@@ -1,13 +1,8 @@
 
 import { useEffect, useState } from "react";
-import { loadStripe } from "@stripe/stripe-js";
-import { Elements } from "@stripe/react-stripe-js";
 import CheckoutForm from "./CheckoutForm";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "@/components/ui/use-toast";
-
-// Replace with your Stripe publishable key
-const stripePromise = loadStripe("pk_test_51OyDJzBki4wTTDCHbM0vY7j3va34g92xRihThlenRBuc6jGrrNNGYzRHM8Lnu7hWE121JDBqh9iuqRyzO7BsXBIX00WDv2ySxT");
 
 interface StripePaymentElementProps {
   firstName: string;
@@ -80,14 +75,12 @@ const StripePaymentElement = ({
           <div className="w-10 h-10 border-4 border-dashed rounded-full animate-spin border-tobey-orange"></div>
         </div>
       ) : clientSecret ? (
-        <Elements stripe={stripePromise} options={{ clientSecret }}>
-          <CheckoutForm 
-            clientSecret={clientSecret}
-            onPaymentSuccess={onPaymentSuccess}
-            onPaymentError={handlePaymentError}
-            isLoading={isLoading}
-          />
-        </Elements>
+        <CheckoutForm 
+          clientSecret={clientSecret}
+          onPaymentSuccess={onPaymentSuccess}
+          onPaymentError={handlePaymentError}
+          isLoading={isLoading}
+        />
       ) : (
         <div className="py-4 text-center text-gray-500">
           Preparing payment form...
