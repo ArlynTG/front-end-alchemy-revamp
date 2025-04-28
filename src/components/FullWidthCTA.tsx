@@ -7,7 +7,7 @@ import { Link } from "react-router-dom";
 const FullWidthCTA = () => {
   return (
     <section className="py-16 bg-gradient-to-r from-tobey-blue to-soft-purple text-tobey-text">
-      <div className="container">
+      <div className="container max-w-6xl mx-auto px-4">
         <div className="flex flex-col md:flex-row items-center justify-between gap-10">
           <div className="md:w-1/2">
             <h2 className="text-3xl md:text-4xl font-bold mb-4 animate-fade-in opacity-0" style={{ animationDelay: '200ms', animationFillMode: 'forwards' }}>
@@ -16,7 +16,7 @@ const FullWidthCTA = () => {
             <p className="text-lg mb-6 md:pr-12 opacity-90 animate-fade-in opacity-0" style={{ animationDelay: '400ms', animationFillMode: 'forwards' }}>
               Try out the demo version of Tobey's Tutor. See how our patent pending AI-powered technology can level up your kids skills in a fun and supportive way. Give it a try, for free!
             </p>
-            <Link to="/demo-v2">
+            <Link to="/demo-v4">
               <Button 
                 size="lg" 
                 className="bg-tobey-orange hover:bg-tobey-darkOrange text-white font-medium transform transition-transform duration-300 hover:scale-105 animate-fade-in opacity-0"
