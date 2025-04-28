@@ -38,7 +38,7 @@ const DemoV4 = () => {
                     style={{
                       overflow: 'hidden',
                       height: '80vh',
-                      width: '480px',
+                      width: '100%',
                       bottom: '-30px',
                       border: '2px solid #e2e8f0',
                       borderRadius: '0.375rem',
