@@ -1,6 +1,6 @@
 
 import { useEffect, useState } from 'react';
-import { useLocation } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 
 interface PricingActions {
   openEarlyAdopterSignup: () => void;
@@ -11,11 +11,12 @@ interface PricingActions {
  */
 export const usePricingActions = (): PricingActions => {
   const location = useLocation();
+  const navigate = useNavigate();
   
   const openEarlyAdopterSignup = () => {
-    // If we're not on the homepage, navigate there first
+    // If we're not on the homepage, navigate there first and add a flag in the URL
     if (location.pathname !== '/') {
-      window.location.href = '/#pricing';
+      window.location.href = '/?openEarlyAdopter=true#pricing';
       return;
     }
     
@@ -36,6 +37,16 @@ export const usePricingActions = (): PricingActions => {
       }, 500); // Small delay to allow for scrolling
     }
   };
+  
+  // Check if we have the URL parameter to open the early adopter modal
+  useEffect(() => {
+    if (location.pathname === '/' && location.search.includes('openEarlyAdopter=true')) {
+      // Small delay to ensure the pricing section is fully loaded
+      setTimeout(() => {
+        openEarlyAdopterSignup();
+      }, 300);
+    }
+  }, [location.pathname, location.search]);
   
   return {
     openEarlyAdopterSignup
