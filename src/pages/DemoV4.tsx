@@ -1,18 +1,11 @@
 
-import React, { useState } from "react";
+import React from "react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { Toaster } from "@/components/ui/toaster";
 import { Card } from "@/components/ui/card";
-import ReportCardUpload from "@/components/chat/ReportCardUpload";
 
 const DemoV4 = () => {
-  const [reportText, setReportText] = useState<string | null>(null);
-  
-  const handleUploadComplete = (text: string) => {
-    setReportText(text);
-  };
-
   return (
     <div className="flex flex-col min-h-screen bg-gradient-to-br from-white to-tobey-peach/30">
       <Navbar />
@@ -48,10 +41,6 @@ const DemoV4 = () => {
                   />
                 </div>
               </Card>
-              
-              <div className="mt-8">
-                <ReportCardUpload onUploadComplete={handleUploadComplete} />
-              </div>
             </div>
           </div>
         </section>
