@@ -1,3 +1,4 @@
+
 import { Button } from "@/components/ui/button";
 import NavLink from "./NavLink";
 import { useLocation } from "react-router-dom";
@@ -69,13 +70,6 @@ const MobileMenu = ({ isOpen, onClose, onJoinBeta, scrollToSection }: MobileMenu
         <NavLink
           to="/demo-v2"
           label="Demo"
-          onClick={onClose}
-          className="text-black hover:text-tobey-orange"
-        />
-        {/* Chat page link */}
-        <NavLink
-          to="/chat"
-          label="Chat"
           onClick={onClose}
           className="text-black hover:text-tobey-orange"
         />
