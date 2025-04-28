@@ -26,23 +26,19 @@ const DemoV4 = () => {
                     src="https://www.openassistantgpt.io/embed/cma0hswmg0007wqm6cgyt5khc/window?chatbox=false"
                     style={{
                       overflow: 'hidden',
-                      height: '80vh',
+                      height: '90vh', // Increased from 80vh to 90vh for more vertical space
                       width: '100%',
                       maxWidth: '100%',
                       border: '2px solid #e2e8f0',
                       borderRadius: '0.375rem',
                       boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)',
+                      fontSize: '18px',
                       display: 'block',
-                      margin: '0 auto'
+                      margin: '0 auto',
+                      padding: '10px' // Added padding around the content
                     }}
                     allowFullScreen
                     allow="clipboard-read; clipboard-write"
-                    onLoad={(e) => {
-                      e.currentTarget.contentWindow?.postMessage({
-                        type: 'CUSTOM_STYLE', 
-                        payload: `.text-sm, .text-base, .text-xs, .text-lg, .text-xl, p, div, span {font-size: 16px !important;} .prose :where(p):not(:where([class~='not-prose'] *)) {margin-top: 0.5em; margin-bottom: 0.5em;}`
-                      }, '*')
-                    }}
                   />
                   {/* This chatbot is built using https://openassistantgpt.io/ */}
                 </div>
