@@ -21,36 +21,31 @@ interface BetaSignupModalProps {
   planId: string;
 }
 
-// Replace with your actual Stripe buy button ID
-const STRIPE_BUY_BUTTON_ID = "buy_btn_1Plwn6DjKFQ93aSCeBnwjNq1";
-
 const BetaSignupModal = ({ isOpen, onClose, planId }: BetaSignupModalProps) => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [formSubmitted, setFormSubmitted] = useState(false);
   const [userId, setUserId] = useState<string | null>(null);
   const navigate = useNavigate();
   const isMobile = useIsMobile();
-  const stripeButtonContainerRef = useRef<HTMLDivElement>(null);
+  const containerRef = useRef<HTMLDivElement>(null);
 
-  // Effect to create and set up the Stripe Buy Button after successful submission
-  useEffect(() => {
-    if (formSubmitted && userId && stripeButtonContainerRef.current) {
-      // Clear any existing content
-      if (stripeButtonContainerRef.current.firstChild) {
-        stripeButtonContainerRef.current.innerHTML = '';
+  // Function to update the Stripe Button with the Supabase UUID
+  const updateStripeButton = (supabaseUuid: string) => {
+    const stripeButton = document.querySelector('stripe-buy-button');
+    if (stripeButton) {
+      stripeButton.setAttribute('client-reference-id', supabaseUuid);
+      
+      // Show the payment container
+      const paymentContainer = document.getElementById('payment-button-container');
+      if (paymentContainer) {
+        paymentContainer.style.display = 'block';
       }
-
-      // Create the Stripe button element manually
-      const stripeButton = document.createElement('stripe-buy-button');
-      stripeButton.setAttribute('buy-button-id', STRIPE_BUY_BUTTON_ID);
-      stripeButton.setAttribute('client-reference-id', userId);
       
-      // Append the button to our container
-      stripeButtonContainerRef.current.appendChild(stripeButton);
-      
-      console.log("Stripe button created with client-reference-id:", userId);
+      console.log("Stripe button updated with client-reference-id:", supabaseUuid);
+    } else {
+      console.error("Could not find stripe-buy-button element");
     }
-  }, [formSubmitted, userId]);
+  };
 
   const handleDetailsSubmit = async (data: DetailedSignupFormValues) => {
     console.log("Modal - Form data:", data);
@@ -88,13 +83,18 @@ const BetaSignupModal = ({ isOpen, onClose, planId }: BetaSignupModalProps) => {
 
       console.log("Registration successful with inserted data:", insertedData);
       
-      // Get the UUID from the inserted data and set it for the Stripe button
+      // Get the UUID from the inserted data
       const newUserId = insertedData.id;
       setUserId(newUserId);
       
       // Set form as submitted to show payment button
       setFormSubmitted(true);
       setIsSubmitting(false);
+      
+      // Update the Stripe button with the Supabase UUID
+      setTimeout(() => {
+        updateStripeButton(newUserId);
+      }, 100);
       
       toast({
         title: "Registration successful!",
@@ -147,12 +147,13 @@ const BetaSignupModal = ({ isOpen, onClose, planId }: BetaSignupModalProps) => {
                 <p className="text-muted-foreground">Complete your payment to secure your spot.</p>
               </div>
               
-              <div 
-                ref={stripeButtonContainerRef} 
-                id="payment-button-container" 
-                className="w-full flex justify-center"
-              >
-                {/* Stripe Button will be inserted here dynamically */}
+              {/* Hidden payment button container that will be shown after form submission */}
+              <div id="payment-button-container" ref={containerRef} style={{display: 'none'}} className="w-full">
+                <stripe-buy-button
+                  buy-button-id="buy_btn_1RJ0FPBpB9LJmKwiQfros2F2"
+                  publishable-key="pk_live_51R96NFBpB9LJmKwiof8LfkfsDcBtzx8sl21tqETJoiiuMSNh0yGHOuZscRLgo8NykCYscFtFGZ3Ghh29hR3Emo0W00vAw5C1Nu"
+                  client-reference-id="[SUPABASE_UUID_PLACEHOLDER]">
+                </stripe-buy-button>
               </div>
               
               <div className="mt-6 text-sm text-muted-foreground text-center">
