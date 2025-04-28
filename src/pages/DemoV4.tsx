@@ -27,7 +27,7 @@ const DemoV4 = () => {
                     style={{
                       overflow: 'hidden',
                       height: '75vh', // Changed from 90vh to 75vh as requested
-                      width: '100%',
+                      width: '95%', // Changed from 100% to 95% as requested
                       maxWidth: '100%',
                       border: '2px solid #e2e8f0',
                       borderRadius: '0.375rem',
