@@ -1,32 +1,33 @@
 // app/api/chat/route.ts
-// @ts-ignore: 'ai' has no type declarations
-import { createStreamHandler } from "ai";
+import OpenAI from "openai-edge";
+import { NextResponse } from "next/server";
 
 // Allow larger request bodies for Base64 uploads
-export const config = {
-  api: { bodyParser: { sizeLimit: "10mb" } },
-};
+export const config = { api: { bodyParser: { sizeLimit: "10mb" } } };
 
-// Create a streaming handler using the OpenAI provider (reads OPENAI_API_KEY & ASSISTANT_ID from env)
-const handler = createStreamHandler({ provider: "openai" });
+// Initialize edge-compatible OpenAI client (reads OPENAI_API_KEY & OPENAI_ASSISTANT_ID from env)
+const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
 
 // POST /api/chat
 export async function POST(request: Request) {
-  // Parse JSON: { message, threadId, fileName?, fileData? }
+  // Deserialize incoming payload
   const { message, threadId, fileName, fileData } = await request.json();
 
-  // Append Base64 attachment if provided
-  let userContent = message;
+  // Build user content, including any attachment
+  let content = message;
   if (fileName && fileData) {
-    userContent += `\n\nAttachment: ${fileName}\nData (base64): ${fileData}`;
+    content += `\n\nAttachment: ${fileName}\nData (base64): ${fileData}`;
   }
 
-  // Forward to the ai handler
-  const proxyReq = new Request(request.url, {
-    method: "POST",
-    headers: request.headers,
-    body: JSON.stringify({ message: userContent, threadId }),
+  // Create a streaming chat completion
+  const response = await openai.chat.completions.create({
+    model: process.env.OPENAI_ASSISTANT_ID!,
+    messages: [{ role: "user", content }],
+    stream: true
   });
 
-  return handler(proxyReq);
+  // Return the raw streaming response
+  return new Response(response.body, {
+    headers: { "Content-Type": "text/event-stream" }
+  });
 }
