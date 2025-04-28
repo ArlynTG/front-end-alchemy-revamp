@@ -1,4 +1,3 @@
-
 import React, { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -31,78 +30,88 @@ const ParentLogin = () => {
   return (
     <div className="flex flex-col min-h-screen">
       <Navbar />
-      <div className="container max-w-md mx-auto py-16 px-4 sm:px-0 flex-grow">
-        <div className="text-center mb-8">
-          <h1 className="text-3xl font-bold tracking-tight">Parent Login</h1>
-          <p className="text-muted-foreground mt-2">
-            Sign in to your parent account to access your dashboard
-          </p>
+      <div className="container max-w-md mx-auto py-16 px-4 sm:px-0 flex-grow relative">
+        {/* Overlay */}
+        <div className="absolute inset-0 bg-white/80 backdrop-blur-sm flex items-center justify-center z-10 rounded-lg">
+          <div className="bg-white/90 p-6 rounded-xl shadow-lg text-center max-w-sm mx-4">
+            <h3 className="text-xl font-semibold text-gray-800 mb-2">Coming Soon!</h3>
+            <p className="text-gray-600">This feature will be live when we launch in June 2025</p>
+          </div>
         </div>
-        
-        <form onSubmit={handleSubmit} className="space-y-4">
-          <div className="space-y-2">
-            <label htmlFor="email" className="block text-sm font-medium">
-              Email
-            </label>
-            <Input
-              id="email"
-              type="email"
-              placeholder="yourname@example.com"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              required
-              className="w-full"
-            />
+
+        <div className="opacity-50">
+          <div className="text-center mb-8">
+            <h1 className="text-3xl font-bold tracking-tight">Parent Login</h1>
+            <p className="text-muted-foreground mt-2">
+              Sign in to your parent account to access your dashboard
+            </p>
           </div>
           
-          <div className="space-y-2">
-            <div className="flex justify-between items-center">
-              <label htmlFor="password" className="block text-sm font-medium">
-                Password
+          <form onSubmit={handleSubmit} className="space-y-4">
+            <div className="space-y-2">
+              <label htmlFor="email" className="block text-sm font-medium">
+                Email
               </label>
-              <Link
-                to="#"
-                className="text-sm text-tobey-orange hover:underline"
-              >
-                Forgot password?
+              <Input
+                id="email"
+                type="email"
+                placeholder="yourname@example.com"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                required
+                className="w-full"
+              />
+            </div>
+            
+            <div className="space-y-2">
+              <div className="flex justify-between items-center">
+                <label htmlFor="password" className="block text-sm font-medium">
+                  Password
+                </label>
+                <Link
+                  to="#"
+                  className="text-sm text-tobey-orange hover:underline"
+                >
+                  Forgot password?
+                </Link>
+              </div>
+              <Input
+                id="password"
+                type="password"
+                placeholder="••••••••"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                required
+                className="w-full"
+              />
+            </div>
+            
+            <Button
+              type="submit"
+              className="w-full btn-primary"
+              disabled={isLoading}
+            >
+              {isLoading ? "Signing in..." : "Sign in"}
+            </Button>
+
+            <div className="text-center text-sm text-gray-500">
+              <Link to="/parent-dashboard" className="text-tobey-orange hover:underline">
+                Demo: View Dashboard
               </Link>
             </div>
-            <Input
-              id="password"
-              type="password"
-              placeholder="••••••••"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              required
-              className="w-full"
-            />
-          </div>
+          </form>
           
-          <Button
-            type="submit"
-            className="w-full btn-primary"
-            disabled={isLoading}
-          >
-            {isLoading ? "Signing in..." : "Sign in"}
-          </Button>
-
-          <div className="text-center text-sm text-gray-500">
-            <Link to="/parent-dashboard" className="text-tobey-orange hover:underline">
-              Demo: View Dashboard
-            </Link>
+          <div className="mt-6 text-center">
+            <p className="text-sm text-muted-foreground">
+              Don't have an account?{" "}
+              <Link
+                to="#"
+                className="text-tobey-orange hover:underline"
+              >
+                Sign up
+              </Link>
+            </p>
           </div>
-        </form>
-        
-        <div className="mt-6 text-center">
-          <p className="text-sm text-muted-foreground">
-            Don't have an account?{" "}
-            <Link
-              to="#"
-              className="text-tobey-orange hover:underline"
-            >
-              Sign up
-            </Link>
-          </p>
         </div>
       </div>
     </div>
