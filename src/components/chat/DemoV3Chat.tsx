@@ -11,8 +11,8 @@ interface Message {
   sender: "user" | "assistant";
 }
 
-// Feature flag for chat
-const isChatEnabled = process.env.NEXT_PUBLIC_CHAT_ENABLED === "true";
+// Feature flag for chat - use import.meta.env instead of process.env
+const isChatEnabled = import.meta.env.VITE_CHAT_ENABLED === "true" || true;
 
 /**
  * Send message to the tutor service
@@ -61,7 +61,10 @@ const DemoV3Chat: React.FC = () => {
   ]);
   const [inputMessage, setInputMessage] = useState("");
   const [isLoading, setIsLoading] = useState(false);
-  const [threadId, setThreadId] = useState<string | null>(null);
+  const [threadId, setThreadId] = useState<string | null>(() => {
+    if (typeof window === "undefined") return null;
+    return localStorage.getItem("tt_threadId") || localStorage.getItem("threadId") || null;
+  });
   const scrollAreaRef = useRef<HTMLDivElement>(null);
   const { toast } = useToast();
 
@@ -70,8 +73,10 @@ const DemoV3Chat: React.FC = () => {
     if (typeof window === "undefined") return;
     const saved =
       localStorage.getItem("tt_threadId") || localStorage.getItem("threadId");
-    setThreadId(saved);
-  }, []);
+    if (saved && !threadId) {
+      setThreadId(saved);
+    }
+  }, [threadId]);
 
   // Scroll to bottom when messages update
   useEffect(() => {
@@ -223,4 +228,3 @@ const DemoV3Chat: React.FC = () => {
 };
 
 export default DemoV3Chat;
-

@@ -1,31 +1,28 @@
 
-import { useState, useRef, useEffect } from "react";
-import { SendHorizontal, Loader2, FileUp } from "lucide-react";
+import React, { useState, useRef, useEffect } from "react";
+import { SendHorizontal, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { useToast } from "@/hooks/use-toast";
-import ChatApiKeySection from "./ChatApiKeySection";
 
 interface Message {
   id: string;
   text: string;
-  sender: "user" | "assistant";
+  sender: "user" | "bot";
 }
 
-const TobeyChat = ({ reportText }: { reportText?: string | null }) => {
+const TobeyChat: React.FC = () => {
   const [messages, setMessages] = useState<Message[]>([
     {
       id: "welcome",
       text: "Hi there! I'm Tobey, your AI tutor. How can I help you today?",
-      sender: "assistant",
+      sender: "bot",
     },
   ]);
   const [inputMessage, setInputMessage] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [threadId, setThreadId] = useState<string | null>(null);
-  const [apiKey, setApiKey] = useState("");
-  const [assistantId, setAssistantId] = useState("");
   const scrollAreaRef = useRef<HTMLDivElement>(null);
   const { toast } = useToast();
 
@@ -62,13 +59,12 @@ const TobeyChat = ({ reportText }: { reportText?: string | null }) => {
         },
         body: JSON.stringify({ 
           message: textToSend,
-          thread_id: threadId,
-          report_text: reportText
+          thread_id: threadId
         }),
       });
 
       if (!response.ok) {
-        throw new Error(`HTTP error ${response.status}`);
+        throw new Error(`Server responded with status: ${response.status}`);
       }
       
       const data = await response.json();
@@ -82,7 +78,7 @@ const TobeyChat = ({ reportText }: { reportText?: string | null }) => {
       const botMessage: Message = {
         id: (Date.now() + 1).toString(),
         text: data.reply || "Sorry, I couldn't process your message.",
-        sender: "assistant",
+        sender: "bot",
       };
 
       setMessages((prev) => [...prev, botMessage]);
@@ -108,7 +104,7 @@ const TobeyChat = ({ reportText }: { reportText?: string | null }) => {
 
   return (
     <div className="flex flex-col h-full rounded-lg border shadow-lg bg-white overflow-hidden">
-      <div className="bg-gradient-to-r from-[#f97316] to-[#c2410c] text-white py-3 px-4">
+      <div className="bg-gradient-to-r from-purple-500 to-indigo-600 text-white py-3 px-4">
         <h3 className="font-medium">Tobey AI Tutor</h3>
       </div>
       
@@ -122,12 +118,12 @@ const TobeyChat = ({ reportText }: { reportText?: string | null }) => {
               <div
                 className={`max-w-[80%] rounded-2xl px-4 py-2 ${
                   message.sender === 'user'
-                    ? 'bg-[#f97316] text-white rounded-tr-none'
+                    ? 'bg-indigo-600 text-white rounded-tr-none'
                     : 'bg-gray-200 text-gray-800 rounded-tl-none'
                 }`}
               >
                 <div className="flex items-center space-x-2 mb-1">
-                  {message.sender === 'assistant' ? (
+                  {message.sender === 'bot' ? (
                     <div className="font-medium text-sm">Tobey</div>
                   ) : (
                     <div className="font-medium text-sm text-right w-full">You</div>
@@ -165,7 +161,7 @@ const TobeyChat = ({ reportText }: { reportText?: string | null }) => {
           />
           <Button
             onClick={sendMessage}
-            className="bg-[#f97316] hover:bg-[#c2410c] text-white"
+            className="bg-indigo-600 hover:bg-indigo-700 text-white"
             disabled={!inputMessage.trim() || isLoading}
           >
             {isLoading ? (
@@ -175,13 +171,6 @@ const TobeyChat = ({ reportText }: { reportText?: string | null }) => {
             )}
           </Button>
         </div>
-
-        <ChatApiKeySection 
-          apiKey={apiKey}
-          setApiKey={setApiKey}
-          assistantId={assistantId}
-          setAssistantId={setAssistantId}
-        />
       </div>
     </div>
   );
