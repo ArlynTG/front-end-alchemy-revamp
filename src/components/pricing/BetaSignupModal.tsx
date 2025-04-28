@@ -13,6 +13,7 @@ import { toast } from "@/components/ui/use-toast";
 import StripePaymentElement from "../payment/StripePaymentElement";
 import { Button } from "@/components/ui/button";
 import BetaSignupForm from "./BetaSignupForm";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 interface BetaSignupModalProps {
   isOpen: boolean;
@@ -25,6 +26,7 @@ const BetaSignupModal = ({ isOpen, onClose, planId }: BetaSignupModalProps) => {
   const [formStep, setFormStep] = useState<'details' | 'payment'>('details');
   const [formData, setFormData] = useState<DetailedSignupFormValues | null>(null);
   const navigate = useNavigate();
+  const isMobile = useIsMobile();
 
   const handleDetailsSubmit = async (data: DetailedSignupFormValues) => {
     console.log("Modal - Form data:", data);
@@ -81,51 +83,53 @@ const BetaSignupModal = ({ isOpen, onClose, planId }: BetaSignupModalProps) => {
 
   return (
     <Dialog open={isOpen} onOpenChange={handleOpenChange}>
-      <DialogContent className="sm:max-w-md md:max-w-xl">
-        <DialogHeader>
+      <DialogContent className={`sm:max-w-md md:max-w-xl ${isMobile ? 'h-[calc(100vh-4rem)] max-h-full mt-16 pt-6' : ''}`}>
+        <DialogHeader className={isMobile ? 'pb-2' : ''}>
           <DialogTitle className="text-2xl font-medium">Reserve Your Spot</DialogTitle>
           <DialogDescription>
             Join our founding community of 200 families. Complete the form below to secure your place.
           </DialogDescription>
         </DialogHeader>
         
-        {formStep === 'details' ? (
-          <BetaSignupForm 
-            onSubmit={handleDetailsSubmit}
-            onCancel={onClose}
-            isSubmitting={isSubmitting}
-          />
-        ) : (
-          <div className="py-4">
-            <div className="mb-6 p-4 bg-gray-50 rounded-lg">
-              <h4 className="font-medium mb-2">Your Information</h4>
+        <div className={isMobile ? 'overflow-y-auto max-h-[calc(100vh-12rem)] pb-4' : ''}>
+          {formStep === 'details' ? (
+            <BetaSignupForm 
+              onSubmit={handleDetailsSubmit}
+              onCancel={onClose}
+              isSubmitting={isSubmitting}
+            />
+          ) : (
+            <div className="py-4">
+              <div className="mb-6 p-4 bg-gray-50 rounded-lg">
+                <h4 className="font-medium mb-2">Your Information</h4>
+                {formData && (
+                  <>
+                    <p className="text-sm text-gray-700">{formData.firstName} {formData.lastName}</p>
+                    <p className="text-sm text-gray-700">{formData.email}</p>
+                  </>
+                )}
+              </div>
+              
               {formData && (
-                <>
-                  <p className="text-sm text-gray-700">{formData.firstName} {formData.lastName}</p>
-                  <p className="text-sm text-gray-700">{formData.email}</p>
-                </>
+                <StripePaymentElement 
+                  firstName={formData.firstName}
+                  lastName={formData.lastName}
+                  email={formData.email}
+                  onPaymentSuccess={handlePaymentSuccess}
+                />
               )}
+              
+              <Button
+                variant="outline"
+                className="w-full mt-4"
+                onClick={handleBackToDetails}
+                disabled={isSubmitting}
+              >
+                Back to Personal Details
+              </Button>
             </div>
-            
-            {formData && (
-              <StripePaymentElement 
-                firstName={formData.firstName}
-                lastName={formData.lastName}
-                email={formData.email}
-                onPaymentSuccess={handlePaymentSuccess}
-              />
-            )}
-            
-            <Button
-              variant="outline"
-              className="w-full mt-4"
-              onClick={handleBackToDetails}
-              disabled={isSubmitting}
-            >
-              Back to Personal Details
-            </Button>
-          </div>
-        )}
+          )}
+        </div>
       </DialogContent>
     </Dialog>
   );
