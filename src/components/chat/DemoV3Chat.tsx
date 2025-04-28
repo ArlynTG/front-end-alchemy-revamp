@@ -1,3 +1,4 @@
+
 import React, { useState, useRef, useEffect } from "react";
 import { SendHorizontal, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -11,8 +12,8 @@ interface Message {
   sender: "user" | "assistant";
 }
 
-// Feature flag for chat
-const isChatEnabled = process.env.NEXT_PUBLIC_CHAT_ENABLED === "true";
+// Feature flag for chat - using import.meta.env instead of process.env
+const isChatEnabled = import.meta.env.VITE_CHAT_ENABLED === "true";
 
 /**
  * Send message to the tutor service
@@ -223,4 +224,3 @@ const DemoV3Chat: React.FC = () => {
 };
 
 export default DemoV3Chat;
-
