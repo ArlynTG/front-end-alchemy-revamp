@@ -14,20 +14,23 @@ const Footer = () => {
     <footer className="bg-tobey-blue py-6">
       <div className="container">
         <div className="flex flex-col md:flex-row justify-between items-center mb-4">
-          <div 
-            className="flex items-center gap-2 cursor-pointer"
-            onClick={scrollToTop}
-          >
-            <svg 
-              viewBox="0 0 24 24" 
-              fill="none" 
-              className="h-6 w-6 text-tobey-orange"
-              stroke="currentColor" 
-              strokeWidth="2"
+          <div className="flex flex-col items-start">
+            <div 
+              className="flex items-center gap-2 cursor-pointer"
+              onClick={scrollToTop}
             >
-              <path d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
-            </svg>
-            <span className="text-lg font-medium text-tobey-orange">Tobey's Tutor</span>
+              <svg 
+                viewBox="0 0 24 24" 
+                fill="none" 
+                className="h-6 w-6 text-tobey-orange"
+                stroke="currentColor" 
+                strokeWidth="2"
+              >
+                <path d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+              </svg>
+              <span className="text-lg font-medium text-tobey-orange">Tobey's Tutor</span>
+            </div>
+            <span className="text-xs text-gray-600 mt-1">Patent Pending</span>
           </div>
           
           <div className="text-left">
