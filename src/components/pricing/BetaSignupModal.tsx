@@ -68,15 +68,17 @@ const BetaSignupModal = ({ isOpen, onClose, planId }: BetaSignupModalProps) => {
       
       // Construct the Stripe payment link with the client_reference_id
       const stripePaymentLink = `https://buy.stripe.com/aEU29XbjrclwgO49AC?client_reference_id=${userId}`;
+      console.log("Redirecting to Stripe with URL:", stripePaymentLink);
       
       // Close modal before redirecting
       onClose();
       
-      // Use a small delay before redirecting to ensure modal closes first
+      // Use a larger delay before redirecting to ensure modal closes completely
       setTimeout(() => {
-        // Redirect to the Stripe payment link using window.location for full page navigation
-        window.location.href = stripePaymentLink;
-      }, 100);
+        console.log("Executing redirect now...");
+        // Use direct window location assignment for reliable navigation
+        window.location.assign(stripePaymentLink);
+      }, 300);
       
     } catch (error) {
       console.error("Error during registration:", error);
