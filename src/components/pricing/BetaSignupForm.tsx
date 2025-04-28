@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
@@ -114,7 +115,7 @@ const BetaSignupForm = ({ onSubmit, onCancel, isSubmitting }: BetaSignupFormProp
             disabled={isSubmitting}
             className="bg-tobey-orange hover:bg-tobey-orange/90 text-white"
           >
-            {isSubmitting ? "Submitting..." : "Reserve Your Spot"}
+            {isSubmitting ? "Submitting..." : "Reserve Your Spot for $1"}
           </Button>
         </div>
       </form>
