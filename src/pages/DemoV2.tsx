@@ -1,21 +1,14 @@
+
 import React, { useState } from "react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { Toaster } from "@/components/ui/toaster";
-import DemoChat from "@/components/chat/DemoChat";
 import { Card } from "@/components/ui/card";
 import ReportCardUpload from "@/components/chat/ReportCardUpload";
 
 const DemoV2 = () => {
   const [reportText, setReportText] = useState<string | null>(null);
   
-  const sampleQuestions = [
-    "How do you help dyslexic students?",
-    "What do parent reports look like?",
-    "How do you incorporate my child's interests in lessons?",
-    "Can you help kids with ADHD and dyslexia?"
-  ];
-
   const handleUploadComplete = (text: string) => {
     setReportText(text);
   };
@@ -35,8 +28,21 @@ const DemoV2 = () => {
             
             <div className="max-w-3xl mx-auto animate-fade-in opacity-0" style={{ animationDelay: '800ms', animationFillMode: 'forwards' }}>
               <Card className="shadow-xl rounded-xl border border-gray-200/50 backdrop-blur-sm bg-white/90 hover:shadow-2xl transition-all duration-300">
-                <div className="h-[600px] overflow-hidden">
-                  <DemoChat />
+                <div className="h-[600px] overflow-hidden flex justify-center items-center">
+                  <iframe 
+                    src="https://www.openassistantgpt.io/embed/cma0hswmg0007wqm6cgyt5khc/window?chatbox=false"
+                    style={{ 
+                      overflow: 'hidden', 
+                      height: '80vh', 
+                      width: '480px', 
+                      bottom: '-30px', 
+                      border: '2px solid #e2e8f0', 
+                      borderRadius: '0.375rem', 
+                      boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)'
+                    }}
+                    allowFullScreen
+                    allow="clipboard-read; clipboard-write" 
+                  />
                 </div>
               </Card>
               
