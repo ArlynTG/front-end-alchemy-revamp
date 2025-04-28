@@ -1,4 +1,3 @@
-
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -14,7 +13,6 @@ import StudentLogin from "./pages/StudentLogin";
 import BetaConfirmed from "./pages/BetaConfirmed";
 import BetaRegistration from "./pages/BetaRegistration";
 import BetaConfirmation from "./pages/BetaConfirmation";
-import DemoV2 from "./pages/DemoV2";
 import DemoV4 from "./pages/DemoV4";
 import ParentDashboard from "./pages/ParentDashboard";
 import PasswordProtection from "@/components/PasswordProtection";
@@ -38,7 +36,6 @@ const App = () => (
             <Route path="/cookie-policy" element={<CookiePolicy />} />
             <Route path="/parent-login" element={<ParentLogin />} />
             <Route path="/student-login" element={<StudentLogin />} />
-            <Route path="/demo-v2" element={<DemoV2 />} />
             <Route path="/demo-v4" element={<DemoV4 />} />
             <Route path="/parent-dashboard" element={<ParentDashboard />} />
             <Route path="/beta-confirmed" element={<BetaConfirmed />} />
