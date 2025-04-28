@@ -11,6 +11,8 @@ import {
 import BetaSignupForm from "./BetaSignupForm";
 import { DetailedSignupFormValues } from "@/utils/formSchemas";
 import { toast } from "@/components/ui/use-toast";
+import StripePaymentElement from "../payment/StripePaymentElement";
+import { Button } from "@/components/ui/button";
 
 interface BetaSignupModalProps {
   isOpen: boolean;
@@ -20,32 +22,40 @@ interface BetaSignupModalProps {
 
 const BetaSignupModal = ({ isOpen, onClose, planId }: BetaSignupModalProps) => {
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [formStep, setFormStep] = useState<'details' | 'payment'>('details');
+  const [formData, setFormData] = useState<DetailedSignupFormValues | null>(null);
   const navigate = useNavigate();
 
-  const handleSubmit = async (data: DetailedSignupFormValues) => {
-    setIsSubmitting(true);
+  const handleDetailsSubmit = async (data: DetailedSignupFormValues) => {
     console.log("Modal - Form data:", data);
+    setFormData(data);
+    setFormStep('payment');
+  };
+
+  const handlePaymentSuccess = async (paymentId: string) => {
+    if (!formData) return;
+    
+    setIsSubmitting(true);
     
     try {
-      // Store form data in localStorage for the registration page to use
-      localStorage.setItem("betaSignupData", JSON.stringify({
-        firstName: data.firstName,
-        lastName: data.lastName,
-        email: data.email,
-        phone: data.phone,
-        studentName: data.studentName,
-        studentAge: data.studentAge,
-        primaryLearningDifference: data.primaryLearningDifference
-      }));
+      console.log("Payment successful with ID:", paymentId);
       
-      // Redirect to the registration page with the plan ID
-      navigate(`/beta-registration?plan=${planId}`);
+      navigate("/beta-confirmed", { 
+        state: { 
+          firstName: formData.firstName, 
+          lastName: formData.lastName, 
+          email: formData.email, 
+          studentName: formData.studentName,
+          planType: planId,
+          paymentId: paymentId
+        } 
+      });
       
       // Close modal
       onClose();
       
     } catch (error) {
-      console.error("Modal - Error during submission:", error);
+      console.error("Error during registration completion:", error);
       toast({
         title: "Error",
         description: error instanceof Error ? error.message : "An unexpected error occurred",
@@ -54,6 +64,10 @@ const BetaSignupModal = ({ isOpen, onClose, planId }: BetaSignupModalProps) => {
     } finally {
       setIsSubmitting(false);
     }
+  };
+
+  const handleBackToDetails = () => {
+    setFormStep('details');
   };
 
   return (
@@ -66,11 +80,43 @@ const BetaSignupModal = ({ isOpen, onClose, planId }: BetaSignupModalProps) => {
           </DialogDescription>
         </DialogHeader>
         
-        <BetaSignupForm 
-          onSubmit={handleSubmit}
-          onCancel={onClose}
-          isSubmitting={isSubmitting}
-        />
+        {formStep === 'details' ? (
+          <BetaSignupForm 
+            onSubmit={handleDetailsSubmit}
+            onCancel={onClose}
+            isSubmitting={isSubmitting}
+          />
+        ) : (
+          <div className="py-4">
+            <div className="mb-6 p-4 bg-gray-50 rounded-lg">
+              <h4 className="font-medium mb-2">Your Information</h4>
+              {formData && (
+                <>
+                  <p className="text-sm text-gray-700">{formData.firstName} {formData.lastName}</p>
+                  <p className="text-sm text-gray-700">{formData.email}</p>
+                </>
+              )}
+            </div>
+            
+            {formData && (
+              <StripePaymentElement 
+                firstName={formData.firstName}
+                lastName={formData.lastName}
+                email={formData.email}
+                onPaymentSuccess={handlePaymentSuccess}
+              />
+            )}
+            
+            <Button
+              variant="outline"
+              className="w-full mt-4"
+              onClick={handleBackToDetails}
+              disabled={isSubmitting}
+            >
+              Back to Personal Details
+            </Button>
+          </div>
+        )}
       </DialogContent>
     </Dialog>
   );
