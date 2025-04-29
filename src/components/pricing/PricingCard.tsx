@@ -1,18 +1,7 @@
 
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-
-// Update the interface to match the actual data structure
-interface PricingPlan {
-  id: string;
-  name: string;
-  price: string;
-  period?: string;
-  description: string;
-  features: string[];
-  highlighted?: boolean;
-  disabled?: boolean;
-}
+import { PricingPlan } from "./PricingCard";
 
 interface PricingCardProps {
   plan: PricingPlan;
@@ -27,7 +16,7 @@ const PricingCard = ({ plan, onSelect }: PricingCardProps) => {
         plan.highlighted 
           ? 'border-tobey-orange bg-gradient-to-b from-amber-50 to-white' 
           : plan.disabled 
-            ? 'border-tobey-orange bg-white/80 backdrop-blur-lg' 
+            ? 'border-tobey-orange bg-white/80 backdrop-blur-lg blur-lg' // Increased blur effect
             : 'border-gray-200'
       }`}
     >

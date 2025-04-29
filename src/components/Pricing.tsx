@@ -1,7 +1,7 @@
 
 import { useState, createContext, useContext } from "react";
 import { useNavigate } from "react-router-dom";
-import PricingCard from "./pricing/PricingCard";
+import PricingCard from "./pricing/PricingCard.tsx"; // Explicitly reference .tsx extension
 import { pricingPlans } from "./pricing/pricingData";
 import BetaSignupModal from "./pricing/BetaSignupModal";
 

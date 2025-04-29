@@ -1,6 +1,6 @@
 
 // Define the interface for the PricingPlan data structure
-export type PricingPlan = {
+export interface PricingPlan {
   id: string;
   name: string;
   price: string;
@@ -9,7 +9,7 @@ export type PricingPlan = {
   features: string[];
   highlighted?: boolean;
   disabled?: boolean;
-};
+}
 
-// Export the type as the default export
-export type { PricingPlan as default };
+// Export the interface (not as default)
+export { PricingPlan };
