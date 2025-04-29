@@ -3,9 +3,6 @@ import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react-swc";
 import path from "path";
 
-// Note: We're not directly importing componentTagger due to ESM compatibility issues
-// Instead we'll enable the functionality using environment variables
-
 export default defineConfig(({ mode }) => ({
   server: {
     host: "::",
@@ -19,20 +16,40 @@ export default defineConfig(({ mode }) => ({
       jsxImportSource: 'react',
       plugins: [],
     }),
-    // The componentTagger functionality is enabled via environment variables
-    // mode === 'development' && componentTagger(), // This line is commented out to avoid ESM errors
   ].filter(Boolean),
   resolve: {
     alias: {
       "@": path.resolve(__dirname, "./src"),
     },
   },
-  esbuild: {
-    jsx: 'automatic',
+  build: {
+    // Improve chunking strategy
+    rollupOptions: {
+      output: {
+        manualChunks: (id) => {
+          if (id.includes('node_modules')) {
+            return 'vendor';
+          }
+          if (id.includes('src/pages')) {
+            return 'pages';
+          }
+        },
+      },
+    },
+    // Ensure clean builds
+    emptyOutDir: true,
+    // Improve sourcemaps for debugging
+    sourcemap: true,
   },
-  // Define environment variables that need to be available in client code
+  // Enhance caching for development and production
+  optimizeDeps: {
+    include: ['react', 'react-dom', 'react-router-dom'],
+    exclude: [],
+  },
+  // Add timestamp to invalidate cached assets
   define: {
+    'import.meta.env.VITE_BUILD_TIMESTAMP': JSON.stringify(new Date().toISOString()),
     'import.meta.env.VITE_CHAT_ENABLED': JSON.stringify(true),
-    'import.meta.env.VITE_COMPONENT_TAGGER_ENABLED': JSON.stringify(true) // This enables the component tagger functionality
+    'import.meta.env.VITE_COMPONENT_TAGGER_ENABLED': JSON.stringify(true)
   }
 }));

@@ -1,3 +1,4 @@
+
 name: build
 
 on:
@@ -11,17 +12,31 @@ jobs:
 
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0  # Fetch all history to ensure proper versioning
 
       - name: Use Node 20
         uses: actions/setup-node@v4
         with:
           node-version: 20
+          cache: 'npm'
+
+      - name: Clean cache directories
+        run: |
+          rm -rf ./.cache
+          rm -rf ./node_modules/.cache
+          rm -rf ./dist
+          rm -rf ./build
 
       - name: Install deps
         run: npm ci
 
       - name: Build bundle
-        run: npm run build          # outputs to dist/ or build/
+        run: npm run build
+        env:
+          NODE_ENV: production
+          # Force cache busting with timestamp
+          VITE_BUILD_TIMESTAMP: ${{ github.run_number }}-${{ github.sha }}-$(date +%s)
 
       - name: Upload bundle
         uses: actions/upload-artifact@v4
@@ -30,8 +45,10 @@ jobs:
           path: |
             dist/**
             build/**
+            
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v4
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./dist        # ← change to ./build if that’s your folder
+          publish_dir: ./dist
+          force_orphan: true  # Create a new history for the gh-pages branch
