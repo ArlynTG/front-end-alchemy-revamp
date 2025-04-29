@@ -12,4 +12,4 @@ export interface PricingPlan {
 }
 
 // Export the interface (not as default)
-export { PricingPlan };
+export type { PricingPlan };
