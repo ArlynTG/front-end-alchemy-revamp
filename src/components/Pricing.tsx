@@ -1,7 +1,7 @@
 
 import { useState, createContext, useContext } from "react";
 import { useNavigate } from "react-router-dom";
-import PricingCard from "./pricing/PricingCard.tsx";
+import PricingCard from "./pricing/PricingCard";
 import { pricingPlans } from "./pricing/pricingData";
 import BetaSignupModal from "./pricing/BetaSignupModal";
 
@@ -47,7 +47,7 @@ const Pricing = () => {
     <PricingContext.Provider value={pricingValue}>
       <section id="pricing" className="py-16 md:py-24">
         <div className="container max-w-6xl mx-auto text-center">
-          <h2 className="text-4xl font-medium mb-4"><strong>Get Exclusive Access</strong></h2>
+          <h3 className="text-4xl font-medium mb-4"><strong>Get Exclusive Access</strong></h3>
           <p className="text-xl text-gray-600 mb-12 max-w-2xl mx-auto">
             Join our founding community of just 200 families and access the beta version of Tobey's Tutor. Launching June 2025.
           </p>
