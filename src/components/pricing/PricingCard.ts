@@ -11,5 +11,4 @@ export interface PricingPlan {
   disabled?: boolean;
 }
 
-// Export the interface (not as default)
-export type { PricingPlan };
+// No need for second export as the interface is already exported above
