@@ -5,7 +5,6 @@ import Footer from "@/components/Footer";
 import { Toaster } from "@/components/ui/toaster";
 import { Card } from "@/components/ui/card";
 import { Helmet } from "react-helmet-async";
-import WebhookChat from "@/components/chat/WebhookChat";
 
 const DemoV4 = () => {
   return (
@@ -16,6 +15,7 @@ const DemoV4 = () => {
         <meta property="og:title" content="Try Tobey's Tutor Demo" />
         <meta property="og:description" content="Experience our AI tutor designed for bright kids with learning differences like dyslexia and ADHD." />
         <meta property="og:type" content="website" />
+        <link rel="preconnect" href="https://www.openassistantgpt.io" />
       </Helmet>
 
       <Navbar />
@@ -33,7 +33,26 @@ const DemoV4 = () => {
             <div className="max-w-3xl mx-auto animate-fade-in opacity-0" style={{ animationDelay: '800ms', animationFillMode: 'forwards' }}>
               <Card className="shadow-xl rounded-xl border border-gray-200/50 backdrop-blur-sm bg-gradient-to-br from-white to-tobey-peach/30 hover:shadow-2xl transition-all duration-300">
                 <div className="flex justify-center items-center p-4">
-                  <WebhookChat />
+                  <iframe 
+                    src="https://www.openassistantgpt.io/embed/cma0hswmg0007wqm6cgyt5khc/window?chatbox=false"
+                    style={{
+                      overflow: 'hidden',
+                      height: '90vh',
+                      width: '100%',
+                      maxWidth: '100%',
+                      border: '2px solid #e2e8f0',
+                      borderRadius: '0.375rem',
+                      boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)',
+                      fontSize: '18px',
+                      display: 'block',
+                      margin: '0 auto',
+                      padding: '10px'
+                    }}
+                    allowFullScreen
+                    allow="clipboard-read; clipboard-write"
+                    title="Tobey's Tutor Interactive Demo"
+                  />
+                  {/* This chatbot is built using https://openassistantgpt.io/ */}
                 </div>
               </Card>
             </div>
