@@ -2,18 +2,20 @@
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 
-interface Plan {
+// Update the interface to match the actual data structure
+interface PricingPlan {
   id: string;
   name: string;
-  price: number;
+  price: string;
+  period?: string;
   description: string;
   features: string[];
-  buttonText: string;
   highlighted?: boolean;
+  disabled?: boolean;
 }
 
 interface PricingCardProps {
-  plan: Plan;
+  plan: PricingPlan;
   onSelect: (planId: string) => void;
 }
 
