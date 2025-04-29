@@ -16,7 +16,7 @@ const PricingCard = ({ plan, onSelect }: PricingCardProps) => {
         plan.highlighted 
           ? 'border-tobey-orange bg-gradient-to-b from-amber-50 to-white' 
           : plan.disabled 
-            ? 'border-tobey-orange bg-white/80 backdrop-blur-sm blur-sm' // Reduced blur effect from blur-lg to blur-sm
+            ? 'border-tobey-orange bg-white/80 backdrop-blur-sm opacity-80' // Reduced blur and added opacity for a subtler effect
             : 'border-gray-200'
       }`}
     >
