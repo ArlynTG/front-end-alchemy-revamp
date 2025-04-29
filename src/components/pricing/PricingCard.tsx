@@ -27,7 +27,7 @@ const PricingCard = ({ plan, onSelect }: PricingCardProps) => {
         plan.highlighted 
           ? 'border-tobey-orange bg-gradient-to-b from-amber-50 to-white' 
           : plan.disabled 
-            ? 'border-transparent bg-gradient-to-br from-[#FDE1D3] via-[#FEC6A1] to-[#FEF7CD] opacity-85' 
+            ? 'border-tobey-orange bg-white/90 backdrop-blur-sm' 
             : 'border-gray-200'
       }`}
     >
