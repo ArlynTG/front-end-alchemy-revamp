@@ -27,7 +27,7 @@ const PricingCard = ({ plan, onSelect }: PricingCardProps) => {
         plan.highlighted 
           ? 'border-tobey-orange bg-gradient-to-b from-amber-50 to-white' 
           : plan.disabled 
-            ? 'border-tobey-orange bg-white/90 backdrop-blur-sm' 
+            ? 'border-tobey-orange bg-white/80 backdrop-blur-lg' 
             : 'border-gray-200'
       }`}
     >
@@ -45,7 +45,7 @@ const PricingCard = ({ plan, onSelect }: PricingCardProps) => {
         <ul className="space-y-3 mb-8">
           {plan.features.map((feature, index) => (
             <li key={index} className="flex items-start">
-              <svg className={`h-5 w-5 mr-2 mt-0.5 ${plan.disabled ? 'text-gray-500' : 'text-green-500'}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <svg className={`h-5 w-5 min-w-5 mr-2 mt-0.5 ${plan.disabled ? 'text-gray-500' : 'text-green-500'}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7"></path>
               </svg>
               <span className={plan.disabled ? 'text-gray-600' : ''}>{feature}</span>
