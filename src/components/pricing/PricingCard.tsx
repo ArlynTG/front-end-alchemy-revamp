@@ -1,75 +1,59 @@
-import React from 'react';
+
+import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { Check } from "lucide-react";
-import type { PricingPlan } from "./PricingCard.ts";
+
+interface Plan {
+  id: string;
+  name: string;
+  price: number;
+  description: string;
+  features: string[];
+  buttonText: string;
+  highlighted?: boolean;
+}
 
 interface PricingCardProps {
-  plan: PricingPlan;
+  plan: Plan;
   onSelect: (planId: string) => void;
 }
 
-const PricingCard: React.FC<PricingCardProps> = ({ plan, onSelect }) => {
-  const isHighlighted = plan.highlighted;
-  const isDisabled = plan.disabled;
-  
+const PricingCard = ({ plan, onSelect }: PricingCardProps) => {
   return (
     <div 
-      className={`p-6 rounded-xl relative overflow-hidden 
-        ${isHighlighted 
-          ? 'bg-white border-2 border-tobey-orange/20 shadow-md' 
-          : 'bg-gradient-to-br from-white to-tobey-peach/60'
-        } ${
-        isDisabled ? 'opacity-60' : ''
-      }`}
       data-plan-id={plan.id}
+      className={`flex flex-col justify-between p-8 rounded-xl shadow-md border ${
+        plan.highlighted ? 'border-tobey-orange bg-gradient-to-b from-amber-50 to-white' : 'border-gray-200'
+      }`}
     >
-      <div className="relative z-10 flex flex-col h-full">
-        <div className="relative z-20 flex-grow">
-          <h3 className="text-xl font-semibold mb-1 text-left">{plan.name}</h3>
-          
-          {isHighlighted && (
-            <div className="relative z-30 mb-4">
-              <div className="text-left">
-                <span className="text-3xl font-bold">${plan.price}</span>
-                {plan.period && <span className="text-gray-500">/{plan.period}</span>}
-              </div>
-            </div>
-          )}
-          
-          {!isHighlighted && (
-            <div className="mb-4 text-left">
-              <span className="text-3xl font-bold">${plan.price}</span>
-              {plan.period && <span className="text-gray-500">/{plan.period}</span>}
-            </div>
-          )}
-          
-          <p className="text-gray-600 mb-6 text-left">{plan.description}</p>
-          
-          <ul className="mb-8 space-y-3 text-left">
-            {plan.features.map((feature, index) => (
-              <li key={index} className="flex items-start">
-                <Check className="h-5 w-5 text-tobey-orange mt-0.5 mr-2 flex-shrink-0" />
-                <span className={`text-gray-600 ${isDisabled ? 'opacity-60' : ''}`}>{feature}</span>
-              </li>
-            ))}
-          </ul>
+      <div>
+        <h3 className={`text-2xl font-semibold ${plan.highlighted ? 'text-tobey-orange' : ''}`}>{plan.name}</h3>
+        <div className="mt-4 mb-6">
+          <span className="text-3xl font-bold">${plan.price}</span>
+          {plan.id === "early-adopter" && <span className="text-sm ml-1">one-time payment</span>}
         </div>
-        
-        <Button
-          className={`mt-auto w-full ${
-            isHighlighted ? 'bg-tobey-orange hover:bg-tobey-orange/90' : 'bg-white text-tobey-orange border border-tobey-orange hover:bg-tobey-orange/10'
-          } ${
-            isDisabled ? 'bg-gray-200 text-gray-400 cursor-not-allowed' : ''
-          }`}
-          onClick={() => onSelect(plan.id)}
-          disabled={isDisabled}
-        >
-          {isDisabled ? "Coming Soon" : "Reserve Your Spot for $1"}
-        </Button>
+        <p className="text-gray-600 mb-6">{plan.description}</p>
+        <ul className="space-y-3 mb-8">
+          {plan.features.map((feature, index) => (
+            <li key={index} className="flex items-start">
+              <svg className="h-5 w-5 text-green-500 mr-2 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7"></path>
+              </svg>
+              <span>{feature}</span>
+            </li>
+          ))}
+        </ul>
       </div>
-      {!isHighlighted && (
-        <div className="absolute -bottom-2 -right-2 w-16 h-16 bg-tobey-peach rounded-full opacity-40 blur-md"></div>
-      )}
+      
+      <Button
+        onClick={() => onSelect(plan.id)}
+        className={`w-full ${
+          plan.highlighted
+            ? 'bg-tobey-orange hover:bg-tobey-orange/90 text-white'
+            : 'bg-white text-tobey-orange border border-tobey-orange hover:bg-orange-50'
+        }`}
+      >
+        Reserve Your Spot for $1
+      </Button>
     </div>
   );
 };
