@@ -94,6 +94,8 @@ const RegistrationDetailsForm = ({
       >
         {isLoading ? "Processing..." : "Continue to Payment →"}
       </Button>
+      
+      <input type="hidden" id="reservation_id" name="reservation_id" />
     </form>
   );
 };

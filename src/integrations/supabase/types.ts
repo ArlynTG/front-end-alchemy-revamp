@@ -16,11 +16,16 @@ export type Database = {
           first_name: string
           id: string
           last_name: string
+          paid_at: string | null
           phone: string
           plan_type: string
           primary_learning_difference:
             | Database["public"]["Enums"]["learning_difference"]
             | null
+          reservation_id: string | null
+          status: string | null
+          stripe_customer_id: string | null
+          stripe_session_id: string | null
           student_age: string
           student_name: string | null
           updated_at: string
@@ -31,11 +36,16 @@ export type Database = {
           first_name: string
           id?: string
           last_name: string
+          paid_at?: string | null
           phone: string
           plan_type: string
           primary_learning_difference?:
             | Database["public"]["Enums"]["learning_difference"]
             | null
+          reservation_id?: string | null
+          status?: string | null
+          stripe_customer_id?: string | null
+          stripe_session_id?: string | null
           student_age: string
           student_name?: string | null
           updated_at?: string
@@ -46,16 +56,62 @@ export type Database = {
           first_name?: string
           id?: string
           last_name?: string
+          paid_at?: string | null
           phone?: string
           plan_type?: string
           primary_learning_difference?:
             | Database["public"]["Enums"]["learning_difference"]
             | null
+          reservation_id?: string | null
+          status?: string | null
+          stripe_customer_id?: string | null
+          stripe_session_id?: string | null
           student_age?: string
           student_name?: string | null
           updated_at?: string
         }
         Relationships: []
+      }
+      payment_records: {
+        Row: {
+          id: string
+          payment_amount: number | null
+          payment_date: string | null
+          payment_method: string | null
+          payment_status: string | null
+          registration_id: string | null
+          stripe_customer_id: string | null
+          stripe_payment_id: string | null
+        }
+        Insert: {
+          id?: string
+          payment_amount?: number | null
+          payment_date?: string | null
+          payment_method?: string | null
+          payment_status?: string | null
+          registration_id?: string | null
+          stripe_customer_id?: string | null
+          stripe_payment_id?: string | null
+        }
+        Update: {
+          id?: string
+          payment_amount?: number | null
+          payment_date?: string | null
+          payment_method?: string | null
+          payment_status?: string | null
+          registration_id?: string | null
+          stripe_customer_id?: string | null
+          stripe_payment_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "payment_records_registration_id_fkey"
+            columns: ["registration_id"]
+            isOneToOne: false
+            referencedRelation: "beta_registrations"
+            referencedColumns: ["id"]
+          },
+        ]
       }
     }
     Views: {

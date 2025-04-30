@@ -60,3 +60,13 @@ if ('serviceWorker' in navigator) {
 
 // Add a timestamp to force cache-busting
 console.log(`App initialized at: ${new Date().toISOString()}, Build: ${import.meta.env.VITE_BUILD_TIMESTAMP || 'development'}`);
+
+// Create and set reservation ID
+const r = crypto.randomUUID();
+document.addEventListener('DOMContentLoaded', () => {
+  const reservationIdInput = document.getElementById('reservation_id');
+  if (reservationIdInput) {
+    reservationIdInput.value = r;
+    window.reservationId = r; // will be passed to Stripe Checkout
+  }
+});
