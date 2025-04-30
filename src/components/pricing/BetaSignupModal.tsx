@@ -157,7 +157,7 @@ const BetaSignupModal = ({ isOpen, onClose, planId }: BetaSignupModalProps) => {
                 <stripe-buy-button
                   buy-button-id="buy_btn_1RJ0FPBpB9LJmKwiQfros2F2"
                   publishable-key="pk_live_51R96NFBpB9LJmKwiof8LfkfsDcBtzx8sl21tqETJoiiuMSNh0yGHOuZscRLgo8NykCYscFtFGZ3Ghh29hR3Emo0W00vAw5C1Nu"
-                  client-reference-id="[SUPABASE_UUID_PLACEHOLDER]">
+                  client-reference-id="{{reservationId}}">
                 </stripe-buy-button>
               </div>
               
