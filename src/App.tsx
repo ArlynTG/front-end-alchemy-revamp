@@ -5,7 +5,7 @@ import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import PasswordProtection from "@/components/PasswordProtection";
+// PasswordProtection import removed
 
 // Optimized imports using React.lazy for code splitting
 const Index = lazy(() => import("./pages/Index"));
@@ -37,35 +37,33 @@ const queryClient = new QueryClient({
   },
 });
 
-// You can change this password to anything you want
-const SITE_PASSWORD = "tobey2025";
+// Password protection removed from the app
 
 const App = () => (
   <QueryClientProvider client={queryClient}>
     <TooltipProvider>
       <Toaster />
       <Sonner />
-      <PasswordProtection password={SITE_PASSWORD}>
-        <BrowserRouter>
-          <Suspense fallback={<PageLoader />}>
-            <Routes>
-              <Route path="/" element={<Index />} />
-              <Route path="/privacy-policy" element={<PrivacyPolicy />} />
-              <Route path="/terms-of-service" element={<TermsOfService />} />
-              <Route path="/cookie-policy" element={<CookiePolicy />} />
-              <Route path="/parent-login" element={<ParentLogin />} />
-              <Route path="/student-login" element={<StudentLogin />} />
-              <Route path="/demo-v4" element={<DemoV4 />} />
-              <Route path="/parent-dashboard" element={<ParentDashboard />} />
-              <Route path="/beta-confirmed" element={<BetaConfirmed />} />
-              <Route path="/beta-registration" element={<BetaRegistration />} />
-              <Route path="/beta-confirmation" element={<BetaConfirmation />} />
-              {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
-              <Route path="*" element={<NotFound />} />
-            </Routes>
-          </Suspense>
-        </BrowserRouter>
-      </PasswordProtection>
+      {/* PasswordProtection component removed here */}
+      <BrowserRouter>
+        <Suspense fallback={<PageLoader />}>
+          <Routes>
+            <Route path="/" element={<Index />} />
+            <Route path="/privacy-policy" element={<PrivacyPolicy />} />
+            <Route path="/terms-of-service" element={<TermsOfService />} />
+            <Route path="/cookie-policy" element={<CookiePolicy />} />
+            <Route path="/parent-login" element={<ParentLogin />} />
+            <Route path="/student-login" element={<StudentLogin />} />
+            <Route path="/demo-v4" element={<DemoV4 />} />
+            <Route path="/parent-dashboard" element={<ParentDashboard />} />
+            <Route path="/beta-confirmed" element={<BetaConfirmed />} />
+            <Route path="/beta-registration" element={<BetaRegistration />} />
+            <Route path="/beta-confirmation" element={<BetaConfirmation />} />
+            {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
+            <Route path="*" element={<NotFound />} />
+          </Routes>
+        </Suspense>
+      </BrowserRouter>
     </TooltipProvider>
   </QueryClientProvider>
 );
