@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { Button } from "@/components/ui/button";
 
@@ -32,7 +33,7 @@ const Hero = () => {
               ))}
             </h2>
             <p className="text-base text-gray-700 animate-fade-in opacity-0" style={{ animationDelay: '1200ms', animationFillMode: 'forwards' }}>
-              As parents, we know what it's like to feel stuck. Watching our children struggle with traditional learning methods can be heartbreaking. We built Tobey's Tutor for bright kids who learn differently, enabling them to unlock their academic potential, build confidence, find their voice — and have fun too.
+              As parents, we know what it's like to feel stuck. Watching our children struggle with traditional learning methods can be heartbreaking. That's why we built Tobey's Tutor, a patent pending AI system for bright kids with dyslexia, ADHD, and related learning difference. It's designed to help students unlock their academic potential, build confidence, find their voice — and have fun too.
             </p>
           </div>
         </div>
