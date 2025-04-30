@@ -33,7 +33,21 @@ const BetaSignupModal = ({ isOpen, onClose, planId }: BetaSignupModalProps) => {
   const updateStripeButton = (supabaseUuid: string) => {
     const stripeButton = document.querySelector('stripe-buy-button');
     if (stripeButton) {
+      // Set the client-reference-id attribute directly
       stripeButton.setAttribute('client-reference-id', supabaseUuid);
+      
+      // Also update the buy-button-id to ensure it includes the client reference ID
+      const buyButtonId = stripeButton.getAttribute('buy-button-id');
+      if (buyButtonId) {
+        // This ensures the URL will have the client_reference_id parameter
+        const stripeUrl = stripeButton.getAttribute('publishable-key') 
+          ? `https://buy.stripe.com/${buyButtonId}?client_reference_id=${supabaseUuid}`
+          : null;
+        
+        if (stripeUrl) {
+          console.log("Updated Stripe URL with client_reference_id:", stripeUrl);
+        }
+      }
       
       // Show the payment container
       const paymentContainer = document.getElementById('payment-button-container');
@@ -157,7 +171,7 @@ const BetaSignupModal = ({ isOpen, onClose, planId }: BetaSignupModalProps) => {
                 <stripe-buy-button
                   buy-button-id="buy_btn_1RJ0FPBpB9LJmKwiQfros2F2"
                   publishable-key="pk_live_51R96NFBpB9LJmKwiof8LfkfsDcBtzx8sl21tqETJoiiuMSNh0yGHOuZscRLgo8NykCYscFtFGZ3Ghh29hR3Emo0W00vAw5C1Nu"
-                  client-reference-id="{{reservationId}}">
+                  client-reference-id={userId || undefined}>
                 </stripe-buy-button>
               </div>
               
