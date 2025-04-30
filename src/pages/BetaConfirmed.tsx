@@ -1,16 +1,35 @@
 
-import { useLocation, Navigate, Link } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Check, Calendar } from "lucide-react";
+import { useEffect, useState } from "react";
 
 const BetaConfirmed = () => {
-  const location = useLocation();
-  const { firstName, studentFirstName } = location.state || {};
+  const navigate = useNavigate();
+  const [userData, setUserData] = useState<{
+    firstName?: string;
+    studentFirstName?: string;
+  } | null>(null);
+  
+  // On component mount, try to get state from localStorage if it's not available in navigation state
+  useEffect(() => {
+    try {
+      // Try to recover data from localStorage if navigation state is lost during page transitions
+      const savedUserData = localStorage.getItem('betaConfirmationData');
+      if (savedUserData) {
+        setUserData(JSON.parse(savedUserData));
+      } else {
+        // If no saved data, redirect to home
+        navigate('/', { replace: true });
+      }
+    } catch (error) {
+      console.error("Error loading beta confirmation data:", error);
+      // In case of error, at least show the generic confirmation
+    }
+  }, [navigate]);
 
-  // If someone tries to access this page directly without state, redirect to home
-  if (!location.state) {
-    return <Navigate to="/" replace />;
-  }
+  const firstName = userData?.firstName || '';
+  const studentFirstName = userData?.studentFirstName || '';
 
   return (
     <div className="min-h-screen flex flex-col items-center justify-center bg-gray-50 px-4">
@@ -62,4 +81,3 @@ const BetaConfirmed = () => {
 };
 
 export default BetaConfirmed;
-

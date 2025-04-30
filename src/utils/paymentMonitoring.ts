@@ -1,7 +1,7 @@
 
 import { supabase } from "@/integrations/supabase/client";
 
-interface PaymentErrorDetails {
+export interface PaymentErrorDetails {
   userId?: string | null;
   email?: string;
   errorType: string;
