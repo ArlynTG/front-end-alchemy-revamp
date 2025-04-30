@@ -141,20 +141,13 @@ const BetaSignupModal = ({ isOpen, onClose, planId }: BetaSignupModalProps) => {
       };
       localStorage.setItem('betaConfirmationData', JSON.stringify(confirmationData));
       
-      // Show success toast and navigate to confirmation page
-      toast({
-        title: "Registration successful!",
-        description: "Thank you for joining our beta program.",
-      });
+      // Show form submitted state with Stripe button
+      setFormSubmitted(true);
       
-      // Close modal and redirect to confirmation page
-      onClose();
-      navigate('/beta-confirmed', { 
-        state: {
-          firstName: data.firstName,
-          studentFirstName: data.studentName?.split(' ')[0] || ''
-        }
-      });
+      // Update Stripe button with client reference ID
+      setTimeout(() => {
+        updateStripeButton(newUserId);
+      }, 100);
       
     } catch (error) {
       console.error("Modal - Error during submission:", error);
@@ -208,11 +201,41 @@ const BetaSignupModal = ({ isOpen, onClose, planId }: BetaSignupModalProps) => {
         </DialogHeader>
         
         <div className={isMobile ? 'overflow-y-auto max-h-[calc(100vh-12rem)] pb-4' : ''}>
-          <BetaSignupForm 
-            onSubmit={handleDetailsSubmit}
-            onCancel={onClose}
-            isSubmitting={isSubmitting}
-          />
+          {!formSubmitted ? (
+            <BetaSignupForm 
+              onSubmit={handleDetailsSubmit}
+              onCancel={onClose}
+              isSubmitting={isSubmitting}
+            />
+          ) : (
+            <div className="py-6 text-center">
+              <div className="mb-6">
+                <div className="bg-green-100 p-3 rounded-full mb-4 inline-block">
+                  <svg className="h-6 w-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                  </svg>
+                </div>
+                <h3 className="text-lg font-medium mb-2">Registration Complete!</h3>
+                <p className="text-gray-600 mb-6">
+                  Complete your payment to secure your spot in our beta program.
+                </p>
+              </div>
+
+              {paymentError && (
+                <div className="mb-4 p-3 bg-red-50 text-red-700 rounded-md text-sm">
+                  {paymentError}
+                </div>
+              )}
+
+              <div id="payment-button-container" className="flex justify-center mb-4">
+                <stripe-buy-button
+                  buy-button-id="buy_btn_1RJ0FPBpB9LJmKwiQfros2F2"
+                  publishable-key="pk_live_51R96NFBpB9LJmKwiof8LfkfsDcBtzx8sl21tqETJoiiuMSNh0yGHOuZscRLgo8NykCYscFtFGZ3Ghh29hR3Emo0W00vAw5C1Nu"
+                >
+                </stripe-buy-button>
+              </div>
+            </div>
+          )}
         </div>
       </DialogContent>
     </Dialog>
