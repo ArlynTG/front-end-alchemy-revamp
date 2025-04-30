@@ -64,9 +64,9 @@ console.log(`App initialized at: ${new Date().toISOString()}, Build: ${import.me
 // Create and set reservation ID
 const r = crypto.randomUUID();
 document.addEventListener('DOMContentLoaded', () => {
-  const reservationIdInput = document.getElementById('reservation_id');
+  const reservationIdInput = document.getElementById('reservation_id') as HTMLInputElement | null;
   if (reservationIdInput) {
     reservationIdInput.value = r;
-    window.reservationId = r; // will be passed to Stripe Checkout
+    (window as any).reservationId = r; // will be passed to Stripe Checkout
   }
 });
