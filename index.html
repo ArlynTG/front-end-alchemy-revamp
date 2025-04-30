@@ -1,80 +1,15 @@
 
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.ico" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Tobey's Tutor - AI Tutor for Kids with Learning Differences</title>
-    <meta name="description" content="Tobey's Tutor is an AI tutoring platform designed for bright kids with learning differences like dyslexia and ADHD." />
-    <meta name="author" content="Tobey's Tutor" />
-    
-    <!-- Preload critical fonts -->
-    <link rel="preload" href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;500;700&display=swap" as="style" />
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;500;700&display=swap" />
-
-    <!-- Open Graph / Social Media -->
-    <meta property="og:title" content="Tobey's Tutor - AI Tutor for Learning Differences" />
-    <meta property="og:description" content="AI tutoring platform designed for bright kids with learning differences like dyslexia and ADHD." />
-    <meta property="og:type" content="website" />
-    <meta property="og:image" content="https://lovable.dev/opengraph-image-p98pqg.png" />
-
-    <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:site" content="@lovable_dev" />
-    <meta name="twitter:image" content="https://lovable.dev/opengraph-image-p98pqg.png" />
-    
-    <link rel="icon" href="/favicon.ico" type="image/x-icon">
-    
-    <!-- Preconnect to important domains to speed up loading -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link rel="preconnect" href="https://js.stripe.com" crossorigin>
-    
-    <!-- Custom styling for Stripe payment button -->
-    <style>
-      /* Force Stripe Buy Button to be centered and take 100% available width */
-      stripe-buy-button {
-        display: block !important;
-        margin: 0 auto !important;
-        max-width: 400px !important;
-        width: 100% !important;
-      }
-      
-      /* Additional styling for the Stripe iframe */
-      stripe-buy-button iframe {
-        margin: 0 auto !important;
-        width: 100% !important;
-        max-width: 400px !important;
-      }
-      
-      /* Center the payment form content within the stripe button */
-      stripe-buy-button > * {
-        display: flex !important;
-        flex-direction: column !important;
-        align-items: center !important;
-        justify-content: center !important;
-      }
-    </style>
-    
-    <!-- Theme color for browser UI -->
-    <meta name="theme-color" content="#FF9E44">
+    <title>Tobey's Tutoring</title>
   </head>
-
   <body>
     <div id="root"></div>
-
-    <!-- Stripe Buy Button Script - moved here for better loading -->
-    <script async src="https://js.stripe.com/v3/buy-button.js"></script>
-
-    <!-- Lovable helper (required) -->
     <script src="https://cdn.gpteng.co/gptengineer.js" type="module"></script>
-    <script type="module">
-      window.gptengineerConfig = {
-        webhookUrl: 'https://n8n.tobeystutor.com/webhook/chat',
-        disableLatestMessage: true 
-      };
-    </script>
-
-    <!-- Loads the latest build that Lovable generates on each publish -->
     <script type="module" src="/src/main.tsx"></script>
   </body>
 </html>

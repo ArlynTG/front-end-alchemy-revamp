@@ -16,7 +16,22 @@ export default defineConfig(({ mode }) => ({
       jsxImportSource: 'react',
       plugins: [],
     }),
-    // Removed componentTagger import causing ESM issues
+    {
+      name: 'vite-plugin-component-tagger',
+      transform(code, id) {
+        // Simple implementation of component tagging
+        if (id.endsWith('.tsx') && code.includes('export default') && code.includes('React.') || code.includes('import React')) {
+          // Add data attributes for component selection
+          return code.replace(
+            /export default (\w+)/g,
+            (match, componentName) => {
+              return `${match}\n${componentName}.displayName = '${componentName}'`;
+            }
+          );
+        }
+        return code;
+      }
+    }
   ],
   resolve: {
     alias: {
