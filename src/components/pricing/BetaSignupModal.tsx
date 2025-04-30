@@ -15,6 +15,23 @@ import BetaSignupForm from "./BetaSignupForm";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { supabase } from "@/integrations/supabase/client";
 
+// Configuration for monitoring
+const MONITORING_CONFIG = {
+  MAX_PAYMENT_FAILURES: 3,
+  LOG_ERRORS_TO_DATABASE: true,
+  ENABLE_FALLBACK_MECHANISM: true
+};
+
+// Track payment attempts and failures
+const paymentStats = {
+  attempts: 0,
+  failures: 0,
+  reset() {
+    this.attempts = 0;
+    this.failures = 0;
+  }
+};
+
 interface BetaSignupModalProps {
   isOpen: boolean;
   onClose: () => void;
@@ -25,45 +42,148 @@ const BetaSignupModal = ({ isOpen, onClose, planId }: BetaSignupModalProps) => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [formSubmitted, setFormSubmitted] = useState(false);
   const [userId, setUserId] = useState<string | null>(null);
+  const [paymentError, setPaymentError] = useState<string | null>(null);
   const navigate = useNavigate();
   const isMobile = useIsMobile();
   const containerRef = useRef<HTMLDivElement>(null);
+  const stripeButtonInitialized = useRef(false);
+
+  // Log payment processing errors to database
+  const logPaymentError = async (error: string, context: Record<string, any>) => {
+    console.error("Payment processing error:", error, context);
+    
+    if (MONITORING_CONFIG.LOG_ERRORS_TO_DATABASE && userId) {
+      try {
+        await supabase.from('payment_records').insert({
+          registration_id: userId,
+          payment_status: 'error',
+          payment_method: 'stripe',
+          payment_amount: 100, // $1.00
+          stripe_customer_id: context.stripeCustomerId || null,
+          stripe_payment_id: context.stripePaymentId || null
+        });
+      } catch (dbError) {
+        console.error("Failed to log payment error to database:", dbError);
+      }
+    }
+    
+    // Update the payment stats
+    paymentStats.failures++;
+    
+    // Notify if failures exceed threshold
+    if (paymentStats.failures >= MONITORING_CONFIG.MAX_PAYMENT_FAILURES) {
+      toast({
+        title: "Multiple payment failures detected",
+        description: "Please check your Stripe dashboard and payment integration.",
+        variant: "destructive",
+      });
+      
+      // Reset the counter after notification
+      paymentStats.reset();
+    }
+  };
 
   // Function to update the Stripe Button with the Supabase UUID
   const updateStripeButton = (supabaseUuid: string) => {
+    paymentStats.attempts++;
+    stripeButtonInitialized.current = false;
+    setPaymentError(null);
+    
     const stripeButton = document.querySelector('stripe-buy-button');
     if (stripeButton) {
-      // Set the client-reference-id attribute directly
-      stripeButton.setAttribute('client-reference-id', supabaseUuid);
-      
-      // Also update the buy-button-id to ensure it includes the client reference ID
-      const buyButtonId = stripeButton.getAttribute('buy-button-id');
-      if (buyButtonId) {
-        // This ensures the URL will have the client_reference_id parameter
-        const stripeUrl = stripeButton.getAttribute('publishable-key') 
-          ? `https://buy.stripe.com/${buyButtonId}?client_reference_id=${supabaseUuid}`
-          : null;
+      try {
+        // Set the client-reference-id attribute directly
+        stripeButton.setAttribute('client-reference-id', supabaseUuid);
         
-        if (stripeUrl) {
-          console.log("Updated Stripe URL with client_reference_id:", stripeUrl);
+        // Also update the buy-button-id to ensure it includes the client reference ID
+        const buyButtonId = stripeButton.getAttribute('buy-button-id');
+        if (buyButtonId) {
+          // This ensures the URL will have the client_reference_id parameter
+          const stripeUrl = stripeButton.getAttribute('publishable-key') 
+            ? `https://buy.stripe.com/${buyButtonId}?client_reference_id=${supabaseUuid}`
+            : null;
+          
+          if (stripeUrl) {
+            console.log("Updated Stripe URL with client_reference_id:", stripeUrl);
+          }
+        }
+        
+        // Show the payment container
+        const paymentContainer = document.getElementById('payment-button-container');
+        if (paymentContainer) {
+          paymentContainer.style.display = 'block';
+        }
+        
+        console.log("Stripe button updated with client-reference-id:", supabaseUuid);
+        stripeButtonInitialized.current = true;
+        
+        // Record successful initialization in database
+        recordPaymentAttempt(supabaseUuid, 'initialized');
+        
+      } catch (error) {
+        console.error("Error updating Stripe button:", error);
+        setPaymentError("Failed to initialize payment form. Please try again.");
+        logPaymentError("Stripe button initialization failed", { 
+          userId: supabaseUuid, 
+          error: error instanceof Error ? error.message : String(error)
+        });
+        
+        if (MONITORING_CONFIG.ENABLE_FALLBACK_MECHANISM) {
+          console.log("Attempting fallback mechanism for payment initialization");
+          setTimeout(() => attemptFallbackInitialization(supabaseUuid), 1000);
         }
       }
-      
-      // Show the payment container
-      const paymentContainer = document.getElementById('payment-button-container');
-      if (paymentContainer) {
-        paymentContainer.style.display = 'block';
-      }
-      
-      console.log("Stripe button updated with client-reference-id:", supabaseUuid);
     } else {
-      console.error("Could not find stripe-buy-button element");
+      const errorMsg = "Could not find stripe-buy-button element";
+      console.error(errorMsg);
+      setPaymentError("Payment form could not be loaded. Please refresh the page and try again.");
+      logPaymentError(errorMsg, { userId: supabaseUuid });
+    }
+  };
+
+  // Fallback mechanism to retry initialization
+  const attemptFallbackInitialization = (supabaseUuid: string) => {
+    console.log("Running fallback initialization for Stripe button");
+    
+    // Force re-render the button
+    const container = document.getElementById('payment-button-container');
+    if (container && !stripeButtonInitialized.current) {
+      container.innerHTML = ''; // Clear container
+      
+      // Re-create the button element
+      const newButton = document.createElement('stripe-buy-button');
+      newButton.setAttribute('buy-button-id', 'buy_btn_1RJ0FPBpB9LJmKwiQfros2F2');
+      newButton.setAttribute('publishable-key', 'pk_live_51R96NFBpB9LJmKwiof8LfkfsDcBtzx8sl21tqETJoiiuMSNh0yGHOuZscRLgo8NykCYscFtFGZ3Ghh29hR3Emo0W00vAw5C1Nu');
+      newButton.setAttribute('client-reference-id', supabaseUuid);
+      
+      container.appendChild(newButton);
+      container.style.display = 'block';
+      
+      console.log("Fallback: Recreated Stripe button with client-reference-id:", supabaseUuid);
+      recordPaymentAttempt(supabaseUuid, 'fallback-initialized');
+    }
+  };
+
+  // Record payment attempt status in database
+  const recordPaymentAttempt = async (userId: string, status: string) => {
+    try {
+      await supabase.from('payment_records').insert({
+        registration_id: userId,
+        payment_status: status,
+        payment_method: 'stripe',
+        payment_amount: 100, // $1.00
+        payment_date: new Date().toISOString()
+      });
+      console.log(`Payment attempt recorded: ${status}`);
+    } catch (error) {
+      console.error("Failed to record payment attempt:", error);
     }
   };
 
   const handleDetailsSubmit = async (data: DetailedSignupFormValues) => {
     console.log("Modal - Form data:", data);
     setIsSubmitting(true);
+    setPaymentError(null);
 
     try {
       // Create the insertion object with all necessary fields
@@ -133,9 +253,28 @@ const BetaSignupModal = ({ isOpen, onClose, planId }: BetaSignupModalProps) => {
       setFormSubmitted(false);
       setUserId(null);
       setIsSubmitting(false);
+      setPaymentError(null);
+      stripeButtonInitialized.current = false;
       onClose();
     }
   };
+
+  // Add a listener to detect successful Stripe transactions
+  useEffect(() => {
+    if (formSubmitted && userId) {
+      const handleStripeSuccess = () => {
+        // When Stripe redirects back after successful payment
+        console.log("Stripe payment completed successfully");
+        recordPaymentAttempt(userId, 'completed');
+      };
+      
+      window.addEventListener('message', (event) => {
+        if (event.data?.type === 'stripe-buy-button:transaction-complete') {
+          handleStripeSuccess();
+        }
+      });
+    }
+  }, [formSubmitted, userId]);
 
   return (
     <Dialog open={isOpen} onOpenChange={handleOpenChange}>
@@ -160,6 +299,19 @@ const BetaSignupModal = ({ isOpen, onClose, planId }: BetaSignupModalProps) => {
                 <h3 className="text-lg font-medium mb-2">Almost there!</h3>
                 <p className="text-muted-foreground">Complete your payment to secure your spot.</p>
               </div>
+              
+              {paymentError && (
+                <div className="mb-4 p-3 bg-red-50 border border-red-200 rounded-md text-red-600 text-sm">
+                  {paymentError}
+                  <Button 
+                    variant="link" 
+                    className="text-red-600 underline pl-1 h-auto p-0"
+                    onClick={() => userId && updateStripeButton(userId)}
+                  >
+                    Try again
+                  </Button>
+                </div>
+              )}
               
               {/* Payment button container with enhanced centering styles */}
               <div 
