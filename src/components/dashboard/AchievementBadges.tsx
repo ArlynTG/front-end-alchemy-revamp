@@ -63,30 +63,30 @@ const AchievementBadges: React.FC<AchievementBadgesProps> = ({ skillBadges }) =>
   // Badge descriptions
   const getBadgeDescription = (name: string) => {
     switch (name) {
-      case "Precision Pro":
-        return "Rewards careful work and high correctness — whether in reading, math, or reasoning";
       case "Creative Spark":
         return "Celebrates unique ideas, original writing, or innovative problem-solving";
-      case "Math Mastermind":
-        return "Highlights logic, number sense, and advanced math thinking";
       case "Executive Ninja":
         return "Earned for planning ahead, staying organized, or following complex directions smoothly";
+      case "Focus & Stamina":
+        return "Rewards sustained attention and the ability to finish long or challenging tasks";
+      case "Math Mastermind":
+        return "Highlights logic, number sense, and advanced math thinking";
+      case "Precision Pro":
+        return "Rewards careful work and high correctness — whether in reading, math, or reasoning";
+      case "Problem Solver":
+        return "Highlights flexible thinking, strategy use, and success on multi-step or real-world challenges";
+      case "Reading Rockstar":
+        return "Targets inference, main idea, and evidence-based reading responses";
       case "Self Advocacy":
         return "Given for speaking up clearly, asking for help, or using self-advocacy strategies effectively";
-      case "Wordsmith Wizard":
-        return "Rewards strong sentences, thoughtful paragraphs, and deep analysis";
       case "Sound Decoder":
         return "Earned for decoding tricky words, mastering spelling patterns, or Orton-Gillingham drills";
       case "Speed Champ":
         return "Celebrates increased fluency, fast math facts, or timed challenge wins";
       case "Streak Keeper":
         return "For showing up consistently and building a strong learning streak";
-      case "Focus & Stamina":
-        return "Rewards sustained attention and the ability to finish long or challenging tasks";
-      case "Reading Rockstar":
-        return "Targets inference, main idea, and evidence-based reading responses";
-      case "Problem Solver":
-        return "Highlights flexible thinking, strategy use, and success on multi-step or real-world challenges";
+      case "Wordsmith Wizard":
+        return "Rewards strong sentences, thoughtful paragraphs, and deep analysis";
       default:
         return "";
     }
@@ -98,30 +98,30 @@ const AchievementBadges: React.FC<AchievementBadgesProps> = ({ skillBadges }) =>
     const colorClass = getColorClass(level);
     
     switch (name) {
-      case "Precision Pro":
-        return <Award className={`${size} ${colorClass}`} />;
       case "Creative Spark":
         return <SparklesIcon className={`${size} ${colorClass}`} />;
-      case "Math Mastermind":
-        return <BrainIcon className={`${size} ${colorClass}`} />;
       case "Executive Ninja":
         return <ZapIcon className={`${size} ${colorClass}`} />;
+      case "Focus & Stamina":
+        return <Clock className={`${size} ${colorClass}`} />;
+      case "Math Mastermind":
+        return <BrainIcon className={`${size} ${colorClass}`} />;
+      case "Precision Pro":
+        return <Award className={`${size} ${colorClass}`} />;
+      case "Problem Solver":
+        return <Puzzle className={`${size} ${colorClass}`} />;
+      case "Reading Rockstar":
+        return <BookOpen className={`${size} ${colorClass}`} />;
       case "Self Advocacy":
         return <HandshakeIcon className={`${size} ${colorClass}`} />;
-      case "Wordsmith Wizard":
-        return <PencilIcon className={`${size} ${colorClass}`} />;
       case "Sound Decoder":
         return <Volume2 className={`${size} ${colorClass}`} />;
       case "Speed Champ":
         return <Timer className={`${size} ${colorClass}`} />;
       case "Streak Keeper":
         return <CalendarClock className={`${size} ${colorClass}`} />;
-      case "Focus & Stamina":
-        return <Clock className={`${size} ${colorClass}`} />;
-      case "Reading Rockstar":
-        return <BookOpen className={`${size} ${colorClass}`} />;
-      case "Problem Solver":
-        return <Puzzle className={`${size} ${colorClass}`} />;
+      case "Wordsmith Wizard":
+        return <PencilIcon className={`${size} ${colorClass}`} />;
       default:
         return <Award className={`${size} ${colorClass}`} />;
     }
@@ -158,6 +158,17 @@ const AchievementBadges: React.FC<AchievementBadgesProps> = ({ skillBadges }) =>
     return nameMap[oldName] || oldName;
   };
 
+  // Create a copy of the badges array and process it
+  const badgesWithUpdatedNames = skillBadges.map((badge) => ({
+    ...badge,
+    updatedName: getUpdatedBadgeName(badge.name)
+  }));
+  
+  // Sort the badges alphabetically by updated name
+  const sortedBadges = [...badgesWithUpdatedNames].sort((a, b) => 
+    a.updatedName.localeCompare(b.updatedName)
+  );
+
   return (
     <Card className="mb-8">
       <CardHeader>
@@ -170,8 +181,8 @@ const AchievementBadges: React.FC<AchievementBadgesProps> = ({ skillBadges }) =>
       <CardContent>
         <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
           <TooltipProvider>
-            {skillBadges.map((badge, index) => {
-              const updatedName = getUpdatedBadgeName(badge.name);
+            {sortedBadges.map((badge, index) => {
+              const updatedName = badge.updatedName;
               const description = getBadgeDescription(updatedName);
               
               return (
@@ -205,3 +216,4 @@ const AchievementBadges: React.FC<AchievementBadgesProps> = ({ skillBadges }) =>
 };
 
 export default AchievementBadges;
+
