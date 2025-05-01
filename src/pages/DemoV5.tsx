@@ -15,7 +15,7 @@ const DemoV5 = () => {
         <meta property="og:title" content="Try Tobey's Tutor Demo V5" />
         <meta property="og:description" content="Experience our latest AI tutor designed for bright kids with learning differences like dyslexia and ADHD." />
         <meta property="og:type" content="website" />
-        <link rel="preconnect" href="https://tobeys-tutor.your-replit-username.repl.co" />
+        <link rel="preconnect" href="https://tutor-assistant-arlyn11.replit.app/" />
       </Helmet>
 
       <Navbar />
@@ -34,10 +34,8 @@ const DemoV5 = () => {
               <Card className="shadow-xl rounded-xl border border-gray-200/50 backdrop-blur-sm bg-gradient-to-br from-white to-tobey-peach/30 hover:shadow-2xl transition-all duration-300">
                 <div className="flex justify-center items-center p-4">
                   <iframe 
-                    src="https://tobeys-tutor.your-replit-username.repl.co" 
-                    width="100%" 
-                    height="650px" 
-                    frameBorder="0"
+                    src="https://tutor-assistant-arlyn11.replit.app/"
+                    style={{width: "100%", height: "650px", border: "none"}}
                     allow="microphone; camera"
                   />
                 </div>
