@@ -23,11 +23,11 @@ const DemoV5 = () => {
         <section className="py-8 md:py-16 flex flex-col flex-grow justify-center">
           <div className="container max-w-6xl mx-auto px-4">
             <h1 className="text-3xl md:text-4xl font-bold text-center mb-4 animate-fade-in opacity-0" style={{ animationDelay: '400ms', animationFillMode: 'forwards' }}>
-              Try Our Latest Tobey's Tutor Version
+              See How Tobey's Tutor Works
             </h1>
             
             <p className="text-center text-lg md:text-xl text-gray-600 mb-8 md:mb-10 max-w-2xl mx-auto animate-fade-in opacity-0" style={{ animationDelay: '600ms', animationFillMode: 'forwards' }}>
-              Experience our latest AI tutor designed for bright kids with dyslexia, ADHD, and related learning differences—personalized support that adapts to your child's unique learning style.
+              Curious if this could help your child? Chat with our patent pending AI tutor and get a feel for how we support bright kids with dyslexia, ADHD, and related learning differences—one smart, personalized step at a time.
             </p>
             
             <div className="max-w-3xl mx-auto animate-fade-in opacity-0" style={{ animationDelay: '800ms', animationFillMode: 'forwards' }}>
