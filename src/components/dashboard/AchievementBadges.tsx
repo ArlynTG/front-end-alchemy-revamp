@@ -11,7 +11,9 @@ import {
   PencilIcon, 
   Volume2, 
   Timer, 
-  CalendarClock 
+  CalendarClock,
+  Clock,
+  BookOpen
 } from "lucide-react";
 import { 
   Tooltip, 
@@ -78,6 +80,10 @@ const AchievementBadges: React.FC<AchievementBadgesProps> = ({ skillBadges }) =>
         return "Celebrates increased fluency, fast math facts, or timed challenge wins";
       case "Streak Keeper":
         return "For showing up consistently and building a strong learning streak";
+      case "Focus & Stamina":
+        return "Rewards sustained attention and the ability to finish long or challenging tasks";
+      case "Reading Rockstar":
+        return "Targets inference, main idea, and evidence-based reading responses";
       default:
         return "";
     }
@@ -107,6 +113,10 @@ const AchievementBadges: React.FC<AchievementBadgesProps> = ({ skillBadges }) =>
         return <Timer className={`${size} ${colorClass}`} />;
       case "Streak Keeper":
         return <CalendarClock className={`${size} ${colorClass}`} />;
+      case "Focus & Stamina":
+        return <Clock className={`${size} ${colorClass}`} />;
+      case "Reading Rockstar":
+        return <BookOpen className={`${size} ${colorClass}`} />;
       default:
         return <Award className={`${size} ${colorClass}`} />;
     }
@@ -134,7 +144,9 @@ const AchievementBadges: React.FC<AchievementBadgesProps> = ({ skillBadges }) =>
       "Writing": "Wordsmith Wizard",
       "Phonics": "Sound Decoder",
       "Speed": "Speed Champ",
-      "Attendance": "Streak Keeper"
+      "Attendance": "Streak Keeper",
+      "Focus": "Focus & Stamina",
+      "Reading": "Reading Rockstar"
     };
     
     return nameMap[oldName] || oldName;

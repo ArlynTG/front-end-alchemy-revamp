@@ -1,3 +1,4 @@
+
 import React from "react";
 import Navbar from "@/components/Navbar";
 import StudentStats from "@/components/dashboard/StudentStats";
@@ -30,6 +31,8 @@ const ParentDashboard = () => {
     { name: "Phonics", level: "Silver" },
     { name: "Speed", level: "Bronze" },
     { name: "Attendance", level: "Platinum" },
+    { name: "Focus", level: "Diamond" },
+    { name: "Reading", level: "Gold" },
   ];
 
   return (
