@@ -1,3 +1,4 @@
+
 import React, { useState } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -259,9 +260,9 @@ const ParentDashboard = () => {
               <CardHeader>
                 <CardTitle className="flex items-center">
                   <MessageSquare className="h-5 w-5 mr-2 text-blue-500" />
-                  Chat with Tobey
+                  Chat with Tobey's Tutor
                 </CardTitle>
-                <CardDescription>Message with Tobey about your student's progress</CardDescription>
+                <CardDescription>Would you like me to focus on anything new? Just let me know.</CardDescription>
               </CardHeader>
               <CardContent className="h-[400px]">
                 <ChatInterface />
