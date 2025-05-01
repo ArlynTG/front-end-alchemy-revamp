@@ -20,17 +20,11 @@ interface ProgressReport {
 }
 
 const RecentProgress: React.FC = () => {
-  // Sample data - in a real app, this would come from an API
+  // Sample data - reduced to only 3 reports
   const reports: ProgressReport[] = [
     { id: "1", date: "2025-04-26", name: "Weekly Progress Summary", downloadUrl: "#" },
     { id: "2", date: "2025-04-19", name: "Reading Comprehension Assessment", downloadUrl: "#" },
-    { id: "3", date: "2025-04-12", name: "Writing Skills Evaluation", downloadUrl: "#" },
-    { id: "4", date: "2025-04-05", name: "Math Skills Progress", downloadUrl: "#" },
-    { id: "5", date: "2025-03-29", name: "Executive Function Development", downloadUrl: "#" },
-    { id: "6", date: "2025-03-22", name: "Quarterly Assessment", downloadUrl: "#" },
-    { id: "7", date: "2025-03-15", name: "Reading Fluency Test", downloadUrl: "#" },
-    { id: "8", date: "2025-03-08", name: "Spelling Progress Report", downloadUrl: "#" },
-    { id: "9", date: "2025-03-01", name: "Monthly Summary", downloadUrl: "#" }
+    { id: "3", date: "2025-04-12", name: "Writing Skills Evaluation", downloadUrl: "#" }
   ];
 
   const formatDate = (dateString: string) => {
