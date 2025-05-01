@@ -51,7 +51,7 @@ const AchievementBadges: React.FC<AchievementBadgesProps> = ({ skillBadges }) =>
     const baseStyle = "flex flex-col items-center p-3 rounded-lg transition-transform duration-300 hover:scale-105";
     
     switch (level) {
-      case "Bronze": return `${baseStyle} bg-gray-100 animate-fade-in`;
+      case "Bronze": return `${baseStyle} bg-amber-50 border border-amber-200 animate-fade-in`;
       case "Silver": return `${baseStyle} bg-gray-200 animate-fade-in`;
       case "Gold": return `${baseStyle} bg-yellow-100 animate-fade-in`;
       case "Platinum": return `${baseStyle} bg-blue-100 animate-fade-in`;
@@ -134,6 +134,7 @@ const AchievementBadges: React.FC<AchievementBadgesProps> = ({ skillBadges }) =>
       case "Platinum": return "text-blue-500";
       case "Gold": return "text-yellow-500";
       case "Silver": return "text-gray-400";
+      case "Bronze": return "text-amber-600";
       default: return "text-gray-500";
     }
   };
@@ -216,4 +217,3 @@ const AchievementBadges: React.FC<AchievementBadgesProps> = ({ skillBadges }) =>
 };
 
 export default AchievementBadges;
-
