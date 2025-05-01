@@ -37,7 +37,7 @@ const DemoV5 = () => {
                     src="https://tutor-assistant-arlyn11.replit.app"
                     style={{
                       width: "100%",
-                      height: "650px", 
+                      height: "750px", 
                       maxWidth: "800px", 
                       border: "none", 
                       borderRadius: "12px", 
