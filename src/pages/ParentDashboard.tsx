@@ -36,18 +36,18 @@ const ParentDashboard = () => {
     { name: "Accuracy", level: "Gold" },
     { name: "Creativity", level: "Silver" },
     { name: "Math Skills", level: "Platinum" },
-    { name: "Executive Functioning", level: "Regular" },
+    { name: "Executive Functioning", level: "Bronze" },
     { name: "Self Advocacy", level: "Diamond" },
     { name: "Writing", level: "Gold" },
     { name: "Phonics", level: "Silver" },
-    { name: "Speed", level: "Regular" },
+    { name: "Speed", level: "Bronze" },
     { name: "Attendance", level: "Platinum" },
   ];
 
   // Badge style variants based on level
   const getBadgeVariant = (level: string) => {
     switch (level) {
-      case "Regular": return "outline";
+      case "Bronze": return "outline";
       case "Silver": return "secondary";
       case "Gold": return "default";
       case "Platinum": return "destructive";
@@ -58,14 +58,14 @@ const ParentDashboard = () => {
 
   // Badge style for badges component
   const getBadgeStyle = (level: string) => {
-    const baseStyle = "flex flex-col items-center p-3 rounded-lg";
+    const baseStyle = "flex flex-col items-center p-3 rounded-lg transition-transform duration-300 hover:scale-105";
     
     switch (level) {
-      case "Regular": return `${baseStyle} bg-gray-100`;
-      case "Silver": return `${baseStyle} bg-gray-200`;
-      case "Gold": return `${baseStyle} bg-yellow-100`;
-      case "Platinum": return `${baseStyle} bg-blue-100`;
-      case "Diamond": return `${baseStyle} bg-purple-100`;
+      case "Bronze": return `${baseStyle} bg-gray-100 animate-fade-in`;
+      case "Silver": return `${baseStyle} bg-gray-200 animate-fade-in`;
+      case "Gold": return `${baseStyle} bg-yellow-100 animate-fade-in`;
+      case "Platinum": return `${baseStyle} bg-blue-100 animate-fade-in`;
+      case "Diamond": return `${baseStyle} bg-purple-100 animate-fade-in`;
       default: return baseStyle;
     }
   };
@@ -161,12 +161,16 @@ const ParentDashboard = () => {
               <Award className="h-5 w-5 mr-2 text-amber-500" />
               Achievement Badges
             </CardTitle>
-            <CardDescription>Skills progress and achievements earned by {studentData.name}</CardDescription>
+            <CardDescription>Earned so far | May 1, 2025</CardDescription>
           </CardHeader>
           <CardContent>
             <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
-              {skillBadges.map((badge) => (
-                <div key={badge.name} className={getBadgeStyle(badge.level)}>
+              {skillBadges.map((badge, index) => (
+                <div 
+                  key={badge.name} 
+                  className={getBadgeStyle(badge.level)}
+                  style={{ animationDelay: `${index * 0.1}s` }}
+                >
                   <div className="mb-2">
                     {getBadgeIcon(badge.level)}
                   </div>
