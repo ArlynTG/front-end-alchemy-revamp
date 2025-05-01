@@ -1,11 +1,40 @@
 
-import React from "react";
-import { AspectRatio } from "@/components/ui/aspect-ratio";
+import React, { useEffect, useRef, useState } from "react";
 import { ScrollArea } from "@/components/ui/scroll-area";
 
 const ParentDashboardPreview = () => {
+  const [isVisible, setIsVisible] = useState(false);
+  const sectionRef = useRef<HTMLElement>(null);
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        // When the section enters the viewport, set isVisible to true
+        if (entry.isIntersecting) {
+          setIsVisible(true);
+        }
+      },
+      // Start animation when element is 20% visible
+      { threshold: 0.2 }
+    );
+    
+    if (sectionRef.current) {
+      observer.observe(sectionRef.current);
+    }
+    
+    // Cleanup observer on component unmount
+    return () => {
+      if (sectionRef.current) {
+        observer.unobserve(sectionRef.current);
+      }
+    };
+  }, []);
+
   return (
-    <section className="py-16 bg-gradient-to-r from-tobey-blue to-soft-purple text-tobey-text">
+    <section 
+      ref={sectionRef}
+      className="py-16 bg-gradient-to-r from-tobey-blue to-soft-purple text-tobey-text"
+    >
       <div className="container mx-auto">
         <div className="grid md:grid-cols-2 gap-10 items-center">
           <div className="order-2 md:order-1">
@@ -29,7 +58,11 @@ const ParentDashboardPreview = () => {
               ))}
             </div>
           </div>
-          <div className="order-1 md:order-2 shadow-xl rounded-xl overflow-hidden border border-gray-200">
+          <div 
+            className={`order-1 md:order-2 shadow-xl rounded-xl overflow-hidden border border-gray-200 transition-all duration-1000 transform ${
+              isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-20"
+            }`}
+          >
             <ScrollArea className="h-[500px] bg-white rounded-xl">
               <img 
                 src="/lovable-uploads/a97f5981-c114-408c-a498-58594b8dde86.png" 
