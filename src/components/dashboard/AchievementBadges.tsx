@@ -9,7 +9,7 @@ import {
   ZapIcon, 
   HandshakeIcon, 
   PencilIcon, 
-  Sound, 
+  Volume2, 
   Timer, 
   CalendarClock 
 } from "lucide-react";
@@ -102,7 +102,7 @@ const AchievementBadges: React.FC<AchievementBadgesProps> = ({ skillBadges }) =>
       case "Wordsmith Wizard":
         return <PencilIcon className={`${size} ${colorClass}`} />;
       case "Sound Decoder":
-        return <Sound className={`${size} ${colorClass}`} />;
+        return <Volume2 className={`${size} ${colorClass}`} />;
       case "Speed Champ":
         return <Timer className={`${size} ${colorClass}`} />;
       case "Streak Keeper":
