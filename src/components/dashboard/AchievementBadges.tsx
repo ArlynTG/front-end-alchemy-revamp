@@ -13,7 +13,8 @@ import {
   Timer, 
   CalendarClock,
   Clock,
-  BookOpen
+  BookOpen,
+  Puzzle
 } from "lucide-react";
 import { 
   Tooltip, 
@@ -84,6 +85,8 @@ const AchievementBadges: React.FC<AchievementBadgesProps> = ({ skillBadges }) =>
         return "Rewards sustained attention and the ability to finish long or challenging tasks";
       case "Reading Rockstar":
         return "Targets inference, main idea, and evidence-based reading responses";
+      case "Problem Solver":
+        return "Highlights flexible thinking, strategy use, and success on multi-step or real-world challenges";
       default:
         return "";
     }
@@ -117,6 +120,8 @@ const AchievementBadges: React.FC<AchievementBadgesProps> = ({ skillBadges }) =>
         return <Clock className={`${size} ${colorClass}`} />;
       case "Reading Rockstar":
         return <BookOpen className={`${size} ${colorClass}`} />;
+      case "Problem Solver":
+        return <Puzzle className={`${size} ${colorClass}`} />;
       default:
         return <Award className={`${size} ${colorClass}`} />;
     }
@@ -146,7 +151,8 @@ const AchievementBadges: React.FC<AchievementBadgesProps> = ({ skillBadges }) =>
       "Speed": "Speed Champ",
       "Attendance": "Streak Keeper",
       "Focus": "Focus & Stamina",
-      "Reading": "Reading Rockstar"
+      "Reading": "Reading Rockstar",
+      "Problem Solving": "Problem Solver"
     };
     
     return nameMap[oldName] || oldName;

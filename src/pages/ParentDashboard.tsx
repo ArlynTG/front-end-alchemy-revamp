@@ -33,6 +33,7 @@ const ParentDashboard = () => {
     { name: "Attendance", level: "Platinum" },
     { name: "Focus", level: "Diamond" },
     { name: "Reading", level: "Gold" },
+    { name: "Problem Solving", level: "Gold" },
   ];
 
   return (
