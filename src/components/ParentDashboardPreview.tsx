@@ -12,10 +12,11 @@ const ParentDashboardPreview = () => {
         // When the section enters the viewport, set isVisible to true
         if (entry.isIntersecting) {
           setIsVisible(true);
+          console.log("Dashboard component is now visible");
         }
       },
-      // Start animation when element is 20% visible
-      { threshold: 0.2 }
+      // Lower the threshold to ensure animation triggers more reliably
+      { threshold: 0.1, rootMargin: "0px 0px -100px 0px" }
     );
     
     if (sectionRef.current) {
@@ -59,8 +60,10 @@ const ParentDashboardPreview = () => {
             </div>
           </div>
           <div 
-            className={`order-1 md:order-2 shadow-xl rounded-xl overflow-hidden border border-gray-200 transition-all duration-1000 transform ${
-              isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-20"
+            className={`order-1 md:order-2 shadow-xl rounded-xl overflow-hidden border border-gray-200 transition-all duration-1000 ${
+              isVisible 
+                ? "opacity-100 translate-y-0" 
+                : "opacity-0 translate-y-20"
             }`}
           >
             <ScrollArea className="h-[500px] bg-white rounded-xl">
