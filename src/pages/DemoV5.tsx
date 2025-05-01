@@ -37,9 +37,9 @@ const DemoV5 = () => {
                     src="https://tobeys-tutor.your-replit-username.repl.co" 
                     width="100%" 
                     height="650px" 
-                    frameborder="0"
+                    frameBorder="0"
                     allow="microphone; camera"
-                  ></iframe>
+                  />
                 </div>
               </Card>
             </div>
