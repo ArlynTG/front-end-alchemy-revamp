@@ -6,6 +6,7 @@ import AchievementBadges from "@/components/dashboard/AchievementBadges";
 import ScheduleManager from "@/components/dashboard/ScheduleManager";
 import NotificationSettings from "@/components/dashboard/NotificationSettings";
 import ChatSection from "@/components/dashboard/ChatSection";
+import RecentProgress from "@/components/dashboard/RecentProgress";
 
 const ParentDashboard = () => {
   // Sample data - in a real app, this would come from an API
@@ -52,6 +53,9 @@ const ParentDashboard = () => {
             <ChatSection />
           </div>
         </div>
+        
+        {/* Recent Progress Section */}
+        <RecentProgress />
       </div>
     </div>
   );
