@@ -147,6 +147,11 @@ const ParentDashboardPreview = () => {
             </div>
           </div>
         </div>
+        <div className="text-left mt-8">
+          <Button variant="outline" className="btn-secondary">
+            Parent Dashboard
+          </Button>
+        </div>
       </div>
     </section>
   );
