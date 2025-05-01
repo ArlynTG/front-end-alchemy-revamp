@@ -98,8 +98,13 @@ const ParentDashboardPreview = () => {
       className="py-16 bg-gradient-to-r from-tobey-blue to-soft-purple text-tobey-text"
     >
       <div className="container mx-auto">
-        <div className="text-center mb-10">
-          <span className="section-tag">Parent Dashboard</span>
+        <div className="flex items-center justify-between mb-10">
+          <Button variant="outline" className="btn-secondary">
+            Parent Dashboard
+          </Button>
+          <div className="text-center flex-grow">
+            <span className="section-tag">Parent Dashboard</span>
+          </div>
         </div>
         <div className="grid md:grid-cols-2 gap-10 items-center">
           <div className="order-2 md:order-1">
@@ -146,11 +151,6 @@ const ParentDashboardPreview = () => {
               </ScrollArea>
             </div>
           </div>
-        </div>
-        <div className="text-left mt-8">
-          <Button variant="outline" className="btn-secondary">
-            Parent Dashboard
-          </Button>
         </div>
       </div>
     </section>
