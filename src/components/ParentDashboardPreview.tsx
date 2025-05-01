@@ -1,6 +1,7 @@
 
 import React from "react";
 import { AspectRatio } from "@/components/ui/aspect-ratio";
+import { ScrollArea } from "@/components/ui/scroll-area";
 
 const ParentDashboardPreview = () => {
   return (
@@ -29,13 +30,13 @@ const ParentDashboardPreview = () => {
             </div>
           </div>
           <div className="order-1 md:order-2 shadow-xl rounded-xl overflow-hidden border border-gray-200">
-            <AspectRatio ratio={9/16} className="bg-white">
+            <ScrollArea className="h-[500px] bg-white rounded-xl">
               <img 
                 src="/lovable-uploads/a97f5981-c114-408c-a498-58594b8dde86.png" 
                 alt="Parent Dashboard Interface" 
-                className="object-cover h-full w-full rounded-xl"
+                className="object-contain w-full"
               />
-            </AspectRatio>
+            </ScrollArea>
           </div>
         </div>
       </div>
