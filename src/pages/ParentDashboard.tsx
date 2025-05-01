@@ -7,6 +7,7 @@ import ScheduleManager from "@/components/dashboard/ScheduleManager";
 import NotificationSettings from "@/components/dashboard/NotificationSettings";
 import ChatSection from "@/components/dashboard/ChatSection";
 import RecentProgress from "@/components/dashboard/RecentProgress";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 const ParentDashboard = () => {
   // Sample data - in a real app, this would come from an API
@@ -16,6 +17,8 @@ const ParentDashboard = () => {
     averageSessionDuration: 45, // minutes
     longTermPlan: "Improve reading comprehension, writing speed, and executive functioning skills by the end of the semester"
   };
+
+  const isMobile = useIsMobile();
 
   // Badge data with different levels for various skills
   const skillBadges = [
@@ -33,9 +36,9 @@ const ParentDashboard = () => {
   return (
     <div className="min-h-screen bg-gray-50">
       <Navbar />
-      <div className="container py-8">
-        <h1 className="text-3xl font-bold mb-6">Parent Dashboard</h1>
-        <p className="text-xl text-gray-700 mb-8">Welcome back! Here's how {studentData.name} is progressing</p>
+      <div className="container py-4 md:py-8">
+        <h1 className="text-2xl md:text-3xl font-bold mb-3 md:mb-6">Parent Dashboard</h1>
+        <p className="text-lg md:text-xl text-gray-700 mb-4 md:mb-8">Welcome back! Here's how {studentData.name} is progressing</p>
         
         {/* Student Stats Section */}
         <StudentStats studentData={studentData} />
@@ -43,19 +46,21 @@ const ParentDashboard = () => {
         {/* Achievement Badges Section */}
         <AchievementBadges skillBadges={skillBadges} />
         
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 md:gap-8">
           {/* Left Section - Schedule Manager */}
-          <ScheduleManager studentName={studentData.name} />
+          <div className={isMobile ? "order-2" : ""}>
+            <ScheduleManager studentName={studentData.name} />
+            <RecentProgress />
+          </div>
           
           {/* Right Section - Notifications and Chat */}
-          <div className="space-y-6">
+          <div className={`space-y-4 md:space-y-6 ${isMobile ? "order-1" : ""}`}>
             <NotificationSettings />
-            <ChatSection />
+            <div className="h-[350px] md:h-[400px]">
+              <ChatSection />
+            </div>
           </div>
         </div>
-        
-        {/* Recent Progress Section */}
-        <RecentProgress />
       </div>
     </div>
   );
