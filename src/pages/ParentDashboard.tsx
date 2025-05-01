@@ -1,4 +1,3 @@
-
 import React, { useState } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -27,7 +26,7 @@ const ParentDashboard = () => {
     name: "Alex Johnson",
     totalLessons: 24,
     averageSessionDuration: 45, // minutes
-    longTermPlan: "Improve algebra skills and prepare for SAT Math section by December"
+    longTermPlan: "Improve reading comprehension, writing speed, and executive functioning skills by the end of the semester"
   };
 
   const handleSaveSchedule = () => {
