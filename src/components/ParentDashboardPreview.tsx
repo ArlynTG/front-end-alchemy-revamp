@@ -1,4 +1,3 @@
-
 import React, { useEffect, useRef, useState } from "react";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Check } from "lucide-react";
@@ -98,13 +97,12 @@ const ParentDashboardPreview = () => {
       className="py-16 bg-gradient-to-r from-tobey-blue to-soft-purple text-tobey-text"
     >
       <div className="container mx-auto">
-        <div className="flex items-center justify-between mb-10">
-          <Button variant="outline" className="btn-secondary">
+        <div className="mb-10">
+          <Button 
+            className="bg-tobey-orange text-white hover:bg-tobey-darkOrange"
+          >
             Parent Dashboard
           </Button>
-          <div className="text-center flex-grow">
-            <span className="section-tag">Parent Dashboard</span>
-          </div>
         </div>
         <div className="grid md:grid-cols-2 gap-10 items-center">
           <div className="order-2 md:order-1">
