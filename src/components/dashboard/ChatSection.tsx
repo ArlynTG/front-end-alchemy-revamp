@@ -6,16 +6,18 @@ import ChatInterface from "@/components/chat/ChatInterface";
 
 const ChatSection: React.FC = () => {
   return (
-    <Card>
-      <CardHeader>
+    <Card className="h-full flex flex-col">
+      <CardHeader className="flex-shrink-0">
         <CardTitle className="flex items-center">
           <MessageSquare className="h-5 w-5 mr-2 text-blue-500" />
           Chat with Tobey's Tutor
         </CardTitle>
         <CardDescription>Would you like me to focus on anything new? Just let me know.</CardDescription>
       </CardHeader>
-      <CardContent className="h-[400px]">
-        <ChatInterface />
+      <CardContent className="flex-grow overflow-hidden flex flex-col">
+        <div className="h-full">
+          <ChatInterface />
+        </div>
       </CardContent>
     </Card>
   );

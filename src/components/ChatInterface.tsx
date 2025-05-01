@@ -8,7 +8,11 @@ import ChatContainer from "@/components/chat/ChatContainer";
  * - Refactored into smaller components for better maintainability
  */
 const ChatInterface: React.FC = () => {
-  return <ChatContainer />;
+  return (
+    <div className="h-full flex flex-col">
+      <ChatContainer />
+    </div>
+  );
 };
 
 export default ChatInterface; 

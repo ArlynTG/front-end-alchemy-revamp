@@ -21,7 +21,7 @@ const ChatHistory = ({ messages }: ChatHistoryProps) => {
   }, [messages]);
 
   return (
-    <ScrollArea ref={scrollAreaRef} className="h-96 p-4 bg-gray-50">
+    <ScrollArea ref={scrollAreaRef} className="flex-grow overflow-auto p-4 bg-gray-50">
       <div className="space-y-4">
         {messages.map((chat, index) => (
           <ChatMessage key={index} message={chat} />
