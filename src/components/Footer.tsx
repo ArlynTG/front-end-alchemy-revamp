@@ -21,7 +21,7 @@ const Footer = () => {
             <svg 
               viewBox="0 0 24 24" 
               fill="none" 
-              className="h-6 w-6 text-tobey-orange"
+              className="h-6 w-6 text-black" 
               stroke="currentColor" 
               strokeWidth="2"
             >
