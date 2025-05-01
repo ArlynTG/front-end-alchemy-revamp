@@ -11,8 +11,9 @@ import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
 import ChatInterface from "@/components/chat/ChatInterface";
 import Navbar from "@/components/Navbar";
-import { Book, Clock, CalendarIcon, MessageSquare, Bell } from "lucide-react";
+import { Book, Clock, CalendarIcon, MessageSquare, Bell, Award, Star } from "lucide-react";
 import { ResizablePanelGroup, ResizablePanel, ResizableHandle } from "@/components/ui/resizable";
+import { Badge } from "@/components/ui/badge";
 
 const ParentDashboard = () => {
   const [selectedDays, setSelectedDays] = useState<number[]>([1, 3, 5]); // Monday, Wednesday, Friday
@@ -28,6 +29,56 @@ const ParentDashboard = () => {
     totalLessons: 24,
     averageSessionDuration: 45, // minutes
     longTermPlan: "Improve reading comprehension, writing speed, and executive functioning skills by the end of the semester"
+  };
+
+  // Badge data with different levels for various skills
+  const skillBadges = [
+    { name: "Accuracy", level: "Gold" },
+    { name: "Creativity", level: "Silver" },
+    { name: "Math Skills", level: "Platinum" },
+    { name: "Executive Functioning", level: "Regular" },
+    { name: "Self Advocacy", level: "Diamond" },
+    { name: "Writing", level: "Gold" },
+    { name: "Phonics", level: "Silver" },
+    { name: "Speed", level: "Regular" },
+    { name: "Attendance", level: "Platinum" },
+  ];
+
+  // Badge style variants based on level
+  const getBadgeVariant = (level: string) => {
+    switch (level) {
+      case "Regular": return "outline";
+      case "Silver": return "secondary";
+      case "Gold": return "default";
+      case "Platinum": return "destructive";
+      case "Diamond": return "default";
+      default: return "outline";
+    }
+  };
+
+  // Badge style for badges component
+  const getBadgeStyle = (level: string) => {
+    const baseStyle = "flex flex-col items-center p-3 rounded-lg";
+    
+    switch (level) {
+      case "Regular": return `${baseStyle} bg-gray-100`;
+      case "Silver": return `${baseStyle} bg-gray-200`;
+      case "Gold": return `${baseStyle} bg-yellow-100`;
+      case "Platinum": return `${baseStyle} bg-blue-100`;
+      case "Diamond": return `${baseStyle} bg-purple-100`;
+      default: return baseStyle;
+    }
+  };
+
+  // Icon for badge based on level
+  const getBadgeIcon = (level: string) => {
+    switch (level) {
+      case "Diamond": return <Award className="h-8 w-8 text-purple-500" />;
+      case "Platinum": return <Award className="h-8 w-8 text-blue-500" />;
+      case "Gold": return <Award className="h-8 w-8 text-yellow-500" />;
+      case "Silver": return <Award className="h-7 w-7 text-gray-400" />;
+      default: return <Star className="h-6 w-6 text-gray-500" />;
+    }
   };
 
   const handleSaveSchedule = () => {
@@ -102,6 +153,32 @@ const ParentDashboard = () => {
             </CardContent>
           </Card>
         </div>
+
+        {/* Achievement Badges Grid */}
+        <Card className="mb-8">
+          <CardHeader>
+            <CardTitle className="flex items-center">
+              <Award className="h-5 w-5 mr-2 text-amber-500" />
+              Achievement Badges
+            </CardTitle>
+            <CardDescription>Skills progress and achievements earned by {studentData.name}</CardDescription>
+          </CardHeader>
+          <CardContent>
+            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
+              {skillBadges.map((badge) => (
+                <div key={badge.name} className={getBadgeStyle(badge.level)}>
+                  <div className="mb-2">
+                    {getBadgeIcon(badge.level)}
+                  </div>
+                  <span className="text-sm font-medium mb-1">{badge.name}</span>
+                  <Badge variant={getBadgeVariant(badge.level)} className="mt-1">
+                    {badge.level}
+                  </Badge>
+                </div>
+              ))}
+            </div>
+          </CardContent>
+        </Card>
         
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
           {/* Left Section - Combined Schedule and Calendar */}
