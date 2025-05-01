@@ -1,4 +1,3 @@
-
 import React from "react";
 import Navbar from "@/components/Navbar";
 import StudentStats from "@/components/dashboard/StudentStats";
@@ -20,7 +19,7 @@ const ParentDashboard = () => {
 
   const isMobile = useIsMobile();
 
-  // Badge data with different levels for various skills
+  // Badge data with different levels for various skills - using the old names that will be mapped in the component
   const skillBadges = [
     { name: "Accuracy", level: "Gold" },
     { name: "Creativity", level: "Silver" },
