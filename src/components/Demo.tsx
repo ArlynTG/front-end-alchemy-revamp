@@ -29,12 +29,19 @@ const Demo = () => {
 
         <ReportCardUpload onUploadComplete={handleUploadComplete} />
         
-        <div className="text-center mt-8">
+        <div className="text-center mt-8 space-y-4">
           <Link to="/demo-v4">
             <Button className="bg-tobey-orange hover:bg-tobey-darkOrange text-white font-medium">
               Try Our Full-Screen Demo
             </Button>
           </Link>
+          <div className="mt-2">
+            <Link to="/demo-v5">
+              <Button variant="outline" className="border-tobey-orange text-tobey-orange hover:bg-tobey-peach/20 font-medium">
+                Try Our Latest Demo Version
+              </Button>
+            </Link>
+          </div>
         </div>
       </div>
     </section>

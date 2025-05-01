@@ -19,6 +19,7 @@ const BetaConfirmed = lazy(() => import("./pages/BetaConfirmed"));
 const BetaRegistration = lazy(() => import("./pages/BetaRegistration"));
 const BetaConfirmation = lazy(() => import("./pages/BetaConfirmation"));
 const DemoV4 = lazy(() => import("./pages/DemoV4"));
+const DemoV5 = lazy(() => import("./pages/DemoV5"));
 const ParentDashboard = lazy(() => import("./pages/ParentDashboard"));
 
 // Create a reusable loading component
@@ -55,6 +56,7 @@ const App = () => (
             <Route path="/parent-login" element={<ParentLogin />} />
             <Route path="/student-login" element={<StudentLogin />} />
             <Route path="/demo-v4" element={<DemoV4 />} />
+            <Route path="/demo-v5" element={<DemoV5 />} />
             <Route path="/parent-dashboard" element={<ParentDashboard />} />
             <Route path="/beta-confirmed" element={<BetaConfirmed />} />
             <Route path="/beta-registration" element={<BetaRegistration />} />
