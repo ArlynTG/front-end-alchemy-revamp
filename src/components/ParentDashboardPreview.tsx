@@ -2,10 +2,15 @@
 import React, { useEffect, useRef, useState } from "react";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Check } from "lucide-react";
+import { Button } from "@/components/ui/button";
 
 const ParentDashboardPreview = () => {
   const [isVisible, setIsVisible] = useState(false);
+  const [isHovering, setIsHovering] = useState(false);
   const sectionRef = useRef<HTMLElement>(null);
+  const scrollAreaRef = useRef<HTMLDivElement>(null);
+  const imageRef = useRef<HTMLImageElement>(null);
+  const scrollAnimationRef = useRef<number | null>(null);
 
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -32,12 +37,70 @@ const ParentDashboardPreview = () => {
     };
   }, []);
 
+  // Auto-scroll animation when hovering
+  useEffect(() => {
+    const scrollImage = () => {
+      if (!imageRef.current || !scrollAreaRef.current || !isHovering) return;
+      
+      const scrollContainer = scrollAreaRef.current.querySelector('[data-radix-scroll-area-viewport]');
+      if (!scrollContainer) return;
+
+      // Get the total scrollable height
+      const scrollHeight = imageRef.current.scrollHeight - scrollContainer.clientHeight;
+      
+      // Scroll speed (pixels per animation frame)
+      const scrollSpeed = 0.5;
+      
+      // Current scroll position
+      let currentScroll = scrollContainer.scrollTop;
+      
+      // Animation function
+      const animate = () => {
+        if (!isHovering) return;
+        
+        if (currentScroll >= scrollHeight) {
+          // Reset to top when reaching the bottom
+          currentScroll = 0;
+        } else {
+          // Increment scroll position
+          currentScroll += scrollSpeed;
+        }
+        
+        // Apply scroll
+        if (scrollContainer) {
+          scrollContainer.scrollTop = currentScroll;
+        }
+        
+        // Continue animation
+        scrollAnimationRef.current = requestAnimationFrame(animate);
+      };
+      
+      // Start animation
+      scrollAnimationRef.current = requestAnimationFrame(animate);
+    };
+
+    if (isHovering) {
+      scrollImage();
+    }
+
+    // Cleanup animation on unmount or when not hovering
+    return () => {
+      if (scrollAnimationRef.current) {
+        cancelAnimationFrame(scrollAnimationRef.current);
+        scrollAnimationRef.current = null;
+      }
+    };
+  }, [isHovering]);
+
   return (
     <section 
       ref={sectionRef}
       className="py-16 bg-gradient-to-r from-tobey-blue to-soft-purple text-tobey-text"
     >
       <div className="container mx-auto">
+        <div className="text-center mb-10">
+          <span className="section-tag">Parent Dashboard</span>
+        </div>
         <div className="grid md:grid-cols-2 gap-10 items-center">
           <div className="order-2 md:order-1">
             <h2 className="text-3xl md:text-4xl font-bold mb-4 text-black">
@@ -67,6 +130,9 @@ const ParentDashboardPreview = () => {
                 ? "opacity-100 translate-y-0 scale-100" 
                 : "opacity-0 translate-y-32 scale-95"
             }`}
+            onMouseEnter={() => setIsHovering(true)}
+            onMouseLeave={() => setIsHovering(false)}
+            ref={scrollAreaRef}
           >
             <div className="relative">
               <div className={`absolute inset-0 bg-gradient-to-b from-purple-500/30 to-transparent ${
@@ -74,6 +140,7 @@ const ParentDashboardPreview = () => {
               }`}></div>
               <ScrollArea className="h-[500px] bg-white rounded-xl">
                 <img 
+                  ref={imageRef}
                   src="/lovable-uploads/a97f5981-c114-408c-a498-58594b8dde86.png" 
                   alt="Parent Dashboard Interface" 
                   className="object-contain w-full"
