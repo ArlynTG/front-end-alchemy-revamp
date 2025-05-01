@@ -6,7 +6,6 @@ import { Button } from "@/components/ui/button";
 
 const ParentDashboardPreview = () => {
   const [isVisible, setIsVisible] = useState(false);
-  const [isHovering, setIsHovering] = useState(false);
   const sectionRef = useRef<HTMLElement>(null);
   const scrollAreaRef = useRef<HTMLDivElement>(null);
   const imageRef = useRef<HTMLImageElement>(null);
@@ -37,10 +36,10 @@ const ParentDashboardPreview = () => {
     };
   }, []);
 
-  // Auto-scroll animation when hovering
+  // Auto-scroll animation when component is visible
   useEffect(() => {
     const scrollImage = () => {
-      if (!imageRef.current || !scrollAreaRef.current || !isHovering) return;
+      if (!imageRef.current || !scrollAreaRef.current || !isVisible) return;
       
       const scrollContainer = scrollAreaRef.current.querySelector('[data-radix-scroll-area-viewport]');
       if (!scrollContainer) return;
@@ -56,7 +55,7 @@ const ParentDashboardPreview = () => {
       
       // Animation function
       const animate = () => {
-        if (!isHovering) return;
+        if (!isVisible) return;
         
         if (currentScroll >= scrollHeight) {
           // Reset to top when reaching the bottom
@@ -79,18 +78,19 @@ const ParentDashboardPreview = () => {
       scrollAnimationRef.current = requestAnimationFrame(animate);
     };
 
-    if (isHovering) {
+    // Start scrolling when component becomes visible
+    if (isVisible) {
       scrollImage();
     }
 
-    // Cleanup animation on unmount or when not hovering
+    // Cleanup animation on unmount or when not visible
     return () => {
       if (scrollAnimationRef.current) {
         cancelAnimationFrame(scrollAnimationRef.current);
         scrollAnimationRef.current = null;
       }
     };
-  }, [isHovering]);
+  }, [isVisible]);
 
   return (
     <section 
@@ -130,8 +130,6 @@ const ParentDashboardPreview = () => {
                 ? "opacity-100 translate-y-0 scale-100" 
                 : "opacity-0 translate-y-32 scale-95"
             }`}
-            onMouseEnter={() => setIsHovering(true)}
-            onMouseLeave={() => setIsHovering(false)}
             ref={scrollAreaRef}
           >
             <div className="relative">
