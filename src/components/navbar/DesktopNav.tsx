@@ -50,7 +50,7 @@ const DesktopNav = ({ scrollToSection, onJoinBeta }: DesktopNavProps) => {
         )}
         
         {/* Updated Demo link */}
-        <NavLink to="/demo-v4" label="Demo" />
+        <NavLink to="/demo-v5" label="Demo" />
         
         <DropdownMenu>
           <DropdownMenuTrigger className="text-tobey-text hover:text-tobey-orange transition-colors font-medium flex items-center">

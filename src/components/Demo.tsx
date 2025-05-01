@@ -30,7 +30,7 @@ const Demo = () => {
         <ReportCardUpload onUploadComplete={handleUploadComplete} />
         
         <div className="text-center mt-8 space-y-4">
-          <Link to="/demo-v4">
+          <Link to="/demo-v5">
             <Button className="bg-tobey-orange hover:bg-tobey-darkOrange text-white font-medium">
               Try Our Full-Screen Demo
             </Button>

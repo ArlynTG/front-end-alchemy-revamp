@@ -68,7 +68,7 @@ const MobileMenu = ({ isOpen, onClose, onJoinBeta, scrollToSection }: MobileMenu
         
         {/* Updated Demo link */}
         <NavLink
-          to="/demo-v4"
+          to="/demo-v5"
           label="Demo"
           onClick={onClose}
           className="text-black hover:text-tobey-orange"
