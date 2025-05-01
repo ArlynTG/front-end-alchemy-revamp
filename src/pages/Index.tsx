@@ -2,6 +2,7 @@
 import Navbar from "@/components/Navbar";
 import Hero from "@/components/Hero";
 import Features from "@/components/Features";
+import ParentDashboardPreview from "@/components/ParentDashboardPreview";
 import Story from "@/components/Story";
 import FullWidthCTA from "@/components/FullWidthCTA";
 import Pricing from "@/components/Pricing";
@@ -15,6 +16,7 @@ const Index = () => {
       <main>
         <Hero />
         <Features />
+        <ParentDashboardPreview />
         <Story />
         <FullWidthCTA />
         <Pricing />
