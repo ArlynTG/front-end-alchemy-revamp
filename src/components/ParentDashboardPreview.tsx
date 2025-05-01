@@ -15,8 +15,8 @@ const ParentDashboardPreview = () => {
           console.log("Dashboard component is now visible");
         }
       },
-      // Lower the threshold to ensure animation triggers more reliably
-      { threshold: 0.1, rootMargin: "0px 0px -100px 0px" }
+      // More aggressive threshold and margin for earlier animation triggering
+      { threshold: 0.05, rootMargin: "0px 0px -50px 0px" }
     );
     
     if (sectionRef.current) {
@@ -62,17 +62,22 @@ const ParentDashboardPreview = () => {
           <div 
             className={`order-1 md:order-2 shadow-xl rounded-xl overflow-hidden border border-gray-200 transition-all duration-1000 ${
               isVisible 
-                ? "opacity-100 translate-y-0" 
-                : "opacity-0 translate-y-20"
+                ? "opacity-100 translate-y-0 scale-100" 
+                : "opacity-0 translate-y-32 scale-95"
             }`}
           >
-            <ScrollArea className="h-[500px] bg-white rounded-xl">
-              <img 
-                src="/lovable-uploads/a97f5981-c114-408c-a498-58594b8dde86.png" 
-                alt="Parent Dashboard Interface" 
-                className="object-contain w-full"
-              />
-            </ScrollArea>
+            <div className="relative">
+              <div className={`absolute inset-0 bg-gradient-to-b from-purple-500/30 to-transparent ${
+                isVisible ? "animate-fade-in" : "opacity-0"
+              }`}></div>
+              <ScrollArea className="h-[500px] bg-white rounded-xl">
+                <img 
+                  src="/lovable-uploads/a97f5981-c114-408c-a498-58594b8dde86.png" 
+                  alt="Parent Dashboard Interface" 
+                  className="object-contain w-full"
+                />
+              </ScrollArea>
+            </div>
           </div>
         </div>
       </div>
