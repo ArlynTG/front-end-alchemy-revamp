@@ -2,6 +2,7 @@
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { PricingPlan } from "./PricingCard";
+import { Timer } from "lucide-react";
 
 interface PricingCardProps {
   plan: PricingPlan;
@@ -46,7 +47,7 @@ const PricingCard = ({ plan, onSelect }: PricingCardProps) => {
       <Button
         onClick={() => !plan.disabled && onSelect(plan.id)}
         disabled={plan.disabled}
-        className={`w-full ${
+        className={`w-full flex items-center justify-center gap-2 ${
           plan.highlighted
             ? 'bg-tobey-orange hover:bg-tobey-orange/90 text-white'
             : plan.disabled 
@@ -54,7 +55,12 @@ const PricingCard = ({ plan, onSelect }: PricingCardProps) => {
               : 'bg-white text-tobey-orange border border-tobey-orange hover:bg-orange-50'
         }`}
       >
-        {plan.disabled ? "Coming Soon" : "Reserve Your Spot for $1"}
+        {plan.disabled ? "Coming Soon" : (
+          <>
+            Reserve Your Spot for $1
+            <Timer className="h-4 w-4" />
+          </>
+        )}
       </Button>
     </div>
   );

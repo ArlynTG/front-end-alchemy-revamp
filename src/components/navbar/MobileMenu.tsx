@@ -1,4 +1,3 @@
-
 import { Button } from "@/components/ui/button";
 import NavLink from "./NavLink";
 import { useLocation } from "react-router-dom";
@@ -7,7 +6,7 @@ import {
   CollapsibleContent,
   CollapsibleTrigger,
 } from "@/components/ui/collapsible";
-import { ChevronDown, ChevronUp } from "lucide-react";
+import { ChevronDown, ChevronUp, Timer } from "lucide-react";
 import { useState } from "react";
 
 interface MobileMenuProps {
@@ -103,7 +102,10 @@ const MobileMenu = ({ isOpen, onClose, onJoinBeta, scrollToSection }: MobileMenu
             )}
           </CollapsibleContent>
         </Collapsible>
-        <Button className="btn-primary w-full" onClick={onJoinBeta}>Join the Beta</Button>
+        <Button className="btn-primary w-full flex items-center justify-center gap-2" onClick={onJoinBeta}>
+          Join the Beta for $1
+          <Timer className="h-4 w-4" />
+        </Button>
       </div>
     </div>
   );

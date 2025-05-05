@@ -1,4 +1,3 @@
-
 import { Button } from "@/components/ui/button";
 import NavLink from "./NavLink";
 import { useLocation } from "react-router-dom";
@@ -8,7 +7,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { ChevronDown } from "lucide-react";
+import { ChevronDown, Timer } from "lucide-react";
 
 interface DesktopNavProps {
   scrollToSection: (sectionId: string) => void;
@@ -70,7 +69,10 @@ const DesktopNav = ({ scrollToSection, onJoinBeta }: DesktopNavProps) => {
           </DropdownMenuContent>
         </DropdownMenu>
         
-        <Button className="btn-primary" onClick={onJoinBeta}>Join the Beta</Button>
+        <Button className="btn-primary flex items-center gap-2" onClick={onJoinBeta}>
+          Join the Beta for $1
+          <Timer className="h-4 w-4" />
+        </Button>
       </div>
     </div>
   );
