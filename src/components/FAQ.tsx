@@ -1,0 +1,80 @@
+
+import React from 'react';
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "@/components/ui/accordion";
+
+const FAQ = () => {
+  return (
+    <section className="py-16 md:py-24 bg-white">
+      <div className="container max-w-4xl mx-auto">
+        <span className="section-tag">FAQ</span>
+        <h2 className="section-title mb-10">Frequently Asked Questions</h2>
+        
+        <Accordion type="single" collapsible className="space-y-4">
+          <AccordionItem value="item-1" className="bg-tobey-blue/20 rounded-2xl p-4 border-none shadow-sm">
+            <AccordionTrigger className="text-lg font-semibold text-tobey-text hover:text-tobey-orange transition-colors">
+              What makes Tobey's Tutor different from other online tutoring programs for dyslexia and ADHD?
+            </AccordionTrigger>
+            <AccordionContent className="text-base text-gray-600 pt-2">
+              Tobey's Tutor is built specifically for kids with dyslexia, ADHD, and executive functioning challenges. 
+              Unlike traditional tutoring platforms, our AI-powered system adapts in real-time to your child's 
+              needs—offering personalized lessons, self-advocacy coaching, and gamified progress tracking. 
+              It's designed by parents, educators, and learning specialists to support bright kids who learn differently.
+            </AccordionContent>
+          </AccordionItem>
+
+          <AccordionItem value="item-2" className="bg-tobey-blue/20 rounded-2xl p-4 border-none shadow-sm">
+            <AccordionTrigger className="text-lg font-semibold text-tobey-text hover:text-tobey-orange transition-colors">
+              Is Tobey's Tutor based on Orton-Gillingham or other proven methods for dyslexic learners?
+            </AccordionTrigger>
+            <AccordionContent className="text-base text-gray-600 pt-2">
+              Yes. While Tobey's Tutor is not a direct replacement for structured Orton-Gillingham instruction, 
+              it integrates its core principles—like multisensory engagement, repetition, and phonics-based 
+              reading support. Our lessons align with research-backed strategies for helping students with 
+              language-based learning differences thrive.
+            </AccordionContent>
+          </AccordionItem>
+
+          <AccordionItem value="item-3" className="bg-tobey-blue/20 rounded-2xl p-4 border-none shadow-sm">
+            <AccordionTrigger className="text-lg font-semibold text-tobey-text hover:text-tobey-orange transition-colors">
+              What age group is Tobey's Tutor best for?
+            </AccordionTrigger>
+            <AccordionContent className="text-base text-gray-600 pt-2">
+              Tobey's Tutor is ideal for children ages 8 to 13 who already know how to read but need help 
+              with reading fluency, comprehension, writing structure, math reasoning, and executive functioning skills. 
+              A future version will offer Orton-Gillingham-style support for younger students aged 5 to 7.
+            </AccordionContent>
+          </AccordionItem>
+
+          <AccordionItem value="item-4" className="bg-tobey-blue/20 rounded-2xl p-4 border-none shadow-sm">
+            <AccordionTrigger className="text-lg font-semibold text-tobey-text hover:text-tobey-orange transition-colors">
+              How do I know if this will help my child with ADHD or dyslexia?
+            </AccordionTrigger>
+            <AccordionContent className="text-base text-gray-600 pt-2">
+              If your child is bright but struggles with focus, reading fluency, writing structure, or task completion, 
+              Tobey's Tutor can help. Our AI tutor tracks progress over time, adjusts difficulty automatically, 
+              and even encourages self-advocacy—skills many kids with ADHD and dyslexia need to succeed in school and beyond.
+            </AccordionContent>
+          </AccordionItem>
+
+          <AccordionItem value="item-5" className="bg-tobey-blue/20 rounded-2xl p-4 border-none shadow-sm">
+            <AccordionTrigger className="text-lg font-semibold text-tobey-text hover:text-tobey-orange transition-colors">
+              What happens after I reserve a beta spot for $1?
+            </AccordionTrigger>
+            <AccordionContent className="text-base text-gray-600 pt-2">
+              Once you reserve your beta spot, you'll get early access to Tobey's Tutor in June. 
+              Before launch, we'll email you a short onboarding form to customize your child's learning experience. 
+              Your $1 will be applied toward the first month of your Early Adopter Subscription ($29/month after launch).
+            </AccordionContent>
+          </AccordionItem>
+        </Accordion>
+      </div>
+    </section>
+  );
+};
+
+export default FAQ;

@@ -4,6 +4,7 @@ import Hero from "@/components/Hero";
 import Features from "@/components/Features";
 import ParentDashboardPreview from "@/components/ParentDashboardPreview";
 import Story from "@/components/Story";
+import FAQ from "@/components/FAQ"; // Add import for FAQ component
 import FullWidthCTA from "@/components/FullWidthCTA";
 import Pricing, { PricingContext } from "@/components/Pricing";
 import Contact from "@/components/Contact";
@@ -41,6 +42,7 @@ const Index = () => {
         <Features />
         <ParentDashboardPreview />
         <Story />
+        <FAQ /> {/* Add FAQ component here, between Story and FullWidthCTA */}
         <FullWidthCTA />
         <Pricing />
         <Contact id="contact" />
