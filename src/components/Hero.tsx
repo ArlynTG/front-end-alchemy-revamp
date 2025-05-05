@@ -1,8 +1,12 @@
 
 import React from 'react';
 import { Button } from "@/components/ui/button";
+import { Link } from "react-router-dom";
+import { usePricing } from "@/components/Pricing";
 
 const Hero = () => {
+  const { openEarlyAdopterModal } = usePricing();
+  
   return (
     <section className="py-16 md:py-24">
       <div className="container relative">
@@ -32,9 +36,22 @@ const Hero = () => {
                 </span>
               ))}
             </h2>
-            <p className="text-base text-gray-700 animate-fade-in opacity-0" style={{ animationDelay: '1200ms', animationFillMode: 'forwards' }}>
+            <p className="text-base text-gray-700 animate-fade-in opacity-0 mb-6" style={{ animationDelay: '1200ms', animationFillMode: 'forwards' }}>
               As parents, we know what it's like to feel stuck. Watching our children struggle with traditional learning methods can be heartbreaking. That's why we built Tobey's Tutor, a patent pending AI system for bright kids with dyslexia, ADHD, and related learning differences. It's designed to help students unlock their academic potential, build confidence, find their voice — and have fun too.
             </p>
+            
+            <div className="flex flex-wrap gap-4 animate-fade-in opacity-0" style={{ animationDelay: '1400ms', animationFillMode: 'forwards' }}>
+              <Button asChild className="bg-tobey-orange hover:bg-tobey-orange/90 text-white">
+                <Link to="/demo-v5">Try the Demo</Link>
+              </Button>
+              <Button 
+                onClick={openEarlyAdopterModal}
+                variant="outline" 
+                className="border-tobey-orange text-tobey-orange hover:bg-tobey-orange/10"
+              >
+                Join the Beta
+              </Button>
+            </div>
           </div>
         </div>
 
