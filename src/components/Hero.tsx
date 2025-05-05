@@ -3,6 +3,7 @@ import React from 'react';
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 import { usePricing } from "@/components/Pricing";
+import { Timer } from "lucide-react";
 
 const Hero = () => {
   const { openEarlyAdopterModal } = usePricing();
@@ -47,9 +48,10 @@ const Hero = () => {
               <Button 
                 onClick={openEarlyAdopterModal}
                 variant="outline" 
-                className="border-tobey-orange text-tobey-orange hover:bg-tobey-orange/10"
+                className="border-tobey-orange text-tobey-orange hover:bg-tobey-orange/10 flex items-center gap-2"
               >
                 Join the Beta for $1
+                <Timer className="h-4 w-4" />
               </Button>
             </div>
           </div>
