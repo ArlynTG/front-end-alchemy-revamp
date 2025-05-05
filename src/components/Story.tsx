@@ -1,3 +1,4 @@
+
 import React from 'react';
 
 const Story = () => {
@@ -26,7 +27,7 @@ const Story = () => {
           </p>
 
           <p className="mb-6">
-            We developed Tobey's Tutor to be accessible and affordable as possible. Traditional one-on-one tutoring can cost hundreds of dollars per week—a financial burden many simply cannot shoulder. Our platform delivers personalized learning support at a fraction of that cost, making specialized education accessible to more children who need it.
+            One-on-one tutoring with a trained professional remains the gold standard, but it can cost hundreds of dollars per week—a financial burden many simply cannot shoulder. Our platform delivers personalized learning support at a fraction of that cost, making specialized education accessible to more children who need it.
           </p>
 
           <p className="mb-6 text-center font-bold">
