@@ -18,13 +18,13 @@ export default defineConfig(({ mode }) => ({
     }),
     mode === 'development' && {
       name: 'custom-component-tagger',
-      transform(code, id) {
+      transform(code: string, id: string) {
         // Simple implementation of component tagging
         if (id.endsWith('.tsx') && (code.includes('export default') || code.includes('React.') || code.includes('import React'))) {
           // Add displayName to components for better debugging
           return code.replace(
             /export default (\w+)/g,
-            (match, componentName) => {
+            (match: string, componentName: string) => {
               return `${match}\n${componentName}.displayName = '${componentName}'`;
             }
           );
