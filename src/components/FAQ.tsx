@@ -6,7 +6,6 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
-import { Plus } from "lucide-react";
 
 const FAQ = () => {
   return (
@@ -19,7 +18,7 @@ const FAQ = () => {
           <AccordionItem value="item-1" className="bg-tobey-blue/20 rounded-2xl p-4 border-none shadow-sm transition-all duration-300 hover:shadow-md">
             <AccordionTrigger className="text-lg font-bold text-tobey-text hover:text-tobey-orange transition-colors group flex justify-between w-full text-left">
               <span>What makes Tobey's Tutor different from other online tutoring programs?</span>
-              <Plus className="h-5 w-5 shrink-0 text-tobey-orange transition-transform duration-300 group-data-[state=open]:rotate-45" />
+              <span className="text-orange-500 text-xl transform transition-transform duration-300 group-data-[state=open]:rotate-45">+</span>
             </AccordionTrigger>
             <AccordionContent className="text-base text-gray-600 pt-2 transition-all duration-300 data-[state=open]:animate-fade-in">
               Tobey's Tutor is built specifically for kids with dyslexia, ADHD, and executive functioning challenges. 
@@ -32,7 +31,7 @@ const FAQ = () => {
           <AccordionItem value="item-2" className="bg-tobey-blue/20 rounded-2xl p-4 border-none shadow-sm transition-all duration-300 hover:shadow-md">
             <AccordionTrigger className="text-lg font-bold text-tobey-text hover:text-tobey-orange transition-colors group flex justify-between w-full text-left">
               <span>Is Tobey's Tutor based on Orton-Gillingham or other proven methods for dyslexic learners?</span>
-              <Plus className="h-5 w-5 shrink-0 text-tobey-orange transition-transform duration-300 group-data-[state=open]:rotate-45" />
+              <span className="text-orange-500 text-xl transform transition-transform duration-300 group-data-[state=open]:rotate-45">+</span>
             </AccordionTrigger>
             <AccordionContent className="text-base text-gray-600 pt-2 transition-all duration-300 data-[state=open]:animate-fade-in">
               Yes. While Tobey's Tutor is not a direct replacement for structured Orton-Gillingham instruction, 
@@ -45,7 +44,7 @@ const FAQ = () => {
           <AccordionItem value="item-3" className="bg-tobey-blue/20 rounded-2xl p-4 border-none shadow-sm transition-all duration-300 hover:shadow-md">
             <AccordionTrigger className="text-lg font-bold text-tobey-text hover:text-tobey-orange transition-colors group flex justify-between w-full text-left">
               <span>What age group is Tobey's Tutor best for?</span>
-              <Plus className="h-5 w-5 shrink-0 text-tobey-orange transition-transform duration-300 group-data-[state=open]:rotate-45" />
+              <span className="text-orange-500 text-xl transform transition-transform duration-300 group-data-[state=open]:rotate-45">+</span>
             </AccordionTrigger>
             <AccordionContent className="text-base text-gray-600 pt-2 transition-all duration-300 data-[state=open]:animate-fade-in">
               Tobey's Tutor is ideal for children ages 8 to 13 who already know how to read but need help 
@@ -57,7 +56,7 @@ const FAQ = () => {
           <AccordionItem value="item-4" className="bg-tobey-blue/20 rounded-2xl p-4 border-none shadow-sm transition-all duration-300 hover:shadow-md">
             <AccordionTrigger className="text-lg font-bold text-tobey-text hover:text-tobey-orange transition-colors group flex justify-between w-full text-left">
               <span>How do I know if this will help my child with ADHD or dyslexia?</span>
-              <Plus className="h-5 w-5 shrink-0 text-tobey-orange transition-transform duration-300 group-data-[state=open]:rotate-45" />
+              <span className="text-orange-500 text-xl transform transition-transform duration-300 group-data-[state=open]:rotate-45">+</span>
             </AccordionTrigger>
             <AccordionContent className="text-base text-gray-600 pt-2 transition-all duration-300 data-[state=open]:animate-fade-in">
               If your child is bright but struggles with focus, reading fluency, writing structure, or task completion, 
@@ -69,7 +68,7 @@ const FAQ = () => {
           <AccordionItem value="item-5" className="bg-tobey-blue/20 rounded-2xl p-4 border-none shadow-sm transition-all duration-300 hover:shadow-md">
             <AccordionTrigger className="text-lg font-bold text-tobey-text hover:text-tobey-orange transition-colors group flex justify-between w-full text-left">
               <span>What happens after I reserve a beta spot for $1?</span>
-              <Plus className="h-5 w-5 shrink-0 text-tobey-orange transition-transform duration-300 group-data-[state=open]:rotate-45" />
+              <span className="text-orange-500 text-xl transform transition-transform duration-300 group-data-[state=open]:rotate-45">+</span>
             </AccordionTrigger>
             <AccordionContent className="text-base text-gray-600 pt-2 transition-all duration-300 data-[state=open]:animate-fade-in">
               Once you reserve your beta spot, you'll get early access to Tobey's Tutor in June. 
