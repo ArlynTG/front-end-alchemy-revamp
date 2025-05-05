@@ -1,3 +1,4 @@
+
 import { Button } from "@/components/ui/button";
 import NavLink from "./NavLink";
 import { useLocation } from "react-router-dom";
@@ -47,6 +48,15 @@ const MobileMenu = ({ isOpen, onClose, onJoinBeta, scrollToSection }: MobileMenu
               }}
               className="text-black hover:text-tobey-orange"
             />
+            <NavLink 
+              to="#faq" 
+              label="FAQ"
+              onClick={(e) => {
+                e.preventDefault();
+                scrollToSection('faq');
+              }}
+              className="text-black hover:text-tobey-orange"
+            />
           </>
         ) : (
           <>
@@ -59,6 +69,12 @@ const MobileMenu = ({ isOpen, onClose, onJoinBeta, scrollToSection }: MobileMenu
             <NavLink 
               to="/#story" 
               label="Origin Story" 
+              onClick={onClose}
+              className="text-black hover:text-tobey-orange"
+            />
+            <NavLink 
+              to="/#faq" 
+              label="FAQ" 
               onClick={onClose}
               className="text-black hover:text-tobey-orange"
             />

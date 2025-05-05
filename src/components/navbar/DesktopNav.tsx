@@ -1,3 +1,4 @@
+
 import { Button } from "@/components/ui/button";
 import NavLink from "./NavLink";
 import { useLocation } from "react-router-dom";
@@ -40,11 +41,20 @@ const DesktopNav = ({ scrollToSection, onJoinBeta }: DesktopNavProps) => {
                 scrollToSection('story');
               }}
             />
+            <NavLink 
+              to="#faq" 
+              label="FAQ"
+              onClick={(e) => {
+                e.preventDefault();
+                scrollToSection('faq');
+              }}
+            />
           </>
         ) : (
           <>
             <NavLink to="/#features" label="Features" />
             <NavLink to="/#story" label="Origin Story" />
+            <NavLink to="/#faq" label="FAQ" />
           </>
         )}
         
