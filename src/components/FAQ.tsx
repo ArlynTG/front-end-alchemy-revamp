@@ -17,8 +17,8 @@ const FAQ = () => {
         
         <Accordion type="single" collapsible className="space-y-4">
           <AccordionItem value="item-1" className="bg-tobey-blue/20 rounded-2xl p-4 border-none shadow-sm transition-all duration-300 hover:shadow-md">
-            <AccordionTrigger className="text-lg font-bold text-tobey-text hover:text-tobey-orange transition-colors group flex justify-between w-full text-left [&>svg]:hidden">
-              What makes Tobey's Tutor different from other online tutoring programs?
+            <AccordionTrigger className="text-lg font-bold text-tobey-text hover:text-tobey-orange transition-colors group flex justify-between w-full text-left">
+              <span>What makes Tobey's Tutor different from other online tutoring programs?</span>
               <Plus className="h-5 w-5 shrink-0 text-tobey-orange transition-transform duration-300 group-data-[state=open]:rotate-45" />
             </AccordionTrigger>
             <AccordionContent className="text-base text-gray-600 pt-2 transition-all duration-300 data-[state=open]:animate-fade-in">
@@ -30,8 +30,8 @@ const FAQ = () => {
           </AccordionItem>
 
           <AccordionItem value="item-2" className="bg-tobey-blue/20 rounded-2xl p-4 border-none shadow-sm transition-all duration-300 hover:shadow-md">
-            <AccordionTrigger className="text-lg font-bold text-tobey-text hover:text-tobey-orange transition-colors group flex justify-between w-full text-left [&>svg]:hidden">
-              Is Tobey's Tutor based on Orton-Gillingham or other proven methods for dyslexic learners?
+            <AccordionTrigger className="text-lg font-bold text-tobey-text hover:text-tobey-orange transition-colors group flex justify-between w-full text-left">
+              <span>Is Tobey's Tutor based on Orton-Gillingham or other proven methods for dyslexic learners?</span>
               <Plus className="h-5 w-5 shrink-0 text-tobey-orange transition-transform duration-300 group-data-[state=open]:rotate-45" />
             </AccordionTrigger>
             <AccordionContent className="text-base text-gray-600 pt-2 transition-all duration-300 data-[state=open]:animate-fade-in">
@@ -43,8 +43,8 @@ const FAQ = () => {
           </AccordionItem>
 
           <AccordionItem value="item-3" className="bg-tobey-blue/20 rounded-2xl p-4 border-none shadow-sm transition-all duration-300 hover:shadow-md">
-            <AccordionTrigger className="text-lg font-bold text-tobey-text hover:text-tobey-orange transition-colors group flex justify-between w-full text-left [&>svg]:hidden">
-              What age group is Tobey's Tutor best for?
+            <AccordionTrigger className="text-lg font-bold text-tobey-text hover:text-tobey-orange transition-colors group flex justify-between w-full text-left">
+              <span>What age group is Tobey's Tutor best for?</span>
               <Plus className="h-5 w-5 shrink-0 text-tobey-orange transition-transform duration-300 group-data-[state=open]:rotate-45" />
             </AccordionTrigger>
             <AccordionContent className="text-base text-gray-600 pt-2 transition-all duration-300 data-[state=open]:animate-fade-in">
@@ -55,8 +55,8 @@ const FAQ = () => {
           </AccordionItem>
 
           <AccordionItem value="item-4" className="bg-tobey-blue/20 rounded-2xl p-4 border-none shadow-sm transition-all duration-300 hover:shadow-md">
-            <AccordionTrigger className="text-lg font-bold text-tobey-text hover:text-tobey-orange transition-colors group flex justify-between w-full text-left [&>svg]:hidden">
-              How do I know if this will help my child with ADHD or dyslexia?
+            <AccordionTrigger className="text-lg font-bold text-tobey-text hover:text-tobey-orange transition-colors group flex justify-between w-full text-left">
+              <span>How do I know if this will help my child with ADHD or dyslexia?</span>
               <Plus className="h-5 w-5 shrink-0 text-tobey-orange transition-transform duration-300 group-data-[state=open]:rotate-45" />
             </AccordionTrigger>
             <AccordionContent className="text-base text-gray-600 pt-2 transition-all duration-300 data-[state=open]:animate-fade-in">
@@ -67,8 +67,8 @@ const FAQ = () => {
           </AccordionItem>
 
           <AccordionItem value="item-5" className="bg-tobey-blue/20 rounded-2xl p-4 border-none shadow-sm transition-all duration-300 hover:shadow-md">
-            <AccordionTrigger className="text-lg font-bold text-tobey-text hover:text-tobey-orange transition-colors group flex justify-between w-full text-left [&>svg]:hidden">
-              What happens after I reserve a beta spot for $1?
+            <AccordionTrigger className="text-lg font-bold text-tobey-text hover:text-tobey-orange transition-colors group flex justify-between w-full text-left">
+              <span>What happens after I reserve a beta spot for $1?</span>
               <Plus className="h-5 w-5 shrink-0 text-tobey-orange transition-transform duration-300 group-data-[state=open]:rotate-45" />
             </AccordionTrigger>
             <AccordionContent className="text-base text-gray-600 pt-2 transition-all duration-300 data-[state=open]:animate-fade-in">
