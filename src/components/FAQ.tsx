@@ -18,7 +18,7 @@ const FAQ = () => {
         <Accordion type="single" collapsible className="space-y-4">
           <AccordionItem value="item-1" className="bg-tobey-blue/20 rounded-2xl p-4 border-none shadow-sm transition-all duration-300 hover:shadow-md">
             <AccordionTrigger className="text-lg font-semibold text-tobey-text hover:text-tobey-orange transition-colors group flex justify-between w-full text-left">
-              What makes Tobey's Tutor different from other online tutoring programs for dyslexia and ADHD?
+              What makes Tobey's Tutor different from other online tutoring programs?
               <Plus className="h-5 w-5 shrink-0 text-tobey-orange transition-transform duration-300 group-data-[state=open]:rotate-45" />
             </AccordionTrigger>
             <AccordionContent className="text-base text-gray-600 pt-2 transition-all duration-300 data-[state=open]:animate-fade-in">
