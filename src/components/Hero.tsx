@@ -49,7 +49,7 @@ const Hero = () => {
                 variant="outline" 
                 className="border-tobey-orange text-tobey-orange hover:bg-tobey-orange/10"
               >
-                Join the Beta
+                Join the Beta for $1
               </Button>
             </div>
           </div>
