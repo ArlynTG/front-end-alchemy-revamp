@@ -1,9 +1,11 @@
+
 import React, { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useToast } from "@/hooks/use-toast";
 import { Link } from "react-router-dom";
 import Navbar from "@/components/Navbar";
+import { Helmet } from "react-helmet-async";
 
 const StudentLogin = () => {
   const [username, setUsername] = useState("");
@@ -27,6 +29,13 @@ const StudentLogin = () => {
 
   return (
     <div className="flex flex-col min-h-screen">
+      <Helmet>
+        <title>Tobey's Tutor: Student Login | AI Learning Assistant</title>
+        <meta name="description" content="AI tutoring transforms learning for bright kids with dyslexia and ADHD. Our evidence-based approach celebrates neurodiversity while unlocking academic potential." />
+        <meta property="og:title" content="Tobey's Tutor: Student Login | AI Learning Assistant" />
+        <meta property="og:description" content="AI tutoring transforms learning for bright kids with dyslexia and ADHD. Our evidence-based approach celebrates neurodiversity while unlocking academic potential." />
+        <meta property="og:type" content="website" />
+      </Helmet>
       <Navbar />
       <div className="container max-w-md mx-auto py-16 px-4 sm:px-0 flex-grow relative">
         {/* Overlay */}

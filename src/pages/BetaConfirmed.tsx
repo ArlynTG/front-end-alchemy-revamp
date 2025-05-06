@@ -3,6 +3,7 @@ import { useNavigate, Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Check, Calendar } from "lucide-react";
 import { useEffect, useState } from "react";
+import { Helmet } from "react-helmet-async";
 
 const BetaConfirmed = () => {
   const navigate = useNavigate();
@@ -33,6 +34,13 @@ const BetaConfirmed = () => {
 
   return (
     <div className="min-h-screen flex flex-col items-center justify-center bg-gray-50 px-4">
+      <Helmet>
+        <title>Tobey's Tutor: Beta Confirmed | AI Learning Assistant</title>
+        <meta name="description" content="AI tutoring transforms learning for bright kids with dyslexia and ADHD. Our evidence-based approach celebrates neurodiversity while unlocking academic potential." />
+        <meta property="og:title" content="Tobey's Tutor: Beta Confirmed | AI Learning Assistant" />
+        <meta property="og:description" content="AI tutoring transforms learning for bright kids with dyslexia and ADHD. Our evidence-based approach celebrates neurodiversity while unlocking academic potential." />
+        <meta property="og:type" content="website" />
+      </Helmet>
       <div className="bg-white rounded-2xl shadow-md p-8 max-w-md w-full text-center">
         <div className="mb-6 flex flex-col items-center">
           <div className="bg-green-100 p-3 rounded-full mb-4">
