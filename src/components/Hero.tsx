@@ -15,12 +15,12 @@ const Hero = () => {
           <div className="order-1 md:order-1 animate-fade-in opacity-0" style={{ animationDelay: '200ms', animationFillMode: 'forwards' }}>
             <picture>
               <source 
-                srcSet="/lovable-uploads/5c944656-8d44-4a30-a3a5-56c23eed1a20.png"
+                srcSet="/lovable-uploads/45a8e10f-2156-4234-acf6-9e332b29b756.png"
                 type="image/webp"
               />
               <img 
-                src="/lovable-uploads/5c944656-8d44-4a30-a3a5-56c23eed1a20.png" 
-                alt="Diverse group of students collaborating with laptops in a classroom setting" 
+                src="/lovable-uploads/45a8e10f-2156-4234-acf6-9e332b29b756.png" 
+                alt="Child with curly hair using a tablet in a bright, plant-filled home environment" 
                 className="rounded-xl shadow-lg max-w-full h-auto object-cover hover:shadow-xl transition-shadow duration-300"
                 width="800"
                 height="600"
