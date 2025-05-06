@@ -1,3 +1,4 @@
+
 import React from "react";
 import { Mail } from "lucide-react";
 
@@ -39,11 +40,24 @@ const Contact = ({ id }: ContactProps) => {
           {/* Right Column with Image */}
           <div className="w-full md:w-1/2 flex justify-center md:justify-end">
             <div className="max-w-md w-full">
-              <img 
-                src="/lovable-uploads/f2c71f68-209f-47d8-9df7-25bc9297ae3f.png" 
-                alt="Students collaborating on laptops" 
-                className="w-full h-auto rounded-xl object-cover shadow-lg"
-              />
+              <picture>
+                <source 
+                  srcSet="/lovable-uploads/f2c71f68-209f-47d8-9df7-25bc9297ae3f.webp" 
+                  type="image/webp"
+                />
+                <source 
+                  srcSet="/lovable-uploads/f2c71f68-209f-47d8-9df7-25bc9297ae3f.png" 
+                  type="image/png"
+                />
+                <img 
+                  src="/lovable-uploads/f2c71f68-209f-47d8-9df7-25bc9297ae3f.png" 
+                  alt="Students collaborating on laptops" 
+                  className="w-full h-auto rounded-xl object-cover shadow-lg"
+                  width="500"
+                  height="350"
+                  loading="lazy"
+                />
+              </picture>
             </div>
           </div>
         </div>

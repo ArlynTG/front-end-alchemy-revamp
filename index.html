@@ -21,6 +21,9 @@
     <!-- Added canonical tag to prevent duplicate indexing -->
     <link rel="canonical" href="https://www.tobeystutor.com/" />
     
+    <!-- Add browser caching for resources -->
+    <meta http-equiv="Cache-Control" content="max-age=86400" />
+    
     <!-- Open Graph / Facebook -->
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://tobeys-tutor.com/">
@@ -110,6 +113,11 @@
     }
     </script>
     
+    <!-- Load critical CSS first to avoid render-blocking -->
+    <link rel="preload" href="/src/index.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+    <noscript><link rel="stylesheet" href="/src/index.css"></noscript>
+    
+    <!-- Defer non-critical scripts -->
     <script async src="https://js.stripe.com/v3/buy-button.js"></script>
   </head>
   <body>
