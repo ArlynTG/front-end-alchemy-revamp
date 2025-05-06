@@ -31,6 +31,23 @@ const DemoV5 = () => {
             </p>
             
             <div className="max-w-3xl mx-auto animate-fade-in opacity-0" style={{ animationDelay: '800ms', animationFillMode: 'forwards' }}>
+              <div className="mb-8 flex justify-center">
+                <picture>
+                  <source 
+                    srcSet="/lovable-uploads/1517c89f-a6ee-4efd-b19f-ad0412cdff64.png" 
+                    type="image/webp"
+                  />
+                  <img 
+                    src="/lovable-uploads/1517c89f-a6ee-4efd-b19f-ad0412cdff64.png"
+                    alt="Child with curly hair using a tablet in a comfortable home environment" 
+                    className="rounded-xl shadow-lg max-w-xs md:max-w-sm h-auto"
+                    width="500"
+                    height="600"
+                    loading="lazy"
+                  />
+                </picture>
+              </div>
+              
               <Card className="shadow-xl rounded-xl border border-gray-200/50 backdrop-blur-sm bg-gradient-to-br from-white to-tobey-peach/30 hover:shadow-2xl transition-all duration-300">
                 <div className="flex justify-center items-center p-4">
                   <iframe 

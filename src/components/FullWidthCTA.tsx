@@ -29,11 +29,20 @@ const FullWidthCTA = () => {
           
           <div className="md:w-1/2 flex justify-center animate-fade-in opacity-0" style={{ animationDelay: '800ms', animationFillMode: 'forwards' }}>
             <div className="overflow-hidden rounded-lg shadow-lg max-w-md hover:shadow-xl transition-shadow duration-300">
-              <img 
-                src="/lovable-uploads/1b86da3b-ff93-415c-8e19-83faac71e21f.png" 
-                alt="Parent and child using Tobey AI Tutor" 
-                className="w-full h-auto object-cover transform transition-transform duration-300 hover:scale-105"
-              />
+              <picture>
+                <source 
+                  srcSet="/lovable-uploads/db5788fb-881f-44f2-809d-a02ab6acee5c.png"
+                  type="image/webp"
+                />
+                <img 
+                  src="/lovable-uploads/db5788fb-881f-44f2-809d-a02ab6acee5c.png" 
+                  alt="Parent and child working together on a laptop" 
+                  className="w-full h-auto object-cover transform transition-transform duration-300 hover:scale-105"
+                  width="600"
+                  height="450"
+                  loading="lazy"
+                />
+              </picture>
             </div>
           </div>
         </div>

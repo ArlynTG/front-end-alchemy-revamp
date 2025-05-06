@@ -13,11 +13,20 @@ const Hero = () => {
       <div className="container relative">
         <div className="grid md:grid-cols-2 gap-10 items-center">
           <div className="order-1 md:order-1 animate-fade-in opacity-0" style={{ animationDelay: '200ms', animationFillMode: 'forwards' }}>
-            <img 
-              src="/lovable-uploads/6bc5b168-2aed-4e98-bf32-1eb71ed74d5b.png" 
-              alt="Student using Tobey's Tutor" 
-              className="rounded-xl shadow-lg max-w-full h-auto object-cover hover:shadow-xl transition-shadow duration-300"
-            />
+            <picture>
+              <source 
+                srcSet="/lovable-uploads/5c944656-8d44-4a30-a3a5-56c23eed1a20.png"
+                type="image/webp"
+              />
+              <img 
+                src="/lovable-uploads/5c944656-8d44-4a30-a3a5-56c23eed1a20.png" 
+                alt="Diverse group of students collaborating with laptops in a classroom setting" 
+                className="rounded-xl shadow-lg max-w-full h-auto object-cover hover:shadow-xl transition-shadow duration-300"
+                width="800"
+                height="600"
+                loading="eager"
+              />
+            </picture>
           </div>
           <div className="order-2 md:order-2">
             <h1 className="text-5xl font-bold mb-4 text-tobey-orange animate-fade-in opacity-0" style={{ animationDelay: '400ms', animationFillMode: 'forwards' }}>
