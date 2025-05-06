@@ -10,10 +10,10 @@ const DemoV5 = () => {
   return (
     <div className="flex flex-col min-h-screen bg-gradient-to-br from-white to-tobey-peach/30">
       <Helmet>
-        <title>Tobey's Tutor Demo V5 | Try Our Latest Version</title>
-        <meta name="description" content="Experience the latest version of Tobey's Tutor - Our AI tutor specially designed for bright kids with dyslexia, ADHD, and related learning differences." />
-        <meta property="og:title" content="Try Tobey's Tutor Demo V5" />
-        <meta property="og:description" content="Experience our latest AI tutor designed for bright kids with learning differences like dyslexia and ADHD." />
+        <title>Tobey's Tutor: AI Learning Assistant for Dyslexia & ADHD | Demo</title>
+        <meta name="description" content="Try Tobey's Tutor, the personalized AI assistant that helps children with dyslexia and ADHD unlock their learning potential through adaptive, evidence-based support. Demo available." />
+        <meta property="og:title" content="Tobey's Tutor: AI Learning Assistant for Dyslexia & ADHD | Demo" />
+        <meta property="og:description" content="Try Tobey's Tutor, the personalized AI assistant that helps children with dyslexia and ADHD unlock their learning potential through adaptive, evidence-based support. Demo available." />
         <meta property="og:type" content="website" />
         <link rel="preconnect" href="https://tutor-assistant-arlyn11.replit.app/" />
       </Helmet>
