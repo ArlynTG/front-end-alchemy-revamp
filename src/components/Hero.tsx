@@ -29,7 +29,7 @@ const Hero = () => {
                 width="800"
                 height="600"
                 loading="eager"
-                fetchpriority="high"
+                fetchPriority="high"
               />
             </picture>
           </div>
