@@ -47,6 +47,16 @@ const FAQ = () => {
 
           <AccordionItem value="item-4" className="bg-tobey-blue/20 rounded-2xl p-4 border-none shadow-sm transition-all duration-300 hover:shadow-md">
             <AccordionTrigger className="text-lg font-bold text-tobey-text hover:text-tobey-orange transition-colors group flex justify-between w-full text-left">
+              <span>How does Tobey's Tutor use assistive technology like text-to-speech and speech-to-text for dyslexic students?</span>
+              <span className="text-orange-500 text-xl transform transition-transform duration-300 group-data-[state=open]:rotate-45">+</span>
+            </AccordionTrigger>
+            <AccordionContent className="text-base text-gray-600 pt-2 transition-all duration-300 data-[state=open]:animate-fade-in">
+              Tobey's Tutor integrates powerful assistive technologies that remove barriers for children who struggle with typing and reading text. Our built-in text-to-speech functionality allows students with dyslexia and ADHD to hear instructions, lesson content, and their own writing read aloud—activating auditory learning pathways that are often stronger in dyslexic learners. The speech-to-text capabilities enable students with learning differences to express their ideas verbally and see them appear as text, bypassing the frustration many experience when trying to type their thoughts. These digital accommodations aren't just conveniences—they're essential tools that level the playing field, allowing bright minds to demonstrate their true understanding without being limited by reading or writing challenges. By providing these assistive technologies directly within our adaptive learning platform, we help students develop self-advocacy skills around requesting similar accommodations in classroom settings.
+            </AccordionContent>
+          </AccordionItem>
+
+          <AccordionItem value="item-5" className="bg-tobey-blue/20 rounded-2xl p-4 border-none shadow-sm transition-all duration-300 hover:shadow-md">
+            <AccordionTrigger className="text-lg font-bold text-tobey-text hover:text-tobey-orange transition-colors group flex justify-between w-full text-left">
               <span>How can I tell if Tobey's Tutor will help my child struggling with ADHD or dyslexia symptoms?</span>
               <span className="text-orange-500 text-xl transform transition-transform duration-300 group-data-[state=open]:rotate-45">+</span>
             </AccordionTrigger>
@@ -55,7 +65,7 @@ const FAQ = () => {
             </AccordionContent>
           </AccordionItem>
 
-          <AccordionItem value="item-5" className="bg-tobey-blue/20 rounded-2xl p-4 border-none shadow-sm transition-all duration-300 hover:shadow-md">
+          <AccordionItem value="item-6" className="bg-tobey-blue/20 rounded-2xl p-4 border-none shadow-sm transition-all duration-300 hover:shadow-md">
             <AccordionTrigger className="text-lg font-bold text-tobey-text hover:text-tobey-orange transition-colors group flex justify-between w-full text-left">
               <span>What happens after I reserve a beta spot for Tobey's Tutor dyslexia and ADHD learning support?</span>
               <span className="text-orange-500 text-xl transform transition-transform duration-300 group-data-[state=open]:rotate-45">+</span>
