@@ -7,6 +7,9 @@ import { Link } from "react-router-dom";
 const FullWidthCTA = () => {
   const [imageError, setImageError] = useState(false);
   
+  // Move console.log outside the JSX
+  console.log("CTA image path: /lovable-uploads/db5788fb-881f-44f2-809d-a02ab6acee5c.png");
+  
   return (
     <section className="py-16 bg-gradient-to-r from-tobey-blue to-soft-purple text-tobey-text">
       <div className="container">
@@ -56,7 +59,7 @@ const FullWidthCTA = () => {
                   />
                 </picture>
               )}
-              {console.log("CTA image path: /lovable-uploads/db5788fb-881f-44f2-809d-a02ab6acee5c.png")}
+              {/* Remove console.log from JSX */}
             </div>
           </div>
         </div>

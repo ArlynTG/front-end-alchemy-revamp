@@ -9,6 +9,9 @@ const Hero = () => {
   const { openEarlyAdopterModal } = usePricing();
   const [imageError, setImageError] = useState(false);
   
+  // Move console.log outside the JSX
+  console.log("Image path: /lovable-uploads/45a8e10f-2156-4234-acf6-9e332b29b756.png");
+  
   return (
     <section className="py-16 md:py-24">
       <div className="container relative">
@@ -41,8 +44,7 @@ const Hero = () => {
               </picture>
             )}
             <div className="mt-2 text-xs text-gray-500 text-center">
-              {/* Add a console log to help debug image loading */}
-              {console.log("Image path: /lovable-uploads/45a8e10f-2156-4234-acf6-9e332b29b756.png")}
+              {/* Remove console.log from JSX */}
             </div>
           </div>
           <div className="order-2 md:order-2">

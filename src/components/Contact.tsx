@@ -9,6 +9,9 @@ interface ContactProps {
 const Contact = ({ id }: ContactProps) => {
   const [imageError, setImageError] = useState(false);
   
+  // Move console.log outside of JSX
+  console.log("Contact image path: /lovable-uploads/f2c71f68-209f-47d8-9df7-25bc9297ae3f.png");
+  
   return (
     <section id={id || "contact"} className="py-16 md:py-24 bg-white">
       <div className="container">
@@ -67,7 +70,7 @@ const Contact = ({ id }: ContactProps) => {
                   />
                 </picture>
               )}
-              {console.log("Contact image path: /lovable-uploads/f2c71f68-209f-47d8-9df7-25bc9297ae3f.png")}
+              {/* Remove console.log from JSX */}
             </div>
           </div>
         </div>
