@@ -15,17 +15,36 @@ root.render(
   </HelmetProvider>
 );
 
-// Register service worker for asset caching
+// Register service worker for asset caching with improved error handling and rollback capability
 if ('serviceWorker' in navigator) {
   window.addEventListener('load', () => {
-    navigator.serviceWorker.register('/sw.js')
+    const swUrl = '/sw.js';
+    
+    // Track the current service worker for potential rollback
+    let currentSW: ServiceWorker | null = null;
+    
+    // Function to check for service worker updates
+    const checkForUpdates = (registration: ServiceWorkerRegistration) => {
+      registration.update()
+        .then(() => {
+          console.log('Checked for service worker updates');
+        })
+        .catch(error => {
+          console.warn('Service worker update check failed:', error);
+        });
+    };
+    
+    // Register the service worker
+    navigator.serviceWorker.register(swUrl)
       .then(registration => {
         console.log('ServiceWorker registration successful with scope:', registration.scope);
         
+        // Store reference to current service worker
+        currentSW = registration.active;
+        
         // Check for updates every hour
         setInterval(() => {
-          registration.update();
-          console.log('Checking for service worker updates');
+          checkForUpdates(registration);
         }, 60 * 60 * 1000);
         
         // Handle updates
@@ -36,12 +55,50 @@ if ('serviceWorker' in navigator) {
           newWorker?.addEventListener('statechange', () => {
             if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
               console.log('New content available, refresh to update');
-              if (confirm('New content is available. Reload to update?')) {
+              
+              const updateNotification = document.createElement('div');
+              updateNotification.style.position = 'fixed';
+              updateNotification.style.bottom = '20px';
+              updateNotification.style.right = '20px';
+              updateNotification.style.backgroundColor = '#4CAF50';
+              updateNotification.style.color = 'white';
+              updateNotification.style.padding = '15px';
+              updateNotification.style.borderRadius = '5px';
+              updateNotification.style.zIndex = '9999';
+              updateNotification.style.boxShadow = '0 2px 5px rgba(0,0,0,0.3)';
+              updateNotification.innerHTML = `
+                New content is available! 
+                <button id="update-btn" style="background: white; color: #4CAF50; border: none; margin-left: 10px; padding: 5px 10px; cursor: pointer; border-radius: 3px;">
+                  Update Now
+                </button>
+              `;
+              
+              document.body.appendChild(updateNotification);
+              
+              document.getElementById('update-btn')?.addEventListener('click', () => {
                 window.location.reload();
-              }
+              });
             }
           });
         });
+        
+        // Add rollback capability
+        window.rollbackServiceWorker = () => {
+          if (registration.active) {
+            // Send rollback message to SW
+            navigator.serviceWorker.controller?.postMessage({
+              type: 'ROLLBACK'
+            });
+            
+            // Reload the page to apply rollback
+            setTimeout(() => {
+              window.location.reload();
+            }, 1000);
+            
+            return true;
+          }
+          return false;
+        };
       })
       .catch(error => {
         console.error('Service worker registration failed:', error);
@@ -56,7 +113,33 @@ if ('serviceWorker' in navigator) {
       });
     }
   });
+  
+  // Add service worker status check to window object for debugging
+  window.checkServiceWorkerStatus = () => {
+    return navigator.serviceWorker.getRegistration()
+      .then(registration => {
+        if (!registration) {
+          return { status: 'not-registered' };
+        }
+        
+        return {
+          status: 'registered',
+          scope: registration.scope,
+          active: !!registration.active,
+          installing: !!registration.installing,
+          waiting: !!registration.waiting
+        };
+      });
+  };
 }
 
 // Add a timestamp to force cache-busting
 console.log(`App initialized at: ${new Date().toISOString()}, Build: ${import.meta.env.VITE_BUILD_TIMESTAMP || 'development'}`);
+
+// Add TypeScript interface for window object
+declare global {
+  interface Window {
+    rollbackServiceWorker: () => boolean;
+    checkServiceWorkerStatus: () => Promise<any>;
+  }
+}

@@ -1,48 +1,108 @@
 
 // Service worker for caching assets and improving offline capabilities
-const CACHE_NAME = 'tobeys-tutor-cache-v2';
+const CACHE_NAME = 'tobeys-tutor-cache-v3'; // Increment version to ensure clean update
+const PREVIOUS_CACHE_NAME = 'tobeys-tutor-cache-v2'; // Keep track of previous cache for rollback
 const BUILD_TIMESTAMP = new Date().toISOString();
+const VERSION = '1.1.0'; // For tracking versions
 
-// Assets to cache on install
+// Assets to cache on install - critical path resources
 const STATIC_ASSETS = [
   '/',
   '/index.html',
   '/favicon.ico',
+  // Add other critical static assets
 ];
+
+// Additional assets to cache after install
+const SECONDARY_ASSETS = [
+  // CSS files
+  // Font files
+  // Common images
+];
+
+// Log function for easier debugging and maintenance
+const log = (message) => {
+  console.log(`[ServiceWorker ${VERSION}] ${message}`);
+};
 
 // Install event - cache critical assets
 self.addEventListener('install', (event) => {
-  console.log('[ServiceWorker] Installing new version:', BUILD_TIMESTAMP);
+  log(`Installing new version: ${BUILD_TIMESTAMP}`);
   event.waitUntil(
     caches.open(CACHE_NAME)
       .then((cache) => {
+        log('Caching critical static assets');
         return cache.addAll(STATIC_ASSETS);
       })
-      .then(() => self.skipWaiting())
+      .then(() => {
+        log('Installation complete, waiting to activate');
+        return self.skipWaiting();
+      })
+      .catch(error => {
+        log(`Installation failed: ${error}`);
+        // Still continue to activate, just with incomplete cache
+        return self.skipWaiting();
+      })
   );
 });
 
 // Activate event - clean up old caches and take control
 self.addEventListener('activate', (event) => {
-  console.log('[ServiceWorker] Activating new version');
+  log('Activating new service worker version');
   event.waitUntil(
     caches.keys().then((cacheNames) => {
       return Promise.all(
         cacheNames.map((cacheName) => {
-          if (cacheName !== CACHE_NAME) {
-            console.log('[ServiceWorker] Deleting old cache:', cacheName);
+          // Don't delete the previous cache immediately to allow for rollback
+          if (cacheName !== CACHE_NAME && cacheName !== PREVIOUS_CACHE_NAME) {
+            log(`Deleting old cache: ${cacheName}`);
             return caches.delete(cacheName);
           }
         })
       );
     }).then(() => {
-      console.log('[ServiceWorker] Claiming clients');
+      // After two weeks, clean up the previous cache version
+      setTimeout(() => {
+        caches.delete(PREVIOUS_CACHE_NAME)
+          .then(() => log(`Deleted rollback cache ${PREVIOUS_CACHE_NAME} after delay`));
+      }, 14 * 24 * 60 * 60 * 1000);
+      
+      log('Claiming clients');
       return self.clients.claim();
     })
   );
+  
+  // After activation, cache secondary assets in the background
+  self.clients.matchAll().then(clients => {
+    if (clients.length > 0) {
+      // Only cache secondary resources if there are active clients
+      caches.open(CACHE_NAME).then(cache => {
+        cache.addAll(SECONDARY_ASSETS)
+          .then(() => log('Background caching of secondary assets complete'))
+          .catch(error => log(`Background caching error: ${error}`));
+      });
+    }
+  });
 });
 
-// Fetch event - serve from network first, fallback to cache
+// Helper function to determine if request should use cache-first strategy
+const shouldUseCacheFirst = (request) => {
+  const url = new URL(request.url);
+  
+  // Static assets should be cache-first
+  if (STATIC_ASSETS.some(asset => request.url.endsWith(asset))) {
+    return true;
+  }
+  
+  // Cache-first for common file extensions
+  if (/\.(css|js|woff2|png|jpg|jpeg|svg|webp|ico)$/i.test(url.pathname)) {
+    return true;
+  }
+  
+  return false;
+};
+
+// Fetch event with improved strategies
 self.addEventListener('fetch', (event) => {
   // Skip non-GET requests
   if (event.request.method !== 'GET') return;
@@ -50,12 +110,30 @@ self.addEventListener('fetch', (event) => {
   // Skip API calls
   if (event.request.url.includes('/api/')) return;
   
+  // Skip third-party requests
+  const url = new URL(event.request.url);
+  if (url.origin !== location.origin) return;
+  
   // Handle JavaScript module imports differently to avoid caching issues
   if (event.request.url.includes('.js') && 
       (event.request.destination === 'script' || 
        event.request.mode === 'cors')) {
+    // Network-first strategy for JS files to ensure updates are applied
     event.respondWith(
       fetch(event.request)
+        .then(response => {
+          // Clone the response since it can only be consumed once
+          const responseToCache = response.clone();
+          
+          // Only cache successful responses
+          if (response.ok) {
+            caches.open(CACHE_NAME).then(cache => {
+              cache.put(event.request, responseToCache);
+            });
+          }
+          
+          return response;
+        })
         .catch(() => {
           return caches.match(event.request);
         })
@@ -63,12 +141,56 @@ self.addEventListener('fetch', (event) => {
     return;
   }
   
-  // For other assets, try network first with cache fallback
+  // For static assets, use cache-first strategy
+  if (shouldUseCacheFirst(event.request)) {
+    event.respondWith(
+      caches.match(event.request)
+        .then(cachedResponse => {
+          if (cachedResponse) {
+            // Return cached response immediately
+            
+            // Refresh cache in the background (stale-while-revalidate pattern)
+            fetch(event.request)
+              .then(networkResponse => {
+                if (networkResponse && networkResponse.ok) {
+                  caches.open(CACHE_NAME).then(cache => {
+                    cache.put(event.request, networkResponse);
+                  });
+                }
+              })
+              .catch(() => {
+                // Ignore network errors when refreshing cache
+              });
+              
+            return cachedResponse;
+          }
+          
+          // If not in cache, get from network and cache
+          return fetch(event.request)
+            .then(response => {
+              if (!response || !response.ok) {
+                return response;
+              }
+              
+              // Cache the new response
+              const responseToCache = response.clone();
+              caches.open(CACHE_NAME).then(cache => {
+                cache.put(event.request, responseToCache);
+              });
+              
+              return response;
+            });
+        })
+    );
+    return;
+  }
+  
+  // For other resources, use network-first with cache fallback
   event.respondWith(
     fetch(event.request)
       .then((response) => {
         // Don't cache non-success responses
-        if (!response || response.status !== 200) {
+        if (!response || !response.ok) {
           return response;
         }
         
@@ -108,7 +230,30 @@ self.addEventListener('fetch', (event) => {
 
 // Listen for messages from clients
 self.addEventListener('message', (event) => {
-  if (event.data && event.data.type === 'SKIP_WAITING') {
-    self.skipWaiting();
+  if (!event.data) return;
+  
+  switch (event.data.type) {
+    case 'SKIP_WAITING':
+      self.skipWaiting();
+      break;
+    case 'VERSION':
+      // Allow clients to request the current version
+      event.ports[0].postMessage({
+        version: VERSION,
+        buildTimestamp: BUILD_TIMESTAMP
+      });
+      break;
+    case 'ROLLBACK':
+      // Handle rollback request
+      log('Rollback requested');
+      // Swap cache names for rollback
+      const tempCacheName = CACHE_NAME;
+      CACHE_NAME = PREVIOUS_CACHE_NAME;
+      PREVIOUS_CACHE_NAME = tempCacheName;
+      self.skipWaiting();
+      break;
+    default:
+      // Unknown message
+      break;
   }
 });
