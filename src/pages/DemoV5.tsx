@@ -34,12 +34,8 @@ const DemoV5 = () => {
               <div className="mb-8 flex justify-center">
                 <picture>
                   <source 
-                    srcSet="/lovable-uploads/1517c89f-a6ee-4efd-b19f-ad0412cdff64.webp" 
-                    type="image/webp"
-                  />
-                  <source 
                     srcSet="/lovable-uploads/1517c89f-a6ee-4efd-b19f-ad0412cdff64.png" 
-                    type="image/png"
+                    type="image/webp"
                   />
                   <img 
                     src="/lovable-uploads/1517c89f-a6ee-4efd-b19f-ad0412cdff64.png"
@@ -58,8 +54,6 @@ const DemoV5 = () => {
                     src="https://tutor-assistant-arlyn11.replit.app/"
                     style={{width: "100%", height: "650px", border: "none"}}
                     allow="microphone; camera"
-                    title="Tobey's Tutor Demo Interface"
-                    loading="lazy"
                   />
                 </div>
               </Card>

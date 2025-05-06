@@ -31,12 +31,8 @@ const FullWidthCTA = () => {
             <div className="overflow-hidden rounded-lg shadow-lg max-w-md hover:shadow-xl transition-shadow duration-300">
               <picture>
                 <source 
-                  srcSet="/lovable-uploads/db5788fb-881f-44f2-809d-a02ab6acee5c.webp"
-                  type="image/webp"
-                />
-                <source 
                   srcSet="/lovable-uploads/db5788fb-881f-44f2-809d-a02ab6acee5c.png"
-                  type="image/png"
+                  type="image/webp"
                 />
                 <img 
                   src="/lovable-uploads/db5788fb-881f-44f2-809d-a02ab6acee5c.png" 

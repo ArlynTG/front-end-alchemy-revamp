@@ -15,12 +15,8 @@ const Hero = () => {
           <div className="order-1 md:order-1 animate-fade-in opacity-0" style={{ animationDelay: '200ms', animationFillMode: 'forwards' }}>
             <picture>
               <source 
-                srcSet="/lovable-uploads/45a8e10f-2156-4234-acf6-9e332b29b756.webp"
-                type="image/webp"
-              />
-              <source
                 srcSet="/lovable-uploads/45a8e10f-2156-4234-acf6-9e332b29b756.png"
-                type="image/png"
+                type="image/webp"
               />
               <img 
                 src="/lovable-uploads/45a8e10f-2156-4234-acf6-9e332b29b756.png" 
@@ -29,7 +25,6 @@ const Hero = () => {
                 width="800"
                 height="600"
                 loading="eager"
-                fetchpriority="high"
               />
             </picture>
           </div>

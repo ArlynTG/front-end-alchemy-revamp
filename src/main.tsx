@@ -6,21 +6,17 @@ import './index.css';
 
 // Use createRoot for React 18's concurrent features
 const container = document.getElementById("root");
-// Ensure DOM is ready before rendering to prevent layout shifts
-if (container) {
-  const root = createRoot(container);
+const root = createRoot(container!);
 
-  // Wrap app in HelmetProvider for optimized metadata management
-  root.render(
-    <HelmetProvider>
-      <App />
-    </HelmetProvider>
-  );
-}
+// Wrap app in HelmetProvider for optimized metadata management
+root.render(
+  <HelmetProvider>
+    <App />
+  </HelmetProvider>
+);
 
 // Register service worker for asset caching with improved error handling and rollback capability
 if ('serviceWorker' in navigator) {
-  // Defer service worker registration until after page load to improve initial rendering
   window.addEventListener('load', () => {
     const swUrl = '/sw.js';
     
