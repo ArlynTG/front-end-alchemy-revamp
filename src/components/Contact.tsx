@@ -1,5 +1,5 @@
 
-import React, { useState } from "react";
+import React from "react";
 import { Mail } from "lucide-react";
 
 interface ContactProps {
@@ -7,11 +7,6 @@ interface ContactProps {
 }
 
 const Contact = ({ id }: ContactProps) => {
-  const [imageError, setImageError] = useState(false);
-  
-  // Move console.log outside of JSX
-  console.log("Contact image path: /lovable-uploads/f2c71f68-209f-47d8-9df7-25bc9297ae3f.png");
-  
   return (
     <section id={id || "contact"} className="py-16 md:py-24 bg-white">
       <div className="container">
@@ -45,32 +40,24 @@ const Contact = ({ id }: ContactProps) => {
           {/* Right Column with Image */}
           <div className="w-full md:w-1/2 flex justify-center md:justify-end">
             <div className="max-w-md w-full">
-              {imageError ? (
-                <div className="bg-gray-200 rounded-xl w-full h-[300px] flex items-center justify-center text-gray-500">
-                  Image could not be loaded
-                </div>
-              ) : (
-                <picture>
-                  <source 
-                    srcSet="/lovable-uploads/f2c71f68-209f-47d8-9df7-25bc9297ae3f.webp" 
-                    type="image/webp"
-                  />
-                  <source 
-                    srcSet="/lovable-uploads/f2c71f68-209f-47d8-9df7-25bc9297ae3f.png" 
-                    type="image/png"
-                  />
-                  <img 
-                    src="/lovable-uploads/f2c71f68-209f-47d8-9df7-25bc9297ae3f.png" 
-                    alt="Students collaborating on laptops" 
-                    className="w-full h-auto rounded-xl object-cover shadow-lg"
-                    width="500"
-                    height="350"
-                    loading="lazy"
-                    onError={() => setImageError(true)}
-                  />
-                </picture>
-              )}
-              {/* Remove console.log from JSX */}
+              <picture>
+                <source 
+                  srcSet="/lovable-uploads/f2c71f68-209f-47d8-9df7-25bc9297ae3f.webp" 
+                  type="image/webp"
+                />
+                <source 
+                  srcSet="/lovable-uploads/f2c71f68-209f-47d8-9df7-25bc9297ae3f.png" 
+                  type="image/png"
+                />
+                <img 
+                  src="/lovable-uploads/f2c71f68-209f-47d8-9df7-25bc9297ae3f.png" 
+                  alt="Students collaborating on laptops" 
+                  className="w-full h-auto rounded-xl object-cover shadow-lg"
+                  width="500"
+                  height="350"
+                  loading="lazy"
+                />
+              </picture>
             </div>
           </div>
         </div>

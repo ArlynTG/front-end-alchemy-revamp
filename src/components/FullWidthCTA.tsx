@@ -1,15 +1,10 @@
 
-import React, { useState } from "react";
+import React from "react";
 import { Button } from "@/components/ui/button";
 import { ArrowRight } from "lucide-react";
 import { Link } from "react-router-dom";
 
 const FullWidthCTA = () => {
-  const [imageError, setImageError] = useState(false);
-  
-  // Move console.log outside the JSX
-  console.log("CTA image path: /lovable-uploads/db5788fb-881f-44f2-809d-a02ab6acee5c.png");
-  
   return (
     <section className="py-16 bg-gradient-to-r from-tobey-blue to-soft-purple text-tobey-text">
       <div className="container">
@@ -34,32 +29,24 @@ const FullWidthCTA = () => {
           
           <div className="md:w-1/2 flex justify-center animate-fade-in opacity-0" style={{ animationDelay: '800ms', animationFillMode: 'forwards' }}>
             <div className="overflow-hidden rounded-lg shadow-lg max-w-md hover:shadow-xl transition-shadow duration-300">
-              {imageError ? (
-                <div className="bg-gray-200 rounded-xl w-full h-[300px] flex items-center justify-center text-gray-500">
-                  Image could not be loaded
-                </div>
-              ) : (
-                <picture>
-                  <source 
-                    srcSet="/lovable-uploads/db5788fb-881f-44f2-809d-a02ab6acee5c.webp"
-                    type="image/webp"
-                  />
-                  <source 
-                    srcSet="/lovable-uploads/db5788fb-881f-44f2-809d-a02ab6acee5c.png"
-                    type="image/png"
-                  />
-                  <img 
-                    src="/lovable-uploads/db5788fb-881f-44f2-809d-a02ab6acee5c.png" 
-                    alt="Parent and child working together on a laptop" 
-                    className="w-full h-auto object-cover transform transition-transform duration-300 hover:scale-105"
-                    width="600"
-                    height="450"
-                    loading="lazy"
-                    onError={() => setImageError(true)}
-                  />
-                </picture>
-              )}
-              {/* Remove console.log from JSX */}
+              <picture>
+                <source 
+                  srcSet="/lovable-uploads/db5788fb-881f-44f2-809d-a02ab6acee5c.webp"
+                  type="image/webp"
+                />
+                <source 
+                  srcSet="/lovable-uploads/db5788fb-881f-44f2-809d-a02ab6acee5c.png"
+                  type="image/png"
+                />
+                <img 
+                  src="/lovable-uploads/db5788fb-881f-44f2-809d-a02ab6acee5c.png" 
+                  alt="Parent and child working together on a laptop" 
+                  className="w-full h-auto object-cover transform transition-transform duration-300 hover:scale-105"
+                  width="600"
+                  height="450"
+                  loading="lazy"
+                />
+              </picture>
             </div>
           </div>
         </div>
