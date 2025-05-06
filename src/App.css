@@ -78,3 +78,27 @@ img, picture, video, iframe {
   height: 100%;
   border: 0;
 }
+
+/* Ensure images are visible */
+picture {
+  display: block;
+  width: 100%;
+}
+
+picture img {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+/* Fallbacks for image loading */
+.image-fallback {
+  width: 100%;
+  min-height: 200px;
+  background-color: #f3f4f6;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #6b7280;
+  border-radius: 0.5rem;
+}

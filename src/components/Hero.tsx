@@ -1,5 +1,5 @@
 
-import React from 'react';
+import React, { useState } from 'react';
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 import { usePricing } from "@/components/Pricing";
@@ -7,31 +7,43 @@ import { Timer } from "lucide-react";
 
 const Hero = () => {
   const { openEarlyAdopterModal } = usePricing();
+  const [imageError, setImageError] = useState(false);
   
   return (
     <section className="py-16 md:py-24">
       <div className="container relative">
         <div className="grid md:grid-cols-2 gap-10 items-center">
           <div className="order-1 md:order-1 animate-fade-in opacity-0" style={{ animationDelay: '200ms', animationFillMode: 'forwards' }}>
-            <picture>
-              <source 
-                srcSet="/lovable-uploads/45a8e10f-2156-4234-acf6-9e332b29b756.webp"
-                type="image/webp"
-              />
-              <source
-                srcSet="/lovable-uploads/45a8e10f-2156-4234-acf6-9e332b29b756.png"
-                type="image/png"
-              />
-              <img 
-                src="/lovable-uploads/45a8e10f-2156-4234-acf6-9e332b29b756.png" 
-                alt="Child with curly hair using a tablet in a bright, plant-filled home environment" 
-                className="rounded-xl shadow-lg max-w-full h-auto object-cover hover:shadow-xl transition-shadow duration-300"
-                width="800"
-                height="600"
-                loading="eager"
-                fetchPriority="high"
-              />
-            </picture>
+            {imageError ? (
+              <div className="bg-gray-200 rounded-xl w-full h-[400px] flex items-center justify-center text-gray-500">
+                Image could not be loaded
+              </div>
+            ) : (
+              <picture>
+                <source 
+                  srcSet="/lovable-uploads/45a8e10f-2156-4234-acf6-9e332b29b756.webp"
+                  type="image/webp"
+                />
+                <source
+                  srcSet="/lovable-uploads/45a8e10f-2156-4234-acf6-9e332b29b756.png"
+                  type="image/png"
+                />
+                <img 
+                  src="/lovable-uploads/45a8e10f-2156-4234-acf6-9e332b29b756.png" 
+                  alt="Child with curly hair using a tablet in a bright, plant-filled home environment" 
+                  className="rounded-xl shadow-lg max-w-full h-auto object-cover hover:shadow-xl transition-shadow duration-300"
+                  width="800"
+                  height="600"
+                  loading="eager"
+                  fetchPriority="high"
+                  onError={() => setImageError(true)}
+                />
+              </picture>
+            )}
+            <div className="mt-2 text-xs text-gray-500 text-center">
+              {/* Add a console log to help debug image loading */}
+              {console.log("Image path: /lovable-uploads/45a8e10f-2156-4234-acf6-9e332b29b756.png")}
+            </div>
           </div>
           <div className="order-2 md:order-2">
             <h1 className="text-5xl font-bold mb-4 text-tobey-orange animate-fade-in opacity-0" style={{ animationDelay: '400ms', animationFillMode: 'forwards' }}>
