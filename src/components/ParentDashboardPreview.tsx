@@ -3,6 +3,7 @@ import React, { useEffect, useRef, useState } from "react";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Check } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { Link } from "react-router-dom";
 
 const ParentDashboardPreview = () => {
   const [isVisible, setIsVisible] = useState(false);
@@ -128,6 +129,13 @@ const ParentDashboardPreview = () => {
                   <p className="ml-3 text-gray-700">{feature}</p>
                 </div>
               ))}
+            </div>
+            <div className="mt-8">
+              <Link to="/parent-dashboard">
+                <Button className="bg-tobey-orange hover:bg-orange-600 text-white px-6 py-2">
+                  View Dashboard Preview
+                </Button>
+              </Link>
             </div>
           </div>
           <div 

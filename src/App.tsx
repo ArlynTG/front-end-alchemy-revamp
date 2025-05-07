@@ -37,14 +37,11 @@ const queryClient = new QueryClient({
   },
 });
 
-// Password protection removed from the app
-
 const App = () => (
   <QueryClientProvider client={queryClient}>
     <TooltipProvider>
       <Toaster />
       <Sonner />
-      {/* PasswordProtection component removed here */}
       <BrowserRouter>
         <Suspense fallback={<PageLoader />}>
           <Routes>

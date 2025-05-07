@@ -48,7 +48,7 @@ const ParentDashboard = () => {
       <div className="container py-4 md:py-8">
         <h1 className="text-2xl md:text-3xl font-bold mb-3 md:mb-6">Parent Dashboard</h1>
         
-        {/* Red Banner - replacing welcome text */}
+        {/* Red Banner - ensuring it's full width */}
         <Alert className="bg-[#ea384c] border-none text-white font-medium mb-4 md:mb-8 w-full">
           <AlertDescription className="text-center text-lg md:text-xl">
             SNEAK PEAK: This is a preview of the Parent Dashboard available to Beta subscribers, June 2025

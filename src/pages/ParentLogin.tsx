@@ -40,11 +40,16 @@ const ParentLogin = () => {
       </Helmet>
       <Navbar />
       <div className="container max-w-md mx-auto py-16 px-4 sm:px-0 flex-grow relative">
-        {/* Overlay */}
-        <div className="absolute inset-0 bg-white/80 backdrop-blur-sm flex items-center justify-center z-10 rounded-lg">
+        {/* Overlay - removing the full-opacity overlay to make it more visible */}
+        <div className="absolute inset-0 bg-white/50 backdrop-blur-sm flex items-center justify-center z-10 rounded-lg">
           <div className="bg-white/90 p-6 rounded-xl shadow-lg text-center max-w-sm mx-4">
             <h3 className="text-xl font-semibold text-gray-800 mb-2">Coming Soon!</h3>
             <p className="text-gray-600">This feature will be live when we launch in June 2025</p>
+            <div className="mt-4">
+              <Link to="/parent-dashboard" className="inline-flex items-center justify-center text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-tobey-orange text-white hover:bg-tobey-orange/90 h-9 rounded-md px-4 py-2">
+                View Dashboard Preview
+              </Link>
+            </div>
           </div>
         </div>
 
