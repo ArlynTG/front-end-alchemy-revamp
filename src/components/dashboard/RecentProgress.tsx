@@ -36,11 +36,6 @@ const RecentProgress: React.FC = () => {
     });
   };
 
-  const handleDownload = (report: ProgressReport) => {
-    // In a real app, this would trigger a download of the report
-    console.log(`Downloading report: ${report.name}`);
-  };
-
   return (
     <Card className="mt-8">
       <CardHeader>
@@ -67,9 +62,9 @@ const RecentProgress: React.FC = () => {
                 <TableCell className="text-right">
                   <Button 
                     variant="outline" 
-                    size="sm" 
-                    className="transition-all hover:text-green-600 hover:border-green-600"
-                    onClick={() => handleDownload(report)}
+                    size="sm"
+                    disabled
+                    className="text-gray-400 border-gray-300"
                   >
                     <Download className="h-4 w-4 mr-1" />
                     Download
@@ -79,6 +74,7 @@ const RecentProgress: React.FC = () => {
             ))}
           </TableBody>
         </Table>
+        <p className="text-xs text-gray-500 mt-4 text-center">This is a preview. Download functionality will be available to Beta subscribers.</p>
       </CardContent>
     </Card>
   );
