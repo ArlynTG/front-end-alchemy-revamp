@@ -1,5 +1,5 @@
 
-import React from "react";
+import React, { useEffect } from "react";
 import Navbar from "@/components/Navbar";
 import StudentStats from "@/components/dashboard/StudentStats";
 import AchievementBadges from "@/components/dashboard/AchievementBadges";
@@ -36,6 +36,11 @@ const ParentDashboard = () => {
     { name: "Reading", level: "Gold" },
     { name: "Problem Solving", level: "Gold" },
   ];
+  
+  // Add an effect to log when the component mounts
+  useEffect(() => {
+    console.log("ParentDashboard component mounted");
+  }, []);
 
   return (
     <div className="min-h-screen bg-gray-50">
