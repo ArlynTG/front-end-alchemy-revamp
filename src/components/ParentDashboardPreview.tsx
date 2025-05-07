@@ -3,7 +3,7 @@ import React, { useEffect, useRef, useState } from "react";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Check } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 const ParentDashboardPreview = () => {
   const [isVisible, setIsVisible] = useState(false);
@@ -11,6 +11,7 @@ const ParentDashboardPreview = () => {
   const scrollAreaRef = useRef<HTMLDivElement>(null);
   const imageRef = useRef<HTMLImageElement>(null);
   const scrollAnimationRef = useRef<number | null>(null);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -93,6 +94,10 @@ const ParentDashboardPreview = () => {
     };
   }, [isVisible]);
 
+  const handleImageClick = () => {
+    navigate('/parent-dashboard');
+  };
+
   return (
     <section 
       ref={sectionRef}
@@ -100,13 +105,15 @@ const ParentDashboardPreview = () => {
     >
       <div className="container mx-auto">
         <div className="mb-10">
-          <Button 
-            variant="outline"
-            size="sm"
-            className="bg-tobey-orange text-white hover:bg-orange-600 border-none text-xs font-medium uppercase tracking-wider px-4 py-1 h-auto rounded-full"
-          >
-            Parent Dashboard
-          </Button>
+          <Link to="/parent-dashboard">
+            <Button 
+              variant="outline"
+              size="sm"
+              className="bg-tobey-orange text-white hover:bg-orange-600 border-none text-xs font-medium uppercase tracking-wider px-4 py-1 h-auto rounded-full"
+            >
+              Parent Dashboard
+            </Button>
+          </Link>
         </div>
         <div className="grid md:grid-cols-2 gap-10 items-center">
           <div className="order-2 md:order-1">
@@ -145,6 +152,11 @@ const ParentDashboardPreview = () => {
                 : "opacity-0 translate-y-32 scale-95"
             }`}
             ref={scrollAreaRef}
+            onClick={handleImageClick}
+            role="button"
+            tabIndex={0}
+            aria-label="View parent dashboard"
+            style={{ cursor: 'pointer' }}
           >
             <div className="relative">
               <div className={`absolute inset-0 bg-gradient-to-b from-purple-500/30 to-transparent ${
