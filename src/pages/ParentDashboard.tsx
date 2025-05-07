@@ -8,6 +8,7 @@ import NotificationSettings from "@/components/dashboard/NotificationSettings";
 import ChatSection from "@/components/dashboard/ChatSection";
 import RecentProgress from "@/components/dashboard/RecentProgress";
 import { useIsMobile } from "@/hooks/use-mobile";
+import { Alert, AlertDescription } from "@/components/ui/alert";
 
 const ParentDashboard = () => {
   // Sample data - in a real app, this would come from an API
@@ -41,7 +42,13 @@ const ParentDashboard = () => {
       <Navbar />
       <div className="container py-4 md:py-8">
         <h1 className="text-2xl md:text-3xl font-bold mb-3 md:mb-6">Parent Dashboard</h1>
-        <p className="text-lg md:text-xl text-gray-700 mb-4 md:mb-8">Welcome back! Here's how {studentData.name} is progressing</p>
+        
+        {/* Red Banner - replacing welcome text */}
+        <Alert className="bg-[#ea384c] border-none text-white font-medium mb-4 md:mb-8 w-full">
+          <AlertDescription className="text-center text-lg md:text-xl">
+            SNEAK PEAK: This is a preview of the Parent Dashboard available to Beta subscribers, June 2025
+          </AlertDescription>
+        </Alert>
         
         {/* Student Stats Section */}
         <StudentStats studentData={studentData} />
