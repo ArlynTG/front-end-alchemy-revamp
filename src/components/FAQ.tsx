@@ -57,7 +57,7 @@ const FAQ = () => {
 
           <AccordionItem value="item-5" className="bg-tobey-blue/20 rounded-2xl p-4 border-none shadow-sm transition-all duration-300 hover:shadow-md">
             <AccordionTrigger className="text-lg font-bold text-tobey-text hover:text-tobey-orange transition-colors group flex justify-between w-full text-left">
-              <span>How can I tell if Tobey's Tutor will help my child struggling with ADHD or dyslexia symptoms?</span>
+              <span>How can I tell if Tobey's Tutor will help my child struggling with ADHD or dyslexia?</span>
               <span className="text-orange-500 text-xl transform transition-transform duration-300 group-data-[state=open]:rotate-45">+</span>
             </AccordionTrigger>
             <AccordionContent className="text-base text-gray-600 pt-2 transition-all duration-300 data-[state=open]:animate-fade-in">

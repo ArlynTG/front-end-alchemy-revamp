@@ -113,12 +113,189 @@ export type Database = {
           },
         ]
       }
+      pedagogy_chunks: {
+        Row: {
+          age_range: string | null
+          chunk_index: number
+          chunk_text: string
+          created_at: string | null
+          document_id: string | null
+          embedding: string | null
+          id: string
+          ideal_use: string | null
+          learning_differences: string[] | null
+          tags: string[] | null
+          topic: string | null
+        }
+        Insert: {
+          age_range?: string | null
+          chunk_index: number
+          chunk_text: string
+          created_at?: string | null
+          document_id?: string | null
+          embedding?: string | null
+          id?: string
+          ideal_use?: string | null
+          learning_differences?: string[] | null
+          tags?: string[] | null
+          topic?: string | null
+        }
+        Update: {
+          age_range?: string | null
+          chunk_index?: number
+          chunk_text?: string
+          created_at?: string | null
+          document_id?: string | null
+          embedding?: string | null
+          id?: string
+          ideal_use?: string | null
+          learning_differences?: string[] | null
+          tags?: string[] | null
+          topic?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "pedagogy_chunks_document_id_fkey"
+            columns: ["document_id"]
+            isOneToOne: false
+            referencedRelation: "pedagogy_documents"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      pedagogy_documents: {
+        Row: {
+          created_at: string | null
+          description: string | null
+          document_type: string | null
+          id: string
+          source_url: string | null
+          status: string | null
+          tags: string[] | null
+          topic: string
+          updated_at: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          description?: string | null
+          document_type?: string | null
+          id?: string
+          source_url?: string | null
+          status?: string | null
+          tags?: string[] | null
+          topic: string
+          updated_at?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          description?: string | null
+          document_type?: string | null
+          id?: string
+          source_url?: string | null
+          status?: string | null
+          tags?: string[] | null
+          topic?: string
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      binary_quantize: {
+        Args: { "": string } | { "": unknown }
+        Returns: unknown
+      }
+      halfvec_avg: {
+        Args: { "": number[] }
+        Returns: unknown
+      }
+      halfvec_out: {
+        Args: { "": unknown }
+        Returns: unknown
+      }
+      halfvec_send: {
+        Args: { "": unknown }
+        Returns: string
+      }
+      halfvec_typmod_in: {
+        Args: { "": unknown[] }
+        Returns: number
+      }
+      hnsw_bit_support: {
+        Args: { "": unknown }
+        Returns: unknown
+      }
+      hnsw_halfvec_support: {
+        Args: { "": unknown }
+        Returns: unknown
+      }
+      hnsw_sparsevec_support: {
+        Args: { "": unknown }
+        Returns: unknown
+      }
+      hnswhandler: {
+        Args: { "": unknown }
+        Returns: unknown
+      }
+      ivfflat_bit_support: {
+        Args: { "": unknown }
+        Returns: unknown
+      }
+      ivfflat_halfvec_support: {
+        Args: { "": unknown }
+        Returns: unknown
+      }
+      ivfflathandler: {
+        Args: { "": unknown }
+        Returns: unknown
+      }
+      l2_norm: {
+        Args: { "": unknown } | { "": unknown }
+        Returns: number
+      }
+      l2_normalize: {
+        Args: { "": string } | { "": unknown } | { "": unknown }
+        Returns: string
+      }
+      sparsevec_out: {
+        Args: { "": unknown }
+        Returns: unknown
+      }
+      sparsevec_send: {
+        Args: { "": unknown }
+        Returns: string
+      }
+      sparsevec_typmod_in: {
+        Args: { "": unknown[] }
+        Returns: number
+      }
+      vector_avg: {
+        Args: { "": number[] }
+        Returns: string
+      }
+      vector_dims: {
+        Args: { "": string } | { "": unknown }
+        Returns: number
+      }
+      vector_norm: {
+        Args: { "": string }
+        Returns: number
+      }
+      vector_out: {
+        Args: { "": string }
+        Returns: unknown
+      }
+      vector_send: {
+        Args: { "": string }
+        Returns: string
+      }
+      vector_typmod_in: {
+        Args: { "": unknown[] }
+        Returns: number
+      }
     }
     Enums: {
       learning_difference:
