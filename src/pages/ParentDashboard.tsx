@@ -85,12 +85,12 @@ const ParentDashboard = () => {
           Parent Dashboard
         </motion.h1>
         
-        {/* Red Banner - ensuring it's full width */}
-        <Alert className="bg-[#ea384c] border-none text-white font-medium mb-4 md:mb-8 w-full">
-          <AlertDescription className="text-center text-lg md:text-xl">
+        {/* Red Banner - fixing styles to ensure it appears with the red background */}
+        <div className="w-full bg-[#ea384c] rounded-lg p-4 mb-4 md:mb-8">
+          <p className="text-center text-white font-medium text-lg md:text-xl">
             SNEAK PEAK: This is a preview of the Parent Dashboard available to Beta subscribers, June 2025
-          </AlertDescription>
-        </Alert>
+          </p>
+        </div>
         
         <motion.div
           variants={containerVariants}
