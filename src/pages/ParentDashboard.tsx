@@ -9,6 +9,7 @@ import ChatSection from "@/components/dashboard/ChatSection";
 import RecentProgress from "@/components/dashboard/RecentProgress";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { Alert, AlertDescription } from "@/components/ui/alert";
+import { motion } from "framer-motion";
 
 const ParentDashboard = () => {
   // Sample data - in a real app, this would come from an API
@@ -42,11 +43,47 @@ const ParentDashboard = () => {
     console.log("ParentDashboard component mounted");
   }, []);
 
+  // Animation variants for staggered children
+  const containerVariants = {
+    hidden: { opacity: 0 },
+    visible: {
+      opacity: 1,
+      transition: {
+        staggerChildren: 0.1
+      }
+    }
+  };
+
+  const itemVariants = {
+    hidden: { y: 20, opacity: 0 },
+    visible: {
+      y: 0,
+      opacity: 1,
+      transition: {
+        type: "spring",
+        stiffness: 100,
+        damping: 12
+      }
+    }
+  };
+
   return (
     <div className="min-h-screen bg-gray-50">
       <Navbar />
-      <div className="container py-4 md:py-8">
-        <h1 className="text-2xl md:text-3xl font-bold mb-3 md:mb-6">Parent Dashboard</h1>
+      <motion.div 
+        className="container py-4 md:py-8"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ duration: 0.5 }}
+      >
+        <motion.h1 
+          className="text-2xl md:text-3xl font-bold mb-3 md:mb-6"
+          initial={{ x: -20, opacity: 0 }}
+          animate={{ x: 0, opacity: 1 }}
+          transition={{ duration: 0.4 }}
+        >
+          Parent Dashboard
+        </motion.h1>
         
         {/* Red Banner - ensuring it's full width */}
         <Alert className="bg-[#ea384c] border-none text-white font-medium mb-4 md:mb-8 w-full">
@@ -55,28 +92,53 @@ const ParentDashboard = () => {
           </AlertDescription>
         </Alert>
         
-        {/* Student Stats Section */}
-        <StudentStats studentData={studentData} />
-        
-        {/* Achievement Badges Section */}
-        <AchievementBadges skillBadges={skillBadges} />
-        
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 md:gap-8">
-          {/* Left Section - Schedule Manager */}
-          <div className={isMobile ? "order-2" : ""}>
-            <ScheduleManager studentName={studentData.name} />
-            <RecentProgress />
-          </div>
+        <motion.div
+          variants={containerVariants}
+          initial="hidden"
+          animate="visible"
+        >
+          {/* Student Stats Section */}
+          <motion.div variants={itemVariants}>
+            <StudentStats studentData={studentData} />
+          </motion.div>
           
-          {/* Right Section - Notifications and Chat */}
-          <div className={`space-y-4 md:space-y-6 ${isMobile ? "order-1" : ""}`}>
-            <NotificationSettings />
-            <div className="h-[350px] md:h-[400px]">
-              <ChatSection />
-            </div>
+          {/* Achievement Badges Section */}
+          <motion.div variants={itemVariants}>
+            <AchievementBadges skillBadges={skillBadges} />
+          </motion.div>
+          
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 md:gap-8">
+            {/* Left Section - Schedule Manager */}
+            <motion.div 
+              className={isMobile ? "order-2" : ""}
+              variants={itemVariants}
+            >
+              <ScheduleManager studentName={studentData.name} />
+              <motion.div 
+                variants={itemVariants}
+                transition={{ delay: 0.2 }}
+              >
+                <RecentProgress />
+              </motion.div>
+            </motion.div>
+            
+            {/* Right Section - Notifications and Chat */}
+            <motion.div 
+              className={`space-y-4 md:space-y-6 ${isMobile ? "order-1" : ""}`}
+              variants={itemVariants}
+            >
+              <NotificationSettings />
+              <motion.div 
+                className="h-[350px] md:h-[400px]"
+                variants={itemVariants}
+                transition={{ delay: 0.3 }}
+              >
+                <ChatSection />
+              </motion.div>
+            </motion.div>
           </div>
-        </div>
-      </div>
+        </motion.div>
+      </motion.div>
     </div>
   );
 };
