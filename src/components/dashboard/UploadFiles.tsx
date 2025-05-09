@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Upload, FileText, X, AlertTriangle, Check } from 'lucide-react';
@@ -102,7 +101,7 @@ const UploadFiles: React.FC<UploadFilesProps> = ({ studentId }) => {
     }
   };
 
-  // Upload files to Supabase
+  // Upload files to Supabase with improved error handling and timeout
   const handleFileUpload = async (files: FileList) => {
     if (!studentId) {
       toast({
@@ -121,28 +120,32 @@ const UploadFiles: React.FC<UploadFilesProps> = ({ studentId }) => {
       const filePath = `${studentId}/${Date.now()}-${Math.random().toString(36).substring(2, 15)}.${fileExtension}`;
       
       try {
-        // Step 1: Upload file to Storage
+        console.log("Step 1: Starting file upload");
+        
+        // Upload file to Storage
         const { data: storageData, error: storageError } = await supabase
           .storage
           .from('documents')
           .upload(filePath, file);
 
         if (storageError) {
+          console.error("Storage error:", storageError);
           throw storageError;
         }
-
-        console.log("File uploaded successfully to Storage:", storageData);
-
-        // Step 2: Get the public URL
+        
+        console.log("Step 2: File uploaded successfully, getting URL");
+        
+        // Get public URL
         const { data: publicUrlData } = await supabase
           .storage
           .from('documents')
           .getPublicUrl(filePath);
 
         const fileUrl = publicUrlData.publicUrl;
-        console.log("File public URL:", fileUrl);
-
-        // Step 3: Create a record in uploads table - With enhanced error handling
+        console.log("Step 3: Got file URL:", fileUrl);
+        
+        // Create a simplified record
+        console.log("Step 4: Creating database record");
         const insertData = {
           uuid: studentId,
           file_name: file.name,
@@ -153,45 +156,58 @@ const UploadFiles: React.FC<UploadFilesProps> = ({ studentId }) => {
           uploaded_by: 'parent',
           processed: false
         };
-
-        console.log("Attempting to insert record with data:", insertData);
-
+        
+        console.log("Insert data:", JSON.stringify(insertData, null, 2));
+        
+        // Implement timeout for database operation
         try {
-          const { data: uploadRecord, error: uploadError } = await supabase
+          // Create a timeout promise that rejects after 10 seconds
+          const timeout = new Promise((_, reject) => {
+            const id = setTimeout(() => {
+              clearTimeout(id);
+              reject(new Error("Database insert timed out after 10 seconds"));
+            }, 10000);
+          });
+          
+          // Create the database insert promise
+          const dbOperation = supabase
             .from('uploads')
-            .insert(insertData)
-            .single();
-
-          if (uploadError) {
-            console.error("Supabase error inserting file record:", uploadError);
-            console.error("Error details:", JSON.stringify(uploadError, null, 2));
+            .insert(insertData);
+            
+          // Race the promises - either the operation completes or it times out
+          const result: any = await Promise.race([dbOperation, timeout]);
+          
+          // Check if we have an error from the database operation
+          if (result && result.error) {
+            console.error("Database error:", result.error);
+            console.error("Error details:", JSON.stringify(result.error, null, 2));
             toast({
               title: "Upload record failed",
-              description: uploadError.message || "Database error occurred",
+              description: result.error.message || "Database error occurred",
               variant: "destructive"
             });
-          } else {
-            console.log("Record created in uploads table:", uploadRecord);
+          } else if (result && result.data) {
+            console.log("Step 5: Database record created successfully");
             toast({
               title: "Upload successful",
-              description: `${file.name} has been uploaded and recorded.`,
+              description: `${file.name} has been uploaded.`,
               variant: "default"
             });
             
             // Refresh the file list
             fetchFiles();
           }
-        } catch (insertErr) {
-          console.error("Exception during database insert:", insertErr);
-          console.error("Insert error details:", JSON.stringify(insertErr, null, 2));
+        } catch (dbError) {
+          console.error("Database operation error:", dbError);
+          console.error("Full error details:", dbError instanceof Error ? dbError.message : JSON.stringify(dbError));
           toast({
             title: "Database operation failed",
-            description: insertErr instanceof Error ? insertErr.message : "Unknown database error",
+            description: dbError instanceof Error ? dbError.message : "Database operation failed",
             variant: "destructive"
           });
         }
       } catch (err) {
-        console.error("Exception during upload:", err);
+        console.error("Full upload error details:", err);
         toast({
           title: "Upload failed",
           description: err instanceof Error ? err.message : "An unknown error occurred",
