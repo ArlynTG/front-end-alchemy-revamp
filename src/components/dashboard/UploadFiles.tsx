@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Upload, FileText, X, AlertTriangle, Check } from 'lucide-react';
@@ -101,122 +102,59 @@ const UploadFiles: React.FC<UploadFilesProps> = ({ studentId }) => {
     }
   };
 
-  // Upload files to Supabase with improved error handling and timeout
+  // Extremely simplified upload function
   const handleFileUpload = async (files: FileList) => {
-    if (!studentId) {
+    if (!studentId || !files.length) return;
+    
+    setUploading(true);
+    const file = files[0]; // Just handle one file for testing
+    
+    try {
+      // Step 1: Just log the attempt
+      console.log("Starting upload for file:", file.name);
+      
+      // Step 2: Upload to Storage only
+      const filePath = `${studentId}/${Date.now()}.${file.name.split('.').pop()}`;
+      const { data: storageData, error: storageError } = await supabase
+        .storage
+        .from('documents')
+        .upload(filePath, file);
+        
+      if (storageError) throw storageError;
+      console.log("File uploaded to Storage successfully");
+      
+      // Step 3: Just try to insert a minimal record
+      console.log("Attempting to insert record to uploads table");
+      const { data, error } = await supabase
+        .from('uploads')
+        .insert({
+          uuid: studentId,
+          file_name: file.name
+        });
+        
+      if (error) throw error;
+      console.log("Record inserted successfully");
+      
+      // Success!
       toast({
-        title: "Upload failed",
-        description: "Student ID is required for upload",
+        title: "Success",
+        description: "File uploaded and record created",
+        variant: "default"
+      });
+      
+      // Refresh the file list
+      fetchFiles();
+      
+    } catch (err) {
+      console.error("Error details:", err);
+      toast({
+        title: "Error",
+        description: err instanceof Error ? err.message : "Unknown error",
         variant: "destructive"
       });
-      return;
+    } finally {
+      setUploading(false);
     }
-
-    setUploading(true);
-    
-    for (let i = 0; i < files.length; i++) {
-      const file = files[i];
-      const fileExtension = file.name.split('.').pop() || '';
-      const filePath = `${studentId}/${Date.now()}-${Math.random().toString(36).substring(2, 15)}.${fileExtension}`;
-      
-      try {
-        console.log("Step 1: Starting file upload");
-        
-        // Upload file to Storage
-        const { data: storageData, error: storageError } = await supabase
-          .storage
-          .from('documents')
-          .upload(filePath, file);
-
-        if (storageError) {
-          console.error("Storage error:", storageError);
-          throw storageError;
-        }
-        
-        console.log("Step 2: File uploaded successfully, getting URL");
-        
-        // Get public URL
-        const { data: publicUrlData } = await supabase
-          .storage
-          .from('documents')
-          .getPublicUrl(filePath);
-
-        const fileUrl = publicUrlData.publicUrl;
-        console.log("Step 3: Got file URL:", fileUrl);
-        
-        // Create a simplified record
-        console.log("Step 4: Creating database record");
-        const insertData = {
-          uuid: studentId,
-          file_name: file.name,
-          file_type: fileExtension.toLowerCase(),
-          file_url: fileUrl,
-          file_size: file.size,
-          doc_type: 'academic_record',
-          uploaded_by: 'parent',
-          processed: false
-        };
-        
-        console.log("Insert data:", JSON.stringify(insertData, null, 2));
-        
-        // Implement timeout for database operation
-        try {
-          // Create a timeout promise that rejects after 10 seconds
-          const timeout = new Promise((_, reject) => {
-            const id = setTimeout(() => {
-              clearTimeout(id);
-              reject(new Error("Database insert timed out after 10 seconds"));
-            }, 10000);
-          });
-          
-          // Create the database insert promise
-          const dbOperation = supabase
-            .from('uploads')
-            .insert(insertData);
-            
-          // Race the promises - either the operation completes or it times out
-          const result: any = await Promise.race([dbOperation, timeout]);
-          
-          // Check if we have an error from the database operation
-          if (result && result.error) {
-            console.error("Database error:", result.error);
-            console.error("Error details:", JSON.stringify(result.error, null, 2));
-            toast({
-              title: "Upload record failed",
-              description: result.error.message || "Database error occurred",
-              variant: "destructive"
-            });
-          } else if (result && result.data) {
-            console.log("Step 5: Database record created successfully");
-            toast({
-              title: "Upload successful",
-              description: `${file.name} has been uploaded.`,
-              variant: "default"
-            });
-            
-            // Refresh the file list
-            fetchFiles();
-          }
-        } catch (dbError) {
-          console.error("Database operation error:", dbError);
-          console.error("Full error details:", dbError instanceof Error ? dbError.message : JSON.stringify(dbError));
-          toast({
-            title: "Database operation failed",
-            description: dbError instanceof Error ? dbError.message : "Database operation failed",
-            variant: "destructive"
-          });
-        }
-      } catch (err) {
-        console.error("Full upload error details:", err);
-        toast({
-          title: "Upload failed",
-          description: err instanceof Error ? err.message : "An unknown error occurred",
-          variant: "destructive"
-        });
-      }
-    }
-    
-    setUploading(false);
   };
 
   // Format the date for display
