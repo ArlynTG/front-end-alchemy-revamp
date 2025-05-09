@@ -117,11 +117,29 @@ const UploadFiles: React.FC<UploadFilesProps> = ({ studentId }) => {
     
     for (let i = 0; i < files.length; i++) {
       const file = files[i];
-      const fileExtension = file.name.split('.').pop();
-      const fileName = `${Date.now()}-${Math.random().toString(36).substring(2, 15)}.${fileExtension}`;
+      const fileExtension = file.name.split('.').pop() || '';
+      const fileName = `${studentId}/${Date.now()}-${Math.random().toString(36).substring(2, 15)}.${fileExtension}`;
       
       try {
-        // Create a record in the uploads table
+        // Step 1: Upload file to Supabase Storage
+        const { data: storageData, error: storageError } = await supabase
+          .storage
+          .from('documents') // Make sure this bucket exists in Supabase
+          .upload(fileName, file);
+
+        if (storageError) {
+          throw storageError;
+        }
+
+        // Step 2: Get the public URL for the file
+        const { data: publicUrlData } = await supabase
+          .storage
+          .from('documents')
+          .getPublicUrl(fileName);
+
+        const fileUrl = publicUrlData.publicUrl;
+
+        // Step 3: Create a record in the uploads table
         const { data, error } = await supabase
           .from('uploads')
           .insert({
@@ -129,6 +147,7 @@ const UploadFiles: React.FC<UploadFilesProps> = ({ studentId }) => {
             file_name: file.name,
             file_type: file.type,
             file_size: file.size,
+            file_url: fileUrl, // Add the file URL here
             doc_type: 'academic_record', // Default type
             uploaded_by: 'parent',
             uploaded_at: new Date().toISOString(),
