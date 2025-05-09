@@ -142,7 +142,7 @@ const UploadFiles: React.FC<UploadFilesProps> = ({ studentId }) => {
         const fileUrl = publicUrlData.publicUrl;
         console.log("File public URL:", fileUrl);
 
-        // Step 3: Create a record in uploads table - Fixed insert operation
+        // Step 3: Create a record in uploads table - With enhanced error handling
         const insertData = {
           uuid: studentId,
           file_name: file.name,
@@ -151,32 +151,44 @@ const UploadFiles: React.FC<UploadFilesProps> = ({ studentId }) => {
           file_size: file.size,
           doc_type: 'academic_record',
           uploaded_by: 'parent',
-          processed: false  // Important for trigger!
+          processed: false
         };
-        
-        console.log("Inserting record with data:", insertData);
-        
-        const { data: uploadRecord, error: uploadError } = await supabase
-          .from('uploads')
-          .insert(insertData);
 
-        if (uploadError) {
-          console.error("Error inserting file record:", uploadError);
+        console.log("Attempting to insert record with data:", insertData);
+
+        try {
+          const { data: uploadRecord, error: uploadError } = await supabase
+            .from('uploads')
+            .insert(insertData)
+            .single();
+
+          if (uploadError) {
+            console.error("Supabase error inserting file record:", uploadError);
+            console.error("Error details:", JSON.stringify(uploadError, null, 2));
+            toast({
+              title: "Upload record failed",
+              description: uploadError.message || "Database error occurred",
+              variant: "destructive"
+            });
+          } else {
+            console.log("Record created in uploads table:", uploadRecord);
+            toast({
+              title: "Upload successful",
+              description: `${file.name} has been uploaded and recorded.`,
+              variant: "default"
+            });
+            
+            // Refresh the file list
+            fetchFiles();
+          }
+        } catch (insertErr) {
+          console.error("Exception during database insert:", insertErr);
+          console.error("Insert error details:", JSON.stringify(insertErr, null, 2));
           toast({
-            title: "Upload record failed",
-            description: uploadError.message,
+            title: "Database operation failed",
+            description: insertErr instanceof Error ? insertErr.message : "Unknown database error",
             variant: "destructive"
           });
-        } else {
-          console.log("Record created in uploads table:", uploadRecord);
-          toast({
-            title: "Upload successful",
-            description: `${file.name} has been uploaded and recorded.`,
-            variant: "default"
-          });
-          
-          // Refresh the file list
-          fetchFiles();
         }
       } catch (err) {
         console.error("Exception during upload:", err);
