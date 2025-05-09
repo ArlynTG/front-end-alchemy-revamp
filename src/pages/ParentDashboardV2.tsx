@@ -1,5 +1,4 @@
-
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import Navbar from "@/components/Navbar";
 import StudentStats from "@/components/dashboard/StudentStats";
 import AchievementBadges from "@/components/dashboard/AchievementBadges";
@@ -9,16 +8,20 @@ import ChatSection from "@/components/dashboard/ChatSection";
 import RecentProgress from "@/components/dashboard/RecentProgress";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { motion } from "framer-motion";
+import { supabase } from "@/integrations/supabase/client";
+import { toast } from "@/hooks/use-toast";
 
 const ParentDashboardV2 = () => {
-  // Sample data - in a real app, this would come from an API
-  const studentData = {
+  const [studentData, setStudentData] = useState({
     name: "Alex Johnson",
     totalLessons: 24,
     averageSessionDuration: 45, // minutes
     longTermPlan: "Improve reading comprehension, writing speed, and executive functioning skills by the end of the semester"
-  };
+  });
 
+  const [isLoading, setIsLoading] = useState(false);
+  const [supabaseError, setSupabaseError] = useState<string | null>(null);
+  
   const isMobile = useIsMobile();
 
   // Badge data with different levels for various skills - using the old names that will be mapped in the component
@@ -36,10 +39,57 @@ const ParentDashboardV2 = () => {
     { name: "Reading", level: "Gold" },
     { name: "Problem Solving", level: "Gold" },
   ];
+
+  // Fetch data for the specific UUID from Supabase
+  const fetchStudentFromSupabase = async () => {
+    setIsLoading(true);
+    setSupabaseError(null);
+
+    try {
+      // Get registration data for the specified UUID
+      const { data, error } = await supabase
+        .from('beta_registrations')
+        .select('*')
+        .eq('id', 'c5732622-1580-4b3a-ba6a-57501d1636a8')
+        .single();
+
+      if (error) {
+        console.error("Error fetching student data:", error);
+        setSupabaseError(error.message);
+        toast({
+          title: "Error fetching data",
+          description: error.message,
+          variant: "destructive"
+        });
+      } else if (data) {
+        console.log("Retrieved student data:", data);
+        
+        // Update student data with values from Supabase
+        setStudentData(prevData => ({
+          ...prevData,
+          name: data.student_name || `${data.first_name} ${data.last_name}`,
+          // Keep existing values for totalLessons and averageSessionDuration
+          longTermPlan: data.goals_summary || prevData.longTermPlan
+        }));
+        
+        toast({
+          title: "Connection successful",
+          description: "Successfully retrieved data from Supabase",
+          variant: "default"
+        });
+      }
+    } catch (err) {
+      console.error("Exception during fetch:", err);
+      setSupabaseError(err instanceof Error ? err.message : "Unknown error");
+    } finally {
+      setIsLoading(false);
+    }
+  };
   
-  // Add an effect to log when the component mounts
+  // Add an effect to fetch data when the component mounts
   useEffect(() => {
     console.log("ParentDashboardV2 component mounted");
+    fetchStudentFromSupabase();
   }, []);
 
   // Animation variants for staggered children
@@ -90,6 +140,24 @@ const ParentDashboardV2 = () => {
             TESTING VERSION: For Supabase integration testing only
           </p>
         </div>
+        
+        {/* Supabase Connection Status */}
+        <motion.div 
+          className={`w-full rounded-lg p-4 mb-4 md:mb-6 ${supabaseError ? 'bg-red-100' : 'bg-green-100'}`}
+          initial={{ opacity: 0, y: -10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.2, duration: 0.4 }}
+        >
+          <p className="text-center font-medium">
+            {isLoading ? (
+              "Loading data from Supabase..."
+            ) : supabaseError ? (
+              `Supabase Error: ${supabaseError}`
+            ) : (
+              `Connected to Supabase for UUID: c5732622-1580-4b3a-ba6a-57501d1636a8`
+            )}
+          </p>
+        </motion.div>
         
         <motion.div
           variants={containerVariants}
