@@ -121,7 +121,7 @@ const UploadFiles: React.FC<UploadFilesProps> = ({ studentId }) => {
       const filePath = `${studentId}/${Date.now()}-${Math.random().toString(36).substring(2, 15)}.${fileExtension}`;
       
       try {
-        // Step 1: Upload file to Storage (this part is working)
+        // Step 1: Upload file to Storage
         const { data: storageData, error: storageError } = await supabase
           .storage
           .from('documents')
@@ -142,7 +142,7 @@ const UploadFiles: React.FC<UploadFilesProps> = ({ studentId }) => {
         const fileUrl = publicUrlData.publicUrl;
         console.log("File public URL:", fileUrl);
 
-        // Step 3: Create a record in uploads table (this part is missing)
+        // Step 3: Create a record in uploads table
         const { data: uploadRecord, error: uploadError } = await supabase
           .from('uploads')
           .insert({
@@ -151,7 +151,7 @@ const UploadFiles: React.FC<UploadFilesProps> = ({ studentId }) => {
             file_type: fileExtension.toLowerCase(),
             file_url: fileUrl,
             file_size: file.size,
-            doc_type: 'assessment', // Or determine dynamically
+            doc_type: 'academic_record', // Changed to match requirements
             uploaded_by: 'parent',
             processed: false  // Important for trigger!
           })
