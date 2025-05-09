@@ -31,13 +31,13 @@ export const SingleBadge: React.FC<SingleBadgeProps> = ({
       style={{ animationDelay: `${index * 0.1}s` }}
     >
       <motion.div
-        className={`relative w-full h-full preserve-3d transition-all duration-500`}
+        className="relative w-full h-full preserve-3d transition-all duration-500"
         animate={{ rotateY: isFlipped ? 180 : 0 }}
         transition={{ duration: 0.6, type: "spring", stiffness: 80 }}
       >
         {/* Front of card (Badge) */}
         <div 
-          className={`${getBadgeStyle(level)} absolute w-full h-full backface-hidden flex flex-col items-center justify-center`}
+          className={`${getBadgeStyle(level)} absolute w-full h-full backface-hidden flex flex-col items-center justify-center rounded-lg`}
         >
           <div className="mb-2">
             <BadgeIcon name={updatedName} level={level} />
@@ -50,10 +50,10 @@ export const SingleBadge: React.FC<SingleBadgeProps> = ({
         
         {/* Back of card (Description) */}
         <div 
-          className={`${getBadgeStyle(level)} absolute w-full h-full backface-hidden flex flex-col items-center justify-center p-3`}
+          className={`${getBadgeStyle(level)} absolute w-full h-full backface-hidden flex flex-col items-center justify-center p-3 rounded-lg`}
           style={{ transform: "rotateY(180deg)" }}
         >
-          <p className="text-xs text-center">{description}</p>
+          <p className="text-xs text-center overflow-auto max-h-full">{description}</p>
         </div>
       </motion.div>
     </div>

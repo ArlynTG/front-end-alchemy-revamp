@@ -15,14 +15,14 @@ export const getBadgeVariant = (level: string) => {
 
 // Badge style for badges component
 export const getBadgeStyle = (level: string) => {
-  const baseStyle = "flex flex-col items-center p-3 rounded-lg transition-transform duration-300";
+  const baseStyle = "flex flex-col items-center justify-center p-3 shadow-sm transition-all duration-300";
   
   switch (level) {
-    case "Bronze": return `${baseStyle} bg-amber-50 animate-fade-in`;
-    case "Silver": return `${baseStyle} bg-gray-200 animate-fade-in`;
-    case "Gold": return `${baseStyle} bg-yellow-100 animate-fade-in`;
-    case "Platinum": return `${baseStyle} bg-blue-100 animate-fade-in`;
-    case "Diamond": return `${baseStyle} bg-purple-100 animate-fade-in`;
+    case "Bronze": return `${baseStyle} bg-amber-50`;
+    case "Silver": return `${baseStyle} bg-gray-200`;
+    case "Gold": return `${baseStyle} bg-yellow-100`;
+    case "Platinum": return `${baseStyle} bg-blue-100`;
+    case "Diamond": return `${baseStyle} bg-purple-100`;
     default: return baseStyle;
   }
 };
