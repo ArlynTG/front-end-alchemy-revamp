@@ -31,9 +31,9 @@ export const SingleBadge: React.FC<SingleBadgeProps> = ({
       style={{ animationDelay: `${index * 0.1}s` }}
     >
       <motion.div
-        className="relative w-full h-full preserve-3d transition-all duration-500"
+        className="relative w-full h-full preserve-3d transition-all duration-300"
         animate={{ rotateY: isFlipped ? 180 : 0 }}
-        transition={{ duration: 0.6, type: "spring", stiffness: 80 }}
+        transition={{ duration: 0.4, type: "spring", stiffness: 150, damping: 12 }}
       >
         {/* Front of card (Badge) */}
         <div 
