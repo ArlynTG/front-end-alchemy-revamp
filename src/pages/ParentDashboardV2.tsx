@@ -1,3 +1,4 @@
+
 import React, { useEffect, useState } from "react";
 import Navbar from "@/components/Navbar";
 import StudentStats from "@/components/dashboard/StudentStats";
@@ -6,6 +7,7 @@ import ScheduleManager from "@/components/dashboard/ScheduleManager";
 import NotificationSettings from "@/components/dashboard/NotificationSettings";
 import ChatSection from "@/components/dashboard/ChatSection";
 import RecentProgress from "@/components/dashboard/RecentProgress";
+import UploadFiles from "@/components/dashboard/UploadFiles";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { motion } from "framer-motion";
 import { supabase } from "@/integrations/supabase/client";
@@ -186,6 +188,15 @@ const ParentDashboardV2 = () => {
                 transition={{ delay: 0.2 }}
               >
                 <RecentProgress />
+              </motion.div>
+              
+              {/* Add Upload Files component */}
+              <motion.div 
+                variants={itemVariants}
+                transition={{ delay: 0.3 }}
+                className="mt-4 md:mt-6"
+              >
+                <UploadFiles studentId="c5732622-1580-4b3a-ba6a-57501d1636a8" />
               </motion.div>
             </motion.div>
             
