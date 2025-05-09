@@ -121,24 +121,19 @@ const UploadFiles: React.FC<UploadFilesProps> = ({ studentId }) => {
       const fileName = `${Date.now()}-${Math.random().toString(36).substring(2, 15)}.${fileExtension}`;
       
       try {
-        // 1. Upload file to Supabase Storage (optional, implementation would go here)
-        // For now, we'll assume the file is hosted elsewhere or use the Supabase Storage URL later
-        
-        // 2. Create a record in the uploads table
+        // Create a record in the uploads table
         const { data, error } = await supabase
           .from('uploads')
-          .insert([
-            {
-              uuid: studentId,
-              file_name: file.name,
-              file_type: file.type,
-              file_size: file.size,
-              doc_type: 'academic_record', // Default type
-              uploaded_by: 'parent',
-              uploaded_at: new Date().toISOString(),
-              processed: false
-            }
-          ])
+          .insert({
+            uuid: studentId,
+            file_name: file.name,
+            file_type: file.type,
+            file_size: file.size,
+            doc_type: 'academic_record', // Default type
+            uploaded_by: 'parent',
+            uploaded_at: new Date().toISOString(),
+            processed: false
+          })
           .select();
 
         if (error) {
