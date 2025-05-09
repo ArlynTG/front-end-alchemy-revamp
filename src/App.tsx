@@ -20,6 +20,7 @@ const BetaRegistration = lazy(() => import("./pages/BetaRegistration"));
 const BetaConfirmation = lazy(() => import("./pages/BetaConfirmation"));
 const DemoV5 = lazy(() => import("./pages/DemoV5"));
 const ParentDashboard = lazy(() => import("./pages/ParentDashboard"));
+const ParentDashboardV2 = lazy(() => import("./pages/ParentDashboardV2"));
 
 // Create a reusable loading component
 const PageLoader = () => (
@@ -56,6 +57,7 @@ const App = () => (
             <Route path="/beta-confirmed" element={<BetaConfirmed />} />
             <Route path="/beta-registration" element={<BetaRegistration />} />
             <Route path="/beta-confirmation" element={<BetaConfirmation />} />
+            <Route path="/parent-dashboard-v2" element={<ParentDashboardV2 />} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
           </Routes>
