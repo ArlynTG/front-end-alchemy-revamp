@@ -1,5 +1,5 @@
 
-import React from "react";
+import React, { useState, useEffect } from "react";
 import Navbar from "@/components/Navbar";
 import StudentStats from "@/components/dashboard/StudentStats";
 import AchievementBadges from "@/components/dashboard/AchievementBadges";
@@ -12,11 +12,13 @@ import DashboardLayout from "@/components/dashboard/parent/DashboardLayout";
 import LeftSection from "@/components/dashboard/parent/LeftSection";
 import RightSection from "@/components/dashboard/parent/RightSection";
 import { useStudentData } from "@/hooks/useStudentData";
+import { toast } from "@/hooks/use-toast";
 
 const ParentDashboardV2 = () => {
   const STUDENT_ID = "c5732622-1580-4b3a-ba6a-57501d1636a8";
   const { studentData, isLoading, supabaseError } = useStudentData(STUDENT_ID);
   const isMobile = useIsMobile();
+  const [isPageReady, setIsPageReady] = useState(false);
 
   // Badge data with different levels for various skills - using the old names that will be mapped in the component
   const skillBadges = [
@@ -57,6 +59,25 @@ const ParentDashboardV2 = () => {
       }
     }
   };
+
+  // Add a timer to ensure the page is ready after initial load
+  useEffect(() => {
+    // Small delay to ensure components mount properly
+    const timer = setTimeout(() => {
+      setIsPageReady(true);
+    }, 500);
+    
+    return () => clearTimeout(timer);
+  }, []);
+
+  // Add an error boundary fallback
+  if (!isPageReady) {
+    return (
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <div className="w-16 h-16 border-4 border-dashed rounded-full animate-spin border-tobey-orange"></div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-gray-50">

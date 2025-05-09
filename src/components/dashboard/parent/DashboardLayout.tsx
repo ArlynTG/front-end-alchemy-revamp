@@ -1,7 +1,6 @@
 
 import React from 'react';
 import { motion } from 'framer-motion';
-import { useIsMobile } from '@/hooks/use-mobile';
 
 interface DashboardLayoutProps {
   children: React.ReactNode;
@@ -19,6 +18,7 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({
       variants={containerVariants}
       initial="hidden"
       animate="visible"
+      className="min-h-[400px]" // Add minimum height to prevent layout shifts
     >
       {children}
     </motion.div>
