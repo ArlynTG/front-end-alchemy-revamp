@@ -17,7 +17,7 @@ export const SingleBadge: React.FC<SingleBadgeProps> = ({
   
   return (
     <div 
-      className="perspective-500 cursor-pointer"
+      className="perspective-500 cursor-pointer h-32 w-full"
       onClick={() => setIsFlipped(!isFlipped)}
       role="button"
       tabIndex={0}
@@ -37,12 +37,12 @@ export const SingleBadge: React.FC<SingleBadgeProps> = ({
       >
         {/* Front of card (Badge) */}
         <div 
-          className={`${getBadgeStyle(level)} absolute w-full h-full backface-hidden`}
+          className={`${getBadgeStyle(level)} absolute w-full h-full backface-hidden flex flex-col items-center justify-center`}
         >
           <div className="mb-2">
             <BadgeIcon name={updatedName} level={level} />
           </div>
-          <span className="text-sm font-medium mb-1 text-center">{updatedName}</span>
+          <span className="text-sm font-medium text-center line-clamp-1 px-1">{updatedName}</span>
           <Badge variant={getBadgeVariant(level)} className="mt-1">
             {level}
           </Badge>
@@ -53,7 +53,7 @@ export const SingleBadge: React.FC<SingleBadgeProps> = ({
           className={`${getBadgeStyle(level)} absolute w-full h-full backface-hidden flex flex-col items-center justify-center p-3`}
           style={{ transform: "rotateY(180deg)" }}
         >
-          <p className="text-xs text-center font-medium">{description}</p>
+          <p className="text-xs text-center">{description}</p>
         </div>
       </motion.div>
     </div>

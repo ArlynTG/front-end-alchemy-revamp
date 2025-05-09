@@ -15,7 +15,7 @@ export const getBadgeVariant = (level: string) => {
 
 // Badge style for badges component
 export const getBadgeStyle = (level: string) => {
-  const baseStyle = "flex flex-col items-center p-3 rounded-lg transition-transform duration-300 hover:scale-105";
+  const baseStyle = "flex flex-col items-center p-3 rounded-lg transition-transform duration-300";
   
   switch (level) {
     case "Bronze": return `${baseStyle} bg-amber-50 animate-fade-in`;
