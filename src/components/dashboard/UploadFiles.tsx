@@ -142,20 +142,23 @@ const UploadFiles: React.FC<UploadFilesProps> = ({ studentId }) => {
         const fileUrl = publicUrlData.publicUrl;
         console.log("File public URL:", fileUrl);
 
-        // Step 3: Create a record in uploads table
+        // Step 3: Create a record in uploads table - Fixed insert operation
+        const insertData = {
+          uuid: studentId,
+          file_name: file.name,
+          file_type: fileExtension.toLowerCase(),
+          file_url: fileUrl,
+          file_size: file.size,
+          doc_type: 'academic_record',
+          uploaded_by: 'parent',
+          processed: false  // Important for trigger!
+        };
+        
+        console.log("Inserting record with data:", insertData);
+        
         const { data: uploadRecord, error: uploadError } = await supabase
           .from('uploads')
-          .insert({
-            uuid: studentId,
-            file_name: file.name,
-            file_type: fileExtension.toLowerCase(),
-            file_url: fileUrl,
-            file_size: file.size,
-            doc_type: 'academic_record', // Changed to match requirements
-            uploaded_by: 'parent',
-            processed: false  // Important for trigger!
-          })
-          .select();
+          .insert(insertData);
 
         if (uploadError) {
           console.error("Error inserting file record:", uploadError);
