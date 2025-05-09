@@ -72,6 +72,8 @@ export default {
 					darkOrange: '#FF7518',
 					text: '#333333',
 				},
+				'soft-purple': '#F1E6FB',
+				'tobey-blue': '#D9E4F0',
 				'soft-gray': '#F1F0FB',
 			},
 			borderRadius: {
@@ -105,14 +107,36 @@ export default {
 						opacity: '1',
 						transform: 'translateY(0)'
 					}
+				},
+				'flip': {
+					'0%, 100%': { transform: 'rotateY(0deg)' },
+					'50%': { transform: 'rotateY(180deg)' },
 				}
 			},
 			animation: {
 				'accordion-down': 'accordion-down 0.2s ease-out',
 				'accordion-up': 'accordion-up 0.2s ease-out',
-				'fade-in': 'fade-in 0.5s ease-out'
+				'fade-in': 'fade-in 0.5s ease-out',
+				'flip': 'flip 1s ease-in-out',
 			}
 		}
 	},
-	plugins: [require("tailwindcss-animate")],
+	plugins: [
+		require("tailwindcss-animate"),
+		// Add plugin with custom utilities
+		function({ addUtilities }) {
+			const newUtilities = {
+				'.perspective-500': {
+					perspective: '500px',
+				},
+				'.preserve-3d': {
+					transformStyle: 'preserve-3d',
+				},
+				'.backface-hidden': {
+					backfaceVisibility: 'hidden',
+				},
+			};
+			addUtilities(newUtilities);
+		}
+	],
 } satisfies Config;

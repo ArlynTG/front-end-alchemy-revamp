@@ -12,8 +12,11 @@ export type Database = {
       beta_registrations: {
         Row: {
           created_at: string
+          diagnosis: string[] | null
           email: string
           first_name: string
+          goals: string[] | null
+          goals_summary: string | null
           id: string
           last_name: string
           paid_at: string | null
@@ -32,8 +35,11 @@ export type Database = {
         }
         Insert: {
           created_at?: string
+          diagnosis?: string[] | null
           email: string
           first_name: string
+          goals?: string[] | null
+          goals_summary?: string | null
           id?: string
           last_name: string
           paid_at?: string | null
@@ -52,8 +58,11 @@ export type Database = {
         }
         Update: {
           created_at?: string
+          diagnosis?: string[] | null
           email?: string
           first_name?: string
+          goals?: string[] | null
+          goals_summary?: string | null
           id?: string
           last_name?: string
           paid_at?: string | null
@@ -199,6 +208,201 @@ export type Database = {
         }
         Relationships: []
       }
+      student_access: {
+        Row: {
+          access_level: string | null
+          admin_id: string | null
+          created_at: string | null
+          id: string
+          parent_id: string | null
+          relationship: string | null
+          student_id: string | null
+          teacher_id: string | null
+          updated_at: string | null
+        }
+        Insert: {
+          access_level?: string | null
+          admin_id?: string | null
+          created_at?: string | null
+          id?: string
+          parent_id?: string | null
+          relationship?: string | null
+          student_id?: string | null
+          teacher_id?: string | null
+          updated_at?: string | null
+        }
+        Update: {
+          access_level?: string | null
+          admin_id?: string | null
+          created_at?: string | null
+          id?: string
+          parent_id?: string | null
+          relationship?: string | null
+          student_id?: string | null
+          teacher_id?: string | null
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "student_access_student_id_fkey"
+            columns: ["student_id"]
+            isOneToOne: false
+            referencedRelation: "beta_registrations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      student_chunks: {
+        Row: {
+          chunk_metadata: Json | null
+          chunk_text: string | null
+          created_at: string | null
+          embedding: string | null
+          id: string
+          last_accessed: string | null
+          relevance_score: number | null
+          source_doc: string | null
+          uuid: string | null
+        }
+        Insert: {
+          chunk_metadata?: Json | null
+          chunk_text?: string | null
+          created_at?: string | null
+          embedding?: string | null
+          id?: string
+          last_accessed?: string | null
+          relevance_score?: number | null
+          source_doc?: string | null
+          uuid?: string | null
+        }
+        Update: {
+          chunk_metadata?: Json | null
+          chunk_text?: string | null
+          created_at?: string | null
+          embedding?: string | null
+          id?: string
+          last_accessed?: string | null
+          relevance_score?: number | null
+          source_doc?: string | null
+          uuid?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "student_chunks_source_doc_fkey"
+            columns: ["source_doc"]
+            isOneToOne: false
+            referencedRelation: "uploads"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "student_chunks_uuid_fkey"
+            columns: ["uuid"]
+            isOneToOne: false
+            referencedRelation: "beta_registrations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      student_goals: {
+        Row: {
+          achieved: boolean | null
+          achievement_date: string | null
+          created_at: string | null
+          estimated_timeframe: string | null
+          evidence_sources: Json | null
+          id: string
+          long_term_goal: string | null
+          short_term_goals: Json | null
+          suggested_activities: Json | null
+          updated_at: string | null
+          uuid: string | null
+        }
+        Insert: {
+          achieved?: boolean | null
+          achievement_date?: string | null
+          created_at?: string | null
+          estimated_timeframe?: string | null
+          evidence_sources?: Json | null
+          id?: string
+          long_term_goal?: string | null
+          short_term_goals?: Json | null
+          suggested_activities?: Json | null
+          updated_at?: string | null
+          uuid?: string | null
+        }
+        Update: {
+          achieved?: boolean | null
+          achievement_date?: string | null
+          created_at?: string | null
+          estimated_timeframe?: string | null
+          evidence_sources?: Json | null
+          id?: string
+          long_term_goal?: string | null
+          short_term_goals?: Json | null
+          suggested_activities?: Json | null
+          updated_at?: string | null
+          uuid?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "student_goals_uuid_fkey"
+            columns: ["uuid"]
+            isOneToOne: false
+            referencedRelation: "beta_registrations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      uploads: {
+        Row: {
+          doc_type: string | null
+          file_name: string | null
+          file_size: number | null
+          file_type: string | null
+          file_url: string | null
+          id: string
+          metadata: Json | null
+          processed: boolean | null
+          uploaded_at: string | null
+          uploaded_by: string | null
+          uuid: string | null
+        }
+        Insert: {
+          doc_type?: string | null
+          file_name?: string | null
+          file_size?: number | null
+          file_type?: string | null
+          file_url?: string | null
+          id?: string
+          metadata?: Json | null
+          processed?: boolean | null
+          uploaded_at?: string | null
+          uploaded_by?: string | null
+          uuid?: string | null
+        }
+        Update: {
+          doc_type?: string | null
+          file_name?: string | null
+          file_size?: number | null
+          file_type?: string | null
+          file_url?: string | null
+          id?: string
+          metadata?: Json | null
+          processed?: boolean | null
+          uploaded_at?: string | null
+          uploaded_by?: string | null
+          uuid?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "uploads_uuid_fkey"
+            columns: ["uuid"]
+            isOneToOne: false
+            referencedRelation: "beta_registrations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
     }
     Views: {
       [_ in never]: never
@@ -259,6 +463,18 @@ export type Database = {
       l2_normalize: {
         Args: { "": string } | { "": unknown } | { "": unknown }
         Returns: string
+      }
+      match_pedagogy_chunks: {
+        Args: {
+          query_embedding: string
+          match_threshold: number
+          match_count: number
+        }
+        Returns: {
+          id: string
+          chunk_text: string
+          similarity: number
+        }[]
       }
       sparsevec_out: {
         Args: { "": unknown }
