@@ -118,54 +118,57 @@ const UploadFiles: React.FC<UploadFilesProps> = ({ studentId }) => {
     for (let i = 0; i < files.length; i++) {
       const file = files[i];
       const fileExtension = file.name.split('.').pop() || '';
-      const fileName = `${studentId}/${Date.now()}-${Math.random().toString(36).substring(2, 15)}.${fileExtension}`;
+      const filePath = `${studentId}/${Date.now()}-${Math.random().toString(36).substring(2, 15)}.${fileExtension}`;
       
       try {
-        // Step 1: Upload file to Supabase Storage
+        // Step 1: Upload file to Storage (this part is working)
         const { data: storageData, error: storageError } = await supabase
           .storage
-          .from('documents') // Make sure this bucket exists in Supabase
-          .upload(fileName, file);
+          .from('documents')
+          .upload(filePath, file);
 
         if (storageError) {
           throw storageError;
         }
 
-        // Step 2: Get the public URL for the file
+        console.log("File uploaded successfully to Storage:", storageData);
+
+        // Step 2: Get the public URL
         const { data: publicUrlData } = await supabase
           .storage
           .from('documents')
-          .getPublicUrl(fileName);
+          .getPublicUrl(filePath);
 
         const fileUrl = publicUrlData.publicUrl;
+        console.log("File public URL:", fileUrl);
 
-        // Step 3: Create a record in the uploads table
-        const { data, error } = await supabase
+        // Step 3: Create a record in uploads table (this part is missing)
+        const { data: uploadRecord, error: uploadError } = await supabase
           .from('uploads')
           .insert({
             uuid: studentId,
             file_name: file.name,
-            file_type: file.type,
+            file_type: fileExtension.toLowerCase(),
+            file_url: fileUrl,
             file_size: file.size,
-            file_url: fileUrl, // Add the file URL here
-            doc_type: 'academic_record', // Default type
+            doc_type: 'assessment', // Or determine dynamically
             uploaded_by: 'parent',
-            uploaded_at: new Date().toISOString(),
-            processed: false
+            processed: false  // Important for trigger!
           })
           .select();
 
-        if (error) {
-          console.error("Error inserting file record:", error);
+        if (uploadError) {
+          console.error("Error inserting file record:", uploadError);
           toast({
-            title: "Upload failed",
-            description: error.message,
+            title: "Upload record failed",
+            description: uploadError.message,
             variant: "destructive"
           });
         } else {
+          console.log("Record created in uploads table:", uploadRecord);
           toast({
             title: "Upload successful",
-            description: `${file.name} has been uploaded.`,
+            description: `${file.name} has been uploaded and recorded.`,
             variant: "default"
           });
           
