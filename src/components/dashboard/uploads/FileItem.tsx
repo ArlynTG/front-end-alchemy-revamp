@@ -1,6 +1,6 @@
 
 import React from 'react';
-import { FileText, Check } from 'lucide-react';
+import { FileText, Image, FileArchive, File, Check } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { toast } from '@/hooks/use-toast';
 
@@ -32,17 +32,42 @@ const FileItem: React.FC<FileItemProps> = ({
   
   // Get file icon based on file type
   const getFileIcon = (fileType: string | null) => {
-    if (!fileType) return <FileText className="h-5 w-5" />;
+    if (!fileType) return <File className="h-5 w-5" />;
     
+    // PDF files
     if (fileType.includes('pdf')) {
-      return <FileText className="h-5 w-5" />;
+      return <FileText className="h-5 w-5 text-red-500" />;
     }
     
+    // Image files
     if (fileType.includes('image')) {
-      return <FileText className="h-5 w-5" />;
+      return <Image className="h-5 w-5 text-blue-500" />;
     }
     
-    return <FileText className="h-5 w-5" />;
+    // Archive files
+    if (fileType.includes('zip') || 
+        fileType.includes('rar') || 
+        fileType.includes('tar') || 
+        fileType.includes('gz')) {
+      return <FileArchive className="h-5 w-5 text-amber-500" />;
+    }
+    
+    // Word documents
+    if (fileType.includes('msword') || 
+        fileType.includes('wordprocessingml') ||
+        fileType.includes('document')) {
+      return <FileText className="h-5 w-5 text-blue-700" />;
+    }
+    
+    // Excel files
+    if (fileType.includes('excel') || 
+        fileType.includes('spreadsheetml') || 
+        fileType.includes('sheet')) {
+      return <FileText className="h-5 w-5 text-green-600" />;
+    }
+    
+    // Default file icon
+    return <File className="h-5 w-5 text-gray-500" />;
   };
 
   const handleViewFile = () => {
