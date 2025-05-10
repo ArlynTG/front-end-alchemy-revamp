@@ -273,9 +273,12 @@ const UploadFiles: React.FC<UploadFilesProps> = ({ studentId }) => {
                   {getFileIcon(file.file_type)}
                 </div>
                 <div>
-                  <p className="font-medium truncate max-w-[200px] md:max-w-[300px]">
-                    {file.file_name}
-                  </p>
+                  <div className="flex items-center gap-2">
+                    <p className="font-medium truncate max-w-[200px] md:max-w-[300px]">
+                      {file.file_name}
+                    </p>
+                    <Check className="h-4 w-4 text-green-500" />
+                  </div>
                   <p className="text-xs text-gray-500">
                     {formatDate(file.uploaded_at)}
                   </p>
