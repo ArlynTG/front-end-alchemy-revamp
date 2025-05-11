@@ -56,6 +56,42 @@ export const useFileUpload = (studentId: string) => {
     }
   }, [studentId]);
 
+  // Notify webhook about new document upload
+  const notifyWebhook = async (uploadId: string, fileName: string) => {
+    try {
+      console.log("Notifying webhook about new upload:", { studentId, uploadId, fileName });
+      const response = await fetch('https://tobiasedtech.app.n8n.cloud/webhook/process-document', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          student_id: studentId,
+          upload_id: uploadId,
+          file_name: fileName
+        }),
+      });
+
+      if (!response.ok) {
+        const errorText = await response.text();
+        throw new Error(`Webhook notification failed: ${response.status} - ${errorText}`);
+      }
+
+      console.log("Webhook notification successful");
+      toast({
+        title: "Document processing started",
+        description: "Your document is being processed for personalized goals.",
+      });
+    } catch (err) {
+      console.error("Error notifying webhook:", err);
+      toast({
+        title: "Document processing notification failed",
+        description: "We'll still try to process your document.",
+        variant: "destructive"
+      });
+    }
+  };
+
   // Handle file upload
   const handleFileUpload = async (files: FileList) => {
     if (!studentId || !files.length) return;
@@ -77,17 +113,34 @@ export const useFileUpload = (studentId: string) => {
       if (storageError) throw storageError;
       console.log("File uploaded to Storage successfully");
       
-      // Step 3: Just try to insert a minimal record
+      // Step 3: Create a public URL for the file
+      const { data: publicUrlData } = await supabase
+        .storage
+        .from('documents')
+        .createSignedUrl(filePath, 60 * 60 * 24 * 365); // 1 year expiration
+      
+      const fileUrl = publicUrlData?.signedUrl || null;
+      
+      // Step 4: Insert record to uploads table
       console.log("Attempting to insert record to uploads table");
-      const { data, error } = await supabase
+      const { data: uploadData, error: uploadError } = await supabase
         .from('uploads')
         .insert({
           uuid: studentId,
-          file_name: file.name
-        });
+          file_name: file.name,
+          file_type: file.type,
+          file_url: fileUrl
+        })
+        .select('*')
+        .single();
         
-      if (error) throw error;
-      console.log("Record inserted successfully");
+      if (uploadError) throw uploadError;
+      console.log("Record inserted successfully:", uploadData);
+      
+      // Step 5: Notify webhook about the new document upload
+      if (uploadData) {
+        await notifyWebhook(uploadData.id, file.name);
+      }
       
       // Success!
       toast({
