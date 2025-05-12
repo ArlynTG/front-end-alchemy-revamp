@@ -145,7 +145,7 @@ const StudentDashboardPreview = () => {
           </div>
           <div className="order-2 md:order-2">
             <h2 className="text-3xl md:text-4xl font-bold mb-4 text-black">
-              Custom Created.<br/>
+              Custom-Created.<br/>
               Crushing Goals.
             </h2>
             <p className="text-lg mb-6 text-gray-700">
