@@ -1,7 +1,7 @@
 
 import React, { useState, useCallback } from 'react';
 import { useDropzone } from 'react-dropzone';
-import { File, X, FileCheck } from 'lucide-react';
+import { File, X, FileCheck, Upload } from 'lucide-react';
 import { Progress } from '@/components/ui/progress';
 import { toast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
@@ -62,24 +62,29 @@ const FileUploadArea: React.FC<FileUploadAreaProps> = ({ studentId, onUploadSucc
       // Update file progress state
       setUploadingFiles(prev => [...prev, { name: file.name, progress: 0, complete: false }]);
 
-      // Upload file with progress tracking
+      // Create a function to track upload progress
+      const trackProgress = (progress: { loaded: number; total: number }) => {
+        const percent = Math.round((progress.loaded / progress.total) * 100);
+        setUploadProgress(percent);
+        
+        // Update specific file progress
+        setUploadingFiles(prev => 
+          prev.map(f => 
+            f.name === file.name ? { ...f, progress: percent } : f
+          )
+        );
+      };
+
+      // Upload file
       const { error, data } = await supabase.storage
         .from('documents')
         .upload(filePath, file, {
           cacheControl: '3600',
-          upsert: false,
-          onUploadProgress: (progress) => {
-            const percent = Math.round((progress.loaded / progress.total) * 100);
-            setUploadProgress(percent);
-            
-            // Update specific file progress
-            setUploadingFiles(prev => 
-              prev.map(f => 
-                f.name === file.name ? { ...f, progress: percent } : f
-              )
-            );
-          }
+          upsert: false
         });
+
+      // Manually update progress to 100% on completion since we can't use onUploadProgress
+      trackProgress({ loaded: 1, total: 1 });
 
       if (error) {
         throw error;
