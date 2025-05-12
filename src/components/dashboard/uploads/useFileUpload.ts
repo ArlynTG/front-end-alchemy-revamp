@@ -18,27 +18,53 @@ export const useFileUpload = (studentId: string) => {
   const [isLoading, setIsLoading] = useState(false);
   const [uploading, setUploading] = useState(false);
 
-  // Fetch existing files from Supabase
+  // Fetch files from storage instead of the uploads table
   const fetchFiles = async () => {
     setIsLoading(true);
     try {
       console.log("Fetching files for student:", studentId);
-      const { data, error } = await supabase
-        .from('uploads')
-        .select('*')
-        .eq('uuid', studentId)
-        .order('uploaded_at', { ascending: false });
+      
+      // List files from the storage bucket for this student
+      const { data: storageFiles, error: storageError } = await supabase
+        .storage
+        .from('documents')
+        .list(studentId, {
+          sortBy: { column: 'created_at', order: 'desc' }
+        });
 
-      if (error) {
-        console.error("Error fetching files:", error);
+      if (storageError) {
+        console.error("Error fetching files from storage:", storageError);
         toast({
           title: "Error loading files",
-          description: error.message,
+          description: storageError.message,
           variant: "destructive"
         });
-      } else if (data) {
-        console.log("Retrieved files:", data);
-        setFiles(data);
+      } else if (storageFiles) {
+        console.log("Retrieved files from storage:", storageFiles);
+        
+        // Map storage files to our FileRecord format
+        const mappedFiles: FileRecord[] = storageFiles.map(file => {
+          // Extract original filename from the storage path (remove timestamp prefix)
+          const originalFileName = file.name.substring(file.name.indexOf('_') + 1);
+          
+          // Generate public URL for the file
+          const { data: urlData } = supabase
+            .storage
+            .from('documents')
+            .getPublicUrl(`${studentId}/${file.name}`);
+          
+          return {
+            id: file.id,
+            file_name: originalFileName,
+            file_type: file.metadata?.mimetype || null,
+            file_url: urlData?.publicUrl || null,
+            doc_type: null,
+            uploaded_at: file.created_at,
+            file_size: file.metadata?.size || 0
+          };
+        });
+        
+        setFiles(mappedFiles);
       }
     } catch (err) {
       console.error("Exception during fetch:", err);
@@ -76,6 +102,26 @@ export const useFileUpload = (studentId: string) => {
         size: `${(file.size / 1024).toFixed(2)} KB`
       });
       
+      // Check if the bucket exists and is accessible
+      const { data: bucketData, error: bucketError } = await supabase
+        .storage
+        .getBucket('documents');
+        
+      if (bucketError) {
+        console.error("Storage bucket error:", bucketError);
+        if (bucketError.message.includes("does not exist")) {
+          console.error("The 'documents' bucket does not exist in Supabase storage");
+          toast({
+            title: "Storage Configuration Error",
+            description: "The storage bucket for documents is not properly configured",
+            variant: "destructive"
+          });
+          throw new Error("Storage bucket configuration error");
+        }
+      } else {
+        console.log("Bucket exists:", bucketData);
+      }
+      
       // Generate a unique file path
       const filePath = `${studentId}/${Date.now()}_${file.name}`;
       console.log("Generated file path:", filePath);
@@ -107,31 +153,18 @@ export const useFileUpload = (studentId: string) => {
       const fileUrl = publicUrlData?.publicUrl || null;
       console.log("File public URL generated:", fileUrl);
       
-      // Insert record to uploads table - remove function that was causing the error
-      console.log("Inserting record into uploads table...");
-      const { data: uploadData, error: uploadError } = await supabase
-        .from('uploads')
-        .insert({
-          uuid: studentId,
-          file_name: file.name,
-          file_type: file.type,
-          file_url: fileUrl,
-          file_size: file.size,
-          uploaded_by: 'parent_dashboard'
-        })
-        .select();
-        
-      if (uploadError) {
-        console.error("Error inserting record:", uploadError);
-        throw uploadError;
-      }
-      
-      console.log("File record inserted successfully:", uploadData);
-      
       // Add the newly uploaded file to the files state
-      if (uploadData && uploadData.length > 0) {
-        setFiles(prevFiles => [uploadData[0], ...prevFiles]);
-      }
+      const newFile: FileRecord = {
+        id: new Date().getTime().toString(), // Generate a client-side ID
+        file_name: file.name,
+        file_type: file.type,
+        file_url: fileUrl,
+        doc_type: null,
+        uploaded_at: new Date().toISOString(),
+        file_size: file.size
+      };
+      
+      setFiles(prevFiles => [newFile, ...prevFiles]);
       
       // Success message
       toast({
