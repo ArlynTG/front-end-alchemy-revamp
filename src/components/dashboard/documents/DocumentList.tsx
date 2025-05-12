@@ -47,28 +47,33 @@ const DocumentList: React.FC<DocumentListProps> = ({ studentId, refreshTrigger }
       try {
         console.log('Fetching documents...');
         
-        // Get user session to retrieve user ID
-        const { data: { session } } = await supabase.auth.getSession();
-        
-        // Directly use the session without showing any error
-        const userId = session?.user?.id;
-        
-        // Use a default path if no userId is available (for testing)
-        // This will let us see documents even without authentication
-        const path = userId || 'temp';
+        // Use fixed path 'documents' to match the bucket structure
+        const path = 'documents';
         console.log('Using storage path:', path);
         
-        // First check if bucket exists before proceeding
-        const { data: buckets } = await supabase.storage.listBuckets();
+        // Verify the bucket exists before attempting to list files
+        const { data: bucketList, error: bucketError } = await supabase.storage.listBuckets();
         
-        // Check if our bucket exists
-        const bucketExists = buckets?.some(bucket => bucket.name === 'documents');
-        
-        if (!bucketExists) {
-          console.error('Bucket "documents" does not exist');
+        if (bucketError) {
+          console.error('Error listing buckets:', bucketError);
           toast({
             title: "Storage configuration issue",
-            description: "Document storage is not properly configured",
+            description: "Could not access storage buckets",
+            variant: "destructive"
+          });
+          setDocuments([]);
+          setLoading(false);
+          return;
+        }
+        
+        // Check if our bucket exists
+        const documentsExists = bucketList?.some(bucket => bucket.name === 'documents');
+        
+        if (!documentsExists) {
+          console.error('Bucket "documents" does not exist in:', bucketList?.map(b => b.name));
+          toast({
+            title: "Storage bucket not found",
+            description: "The documents storage bucket is not properly configured",
             variant: "destructive"
           });
           setDocuments([]);
@@ -89,7 +94,7 @@ const DocumentList: React.FC<DocumentListProps> = ({ studentId, refreshTrigger }
           throw error;
         }
 
-        if (data) {
+        if (data && data.length > 0) {
           // Process and format file data
           const formattedDocuments = data.map(file => ({
             id: file.id,
@@ -102,6 +107,9 @@ const DocumentList: React.FC<DocumentListProps> = ({ studentId, refreshTrigger }
 
           setDocuments(formattedDocuments);
           setTotalPages(Math.ceil(formattedDocuments.length / documentsPerPage));
+        } else {
+          console.log('No documents found in path:', path);
+          setDocuments([]);
         }
       } catch (err) {
         console.error('Error fetching documents:', err);

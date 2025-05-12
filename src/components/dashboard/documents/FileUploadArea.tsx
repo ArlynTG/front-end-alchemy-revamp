@@ -5,7 +5,6 @@ import { File, X, FileCheck, Upload } from 'lucide-react';
 import { Progress } from '@/components/ui/progress';
 import { toast } from '@/hooks/use-toast';
 import { useDocumentUpload } from '@/hooks/useDocumentUpload';
-import { supabase } from '@/integrations/supabase/client';
 
 interface FileUploadAreaProps {
   studentId: string;
@@ -56,20 +55,12 @@ const FileUploadArea: React.FC<FileUploadAreaProps> = ({ studentId, onUploadSucc
 
   const handleFileUpload = async (file: File) => {
     try {
-      // Get current user session to use as folder if possible
-      const { data: { session } } = await supabase.auth.getSession();
-      
-      // Use the user ID directly without checking for session
-      const userId = session?.user?.id;
-      
-      // If no userId is available, generate a temporary one for the upload
-      const uploadId = userId || `temp-${Date.now()}`;
-      
       // Add file to uploading files list
       setUploadingFiles(prev => [...prev, { name: file.name, progress: 0, complete: false }]);
       
-      // Upload file using the hook with the proper folder path
-      await uploadDocument(file, uploadId);
+      // Upload file using the hook with the proper folder path - bypassing student ID
+      // Using 'documents' as a fixed folder name to match the bucket structure
+      await uploadDocument(file, 'documents');
       
       // Mark file as complete
       setUploadingFiles(prev => 
@@ -96,7 +87,7 @@ const FileUploadArea: React.FC<FileUploadAreaProps> = ({ studentId, onUploadSucc
         await handleFileUpload(file);
       }
     }
-  }, [studentId]);
+  }, []);
 
   const { getRootProps, getInputProps, isDragActive } = useDropzone({ 
     onDrop,

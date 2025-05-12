@@ -74,15 +74,24 @@ export const useDocumentUpload = ({ bucketName, onSuccess, onError }: UseDocumen
         progress: 10,
       }));
 
-      // First, ensure the bucket exists
-      const { data: buckets } = await supabase.storage.listBuckets();
-      
-      // Check if our bucket exists
-      const bucketExists = buckets?.some(bucket => bucket.name === bucketName);
-      
-      if (!bucketExists) {
-        console.error(`Bucket ${bucketName} does not exist`);
-        throw new Error(`Storage bucket "${bucketName}" does not exist. Please ensure it's created in Supabase.`);
+      // First check if bucket exists
+      try {
+        // Instead of listing all buckets, directly try to access the bucket
+        const { data: files, error: listError } = await supabase.storage
+          .from(bucketName)
+          .list();
+
+        if (listError) {
+          console.error('Error checking bucket existence:', listError);
+          // If the error is specifically about the bucket not existing
+          if (listError.message.includes('bucket') && listError.message.includes('not exist')) {
+            throw new Error(`Storage bucket "${bucketName}" does not exist or is not accessible. Please check the bucket name and your permissions.`);
+          }
+          throw listError;
+        }
+      } catch (error) {
+        console.error('Error checking bucket:', error);
+        throw error;
       }
 
       // Upload file to Supabase Storage
