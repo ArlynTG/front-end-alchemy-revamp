@@ -1,3 +1,4 @@
+
 import ChatInterface from "@/components/ChatInterface";
 
 export default function ChatPage() {
@@ -8,8 +9,8 @@ export default function ChatPage() {
         <h1 className="text-3xl font-bold text-center text-[#f97316] mb-8">
           Chat with Tobey AI Tutor
         </h1>
-        {/* Chat container with fixed height and shadow */}
-        <div className="h-[600px] bg-white rounded-xl shadow-lg overflow-hidden">
+        {/* Chat container with increased height and shadow */}
+        <div className="h-[750px] bg-white rounded-xl shadow-lg overflow-hidden">
           <ChatInterface />
         </div>
       </div>

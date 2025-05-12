@@ -96,7 +96,7 @@ const StudentDashboard: React.FC = () => {
               </TabsTrigger>
             </TabsList>
             <TabsContent value="chat" className="mt-0">
-              <div className="h-[500px] rounded-xl overflow-hidden border-4 border-purple-300 shadow-lg">
+              <div className="h-[600px] rounded-xl overflow-hidden border-4 border-purple-300 shadow-lg">
                 <ChatContainer />
               </div>
             </TabsContent>
@@ -120,10 +120,10 @@ const StudentDashboard: React.FC = () => {
               <StreakCalendar />
             </motion.div>
             
-            {/* Center Column - Chat */}
+            {/* Center Column - Chat - INCREASED HEIGHT */}
             <motion.div 
               variants={itemVariants}
-              className="col-span-12 lg:col-span-6 h-[600px]"
+              className="col-span-12 lg:col-span-6 h-[750px]"
             >
               <div className="h-full rounded-xl overflow-hidden border-4 border-purple-300 shadow-lg">
                 <ChatContainer />
