@@ -49,7 +49,7 @@ const AccountProfile = () => {
     return (
       <Card>
         <CardHeader>
-          <CardTitle>Personal Information</CardTitle>
+          <CardTitle>Parent Information</CardTitle>
           <CardDescription>Loading your profile information...</CardDescription>
         </CardHeader>
         <CardContent className="flex justify-center py-8">
@@ -62,7 +62,7 @@ const AccountProfile = () => {
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Personal Information</CardTitle>
+        <CardTitle>Parent Information</CardTitle>
         <CardDescription>Update your account details</CardDescription>
       </CardHeader>
       <CardContent>

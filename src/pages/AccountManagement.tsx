@@ -5,6 +5,7 @@ import Navbar from "@/components/Navbar";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import AccountProfile from "@/components/account/AccountProfile";
 import ManageSubscription from "@/components/account/ManageSubscription";
+import StudentProfile from "@/components/account/StudentProfile";
 
 const AccountManagement = () => {
   const [isLoading, setIsLoading] = useState(false);
@@ -32,8 +33,9 @@ const AccountManagement = () => {
               <TabsTrigger value="subscription">Subscription</TabsTrigger>
             </TabsList>
             
-            <TabsContent value="profile" className="space-y-4">
+            <TabsContent value="profile" className="space-y-6">
               <AccountProfile />
+              <StudentProfile />
             </TabsContent>
             
             <TabsContent value="subscription" className="space-y-4">
