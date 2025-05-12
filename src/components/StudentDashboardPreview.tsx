@@ -145,18 +145,18 @@ const StudentDashboardPreview = () => {
           </div>
           <div className="order-2 md:order-2">
             <h2 className="text-3xl md:text-4xl font-bold mb-4 text-black">
-              Personalized Learning.<br/>
-              Engaging Experience.
+              Custom Created.<br/>
+              Crushing Goals.
             </h2>
             <p className="text-lg mb-6 text-gray-700">
-              The student dashboard creates an engaging, personalized learning experience for every child. With interactive elements, achievement tracking, and an intuitive chat interface, students stay motivated and develop confidence in their academic journey.
+              Our student dashboard ignites personalized learning that hooks kids instantly. Bold visuals, real-time achievement tracking, and seamless chat keep students engaged and building academic confidence.
             </p>
             <div className="space-y-4">
               {[
-                "Gamified learning experience with badges and rewards",
-                "Interactive AI tutor available 24/7 for personalized help",
-                "Progress tracking to visualize growth and achievements",
-                "Streak calendar to build consistent learning habits",
+                "Engaging, gamified mechanics—earn badges, unlock rewards, navigating challenges",
+                "24/7 AI tutor delivers help exactly when needed",
+                "Visual progress trackers show concrete growth, not just effort",
+                "Streak system builds iron-clad learning discipline that sticks",
               ].map((feature, index) => (
                 <div key={index} className="flex items-start">
                   <Check className="h-5 w-5 text-green-500 mt-1 flex-shrink-0" />
