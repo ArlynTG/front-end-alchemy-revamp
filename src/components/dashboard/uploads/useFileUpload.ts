@@ -16,7 +16,6 @@ export const useFileUpload = (studentId: string) => {
   const [files, setFiles] = useState<FileRecord[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [uploading, setUploading] = useState(false);
-  const [uploadProgress, setUploadProgress] = useState(0);
 
   // Fetch existing files from Supabase
   const fetchFiles = async () => {
@@ -62,7 +61,6 @@ export const useFileUpload = (studentId: string) => {
     if (!studentId || !files.length) return;
     
     setUploading(true);
-    setUploadProgress(10); // Show some initial progress
     const file = files[0]; // Just handle one file for now
     
     try {
@@ -86,7 +84,6 @@ export const useFileUpload = (studentId: string) => {
       }
       
       console.log("File uploaded to Storage successfully:", storageData);
-      setUploadProgress(60);
       
       // Create a public URL for the file
       const { data: publicUrlData } = await supabase
@@ -116,7 +113,6 @@ export const useFileUpload = (studentId: string) => {
       }
       
       console.log("File record inserted successfully");
-      setUploadProgress(100);
       
       // Success message
       toast({
@@ -137,9 +133,6 @@ export const useFileUpload = (studentId: string) => {
     } finally {
       // Reset upload state
       setUploading(false);
-      setTimeout(() => {
-        setUploadProgress(0);
-      }, 1000);
     }
   };
 
@@ -147,7 +140,6 @@ export const useFileUpload = (studentId: string) => {
     files,
     isLoading,
     uploading,
-    uploadProgress,
     handleFileUpload
   };
 };

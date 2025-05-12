@@ -10,7 +10,7 @@ interface UploadFilesProps {
 }
 
 const UploadFiles: React.FC<UploadFilesProps> = ({ studentId }) => {
-  const { files, isLoading, uploading, uploadProgress, handleFileUpload } = useFileUpload(studentId);
+  const { files, isLoading, uploading, handleFileUpload } = useFileUpload(studentId);
 
   return (
     <div className="bg-white rounded-lg shadow-md p-4 md:p-6">
@@ -22,7 +22,6 @@ const UploadFiles: React.FC<UploadFilesProps> = ({ studentId }) => {
       <UploadArea 
         onFileUpload={handleFileUpload}
         uploading={uploading}
-        uploadProgress={uploadProgress}
       />
       
       {/* File List */}

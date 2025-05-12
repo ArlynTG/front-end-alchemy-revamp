@@ -2,18 +2,15 @@
 import React, { useState } from 'react';
 import { Upload } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { Progress } from '@/components/ui/progress';
 
 interface UploadAreaProps {
   onFileUpload: (files: FileList) => void;
   uploading: boolean;
-  uploadProgress: number;
 }
 
 const UploadArea: React.FC<UploadAreaProps> = ({ 
   onFileUpload, 
-  uploading,
-  uploadProgress
+  uploading
 }) => {
   const [isDragging, setIsDragging] = useState(false);
   
@@ -84,13 +81,6 @@ const UploadArea: React.FC<UploadAreaProps> = ({
         >
           {uploading ? 'Uploading...' : 'Select Files'}
         </Button>
-
-        {uploading && uploadProgress > 0 && (
-          <div className="w-full mt-4">
-            <Progress value={uploadProgress} className="h-2" />
-            <p className="text-xs text-gray-500 mt-1">{uploadProgress}% complete</p>
-          </div>
-        )}
       </div>
     </div>
   );
