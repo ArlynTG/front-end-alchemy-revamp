@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
@@ -20,7 +19,6 @@ const learningDifferenceOptions = [
   { value: "Executive_Functioning", label: "Executive Functioning" },
   { value: "Self_Advocacy", label: "Self Advocacy" }, // New
   { value: "Processing_Speed", label: "Processing Speed" }, // New
-  { value: "Autism", label: "Autism" }
 ];
 
 interface BetaSignupFormProps {

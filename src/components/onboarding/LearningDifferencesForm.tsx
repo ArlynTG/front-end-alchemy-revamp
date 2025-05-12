@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Check, X } from "lucide-react";
@@ -45,11 +44,6 @@ const availableDifferences: { value: LearningDifference; label: string; descript
     value: "Processing_Speed", 
     label: "Processing Speed", 
     description: "Takes longer to take in, process, and respond to information, affecting the pace of learning and task completion" 
-  },
-  { 
-    value: "Autism", 
-    label: "Autism", 
-    description: "Neurodevelopmental condition affecting social interaction, communication, and behavior patterns" 
   },
 ];
 

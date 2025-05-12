@@ -1,4 +1,3 @@
-
 import { Control, UseFormHandleSubmit } from "react-hook-form";
 import { Button } from "@/components/ui/button";
 import { Form } from "@/components/ui/form";
@@ -19,7 +18,6 @@ const learningDifferenceOptions = [
   { value: "Executive_Functioning", label: "Executive Functioning" },
   { value: "Self_Advocacy", label: "Self Advocacy" }, // New
   { value: "Processing_Speed", label: "Processing Speed" }, // New
-  { value: "Autism", label: "Autism" }
 ];
 
 interface RegistrationDetailsFormProps {

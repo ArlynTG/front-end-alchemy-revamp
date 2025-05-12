@@ -16,7 +16,7 @@ export const detailedSignupSchema = baseSignupSchema.extend({
   studentAge: z.string().min(1, "Student's age is required"),
   primaryLearningDifference: z.enum([
     'ADHD', 'Dyslexia', 'Dyscalculia', 'Auditory Processing', 'Executive_Functioning', 
-    'Self_Advocacy', 'Processing_Speed', 'Autism'
+    'Self_Advocacy', 'Processing_Speed'
   ] as [LearningDifference, ...LearningDifference[]]).optional(),
 });
 
@@ -30,7 +30,7 @@ export const registrationSchema = z.object({
   studentAge: z.string().min(1, "Student's age is required"),
   primaryLearningDifference: z.enum([
     'ADHD', 'Dyslexia', 'Dyscalculia', 'Auditory Processing', 'Executive_Functioning',
-    'Self_Advocacy', 'Processing_Speed', 'Autism'
+    'Self_Advocacy', 'Processing_Speed'
   ] as [LearningDifference, ...LearningDifference[]]).optional(),
 });
 

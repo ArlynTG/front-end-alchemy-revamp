@@ -1,16 +1,15 @@
 
 import { Database } from "@/integrations/supabase/types";
 
-// Updated learning difference type that includes all our values
+// Updated learning difference type that includes all our values except Autism
 export type LearningDifference = 
   | 'ADHD'
   | 'Dyslexia'
-  | 'Dyscalculia' // Replaced Dysgraphia
+  | 'Dyscalculia'
   | 'Executive_Functioning'
-  | 'Autism'
-  | 'Self_Advocacy' // New
-  | 'Processing_Speed' // New
-  | 'Auditory Processing'; // Existing
+  | 'Self_Advocacy'
+  | 'Processing_Speed'
+  | 'Auditory Processing';
 
 export interface OnboardingFormValues {
   firstName: string;
