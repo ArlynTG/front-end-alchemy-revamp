@@ -18,6 +18,7 @@ import { ProtectedRoute } from './components/ProtectedRoute';
 import { supabase } from './integrations/supabase/client';
 import ParentDashboardV2 from './pages/ParentDashboardV2';
 import Index from './pages/Index';
+import AccountManagement from './pages/AccountManagement';
 
 function App() {
   const { isLoggedIn, setIsLoggedIn, setUser } = useAuth();
@@ -67,6 +68,11 @@ function App() {
       <Route path="/onboarding" element={
         <ProtectedRoute isLoggedIn={isLoggedIn}>
           <Onboarding />
+        </ProtectedRoute>
+      } />
+      <Route path="/account" element={
+        <ProtectedRoute isLoggedIn={isLoggedIn}>
+          <AccountManagement />
         </ProtectedRoute>
       } />
       <Route path="/parent-dashboard" element={
