@@ -22,6 +22,7 @@ const ParentDashboard = lazy(() => import("./pages/ParentDashboard"));
 const ParentDashboardV2 = lazy(() => import("./pages/ParentDashboardV2"));
 const StudentDashboard = lazy(() => import("./pages/StudentDashboard"));
 const AccountManagement = lazy(() => import("./pages/AccountManagement"));
+const Onboarding = lazy(() => import("./pages/Onboarding"));
 
 // Create a reusable loading component
 const PageLoader = () => (
@@ -74,6 +75,7 @@ const App = () => (
             <Route path="/parent-dashboard-v2" element={<ParentDashboardV2 />} />
             <Route path="/student-dashboard" element={<StudentDashboard />} />
             <Route path="/account-management" element={<AccountManagement />} />
+            <Route path="/onboarding" element={<Onboarding />} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
           </Routes>
