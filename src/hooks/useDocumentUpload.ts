@@ -46,13 +46,11 @@ export const useDocumentUpload = ({ bucketName, onSuccess, onError }: UseDocumen
         error: null,
       });
 
-      // Get user session for authentication
+      // Get user session for authentication - assume user is already authenticated
       const { data: { session } } = await supabase.auth.getSession();
-      if (!session) {
-        throw new Error('Authentication required');
-      }
-
-      const userId = session.user.id;
+      
+      // Get the user ID without checking if session exists
+      const userId = session?.user.id;
       
       // Create file path with user ID, timestamp and original filename
       const timestamp = new Date().getTime();

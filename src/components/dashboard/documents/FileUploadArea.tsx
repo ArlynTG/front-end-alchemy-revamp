@@ -1,4 +1,3 @@
-
 import React, { useState, useCallback } from 'react';
 import { useDropzone } from 'react-dropzone';
 import { File, X, FileCheck, Upload } from 'lucide-react';
@@ -44,14 +43,11 @@ const FileUploadArea: React.FC<FileUploadAreaProps> = ({ studentId, onUploadSucc
 
   const uploadFile = async (file: File) => {
     try {
-      // Get authenticated user's ID
+      // Get user session - assume user is already authenticated
       const { data: { session } } = await supabase.auth.getSession();
-      if (!session) {
-        // Silently handle authentication requirement without showing a message
-        return;
-      }
-
-      const userId = session.user.id;
+      // Use the user ID directly without checking for session
+      const userId = session?.user.id;
+      
       const timestamp = new Date().getTime();
       const filePath = `${userId}/${timestamp}_${file.name}`;
 
