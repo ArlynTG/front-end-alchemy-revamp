@@ -5,6 +5,7 @@ import { File, X, FileCheck, Upload } from 'lucide-react';
 import { Progress } from '@/components/ui/progress';
 import { toast } from '@/hooks/use-toast';
 import { useDocumentUpload } from '@/hooks/useDocumentUpload';
+import { supabase } from '@/integrations/supabase/client';
 
 interface FileUploadAreaProps {
   studentId: string;
@@ -30,7 +31,7 @@ const FileUploadArea: React.FC<FileUploadAreaProps> = ({ studentId, onUploadSucc
   // Check if file is valid (type and size)
   const validateFile = (file: File) => {
     const validTypes = ['application/pdf', 'application/msword', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document', 'image/jpeg', 'image/png'];
-    const maxSize = 5 * 1024 * 1024; // 5MB
+    const maxSize = 10 * 1024 * 1024; // 10MB - increased from 5MB
 
     if (!validTypes.includes(file.type)) {
       toast({
@@ -44,7 +45,7 @@ const FileUploadArea: React.FC<FileUploadAreaProps> = ({ studentId, onUploadSucc
     if (file.size > maxSize) {
       toast({
         title: "File too large",
-        description: "File size must be less than 5MB.",
+        description: "File size must be less than 10MB.",
         variant: "destructive"
       });
       return false;
@@ -55,11 +56,20 @@ const FileUploadArea: React.FC<FileUploadAreaProps> = ({ studentId, onUploadSucc
 
   const handleFileUpload = async (file: File) => {
     try {
+      // Get current user session to use as folder if possible
+      const { data: { session } } = await supabase.auth.getSession();
+      
+      // Use the user ID directly without checking for session
+      const userId = session?.user?.id;
+      
+      // If no userId is available, generate a temporary one for the upload
+      const uploadId = userId || `temp-${Date.now()}`;
+      
       // Add file to uploading files list
       setUploadingFiles(prev => [...prev, { name: file.name, progress: 0, complete: false }]);
       
-      // Upload file using the hook
-      await uploadDocument(file);
+      // Upload file using the hook with the proper folder path
+      await uploadDocument(file, uploadId);
       
       // Mark file as complete
       setUploadingFiles(prev => 
@@ -76,6 +86,7 @@ const FileUploadArea: React.FC<FileUploadAreaProps> = ({ studentId, onUploadSucc
     } catch (error) {
       // Remove failed file from list
       setUploadingFiles(prev => prev.filter(f => f.name !== file.name));
+      console.error('Error uploading file:', error);
     }
   };
 
@@ -117,7 +128,7 @@ const FileUploadArea: React.FC<FileUploadAreaProps> = ({ studentId, onUploadSucc
             Click to upload or drag files here
           </p>
           <p className="text-xs text-gray-500">
-            Supported formats: PDF, DOC, DOCX, JPG, PNG (Max: 5MB)
+            Supported formats: PDF, DOC, DOCX, JPG, PNG (Max: 10MB)
           </p>
         </div>
       </div>

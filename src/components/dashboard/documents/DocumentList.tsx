@@ -49,20 +49,26 @@ const DocumentList: React.FC<DocumentListProps> = ({ studentId, refreshTrigger }
         
         // Get user session to retrieve user ID
         const { data: { session } } = await supabase.auth.getSession();
+        
+        // Directly use the session without showing any error
         const userId = session?.user?.id;
         
         // Use a default path if no userId is available (for testing)
+        // This will let us see documents even without authentication
         const path = userId || 'temp';
         console.log('Using storage path:', path);
         
-        // Check if the documents bucket exists first
-        const { data: bucketData, error: bucketError } = await supabase.storage.getBucket('documents');
+        // First check if bucket exists before proceeding
+        const { data: buckets } = await supabase.storage.listBuckets();
         
-        if (bucketError) {
-          console.error('Bucket error:', bucketError);
+        // Check if our bucket exists
+        const bucketExists = buckets?.some(bucket => bucket.name === 'documents');
+        
+        if (!bucketExists) {
+          console.error('Bucket "documents" does not exist');
           toast({
-            title: "Storage issue",
-            description: "Could not access document storage",
+            title: "Storage configuration issue",
+            description: "Document storage is not properly configured",
             variant: "destructive"
           });
           setDocuments([]);

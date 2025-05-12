@@ -23,10 +23,10 @@ export const useDocumentUpload = ({ bucketName, onSuccess, onError }: UseDocumen
   });
 
   const uploadDocument = async (file: File, folderPath?: string) => {
-    // Validate file size
-    const maxSize = 5 * 1024 * 1024; // 5MB
+    // Validate file size - increased to 10MB
+    const maxSize = 10 * 1024 * 1024; // 10MB
     if (file.size > maxSize) {
-      const sizeError = new Error('File size must be less than 5MB');
+      const sizeError = new Error('File size must be less than 10MB');
       setUploadState({
         progress: 0,
         uploading: false,
@@ -36,6 +36,12 @@ export const useDocumentUpload = ({ bucketName, onSuccess, onError }: UseDocumen
       if (onError) {
         onError(sizeError);
       }
+      
+      toast({
+        title: "File too large",
+        description: "File size must be less than 10MB",
+        variant: "destructive"
+      });
       
       throw sizeError;
     }
@@ -68,14 +74,15 @@ export const useDocumentUpload = ({ bucketName, onSuccess, onError }: UseDocumen
         progress: 10,
       }));
 
-      // Check if bucket exists before upload
-      const { data: bucketData, error: bucketError } = await supabase
-        .storage
-        .getBucket(bucketName);
-
-      if (bucketError) {
-        console.error('Bucket error:', bucketError);
-        throw new Error(`Bucket ${bucketName} does not exist or is not accessible`);
+      // First, ensure the bucket exists
+      const { data: buckets } = await supabase.storage.listBuckets();
+      
+      // Check if our bucket exists
+      const bucketExists = buckets?.some(bucket => bucket.name === bucketName);
+      
+      if (!bucketExists) {
+        console.error(`Bucket ${bucketName} does not exist`);
+        throw new Error(`Storage bucket "${bucketName}" does not exist. Please ensure it's created in Supabase.`);
       }
 
       // Upload file to Supabase Storage
@@ -83,7 +90,7 @@ export const useDocumentUpload = ({ bucketName, onSuccess, onError }: UseDocumen
         .from(bucketName)
         .upload(filePath, file, {
           cacheControl: '3600',
-          upsert: false
+          upsert: true // Changed to true to replace existing files with same name
         });
 
       if (error) {
