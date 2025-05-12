@@ -52,18 +52,22 @@ export const useDocumentUpload = ({ bucketName, onSuccess, onError }: UseDocumen
         uploading: true,
         error: null,
       });
-
-      // Get user session to get authenticated user id
+      
+      // Check authentication explicitly
       const { data: { session } } = await supabase.auth.getSession();
+      if (!session) {
+        throw new Error('Authentication required - please log in');
+      }
       
-      // Use either the provided userUuid, the session user id, or generate a temporary ID
-      const uuid = userUuid || session?.user?.id || `temp-${Date.now()}`;
+      // Use a more reliable UUID source
+      const uuid = userUuid || session?.user?.id;
+      if (!uuid) {
+        throw new Error('Missing user ID for upload path');
+      }
       
-      // Clean the filename and create the path in the format /{uuid}/{filename}
-      const cleanFileName = file.name.replace(/[^a-zA-Z0-9._-]/g, '_');
-      const filePath = `${uuid}/${cleanFileName}`;
-
-      console.log(`Uploading to bucket: ${bucketName}, file path: ${filePath}`);
+      // Simplify file path
+      const filePath = `${uuid}/${file.name}`;
+      console.log(`Starting upload to ${bucketName}/${filePath}`);
 
       // Set initial progress
       setUploadState(prev => ({
@@ -83,6 +87,8 @@ export const useDocumentUpload = ({ bucketName, onSuccess, onError }: UseDocumen
         console.error('Upload error:', error);
         throw error;
       }
+
+      console.log('Upload successful:', data);
 
       // Upload complete - set progress to 100%
       setUploadState({
