@@ -1,3 +1,4 @@
+
 import React, { useRef, KeyboardEvent, useState } from "react";
 import { Mic, Send, Loader2, Paperclip } from "lucide-react";
 
@@ -18,8 +19,8 @@ const ChatInputArea: React.FC<ChatInputAreaProps> = ({
 }) => {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [isListening, setIsListening] = useState(false);
-  // Using the correct type reference for SpeechRecognition
-  const recognitionRef = useRef<SpeechRecognition | null>(null);
+  // Using a type reference that works with our global.d.ts
+  const recognitionRef = useRef<globalThis.SpeechRecognition | null>(null);
 
   const handleKeyDown = (e: KeyboardEvent<HTMLTextAreaElement>) => {
     if (e.key === 'Enter' && !e.shiftKey) {
@@ -99,7 +100,7 @@ const ChatInputArea: React.FC<ChatInputAreaProps> = ({
           onKeyDown={handleKeyDown}
           disabled={isLoading}
           rows={1}
-          placeholder="Ask Tobey anything..."
+          placeholder="Ask Kai anything..."
           className="flex-1 w-full resize-none border rounded-lg px-3 py-2 pr-10 focus:outline-none focus:ring-2 focus:ring-[#f97316]"
           aria-label="Chat input"
         />

@@ -43,7 +43,7 @@ const mockConversation: Message[] = [
   {
     id: "ai3",
     sender: "assistant",
-    text: "You're on fire today! 🔥 Let's solve 2/3 ÷ 4/5:\n\n1. Keep: 2/3\n2. Change: × \n3. Flip: 4/5 becomes 5/4\n\nSo 2/3 ÷ 4/5 = 2/3 × 5/4 = 10/12 = 5/6\n\nExcellent work! Your persistence is really paying off. I'm proud of how you're tackling these problems!"
+    text: "Kai...\nYou're on fire today! 🔥 Let's solve 2/3 ÷ 4/5:\n\n1. Keep: 2/3\n2. Change: × \n3. Flip: 4/5 becomes 5/4\n\nSo 2/3 ÷ 4/5 = 2/3 × 5/4 = 10/12 = 5/6\n\nExcellent work! Your persistence is really paying off. I'm proud of how you're tackling these problems!"
   }
 ];
 
@@ -115,10 +115,14 @@ const ChatMessages: React.FC<ChatMessagesProps> = ({ messages, isLoading }) => {
                 <span>You</span>
               ) : (
                 <div className="flex items-center justify-between w-full">
-                  <span>Tobey</span>
+                  <span>Kai</span>
                   <button 
                     onClick={() => speakMessage(msg.text, msg.id)}
-                    className={`p-1 rounded-full ${isSpeaking === msg.id ? 'bg-purple-200 text-purple-700' : 'text-gray-500 hover:bg-gray-200'}`}
+                    className={`p-1 rounded-full ${
+                      isSpeaking === msg.id 
+                      ? 'bg-[#f97316] text-white' 
+                      : 'text-[#f97316] hover:bg-orange-100'
+                    }`}
                     aria-label="Text to speech"
                   >
                     <Speaker className="h-4 w-4" />
@@ -130,7 +134,7 @@ const ChatMessages: React.FC<ChatMessagesProps> = ({ messages, isLoading }) => {
           </div>
         </div>
       ))}
-      {isLoading && <div className="text-gray-500 italic text-center">Tobey is typing...</div>}
+      {isLoading && <div className="text-gray-500 italic text-center">Kai is typing...</div>}
     </div>
   );
 };
