@@ -29,7 +29,7 @@ export const pricingPlans: PricingPlan[] = [
       "Access to \"Different Minds, Brilliant Futures\" — our research-backed weekly newsletter on breakthrough approaches for children with learning differences"
     ],
     highlighted: false,
-    disabled: true  // This was already true, but making it explicit
+    disabled: true
   },
   {
     id: "annual",

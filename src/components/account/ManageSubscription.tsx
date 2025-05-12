@@ -19,11 +19,11 @@ const ManageSubscription = () => {
 
   // Mock data - in real app would come from API
   const subscriptionData = {
-    plan: "Monthly",
-    price: "$79.99",
+    plan: "Early Adopter Plan",
+    price: "$29.00",
     nextBilling: addDays(new Date(), 15),
     status: "active",
-    trialEnd: addDays(new Date(), 10),
+    trialEnd: addDays(new Date(), 7),
     isInTrial: true,
   };
 
@@ -128,7 +128,7 @@ const ManageSubscription = () => {
           <div className="rounded-lg border border-dashed p-4 bg-gray-50">
             <h3 className="font-semibold mb-2">Upgrade to Annual Plan</h3>
             <p className="text-sm text-gray-600 mb-4">
-              Save 15% by switching to our annual billing plan at $814 per year.
+              Save 16% by switching to our annual billing plan at $390 per year.
             </p>
             <Button 
               onClick={handleUpgrade} 
