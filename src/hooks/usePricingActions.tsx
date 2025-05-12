@@ -1,32 +1,20 @@
 
-import { useEffect, useState } from 'react';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 
-interface PricingActions {
-  openEarlyAdopterSignup: () => void;
-}
-
-/**
- * Hook for accessing pricing actions from anywhere in the app
- */
-export const usePricingActions = (): PricingActions => {
-  const location = useLocation();
+export const usePricingActions = () => {
   const navigate = useNavigate();
-  
+
   const openEarlyAdopterSignup = () => {
-    // If we're not on the homepage, navigate there first and add a flag in the URL
-    if (location.pathname !== '/') {
-      window.location.href = '/?openEarlyAdopter=true#pricing';
-      return;
-    }
-    
-    // Scroll to pricing section
+    // Find the pricing section
     const pricingSection = document.getElementById('pricing');
+    
+    // If we're on the homepage and find the pricing section, scroll to it
     if (pricingSection) {
       pricingSection.scrollIntoView({ behavior: 'smooth' });
       
-      // Find the early adopter card and trigger its button
+      // Add small delay to ensure scrolling is complete
       setTimeout(() => {
+        // Find the early adopter card and trigger its button
         const earlyAdopterCard = document.querySelector('[data-plan-id="early-adopter"]');
         if (earlyAdopterCard) {
           const button = earlyAdopterCard.querySelector('button');
@@ -34,20 +22,13 @@ export const usePricingActions = (): PricingActions => {
             button.click();
           }
         }
-      }, 500); // Small delay to allow for scrolling
+      }, 500);
+    } else {
+      // Navigate to homepage with pricing anchor
+      navigate('/#pricing');
     }
   };
-  
-  // Check if we have the URL parameter to open the early adopter modal
-  useEffect(() => {
-    if (location.pathname === '/' && location.search.includes('openEarlyAdopter=true')) {
-      // Small delay to ensure the pricing section is fully loaded
-      setTimeout(() => {
-        openEarlyAdopterSignup();
-      }, 300);
-    }
-  }, [location.pathname, location.search]);
-  
+
   return {
     openEarlyAdopterSignup
   };

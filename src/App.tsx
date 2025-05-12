@@ -16,7 +16,6 @@ import PasswordReset from './pages/PasswordReset';
 import { useAuth } from './contexts/AuthContext';
 import { ProtectedRoute } from './components/ProtectedRoute';
 import { supabase } from './integrations/supabase/client';
-import { Toast } from '@/components/ui/toast';
 import ParentDashboardV2 from './pages/ParentDashboardV2';
 
 function App() {
@@ -83,7 +82,6 @@ function App() {
       <Route path="/cookies" element={<CookiePolicy />} />
       <Route path="/contact" element={<Contact />} />
       <Route path="*" element={<NotFound />} />
-      <Route path="/parent-dashboard" element={<ParentDashboard />} />
       <Route path="/parent-dashboard-v2" element={<ParentDashboardV2 />} />
     </Routes>
   );

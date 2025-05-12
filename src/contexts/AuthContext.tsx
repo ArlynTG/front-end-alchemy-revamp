@@ -1,7 +1,6 @@
 
-import React, { createContext, useContext, useState, ReactNode } from 'react';
-
-type User = any; // Replace with your actual user type
+import React, { createContext, useState, useContext, ReactNode } from 'react';
+import { User } from '@supabase/supabase-js';
 
 interface AuthContextType {
   isLoggedIn: boolean;
@@ -10,15 +9,18 @@ interface AuthContextType {
   setUser: (user: User | null) => void;
 }
 
-const AuthContext = createContext<AuthContextType>({
-  isLoggedIn: false,
-  user: null,
-  setIsLoggedIn: () => {},
-  setUser: () => {},
-});
+const AuthContext = createContext<AuthContextType | undefined>(undefined);
+
+export const useAuth = (): AuthContextType => {
+  const context = useContext(AuthContext);
+  if (context === undefined) {
+    throw new Error('useAuth must be used within an AuthProvider');
+  }
+  return context;
+};
 
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
-  const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [user, setUser] = useState<User | null>(null);
 
   return (
@@ -27,5 +29,3 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     </AuthContext.Provider>
   );
 };
-
-export const useAuth = () => useContext(AuthContext);
