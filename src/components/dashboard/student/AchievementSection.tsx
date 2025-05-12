@@ -2,8 +2,9 @@
 import React from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Award } from "lucide-react";
+import { Award, Star } from "lucide-react";
 import { motion } from "framer-motion";
+import { BadgeIcon } from "../dashboard/badges/BadgeIcon";
 
 const AchievementSection: React.FC = () => {
   // Sample achievements
@@ -15,49 +16,41 @@ const AchievementSection: React.FC = () => {
   
   // Sample badges with different levels
   const badges = [
-    { name: "Reading", level: "Gold", color: "bg-amber-500" },
-    { name: "Math", level: "Silver", color: "bg-gray-300" },
-    { name: "Writing", level: "Bronze", color: "bg-amber-700" },
-    { name: "Focus", level: "Diamond", color: "bg-blue-300" },
-    { name: "Creativity", level: "Gold", color: "bg-amber-500" },
-    { name: "Problem Solving", level: "Silver", color: "bg-gray-300" },
+    { name: "Reading Rockstar", level: "Gold", color: "bg-amber-500" },
+    { name: "Math Mastermind", level: "Silver", color: "bg-gray-300" },
+    { name: "Wordsmith Wizard", level: "Bronze", color: "bg-amber-700" },
+    { name: "Focus & Stamina", level: "Diamond", color: "bg-blue-300" },
+    { name: "Creative Spark", level: "Gold", color: "bg-amber-500" },
+    { name: "Problem Solver", level: "Silver", color: "bg-gray-300" },
   ];
 
-  // Get badge color based on level
-  const getBadgeColor = (level: string) => {
-    switch (level.toLowerCase()) {
-      case 'gold': return 'bg-amber-500';
-      case 'silver': return 'bg-gray-300';
-      case 'bronze': return 'bg-amber-700';
-      case 'diamond': return 'bg-blue-300';
-      case 'platinum': return 'bg-purple-300';
-      default: return 'bg-gray-200';
-    }
-  };
-
   return (
-    <Card className="h-full">
-      <CardHeader>
-        <CardTitle className="flex items-center text-lg">
-          <Award className="h-5 w-5 mr-2 text-amber-500" />
-          Your Achievements
+    <Card className="h-full border-4 border-purple-200 bg-purple-50">
+      <CardHeader className="bg-gradient-to-r from-purple-200 to-blue-200 rounded-t-lg">
+        <CardTitle className="flex items-center text-lg font-bold text-purple-900">
+          <Award className="h-6 w-6 mr-2 text-amber-500" />
+          Your Cool Achievements
         </CardTitle>
       </CardHeader>
-      <CardContent className="space-y-6">
+      <CardContent className="space-y-6 p-6">
         <div>
-          <h3 className="text-sm font-medium mb-2">Recent Wins</h3>
-          <div className="space-y-2">
+          <h3 className="text-base font-bold mb-3 text-purple-800 flex items-center">
+            <Star className="h-5 w-5 mr-2 text-yellow-500" />
+            Recent Wins
+          </h3>
+          <div className="space-y-3">
             {recentAchievements.map((achievement) => (
               <motion.div 
                 key={achievement.id}
-                className="flex items-center justify-between p-2 bg-gray-50 rounded-lg"
-                whileHover={{ scale: 1.01 }}
+                className="flex items-center justify-between p-3 bg-white rounded-lg border-2 border-purple-200"
+                whileHover={{ scale: 1.02 }}
+                whileTap={{ scale: 0.98 }}
               >
                 <div>
-                  <p className="font-medium text-sm">{achievement.name}</p>
-                  <p className="text-xs text-gray-500">{achievement.date}</p>
+                  <p className="font-medium text-base">{achievement.name}</p>
+                  <p className="text-sm text-gray-500">{achievement.date}</p>
                 </div>
-                <Badge variant="outline" className="bg-green-50 text-green-700 border-green-200">
+                <Badge variant="outline" className="bg-green-100 text-green-700 border-green-200 text-sm px-3">
                   New!
                 </Badge>
               </motion.div>
@@ -66,31 +59,40 @@ const AchievementSection: React.FC = () => {
         </div>
 
         <div>
-          <h3 className="text-sm font-medium mb-3">Your Badges</h3>
-          <div className="grid grid-cols-3 gap-2">
+          <h3 className="text-base font-bold mb-3 text-purple-800 flex items-center">
+            <Award className="h-5 w-5 mr-2 text-amber-500" />
+            Your Awesome Badges
+          </h3>
+          <div className="grid grid-cols-3 gap-3">
             {badges.map((badge, i) => (
               <motion.div
                 key={i}
-                className="flex flex-col items-center"
+                className="flex flex-col items-center bg-white p-3 rounded-lg shadow-sm border-2 border-blue-100"
                 initial={{ opacity: 0, scale: 0.8 }}
                 animate={{ opacity: 1, scale: 1 }}
                 transition={{ delay: i * 0.1 }}
-                whileHover={{ scale: 1.1 }}
+                whileHover={{ y: -5, transition: { duration: 0.2 } }}
               >
-                <div className={`w-10 h-10 rounded-full ${badge.color} flex items-center justify-center mb-1`}>
-                  <span className="text-white text-xs font-bold">{badge.level.charAt(0)}</span>
+                <div className="mb-2">
+                  <BadgeIcon name={badge.name} level={badge.level} size="h-10 w-10" />
                 </div>
-                <span className="text-xs text-center">{badge.name}</span>
+                <span className="text-sm font-medium text-center">{badge.name}</span>
+                <Badge variant="outline" className="mt-1 bg-amber-50 border-amber-200 text-amber-700">
+                  {badge.level}
+                </Badge>
               </motion.div>
             ))}
           </div>
         </div>
 
-        <div className="text-center pt-2">
-          <button className="text-sm text-blue-600 hover:underline">
-            View All Achievements
+        <motion.div 
+          className="text-center pt-3"
+          whileHover={{ scale: 1.05 }}
+        >
+          <button className="text-sm bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-full font-medium shadow-md">
+            See All Your Badges
           </button>
-        </div>
+        </motion.div>
       </CardContent>
     </Card>
   );
