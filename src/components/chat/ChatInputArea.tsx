@@ -19,7 +19,7 @@ const ChatInputArea: React.FC<ChatInputAreaProps> = ({
 }) => {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [isListening, setIsListening] = useState(false);
-  // Using the correct type reference for SpeechRecognition
+  // Reference the SpeechRecognition interface that's defined in the global.d.ts file
   const recognitionRef = useRef<SpeechRecognition | null>(null);
 
   const handleKeyDown = (e: KeyboardEvent<HTMLTextAreaElement>) => {
