@@ -69,6 +69,31 @@ export const useFileUpload = (studentId: string) => {
     
     try {
       console.log("Starting upload process for file:", file.name);
+      console.log("File details:", {
+        name: file.name,
+        type: file.type,
+        size: `${(file.size / 1024).toFixed(2)} KB`
+      });
+      
+      // Check if the bucket exists and is accessible
+      const { data: bucketData, error: bucketError } = await supabase
+        .storage
+        .getBucket('documents');
+        
+      if (bucketError) {
+        console.error("Storage bucket error:", bucketError);
+        if (bucketError.message.includes("does not exist")) {
+          console.error("The 'documents' bucket does not exist in Supabase storage");
+          toast({
+            title: "Storage Configuration Error",
+            description: "The storage bucket for documents is not properly configured",
+            variant: "destructive"
+          });
+          throw new Error("Storage bucket configuration error");
+        }
+      } else {
+        console.log("Bucket exists:", bucketData);
+      }
       
       // Generate a unique file path
       const filePath = `${studentId}/${Date.now()}_${file.name}`;
@@ -93,18 +118,13 @@ export const useFileUpload = (studentId: string) => {
       
       // Create a public URL for the file
       console.log("Creating signed URL for the file...");
-      const { data: publicUrlData, error: urlError } = await supabase
+      const { data: publicUrlData } = await supabase
         .storage
         .from('documents')
-        .createSignedUrl(filePath, 60 * 60 * 24 * 365); // 1 year expiration
+        .getPublicUrl(filePath);
       
-      if (urlError) {
-        console.error("Error creating signed URL:", urlError);
-        throw urlError;
-      }
-      
-      const fileUrl = publicUrlData?.signedUrl || null;
-      console.log("File URL generated:", fileUrl);
+      const fileUrl = publicUrlData?.publicUrl || null;
+      console.log("File public URL generated:", fileUrl);
       
       // Insert record to uploads table
       console.log("Inserting record into uploads table...");
@@ -132,7 +152,7 @@ export const useFileUpload = (studentId: string) => {
       // Success message
       toast({
         title: "Upload Successful",
-        description: "File has been uploaded to your academic records",
+        description: "File has been uploaded to academic records",
       });
       
     } catch (err) {
