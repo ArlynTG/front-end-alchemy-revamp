@@ -62,10 +62,10 @@ const StudentDashboard: React.FC = () => {
           </div>
         </motion.div>
         
-        {/* Beta Preview Banner */}
+        {/* Beta Preview Banner - Updated text */}
         <div className="w-full bg-gradient-to-r from-purple-500 to-pink-500 rounded-lg p-4 mb-6">
           <p className="text-center text-white font-bold text-lg md:text-xl">
-            🚀 AWESOME! You're one of the first to see the Student Dashboard 🎉
+            🚀SNEAK PEAK: This is a preview of the Student Dashboard. Available June 2025🎉
           </p>
         </div>
 
