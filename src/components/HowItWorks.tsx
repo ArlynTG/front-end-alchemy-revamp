@@ -171,7 +171,7 @@ const HowItWorks = () => {
             Smarter Learning. Brighter Futures.
           </h2>
           <p ref={descriptionRef} className="max-w-3xl mx-auto text-lg text-gray-600 opacity-0">
-            Our patent-pending platform uses advanced AI to create highly personalized learning plans that actually work for your child. The technology is complex, but seeing improvement is as easy as 1-2-3.
+            Our patent-pending AI system creates personalized learning plans to achieve longterm goals. The technology is complex. Getting results is as easy as 1-2-3.
           </p>
         </div>
         
