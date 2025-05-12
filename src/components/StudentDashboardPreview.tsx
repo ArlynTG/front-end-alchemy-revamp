@@ -7,11 +7,7 @@ import { Link, useNavigate } from "react-router-dom";
 
 const StudentDashboardPreview = () => {
   const [isVisible, setIsVisible] = useState(false);
-  const [hasScrolledOnce, setHasScrolledOnce] = useState(false);
   const sectionRef = useRef<HTMLElement>(null);
-  const scrollAreaRef = useRef<HTMLDivElement>(null);
-  const imageRef = useRef<HTMLImageElement>(null);
-  const scrollAnimationRef = useRef<number | null>(null);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -23,7 +19,6 @@ const StudentDashboardPreview = () => {
           console.log("Student Dashboard component is now visible");
         }
       },
-      // More aggressive threshold and margin for earlier animation triggering
       { threshold: 0.05, rootMargin: "0px 0px -50px 0px" }
     );
     
@@ -38,67 +33,6 @@ const StudentDashboardPreview = () => {
       }
     };
   }, []);
-
-  // Auto-scroll animation when component is visible - only scroll once
-  useEffect(() => {
-    const scrollImage = () => {
-      if (!imageRef.current || !scrollAreaRef.current || !isVisible || hasScrolledOnce) return;
-      
-      const scrollContainer = scrollAreaRef.current.querySelector('[data-radix-scroll-area-viewport]');
-      if (!scrollContainer) return;
-
-      // Get the total scrollable height
-      const scrollHeight = imageRef.current.scrollHeight - scrollContainer.clientHeight;
-      
-      // Scroll speed (pixels per animation frame)
-      const scrollSpeed = 0.5;
-      
-      // Current scroll position
-      let currentScroll = scrollContainer.scrollTop;
-      let hasReachedBottom = false;
-      
-      // Animation function
-      const animate = () => {
-        if (!isVisible) return;
-        
-        if (currentScroll >= scrollHeight) {
-          // Stop animation when reaching the bottom
-          hasReachedBottom = true;
-          setHasScrolledOnce(true);
-          return;
-        }
-        
-        // Increment scroll position
-        currentScroll += scrollSpeed;
-        
-        // Apply scroll
-        if (scrollContainer) {
-          scrollContainer.scrollTop = currentScroll;
-        }
-        
-        // Continue animation only if we haven't reached the bottom
-        if (!hasReachedBottom) {
-          scrollAnimationRef.current = requestAnimationFrame(animate);
-        }
-      };
-      
-      // Start animation
-      scrollAnimationRef.current = requestAnimationFrame(animate);
-    };
-
-    // Start scrolling when component becomes visible and hasn't scrolled yet
-    if (isVisible && !hasScrolledOnce) {
-      scrollImage();
-    }
-
-    // Cleanup animation on unmount or when not visible
-    return () => {
-      if (scrollAnimationRef.current) {
-        cancelAnimationFrame(scrollAnimationRef.current);
-        scrollAnimationRef.current = null;
-      }
-    };
-  }, [isVisible, hasScrolledOnce]);
 
   const handleImageClick = () => {
     navigate('/student-dashboard');
@@ -128,7 +62,6 @@ const StudentDashboardPreview = () => {
                 ? "opacity-100 translate-y-0 scale-100" 
                 : "opacity-0 translate-y-32 scale-95"
             }`}
-            ref={scrollAreaRef}
             onClick={handleImageClick}
             role="button"
             tabIndex={0}
@@ -139,14 +72,11 @@ const StudentDashboardPreview = () => {
               <div className={`absolute inset-0 bg-gradient-to-b from-purple-500/30 to-transparent ${
                 isVisible ? "animate-fade-in" : "opacity-0"
               }`}></div>
-              <ScrollArea className="h-[500px] bg-white rounded-xl">
-                <img 
-                  ref={imageRef}
-                  src="/lovable-uploads/89c797ba-8f21-4bb2-add3-143aa5485688.png" 
-                  alt="Student Dashboard Interface" 
-                  className="object-contain w-full"
-                />
-              </ScrollArea>
+              <img 
+                src="/lovable-uploads/89c797ba-8f21-4bb2-add3-143aa5485688.png" 
+                alt="Student Dashboard Interface" 
+                className="w-full h-auto object-cover"
+              />
             </div>
           </div>
           <div className="order-2 md:order-2">
