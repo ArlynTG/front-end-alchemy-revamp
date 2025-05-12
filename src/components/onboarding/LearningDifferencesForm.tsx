@@ -22,9 +22,9 @@ const availableDifferences: { value: LearningDifference; label: string; descript
     description: "Challenges with attention, focus, and impulse control" 
   },
   { 
-    value: "Dysgraphia", 
-    label: "Dysgraphia", 
-    description: "Affects handwriting ability and fine motor skills" 
+    value: "Dyscalculia", 
+    label: "Dyscalculia", 
+    description: "Difficulty understanding numbers and learning math concepts" 
   },
   { 
     value: "Auditory Processing", 
@@ -35,6 +35,16 @@ const availableDifferences: { value: LearningDifference; label: string; descript
     value: "Executive Function", 
     label: "Executive Function", 
     description: "Challenges with planning, organizing, and completing tasks" 
+  },
+  { 
+    value: "Self Advocacy", 
+    label: "Self Advocacy", 
+    description: "Difficulty communicating needs and seeking appropriate support" 
+  },
+  { 
+    value: "Processing Speed", 
+    label: "Processing Speed", 
+    description: "Takes longer to process information and respond to it" 
   },
   { 
     value: "Other", 
