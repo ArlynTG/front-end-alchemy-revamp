@@ -7,13 +7,13 @@ import react from "@vitejs/plugin-react-swc";
 function componentTagger() {
   return {
     name: 'lovable-component-tagger',
-    transform(code, id) {
+    transform(code: string, id: string) {
       // Only process TypeScript React files
       if (id.endsWith('.tsx') && (code.includes('export default') || code.includes('React.') || code.includes('import React'))) {
         // Add displayName to components for better debugging
         return code.replace(
           /export default (\w+)/g,
-          (match, componentName) => {
+          (match: string, componentName: string) => {
             return `${match}\n${componentName}.displayName = '${componentName}'`;
           }
         );
