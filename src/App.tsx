@@ -1,91 +1,88 @@
-import React, { useState, useEffect } from 'react';
-import { Routes, Route, useLocation, useNavigate } from 'react-router-dom';
-import Home from './pages/Home';
-import Pricing from './pages/Pricing';
-import Onboarding from './pages/Onboarding';
-import ParentDashboard from './pages/ParentDashboard';
-import StudentDashboard from './pages/StudentDashboard';
-import TermsOfService from './pages/TermsOfService';
-import PrivacyPolicy from './pages/PrivacyPolicy';
-import CookiePolicy from './pages/CookiePolicy';
-import NotFound from './pages/NotFound';
-import Contact from './pages/Contact';
-import Registration from './pages/Registration';
-import PasswordReset from './pages/PasswordReset';
-import { useAuth } from './contexts/AuthContext';
-import { ProtectedRoute } from './components/ProtectedRoute';
-import { supabase } from './integrations/supabase/client';
-import { Toast } from '@/components/ui/toast';
-import ParentDashboardV2 from './pages/ParentDashboardV2';
 
-function App() {
-  const { isLoggedIn, setIsLoggedIn, setUser } = useAuth();
+import { Suspense, lazy, useEffect } from "react";
+import { Toaster } from "@/components/ui/toaster";
+import { Toaster as Sonner } from "@/components/ui/sonner";
+import { TooltipProvider } from "@/components/ui/tooltip";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { BrowserRouter, Routes, Route, useLocation, useNavigate } from "react-router-dom";
+
+// Optimized imports using React.lazy for code splitting
+const Index = lazy(() => import("./pages/Index"));
+const NotFound = lazy(() => import("./pages/NotFound"));
+const PrivacyPolicy = lazy(() => import("./pages/PrivacyPolicy"));
+const TermsOfService = lazy(() => import("./pages/TermsOfService"));
+const CookiePolicy = lazy(() => import("./pages/CookiePolicy"));
+const ParentLogin = lazy(() => import("./pages/ParentLogin"));
+const StudentLogin = lazy(() => import("./pages/StudentLogin"));
+const BetaConfirmed = lazy(() => import("./pages/BetaConfirmed"));
+const BetaRegistration = lazy(() => import("./pages/BetaRegistration"));
+const BetaConfirmation = lazy(() => import("./pages/BetaConfirmation"));
+const DemoV5 = lazy(() => import("./pages/DemoV5"));
+const ParentDashboard = lazy(() => import("./pages/ParentDashboard"));
+const ParentDashboardV2 = lazy(() => import("./pages/ParentDashboardV2"));
+const StudentDashboard = lazy(() => import("./pages/StudentDashboard"));
+const AccountManagement = lazy(() => import("./pages/AccountManagement"));
+const Onboarding = lazy(() => import("./pages/Onboarding"));
+
+// Create a reusable loading component
+const PageLoader = () => (
+  <div className="flex items-center justify-center min-h-screen">
+    <div className="w-16 h-16 border-4 border-dashed rounded-full animate-spin border-tobey-orange"></div>
+  </div>
+);
+
+// Router observer to fix navigation issues
+const RouterObserver = () => {
   const location = useLocation();
-  const navigate = useNavigate();
-  const [showToast, setShowToast] = useState(false);
-
+  
+  // Log route changes to help debug navigation
   useEffect(() => {
-    const checkAuthentication = async () => {
-      const { data: { session } } = await supabase.auth.getSession();
+    console.log("Navigation to:", location.pathname);
+  }, [location]);
+  
+  return null;
+};
 
-      if (session) {
-        setIsLoggedIn(true);
-        setUser(session.user);
-      } else {
-        setIsLoggedIn(false);
-        setUser(null);
-        // Redirect to home only if the user is not already there
-        if (location.pathname !== '/') {
-          navigate('/');
-        }
-      }
-    };
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      staleTime: 60 * 1000, // 1 minute stale time for better cache performance
+      retry: 1, // Limit retries to reduce network load on failure
+    },
+  },
+});
 
-    checkAuthentication();
-
-    supabase.auth.onAuthStateChange((event, session) => {
-      if (event === 'SIGNED_IN') {
-        setIsLoggedIn(true);
-        setUser(session?.user || null);
-        setShowToast(true);
-      } else if (event === 'SIGNED_OUT') {
-        setIsLoggedIn(false);
-        setUser(null);
-        navigate('/');
-      }
-    });
-  }, [setIsLoggedIn, setUser, navigate, location.pathname]);
-
-  return (
-    <Routes>
-      <Route path="/" element={<Home />} />
-      <Route path="/pricing" element={<Pricing />} />
-      <Route path="/registration" element={<Registration />} />
-      <Route path="/password-reset" element={<PasswordReset />} />
-      <Route path="/onboarding" element={
-        <ProtectedRoute isLoggedIn={isLoggedIn}>
-          <Onboarding />
-        </ProtectedRoute>
-      } />
-      <Route path="/parent-dashboard" element={
-        <ProtectedRoute isLoggedIn={isLoggedIn}>
-          <ParentDashboard />
-        </ProtectedRoute>
-      } />
-      <Route path="/student-dashboard" element={
-        <ProtectedRoute isLoggedIn={isLoggedIn}>
-          <StudentDashboard />
-        </ProtectedRoute>
-      } />
-      <Route path="/terms" element={<TermsOfService />} />
-      <Route path="/privacy" element={<PrivacyPolicy />} />
-      <Route path="/cookies" element={<CookiePolicy />} />
-      <Route path="/contact" element={<Contact />} />
-      <Route path="*" element={<NotFound />} />
-      <Route path="/parent-dashboard" element={<ParentDashboard />} />
-      <Route path="/parent-dashboard-v2" element={<ParentDashboardV2 />} />
-    </Routes>
-  );
-}
+const App = () => (
+  <QueryClientProvider client={queryClient}>
+    <TooltipProvider>
+      <Toaster />
+      <Sonner />
+      <BrowserRouter>
+        <RouterObserver />
+        <Suspense fallback={<PageLoader />}>
+          <Routes>
+            <Route path="/" element={<Index />} />
+            <Route path="/privacy-policy" element={<PrivacyPolicy />} />
+            <Route path="/terms-of-service" element={<TermsOfService />} />
+            <Route path="/cookie-policy" element={<CookiePolicy />} />
+            <Route path="/parent-login" element={<ParentLogin />} />
+            <Route path="/student-login" element={<StudentLogin />} />
+            <Route path="/demo-v5" element={<DemoV5 />} />
+            <Route path="/parent-dashboard" element={<ParentDashboard />} />
+            <Route path="/beta-confirmed" element={<BetaConfirmed />} />
+            <Route path="/beta-registration" element={<BetaRegistration />} />
+            <Route path="/beta-confirmation" element={<BetaConfirmation />} />
+            <Route path="/parent-dashboard-v2" element={<ParentDashboardV2 />} />
+            <Route path="/student-dashboard" element={<StudentDashboard />} />
+            <Route path="/account-management" element={<AccountManagement />} />
+            <Route path="/onboarding" element={<Onboarding />} />
+            {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
+            <Route path="*" element={<NotFound />} />
+          </Routes>
+        </Suspense>
+      </BrowserRouter>
+    </TooltipProvider>
+  </QueryClientProvider>
+);
 
 export default App;
