@@ -1,8 +1,27 @@
 
 import { defineConfig } from "vite";
 import path from "path";
-import react from "@vitejs/plugin-react";
-import { componentTagger } from "lovable-tagger";
+import react from "@vitejs/plugin-react-swc";
+
+// Custom component tagger implementation for Lovable features
+function componentTagger() {
+  return {
+    name: 'lovable-component-tagger',
+    transform(code, id) {
+      // Only process TypeScript React files
+      if (id.endsWith('.tsx') && (code.includes('export default') || code.includes('React.') || code.includes('import React'))) {
+        // Add displayName to components for better debugging
+        return code.replace(
+          /export default (\w+)/g,
+          (match, componentName) => {
+            return `${match}\n${componentName}.displayName = '${componentName}'`;
+          }
+        );
+      }
+      return code;
+    }
+  };
+}
 
 export default defineConfig(({ mode }) => ({
   server: {
