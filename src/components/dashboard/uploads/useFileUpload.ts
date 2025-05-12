@@ -21,6 +21,7 @@ export const useFileUpload = (studentId: string) => {
   const fetchFiles = async () => {
     setIsLoading(true);
     try {
+      console.log("Fetching files for student:", studentId);
       const { data, error } = await supabase
         .from('uploads')
         .select('*')
@@ -57,20 +58,24 @@ export const useFileUpload = (studentId: string) => {
   }, [studentId]);
 
   // Handle file upload
-  const handleFileUpload = async (files: FileList) => {
-    if (!studentId || !files.length) return;
+  const handleFileUpload = async (fileList: FileList) => {
+    if (!studentId || !fileList.length) {
+      console.log("Missing studentId or files array is empty");
+      return;
+    }
     
     setUploading(true);
-    const file = files[0]; // Just handle one file for now
+    const file = fileList[0]; // Handle one file at a time
     
     try {
-      // Log the attempt
-      console.log("Starting upload for file:", file.name);
+      console.log("Starting upload process for file:", file.name);
       
       // Generate a unique file path
       const filePath = `${studentId}/${Date.now()}_${file.name}`;
+      console.log("Generated file path:", filePath);
       
-      // Upload to Storage
+      // Upload to Storage bucket
+      console.log("Uploading to storage bucket...");
       const { data: storageData, error: storageError } = await supabase
         .storage
         .from('documents')
@@ -80,22 +85,29 @@ export const useFileUpload = (studentId: string) => {
         });
         
       if (storageError) {
+        console.error("Storage upload error:", storageError);
         throw storageError;
       }
       
       console.log("File uploaded to Storage successfully:", storageData);
       
       // Create a public URL for the file
-      const { data: publicUrlData } = await supabase
+      console.log("Creating signed URL for the file...");
+      const { data: publicUrlData, error: urlError } = await supabase
         .storage
         .from('documents')
         .createSignedUrl(filePath, 60 * 60 * 24 * 365); // 1 year expiration
+      
+      if (urlError) {
+        console.error("Error creating signed URL:", urlError);
+        throw urlError;
+      }
       
       const fileUrl = publicUrlData?.signedUrl || null;
       console.log("File URL generated:", fileUrl);
       
       // Insert record to uploads table
-      console.log("Inserting record into uploads table");
+      console.log("Inserting record into uploads table...");
       const { data: uploadData, error: uploadError } = await supabase
         .from('uploads')
         .insert({
@@ -114,14 +126,14 @@ export const useFileUpload = (studentId: string) => {
       
       console.log("File record inserted successfully");
       
+      // Refresh the file list
+      await fetchFiles();
+      
       // Success message
       toast({
         title: "Upload Successful",
         description: "File has been uploaded to your academic records",
       });
-      
-      // Refresh the file list
-      await fetchFiles();
       
     } catch (err) {
       console.error("Upload error:", err);
@@ -131,7 +143,6 @@ export const useFileUpload = (studentId: string) => {
         variant: "destructive"
       });
     } finally {
-      // Reset upload state
       setUploading(false);
     }
   };

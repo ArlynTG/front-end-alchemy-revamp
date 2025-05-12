@@ -1,5 +1,5 @@
 
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import { Upload } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 
@@ -10,9 +10,10 @@ interface UploadAreaProps {
 
 const UploadArea: React.FC<UploadAreaProps> = ({ 
   onFileUpload, 
-  uploading
+  uploading 
 }) => {
   const [isDragging, setIsDragging] = useState(false);
+  const fileInputRef = useRef<HTMLInputElement>(null);
   
   // Handle drag events
   const handleDragEnter = (e: React.DragEvent) => {
@@ -41,6 +42,7 @@ const UploadArea: React.FC<UploadAreaProps> = ({
 
     const files = e.dataTransfer.files;
     if (files && files.length > 0) {
+      console.log("Files dropped:", files.length);
       onFileUpload(files);
     }
   };
@@ -48,7 +50,14 @@ const UploadArea: React.FC<UploadAreaProps> = ({
   // Handle file upload via input
   const handleFileInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files.length > 0) {
+      console.log("Files selected via input:", e.target.files.length);
       onFileUpload(e.target.files);
+    }
+  };
+
+  const handleButtonClick = () => {
+    if (fileInputRef.current) {
+      fileInputRef.current.click();
     }
   };
 
@@ -69,13 +78,14 @@ const UploadArea: React.FC<UploadAreaProps> = ({
         <input
           type="file"
           id="fileInput"
+          ref={fileInputRef}
           className="hidden"
           onChange={handleFileInputChange}
           disabled={uploading}
         />
         
         <Button
-          onClick={() => document.getElementById('fileInput')?.click()}
+          onClick={handleButtonClick}
           disabled={uploading}
           variant="outline"
         >

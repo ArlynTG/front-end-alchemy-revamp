@@ -12,6 +12,10 @@ interface UploadFilesProps {
 const UploadFiles: React.FC<UploadFilesProps> = ({ studentId }) => {
   const { files, isLoading, uploading, handleFileUpload } = useFileUpload(studentId);
 
+  console.log("UploadFiles component rendering with studentId:", studentId);
+  console.log("Current files:", files);
+  console.log("Upload state - isLoading:", isLoading, "uploading:", uploading);
+
   return (
     <div className="bg-white rounded-lg shadow-md p-4 md:p-6">
       <h2 className="text-lg md:text-xl font-semibold mb-4 flex items-center">
