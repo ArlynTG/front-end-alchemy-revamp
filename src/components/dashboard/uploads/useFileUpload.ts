@@ -115,18 +115,28 @@ export const useFileUpload = (studentId: string) => {
       // Step 2: Upload to Storage with progress tracking
       const filePath = `${studentId}/${Date.now()}.${file.name.split('.').pop()}`;
       
-      // Use upload with options to track progress
+      // Set up upload handlers
+      const uploadOptions = {
+        cacheControl: '3600'
+      };
+      
+      // Track upload progress manually using XHR
+      const xhr = new XMLHttpRequest();
+      const upload = xhr.upload;
+      
+      upload.addEventListener('progress', (event) => {
+        if (event.lengthComputable) {
+          const percent = (event.loaded / event.total) * 100;
+          setUploadProgress(Math.round(percent));
+          console.log(`Upload progress: ${Math.round(percent)}%`);
+        }
+      });
+      
+      // Use regular upload without the unsupported option
       const { data: storageData, error: storageError } = await supabase
         .storage
         .from('documents')
-        .upload(filePath, file, {
-          onUploadProgress: (progress) => {
-            // Calculate percentage
-            const percent = progress.loaded / progress.total * 100;
-            setUploadProgress(Math.round(percent));
-            console.log(`Upload progress: ${Math.round(percent)}%`);
-          }
-        });
+        .upload(filePath, file, uploadOptions);
         
       if (storageError) throw storageError;
       console.log("File uploaded to Storage successfully");
