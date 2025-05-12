@@ -47,11 +47,7 @@ const FileUploadArea: React.FC<FileUploadAreaProps> = ({ studentId, onUploadSucc
       // Get authenticated user's ID
       const { data: { session } } = await supabase.auth.getSession();
       if (!session) {
-        toast({
-          title: "Authentication required",
-          description: "Please log in to upload files.",
-          variant: "destructive"
-        });
+        // Silently handle authentication requirement without showing a message
         return;
       }
 
