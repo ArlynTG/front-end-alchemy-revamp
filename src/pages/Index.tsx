@@ -1,5 +1,5 @@
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import Navbar from "@/components/Navbar";
 import Hero from "@/components/Hero";
@@ -17,6 +17,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
+import { toast } from "@/components/ui/use-toast";
 
 const Index = () => {
   const navigate = useNavigate();
@@ -25,15 +26,44 @@ const Index = () => {
 
   // This is purely for testing purposes
   const handleTestLogin = async () => {
-    // Just set the logged in state without actually authenticating with Supabase
+    // Set test mode to prevent automatic redirects
+    localStorage.setItem('testMode', 'true');
+    
+    // Set the logged in state without actually authenticating with Supabase
     setIsLoggedIn(true);
     setUser({ id: 'test-user-id', email: 'test@example.com' } as any);
+    
+    toast({
+      title: "Test Login Successful",
+      description: "You are now logged in with test credentials.",
+    });
   };
 
   // Log out
   const handleTestLogout = async () => {
+    // Clean up test mode
+    localStorage.removeItem('testMode');
+    
     setIsLoggedIn(false);
     setUser(null);
+    
+    toast({
+      title: "Logged Out",
+      description: "You have been logged out successfully.",
+    });
+  };
+
+  // Navigate to protected routes
+  const navigateToProtectedRoute = (route: string) => {
+    // Ensure test mode is set to prevent redirect loops
+    if (!isLoggedIn) {
+      localStorage.setItem('testMode', 'true');
+      setIsLoggedIn(true);
+      setUser({ id: 'test-user-id', email: 'test@example.com' } as any);
+    }
+    
+    // Navigate to the requested route
+    navigate(route);
   };
   
   // Get the pricing context value from the Pricing component
@@ -106,7 +136,7 @@ const Index = () => {
                   </div>
                 </div>
                 
-                <div className="flex flex-wrap gap-2">
+                <div className="flex flex-col sm:flex-row flex-wrap gap-2">
                   {!isLoggedIn ? (
                     <Button size="sm" onClick={handleTestLogin}>
                       Test Login
@@ -117,11 +147,19 @@ const Index = () => {
                     </Button>
                   )}
                   
-                  <Button size="sm" onClick={() => navigate('/onboarding')}>
+                  <Button 
+                    size="sm" 
+                    variant="secondary"
+                    onClick={() => navigateToProtectedRoute('/onboarding')}
+                  >
                     Go to Onboarding
                   </Button>
                   
-                  <Button size="sm" onClick={() => navigate('/account')}>
+                  <Button 
+                    size="sm"
+                    variant="secondary"
+                    onClick={() => navigateToProtectedRoute('/account')}
+                  >
                     Go to Account Management
                   </Button>
                 </div>
