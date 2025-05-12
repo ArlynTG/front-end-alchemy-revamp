@@ -30,7 +30,7 @@ const FileUploadArea: React.FC<FileUploadAreaProps> = ({ studentId, onUploadSucc
   // Check if file is valid (type and size)
   const validateFile = (file: File) => {
     const validTypes = ['application/pdf', 'application/msword', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document', 'image/jpeg', 'image/png'];
-    const maxSize = 10 * 1024 * 1024; // 10MB - increased from 5MB
+    const maxSize = 10 * 1024 * 1024; // 10MB
 
     if (!validTypes.includes(file.type)) {
       toast({
@@ -58,9 +58,8 @@ const FileUploadArea: React.FC<FileUploadAreaProps> = ({ studentId, onUploadSucc
       // Add file to uploading files list
       setUploadingFiles(prev => [...prev, { name: file.name, progress: 0, complete: false }]);
       
-      // Upload file using the hook with the proper folder path - bypassing student ID
-      // Using 'documents' as a fixed folder name to match the bucket structure
-      await uploadDocument(file, 'documents');
+      // Upload file using the hook, passing the studentId as the UUID for the path
+      await uploadDocument(file, studentId);
       
       // Mark file as complete
       setUploadingFiles(prev => 

@@ -22,8 +22,8 @@ export const useDocumentUpload = ({ bucketName, onSuccess, onError }: UseDocumen
     error: null,
   });
 
-  const uploadDocument = async (file: File, folderPath?: string) => {
-    // Validate file size - increased to 10MB
+  const uploadDocument = async (file: File, userUuid?: string) => {
+    // Validate file size - 10MB limit
     const maxSize = 10 * 1024 * 1024; // 10MB
     if (file.size > maxSize) {
       const sizeError = new Error('File size must be less than 10MB');
@@ -53,53 +53,30 @@ export const useDocumentUpload = ({ bucketName, onSuccess, onError }: UseDocumen
         error: null,
       });
 
-      // Get user session
+      // Get user session to get authenticated user id
       const { data: { session } } = await supabase.auth.getSession();
       
-      // Create a temporary ID if no user is found
-      const tempId = `temp-${Date.now()}`;
-      const userId = session?.user?.id || tempId;
+      // Use either the provided userUuid, the session user id, or generate a temporary ID
+      const uuid = userUuid || session?.user?.id || `temp-${Date.now()}`;
       
-      // Create file path with ID and original filename
-      const timestamp = new Date().getTime();
-      const safeFolderPath = folderPath || userId;
-      const filePath = `${safeFolderPath}/${timestamp}_${file.name.replace(/[^a-zA-Z0-9._-]/g, '_')}`;
+      // Clean the filename and create the path in the format /{uuid}/{filename}
+      const cleanFileName = file.name.replace(/[^a-zA-Z0-9._-]/g, '_');
+      const filePath = `${uuid}/${cleanFileName}`;
 
-      console.log('Uploading to bucket:', bucketName);
-      console.log('File path:', filePath);
+      console.log(`Uploading to bucket: ${bucketName}, file path: ${filePath}`);
 
-      // Set progress animation to indicate process has started
+      // Set initial progress
       setUploadState(prev => ({
         ...prev,
         progress: 10,
       }));
 
-      // First check if bucket exists
-      try {
-        // Instead of listing all buckets, directly try to access the bucket
-        const { data: files, error: listError } = await supabase.storage
-          .from(bucketName)
-          .list();
-
-        if (listError) {
-          console.error('Error checking bucket existence:', listError);
-          // If the error is specifically about the bucket not existing
-          if (listError.message.includes('bucket') && listError.message.includes('not exist')) {
-            throw new Error(`Storage bucket "${bucketName}" does not exist or is not accessible. Please check the bucket name and your permissions.`);
-          }
-          throw listError;
-        }
-      } catch (error) {
-        console.error('Error checking bucket:', error);
-        throw error;
-      }
-
-      // Upload file to Supabase Storage
+      // Upload file to Supabase Storage using the specified bucket and path format
       const { error, data } = await supabase.storage
         .from(bucketName)
         .upload(filePath, file, {
           cacheControl: '3600',
-          upsert: true // Changed to true to replace existing files with same name
+          upsert: true // Replace existing files with the same name
         });
 
       if (error) {

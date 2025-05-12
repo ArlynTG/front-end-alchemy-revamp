@@ -45,46 +45,12 @@ const DocumentList: React.FC<DocumentListProps> = ({ studentId, refreshTrigger }
     const fetchDocuments = async () => {
       setLoading(true);
       try {
-        console.log('Fetching documents...');
+        console.log('Fetching documents for student ID:', studentId);
         
-        // Use fixed path 'documents' to match the bucket structure
-        const path = 'documents';
-        console.log('Using storage path:', path);
-        
-        // Verify the bucket exists before attempting to list files
-        const { data: bucketList, error: bucketError } = await supabase.storage.listBuckets();
-        
-        if (bucketError) {
-          console.error('Error listing buckets:', bucketError);
-          toast({
-            title: "Storage configuration issue",
-            description: "Could not access storage buckets",
-            variant: "destructive"
-          });
-          setDocuments([]);
-          setLoading(false);
-          return;
-        }
-        
-        // Check if our bucket exists
-        const documentsExists = bucketList?.some(bucket => bucket.name === 'documents');
-        
-        if (!documentsExists) {
-          console.error('Bucket "documents" does not exist in:', bucketList?.map(b => b.name));
-          toast({
-            title: "Storage bucket not found",
-            description: "The documents storage bucket is not properly configured",
-            variant: "destructive"
-          });
-          setDocuments([]);
-          setLoading(false);
-          return;
-        }
-        
-        // Fetch files from storage
+        // List files directly from the student's folder in the documents bucket
         const { data, error } = await supabase.storage
           .from('documents')
-          .list(path, {
+          .list(studentId, {
             limit: 100,
             sortBy: { column: 'created_at', order: 'desc' }
           });
@@ -95,10 +61,12 @@ const DocumentList: React.FC<DocumentListProps> = ({ studentId, refreshTrigger }
         }
 
         if (data && data.length > 0) {
+          console.log('Found documents:', data.length);
+          
           // Process and format file data
           const formattedDocuments = data.map(file => ({
             id: file.id,
-            name: file.name.split('_').slice(1).join('_'), // Remove timestamp prefix
+            name: file.name, // Use the original filename
             created_at: file.created_at,
             fileType: getFileType(file.name),
             processed: true, // Assume processed for now
@@ -108,7 +76,7 @@ const DocumentList: React.FC<DocumentListProps> = ({ studentId, refreshTrigger }
           setDocuments(formattedDocuments);
           setTotalPages(Math.ceil(formattedDocuments.length / documentsPerPage));
         } else {
-          console.log('No documents found in path:', path);
+          console.log('No documents found for student ID:', studentId);
           setDocuments([]);
         }
       } catch (err) {
