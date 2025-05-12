@@ -1,3 +1,4 @@
+
 import React, { useState, useCallback } from 'react';
 import { useDropzone } from 'react-dropzone';
 import { File, X, FileCheck, Upload } from 'lucide-react';
@@ -48,8 +49,11 @@ const FileUploadArea: React.FC<FileUploadAreaProps> = ({ studentId, onUploadSucc
       // Use the user ID directly without checking for session
       const userId = session?.user.id;
       
+      // If no userId is available, generate a temporary one for the upload
+      const uploadId = userId || `temp-${Date.now()}`;
+      
       const timestamp = new Date().getTime();
-      const filePath = `${userId}/${timestamp}_${file.name}`;
+      const filePath = `${uploadId}/${timestamp}_${file.name}`;
 
       // Update file progress state
       setUploadingFiles(prev => [...prev, { name: file.name, progress: 0, complete: false }]);

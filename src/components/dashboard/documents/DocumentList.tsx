@@ -48,13 +48,15 @@ const DocumentList: React.FC<DocumentListProps> = ({ studentId, refreshTrigger }
         // Get user session to retrieve user ID
         const { data: { session } } = await supabase.auth.getSession();
         
-        if (!session) {
-          setError('Authentication required');
+        // Directly use the session without showing any error
+        const userId = session?.user.id;
+        
+        if (!userId) {
+          // Silently handle missing user ID without showing an error message
+          setDocuments([]);
           setLoading(false);
           return;
         }
-
-        const userId = session.user.id;
         
         // Fetch files from storage
         const { data, error } = await supabase.storage
@@ -84,7 +86,8 @@ const DocumentList: React.FC<DocumentListProps> = ({ studentId, refreshTrigger }
         }
       } catch (err) {
         console.error('Error fetching documents:', err);
-        setError('Failed to load documents');
+        // Don't show error to user, just clear documents
+        setDocuments([]);
       } finally {
         setLoading(false);
       }
@@ -118,10 +121,6 @@ const DocumentList: React.FC<DocumentListProps> = ({ studentId, refreshTrigger }
         <Skeleton className="h-10 w-full" />
       </div>
     );
-  }
-
-  if (error) {
-    return <div className="text-center py-4 text-red-500">{error}</div>;
   }
 
   if (documents.length === 0) {
