@@ -1,9 +1,9 @@
 
 // Service worker for caching assets and improving offline capabilities
-const CACHE_NAME = 'tobeys-tutor-cache-v3'; // Increment version to ensure clean update
-const PREVIOUS_CACHE_NAME = 'tobeys-tutor-cache-v2'; // Keep track of previous cache for rollback
+const CACHE_NAME = 'tobeys-tutor-cache-v4'; // Increment version to ensure clean update
+const PREVIOUS_CACHE_NAME = 'tobeys-tutor-cache-v3'; // Keep track of previous cache for rollback
 const BUILD_TIMESTAMP = new Date().toISOString();
-const VERSION = '1.1.0'; // For tracking versions
+const VERSION = '1.2.0'; // For tracking versions
 
 // Assets to cache on install - critical path resources
 const STATIC_ASSETS = [
@@ -36,7 +36,7 @@ self.addEventListener('install', (event) => {
       })
       .then(() => {
         log('Installation complete, waiting to activate');
-        return self.skipWaiting();
+        return self.skipWaiting(); // Force the waiting service worker to become active
       })
       .catch(error => {
         log(`Installation failed: ${error}`);
@@ -68,7 +68,7 @@ self.addEventListener('activate', (event) => {
       }, 14 * 24 * 60 * 60 * 1000);
       
       log('Claiming clients');
-      return self.clients.claim();
+      return self.clients.claim(); // Take control of all clients/pages
     })
   );
   
@@ -94,12 +94,34 @@ const shouldUseCacheFirst = (request) => {
     return true;
   }
   
-  // Cache-first for common file extensions
-  if (/\.(css|js|woff2|png|jpg|jpeg|svg|webp|ico)$/i.test(url.pathname)) {
+  // Cache-first for common file extensions that rarely change
+  if (/\.(woff2|png|jpg|jpeg|svg|webp|ico)$/i.test(url.pathname)) {
     return true;
   }
   
   return false;
+};
+
+// Helper function to determine if this is an HTML request
+const isHtmlRequest = (request) => {
+  const url = new URL(request.url);
+  return request.mode === 'navigate' || 
+         url.pathname.endsWith('.html') || 
+         url.pathname === '/' ||
+         (request.headers.get('accept') && request.headers.get('accept').includes('text/html'));
+};
+
+// Helper function to add cache-busting parameter to a request
+const addCacheBustToRequest = (request) => {
+  const url = new URL(request.url);
+  url.searchParams.set('cache-bust', Date.now().toString());
+  return new Request(url.toString(), {
+    method: request.method,
+    headers: request.headers,
+    mode: request.mode,
+    credentials: request.credentials,
+    redirect: request.redirect
+  });
 };
 
 // Fetch event with improved strategies
@@ -113,12 +135,9 @@ self.addEventListener('fetch', (event) => {
   // Skip third-party requests
   const url = new URL(event.request.url);
   if (url.origin !== location.origin) return;
-  
-  // Handle JavaScript module imports differently to avoid caching issues
-  if (event.request.url.includes('.js') && 
-      (event.request.destination === 'script' || 
-       event.request.mode === 'cors')) {
-    // Network-first strategy for JS files to ensure updates are applied
+
+  // For HTML requests, use network-first with cache fallback
+  if (isHtmlRequest(event.request)) {
     event.respondWith(
       fetch(event.request)
         .then(response => {
@@ -128,6 +147,38 @@ self.addEventListener('fetch', (event) => {
           // Only cache successful responses
           if (response.ok) {
             caches.open(CACHE_NAME).then(cache => {
+              cache.put(event.request, responseToCache);
+            });
+          }
+          
+          return response;
+        })
+        .catch(() => {
+          return caches.match(event.request)
+            .then(cachedResponse => {
+              if (cachedResponse) {
+                return cachedResponse;
+              }
+              // Fallback to index.html for SPA routing
+              return caches.match('/index.html');
+            });
+        })
+    );
+    return;
+  }
+  
+  // Handle JavaScript and CSS with network-first to ensure updates
+  if (event.request.url.includes('.js') || event.request.url.includes('.css')) {
+    event.respondWith(
+      fetch(addCacheBustToRequest(event.request))
+        .then(response => {
+          // Clone the response since it can only be consumed once
+          const responseToCache = response.clone();
+          
+          // Only cache successful responses
+          if (response.ok) {
+            caches.open(CACHE_NAME).then(cache => {
+              // Store the original request URL in cache, not the cache-busted one
               cache.put(event.request, responseToCache);
             });
           }
@@ -214,8 +265,7 @@ self.addEventListener('fetch', (event) => {
             }
             
             // Fallback for HTML pages
-            if (event.request.url.indexOf('.html') > -1 || 
-                event.request.mode === 'navigate') {
+            if (isHtmlRequest(event.request)) {
               return caches.match('/index.html');
             }
             
@@ -241,6 +291,18 @@ self.addEventListener('message', (event) => {
       event.ports[0].postMessage({
         version: VERSION,
         buildTimestamp: BUILD_TIMESTAMP
+      });
+      break;
+    case 'CLEAR_CACHE':
+      // Completely clear the cache when requested
+      caches.keys().then(cacheNames => {
+        return Promise.all(cacheNames.map(cacheName => caches.delete(cacheName)));
+      }).then(() => {
+        log('Cache cleared successfully');
+        // Notify the client that cache was cleared
+        if (event.ports[0]) {
+          event.ports[0].postMessage({ success: true });
+        }
       });
       break;
     case 'ROLLBACK':

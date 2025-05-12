@@ -4,9 +4,26 @@ import { HelmetProvider } from 'react-helmet-async';
 import App from './App.tsx';
 import './index.css';
 
+// Function to add cache-busting query parameter to CSS resource URLs
+const addCacheBustingToResources = () => {
+  const timestamp = new Date().getTime();
+  
+  // Process all stylesheet links in the document
+  const styleLinks = document.querySelectorAll('link[rel="stylesheet"]');
+  styleLinks.forEach(link => {
+    const currentHref = link.getAttribute('href');
+    if (currentHref && !currentHref.includes('?v=')) {
+      link.setAttribute('href', `${currentHref}?v=${timestamp}`);
+    }
+  });
+};
+
 // Use createRoot for React 18's concurrent features
 const container = document.getElementById("root");
 const root = createRoot(container!);
+
+// Apply cache-busting to stylesheets
+addCacheBustingToResources();
 
 // Wrap app in HelmetProvider for optimized metadata management
 root.render(
@@ -42,10 +59,10 @@ if ('serviceWorker' in navigator) {
         // Store reference to current service worker
         currentSW = registration.active;
         
-        // Check for updates every hour
+        // Check for updates more frequently (every 15 minutes instead of every hour)
         setInterval(() => {
           checkForUpdates(registration);
-        }, 60 * 60 * 1000);
+        }, 15 * 60 * 1000);
         
         // Handle updates
         registration.addEventListener('updatefound', () => {
@@ -76,7 +93,17 @@ if ('serviceWorker' in navigator) {
               document.body.appendChild(updateNotification);
               
               document.getElementById('update-btn')?.addEventListener('click', () => {
-                window.location.reload();
+                // Clear cache before reloading
+                if (window.caches) {
+                  caches.keys().then(cacheNames => {
+                    cacheNames.forEach(cacheName => {
+                      caches.delete(cacheName);
+                    });
+                    window.location.reload();
+                  });
+                } else {
+                  window.location.reload();
+                }
               });
             }
           });
@@ -105,7 +132,7 @@ if ('serviceWorker' in navigator) {
       });
   });
   
-  // When the page is visible again, check for updates
+  // Check for updates when the page becomes visible again (more aggressively)
   document.addEventListener('visibilitychange', () => {
     if (document.visibilityState === 'visible') {
       navigator.serviceWorker.getRegistration().then(reg => {
@@ -134,7 +161,9 @@ if ('serviceWorker' in navigator) {
 }
 
 // Add a timestamp to force cache-busting
-console.log(`App initialized at: ${new Date().toISOString()}, Build: ${import.meta.env.VITE_BUILD_TIMESTAMP || 'development'}`);
+const appVersion = import.meta.env.VITE_APP_VERSION || '1.0.0';
+const buildTimestamp = import.meta.env.VITE_BUILD_TIMESTAMP || new Date().toISOString();
+console.log(`App initialized at: ${new Date().toISOString()}, Version: ${appVersion}, Build: ${buildTimestamp}`);
 
 // Add TypeScript interface for window object
 declare global {
