@@ -16,6 +16,7 @@ export const useFileUpload = (studentId: string) => {
   const [files, setFiles] = useState<FileRecord[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [uploading, setUploading] = useState(false);
+  const [uploadProgress, setUploadProgress] = useState(0);
 
   // Fetch existing files from Supabase
   const fetchFiles = async () => {
@@ -92,23 +93,40 @@ export const useFileUpload = (studentId: string) => {
     }
   };
 
+  // Reset progress when upload completes or fails
+  const resetProgress = () => {
+    setTimeout(() => {
+      setUploadProgress(0);
+    }, 1000);
+  };
+
   // Handle file upload
   const handleFileUpload = async (files: FileList) => {
     if (!studentId || !files.length) return;
     
     setUploading(true);
+    setUploadProgress(0);
     const file = files[0]; // Just handle one file for testing
     
     try {
       // Step 1: Just log the attempt
       console.log("Starting upload for file:", file.name);
       
-      // Step 2: Upload to Storage only
+      // Step 2: Upload to Storage with progress tracking
       const filePath = `${studentId}/${Date.now()}.${file.name.split('.').pop()}`;
+      
+      // Use upload with options to track progress
       const { data: storageData, error: storageError } = await supabase
         .storage
         .from('documents')
-        .upload(filePath, file);
+        .upload(filePath, file, {
+          onUploadProgress: (progress) => {
+            // Calculate percentage
+            const percent = progress.loaded / progress.total * 100;
+            setUploadProgress(Math.round(percent));
+            console.log(`Upload progress: ${Math.round(percent)}%`);
+          }
+        });
         
       if (storageError) throw storageError;
       console.log("File uploaded to Storage successfully");
@@ -161,6 +179,7 @@ export const useFileUpload = (studentId: string) => {
       });
     } finally {
       setUploading(false);
+      resetProgress(); // Reset progress after a delay
     }
   };
 
@@ -168,6 +187,7 @@ export const useFileUpload = (studentId: string) => {
     files,
     isLoading,
     uploading,
+    uploadProgress,
     handleFileUpload
   };
 };
