@@ -1,3 +1,4 @@
+
 import React, { useEffect, useRef, useState } from "react";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Check } from "lucide-react";
@@ -77,7 +78,10 @@ const StudentDashboardPreview = () => {
         
         // Continue animation only if we haven't reached the bottom
         if (!hasReachedBottom) {
-          scrollAnimationRef.current = requestAnimationFrame(animate);
+          // Use requestAnimationFrame wrapped in setTimeout for better Safari compatibility
+          setTimeout(() => {
+            scrollAnimationRef.current = requestAnimationFrame(animate);
+          }, 16); // ~60fps
         }
       };
       
@@ -87,7 +91,10 @@ const StudentDashboardPreview = () => {
 
     // Start scrolling when component becomes visible and hasn't scrolled yet
     if (isVisible && !hasScrolledOnce) {
-      scrollImage();
+      // Small delay before starting animation for Safari
+      setTimeout(() => {
+        scrollImage();
+      }, 100);
     }
 
     // Cleanup animation on unmount or when not visible
@@ -132,7 +139,11 @@ const StudentDashboardPreview = () => {
             role="button"
             tabIndex={0}
             aria-label="View student dashboard"
-            style={{ cursor: 'pointer' }}
+            style={{ 
+              cursor: 'pointer',
+              // Add Safari-specific styles
+              WebkitOverflowScrolling: 'touch'
+            }}
           >
             <div className="relative">
               <div className={`absolute inset-0 bg-gradient-to-b from-purple-500/30 to-transparent ${
@@ -144,6 +155,7 @@ const StudentDashboardPreview = () => {
                   src="/lovable-uploads/89c797ba-8f21-4bb2-add3-143aa5485688.png" 
                   alt="Student Dashboard Interface" 
                   className="object-contain w-full"
+                  loading="eager" // Force eager loading for Safari
                 />
               </ScrollArea>
             </div>

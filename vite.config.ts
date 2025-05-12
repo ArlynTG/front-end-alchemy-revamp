@@ -36,12 +36,23 @@ export default defineConfig(({ mode }) => ({
     ]
   },
   plugins: [
-    react(),
+    react({
+      // Add Safari-specific options to SWC
+      swcOptions: {
+        jsc: {
+          target: "es2015"  // More compatible target for older browsers
+        }
+      }
+    }),
     mode === 'development' && componentTagger(),
   ].filter(Boolean),
   resolve: {
     alias: {
       "@": path.resolve(__dirname, "./src"),
     },
+  },
+  build: {
+    target: ['es2015', 'safari11'], // Support Safari 11+
+    cssTarget: 'safari11', // Safari-specific CSS optimizations
   },
 }));
