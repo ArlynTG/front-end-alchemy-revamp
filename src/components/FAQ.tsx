@@ -1,4 +1,3 @@
-
 import React from 'react';
 import {
   Accordion,
@@ -17,6 +16,16 @@ const FAQ = () => {
         <Accordion type="single" collapsible className="space-y-4">
           <AccordionItem value="item-1" className="bg-tobey-blue/20 rounded-2xl p-4 border-none shadow-sm transition-all duration-300 hover:shadow-md">
             <AccordionTrigger className="text-lg font-bold text-tobey-text hover:text-tobey-orange transition-colors group flex justify-between w-full text-left">
+              <span>How does Tobey's Tutor protect my child's privacy and keep their data secure?</span>
+              <span className="text-orange-500 text-xl transform transition-transform duration-300 group-data-[state=open]:rotate-45">+</span>
+            </AccordionTrigger>
+            <AccordionContent className="text-base text-gray-600 pt-2 transition-all duration-300 data-[state=open]:animate-fade-in">
+              We take your child's privacy and data security seriously. All personal and academic information—like IEPs, report cards, and evaluations—is encrypted during upload and securely stored. Only the AI tutor uses this information to create personalized lessons, and nothing your child shares is ever used to train our AI partners' models. Your child's data is never shared or sold. Parents stay in control at all times—you choose what to upload, and you can request deletion of any data at any time. Tobey's Tutor is designed to be safe, respectful, and fully focused on helping your child learn and grow.
+            </AccordionContent>
+          </AccordionItem>
+
+          <AccordionItem value="item-2" className="bg-tobey-blue/20 rounded-2xl p-4 border-none shadow-sm transition-all duration-300 hover:shadow-md">
+            <AccordionTrigger className="text-lg font-bold text-tobey-text hover:text-tobey-orange transition-colors group flex justify-between w-full text-left">
               <span>What makes Tobey's Tutor different from other online tutoring programs for children with dyslexia and ADHD?</span>
               <span className="text-orange-500 text-xl transform transition-transform duration-300 group-data-[state=open]:rotate-45">+</span>
             </AccordionTrigger>
@@ -25,7 +34,7 @@ const FAQ = () => {
             </AccordionContent>
           </AccordionItem>
 
-          <AccordionItem value="item-2" className="bg-tobey-blue/20 rounded-2xl p-4 border-none shadow-sm transition-all duration-300 hover:shadow-md">
+          <AccordionItem value="item-3" className="bg-tobey-blue/20 rounded-2xl p-4 border-none shadow-sm transition-all duration-300 hover:shadow-md">
             <AccordionTrigger className="text-lg font-bold text-tobey-text hover:text-tobey-orange transition-colors group flex justify-between w-full text-left">
               <span>Does Tobey's Tutor use Orton-Gillingham and evidence-based methods for dyslexia intervention?</span>
               <span className="text-orange-500 text-xl transform transition-transform duration-300 group-data-[state=open]:rotate-45">+</span>
@@ -35,7 +44,7 @@ const FAQ = () => {
             </AccordionContent>
           </AccordionItem>
 
-          <AccordionItem value="item-3" className="bg-tobey-blue/20 rounded-2xl p-4 border-none shadow-sm transition-all duration-300 hover:shadow-md">
+          <AccordionItem value="item-4" className="bg-tobey-blue/20 rounded-2xl p-4 border-none shadow-sm transition-all duration-300 hover:shadow-md">
             <AccordionTrigger className="text-lg font-bold text-tobey-text hover:text-tobey-orange transition-colors group flex justify-between w-full text-left">
               <span>What age group benefits most from Tobey's Tutor's specialized ADHD and dyslexia support?</span>
               <span className="text-orange-500 text-xl transform transition-transform duration-300 group-data-[state=open]:rotate-45">+</span>
@@ -45,7 +54,7 @@ const FAQ = () => {
             </AccordionContent>
           </AccordionItem>
 
-          <AccordionItem value="item-4" className="bg-tobey-blue/20 rounded-2xl p-4 border-none shadow-sm transition-all duration-300 hover:shadow-md">
+          <AccordionItem value="item-5" className="bg-tobey-blue/20 rounded-2xl p-4 border-none shadow-sm transition-all duration-300 hover:shadow-md">
             <AccordionTrigger className="text-lg font-bold text-tobey-text hover:text-tobey-orange transition-colors group flex justify-between w-full text-left">
               <span>How does Tobey's Tutor use assistive technology like text-to-speech and speech-to-text for dyslexic students?</span>
               <span className="text-orange-500 text-xl transform transition-transform duration-300 group-data-[state=open]:rotate-45">+</span>
@@ -55,7 +64,7 @@ const FAQ = () => {
             </AccordionContent>
           </AccordionItem>
 
-          <AccordionItem value="item-5" className="bg-tobey-blue/20 rounded-2xl p-4 border-none shadow-sm transition-all duration-300 hover:shadow-md">
+          <AccordionItem value="item-6" className="bg-tobey-blue/20 rounded-2xl p-4 border-none shadow-sm transition-all duration-300 hover:shadow-md">
             <AccordionTrigger className="text-lg font-bold text-tobey-text hover:text-tobey-orange transition-colors group flex justify-between w-full text-left">
               <span>How can I tell if Tobey's Tutor will help my child struggling with ADHD or dyslexia?</span>
               <span className="text-orange-500 text-xl transform transition-transform duration-300 group-data-[state=open]:rotate-45">+</span>
@@ -65,7 +74,7 @@ const FAQ = () => {
             </AccordionContent>
           </AccordionItem>
 
-          <AccordionItem value="item-6" className="bg-tobey-blue/20 rounded-2xl p-4 border-none shadow-sm transition-all duration-300 hover:shadow-md">
+          <AccordionItem value="item-7" className="bg-tobey-blue/20 rounded-2xl p-4 border-none shadow-sm transition-all duration-300 hover:shadow-md">
             <AccordionTrigger className="text-lg font-bold text-tobey-text hover:text-tobey-orange transition-colors group flex justify-between w-full text-left">
               <span>What happens after I reserve a beta spot for Tobey's Tutor dyslexia and ADHD learning support?</span>
               <span className="text-orange-500 text-xl transform transition-transform duration-300 group-data-[state=open]:rotate-45">+</span>
