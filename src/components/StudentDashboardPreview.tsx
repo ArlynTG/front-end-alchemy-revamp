@@ -7,6 +7,7 @@ import { Link, useNavigate } from "react-router-dom";
 
 const StudentDashboardPreview = () => {
   const [isVisible, setIsVisible] = useState(false);
+  const [hasScrolledOnce, setHasScrolledOnce] = useState(false);
   const sectionRef = useRef<HTMLElement>(null);
   const scrollAreaRef = useRef<HTMLDivElement>(null);
   const imageRef = useRef<HTMLImageElement>(null);
@@ -38,10 +39,10 @@ const StudentDashboardPreview = () => {
     };
   }, []);
 
-  // Auto-scroll animation when component is visible
+  // Auto-scroll animation when component is visible - only scroll once
   useEffect(() => {
     const scrollImage = () => {
-      if (!imageRef.current || !scrollAreaRef.current || !isVisible) return;
+      if (!imageRef.current || !scrollAreaRef.current || !isVisible || hasScrolledOnce) return;
       
       const scrollContainer = scrollAreaRef.current.querySelector('[data-radix-scroll-area-viewport]');
       if (!scrollContainer) return;
@@ -54,34 +55,39 @@ const StudentDashboardPreview = () => {
       
       // Current scroll position
       let currentScroll = scrollContainer.scrollTop;
+      let hasReachedBottom = false;
       
       // Animation function
       const animate = () => {
         if (!isVisible) return;
         
         if (currentScroll >= scrollHeight) {
-          // Reset to top when reaching the bottom
-          currentScroll = 0;
-        } else {
-          // Increment scroll position
-          currentScroll += scrollSpeed;
+          // Stop animation when reaching the bottom
+          hasReachedBottom = true;
+          setHasScrolledOnce(true);
+          return;
         }
+        
+        // Increment scroll position
+        currentScroll += scrollSpeed;
         
         // Apply scroll
         if (scrollContainer) {
           scrollContainer.scrollTop = currentScroll;
         }
         
-        // Continue animation
-        scrollAnimationRef.current = requestAnimationFrame(animate);
+        // Continue animation only if we haven't reached the bottom
+        if (!hasReachedBottom) {
+          scrollAnimationRef.current = requestAnimationFrame(animate);
+        }
       };
       
       // Start animation
       scrollAnimationRef.current = requestAnimationFrame(animate);
     };
 
-    // Start scrolling when component becomes visible
-    if (isVisible) {
+    // Start scrolling when component becomes visible and hasn't scrolled yet
+    if (isVisible && !hasScrolledOnce) {
       scrollImage();
     }
 
@@ -92,7 +98,7 @@ const StudentDashboardPreview = () => {
         scrollAnimationRef.current = null;
       }
     };
-  }, [isVisible]);
+  }, [isVisible, hasScrolledOnce]);
 
   const handleImageClick = () => {
     navigate('/student-dashboard');
