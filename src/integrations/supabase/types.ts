@@ -312,6 +312,8 @@ export type Database = {
           evidence_sources: Json | null
           id: string
           long_term_goal: string | null
+          recommended_days_per_week: number | null
+          recommended_minutes_per_session: number | null
           short_term_goals: Json | null
           suggested_activities: Json | null
           updated_at: string | null
@@ -325,6 +327,8 @@ export type Database = {
           evidence_sources?: Json | null
           id?: string
           long_term_goal?: string | null
+          recommended_days_per_week?: number | null
+          recommended_minutes_per_session?: number | null
           short_term_goals?: Json | null
           suggested_activities?: Json | null
           updated_at?: string | null
@@ -338,6 +342,8 @@ export type Database = {
           evidence_sources?: Json | null
           id?: string
           long_term_goal?: string | null
+          recommended_days_per_week?: number | null
+          recommended_minutes_per_session?: number | null
           short_term_goals?: Json | null
           suggested_activities?: Json | null
           updated_at?: string | null
