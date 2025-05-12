@@ -25,6 +25,10 @@ const RegistrationPaymentForm = ({
   const [cvc, setCvc] = useState("");
   const [processing, setProcessing] = useState(false);
 
+  // This would typically come from the parent component or URL params
+  // Since we're making a frontend-only mockup, we'll hard-code it for now
+  const selectedPlanPrice = "29.00"; // Default to early adopter price
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     setProcessing(true);
@@ -100,7 +104,7 @@ const RegistrationPaymentForm = ({
               className="w-full"
               disabled={processing || isLoading}
             >
-              {processing ? "Processing..." : `Pay ${formData.planType === 'early-adopter' ? '$29.00' : '$19.00'}`}
+              {processing ? "Processing..." : `Pay $${selectedPlanPrice}`}
             </Button>
             
             <Button 
