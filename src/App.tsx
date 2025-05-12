@@ -17,6 +17,7 @@ import { useAuth } from './contexts/AuthContext';
 import { ProtectedRoute } from './components/ProtectedRoute';
 import { supabase } from './integrations/supabase/client';
 import ParentDashboardV2 from './pages/ParentDashboardV2';
+import Index from './pages/Index';
 
 function App() {
   const { isLoggedIn, setIsLoggedIn, setUser } = useAuth();
@@ -58,7 +59,8 @@ function App() {
 
   return (
     <Routes>
-      <Route path="/" element={<Home />} />
+      <Route path="/" element={<Index />} />
+      <Route path="/home" element={<Home />} />
       <Route path="/pricing" element={<Pricing />} />
       <Route path="/registration" element={<Registration />} />
       <Route path="/password-reset" element={<PasswordReset />} />
