@@ -1,3 +1,4 @@
+
 import React, { useEffect, useRef, useState } from "react";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Check } from "lucide-react";
@@ -108,7 +109,7 @@ const StudentDashboardPreview = () => {
             <Button 
               variant="outline"
               size="sm"
-              className="bg-purple-500 text-white hover:bg-purple-600 border-none text-xs font-medium uppercase tracking-wider px-4 py-1 h-auto rounded-full"
+              className="bg-tobey-orange text-white hover:bg-orange-600 border-none text-xs font-medium uppercase tracking-wider px-4 py-1 h-auto rounded-full"
             >
               Student Dashboard
             </Button>
@@ -145,7 +146,7 @@ const StudentDashboardPreview = () => {
           <div className="order-2 md:order-2">
             <h2 className="text-3xl md:text-4xl font-bold mb-4 text-black">
               Custom-Created.<br/>
-              Crushing Goals.
+              Crush Goals.
             </h2>
             <p className="text-lg mb-6 text-gray-700">
               Our student dashboard ignites personalized learning that hooks kids instantly. Bold visuals, real-time achievement tracking, and seamless chat keep students engaged and building academic confidence.
@@ -165,7 +166,7 @@ const StudentDashboardPreview = () => {
             </div>
             <div className="mt-8">
               <Link to="/student-dashboard">
-                <Button className="bg-purple-500 hover:bg-purple-600 text-white px-6 py-2">
+                <Button className="bg-tobey-orange hover:bg-orange-600 text-white px-6 py-2">
                   View Dashboard Preview
                 </Button>
               </Link>
