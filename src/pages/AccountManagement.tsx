@@ -6,6 +6,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import AccountProfile from "@/components/account/AccountProfile";
 import ManageSubscription from "@/components/account/ManageSubscription";
 import StudentProfile from "@/components/account/StudentProfile";
+import { Separator } from "@/components/ui/separator";
 
 const AccountManagement = () => {
   const [isLoading, setIsLoading] = useState(false);
@@ -34,7 +35,18 @@ const AccountManagement = () => {
             </TabsList>
             
             <TabsContent value="profile" className="space-y-6">
+              <div className="space-y-1 mb-2">
+                <h2 className="text-xl font-semibold">Personal Information</h2>
+                <p className="text-sm text-gray-500">Manage contact details for parent and student</p>
+              </div>
+              
               <AccountProfile />
+              <Separator className="my-8" />
+              
+              <div className="space-y-1 mb-2">
+                <h2 className="text-xl font-semibold">Student Information</h2>
+                <p className="text-sm text-gray-500">Manage your student's profile and contact preferences</p>
+              </div>
               <StudentProfile />
             </TabsContent>
             

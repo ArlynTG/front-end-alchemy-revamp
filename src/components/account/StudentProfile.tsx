@@ -6,16 +6,22 @@ import { Button } from "@/components/ui/button";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage, FormDescription } from "@/components/ui/form";
 import { toast } from "@/components/ui/use-toast";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Switch } from "@/components/ui/switch";
+import { AlertCircle } from "lucide-react";
 
 const studentProfileSchema = z.object({
   firstName: z.string().min(2, { message: "First name must be at least 2 characters" }),
   lastName: z.string().min(2, { message: "Last name must be at least 2 characters" }),
   age: z.string().min(1, { message: "Age is required" }),
   grade: z.string().min(1, { message: "Grade is required" }),
-  learningStyle: z.string().optional()
+  learningStyle: z.string().optional(),
+  email: z.string().email({ message: "Invalid email address" }).optional().or(z.literal('')),
+  phoneNumber: z.string().optional(),
+  allowEmailContact: z.boolean().default(false),
+  allowPhoneContact: z.boolean().default(false)
 });
 
 type StudentProfileValues = z.infer<typeof studentProfileSchema>;
@@ -32,6 +38,10 @@ const StudentProfile = () => {
       age: "10",
       grade: "5",
       learningStyle: "Visual",
+      email: "",
+      phoneNumber: "",
+      allowEmailContact: false,
+      allowPhoneContact: false
     },
   });
 
@@ -179,6 +189,92 @@ const StudentProfile = () => {
                 </FormItem>
               )}
             />
+
+            <div className="bg-blue-50 p-4 rounded-md border border-blue-100 flex gap-2 items-start mb-4">
+              <AlertCircle className="h-5 w-5 text-blue-500 mt-0.5" />
+              <p className="text-sm text-blue-700">
+                We will only reach out to students to send them reminders of upcoming lessons or essential notes related to their lessons. 
+                Parents will always be cc'ed or notified when Tobey's Tutor sends their child a message.
+              </p>
+            </div>
+            
+            <div className="space-y-4 border-t border-gray-200 pt-4">
+              <h3 className="font-medium">Student Contact Information</h3>
+              
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <FormField
+                  control={form.control}
+                  name="email"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Email Address</FormLabel>
+                      <FormControl>
+                        <Input placeholder="Student email (optional)" type="email" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                
+                <FormField
+                  control={form.control}
+                  name="phoneNumber"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Phone Number</FormLabel>
+                      <FormControl>
+                        <Input placeholder="Student phone (optional)" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+              
+              <div className="space-y-4 mt-4">
+                <FormField
+                  control={form.control}
+                  name="allowEmailContact"
+                  render={({ field }) => (
+                    <FormItem className="flex flex-row items-center justify-between rounded-lg border p-3 shadow-sm">
+                      <div className="space-y-0.5">
+                        <FormLabel>Allow Email Contact</FormLabel>
+                        <FormDescription>
+                          Allow Tobey's Tutor to send lesson reminders and updates via email
+                        </FormDescription>
+                      </div>
+                      <FormControl>
+                        <Switch
+                          checked={field.value}
+                          onCheckedChange={field.onChange}
+                        />
+                      </FormControl>
+                    </FormItem>
+                  )}
+                />
+                
+                <FormField
+                  control={form.control}
+                  name="allowPhoneContact"
+                  render={({ field }) => (
+                    <FormItem className="flex flex-row items-center justify-between rounded-lg border p-3 shadow-sm">
+                      <div className="space-y-0.5">
+                        <FormLabel>Allow Phone Contact</FormLabel>
+                        <FormDescription>
+                          Allow Tobey's Tutor to send lesson reminders and updates via text message
+                        </FormDescription>
+                      </div>
+                      <FormControl>
+                        <Switch
+                          checked={field.value}
+                          onCheckedChange={field.onChange}
+                        />
+                      </FormControl>
+                    </FormItem>
+                  )}
+                />
+              </div>
+            </div>
             
             <div className="flex justify-end">
               <Button type="submit" disabled={isSaving}>
