@@ -1,9 +1,10 @@
 
 import Navbar from "@/components/Navbar";
 import Hero from "@/components/Hero";
-import HowItWorks from "@/components/HowItWorks"; // Import the new component
+import HowItWorks from "@/components/HowItWorks"; 
 import Features from "@/components/Features";
 import ParentDashboardPreview from "@/components/ParentDashboardPreview";
+import StudentDashboardPreview from "@/components/StudentDashboardPreview";
 import Story from "@/components/Story";
 import FAQ from "@/components/FAQ";
 import FullWidthCTA from "@/components/FullWidthCTA";
@@ -40,9 +41,10 @@ const Index = () => {
     return (
       <PricingContext.Provider value={pricingProps}>
         <Hero />
-        <HowItWorks /> {/* Add the new HowItWorks component here, right after Hero */}
+        <HowItWorks /> 
         <Features />
         <ParentDashboardPreview />
+        <StudentDashboardPreview />
         <Story />
         <FAQ />
         <FullWidthCTA />
