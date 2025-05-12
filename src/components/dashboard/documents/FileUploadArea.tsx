@@ -19,7 +19,7 @@ const FileUploadArea: React.FC<FileUploadAreaProps> = ({ studentId, onUploadSucc
   // Check if file is valid (type and size)
   const validateFile = (file: File) => {
     const validTypes = ['application/pdf', 'application/msword', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document', 'image/jpeg', 'image/png'];
-    const maxSize = 10 * 1024 * 1024; // 10MB
+    const maxSize = 1 * 1024 * 1024; // 1MB
 
     if (!validTypes.includes(file.type)) {
       toast({
@@ -33,7 +33,7 @@ const FileUploadArea: React.FC<FileUploadAreaProps> = ({ studentId, onUploadSucc
     if (file.size > maxSize) {
       toast({
         title: "File too large",
-        description: "File size must be less than 10MB.",
+        description: "File size must be less than 1MB.",
         variant: "destructive"
       });
       return false;
@@ -170,7 +170,7 @@ const FileUploadArea: React.FC<FileUploadAreaProps> = ({ studentId, onUploadSucc
             Click to upload or drag files here
           </p>
           <p className="text-xs text-gray-500">
-            Supported formats: PDF, DOC, DOCX, JPG, PNG (Max: 10MB)
+            Supported formats: PDF, DOC, DOCX, JPG, PNG (Max: 1MB)
           </p>
         </div>
       </div>

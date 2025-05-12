@@ -22,6 +22,23 @@ export const useDocumentUpload = ({ bucketName, onSuccess, onError }: UseDocumen
   });
 
   const uploadDocument = async (file: File, folderPath?: string) => {
+    // Validate file size
+    const maxSize = 1 * 1024 * 1024; // 1MB
+    if (file.size > maxSize) {
+      const sizeError = new Error('File size must be less than 1MB');
+      setUploadState({
+        progress: 0,
+        uploading: false,
+        error: sizeError,
+      });
+      
+      if (onError) {
+        onError(sizeError);
+      }
+      
+      throw sizeError;
+    }
+    
     try {
       setUploadState({
         progress: 0,
