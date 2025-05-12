@@ -19,6 +19,7 @@ const ChatInputArea: React.FC<ChatInputAreaProps> = ({
 }) => {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [isListening, setIsListening] = useState(false);
+  // Fix the type reference here
   const recognitionRef = useRef<SpeechRecognition | null>(null);
 
   const handleKeyDown = (e: KeyboardEvent<HTMLTextAreaElement>) => {
