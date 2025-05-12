@@ -29,4 +29,5 @@ export interface DocumentUpload {
   progress: number;
   status: 'uploading' | 'complete' | 'error';
   url?: string;
+  error?: string;
 }
