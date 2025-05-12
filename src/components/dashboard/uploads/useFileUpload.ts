@@ -10,6 +10,7 @@ interface FileRecord {
   file_url: string | null;
   doc_type: string | null;
   uploaded_at: string | null;
+  file_size?: number;
 }
 
 export const useFileUpload = (studentId: string) => {
@@ -75,26 +76,6 @@ export const useFileUpload = (studentId: string) => {
         size: `${(file.size / 1024).toFixed(2)} KB`
       });
       
-      // Check if the bucket exists and is accessible
-      const { data: bucketData, error: bucketError } = await supabase
-        .storage
-        .getBucket('documents');
-        
-      if (bucketError) {
-        console.error("Storage bucket error:", bucketError);
-        if (bucketError.message.includes("does not exist")) {
-          console.error("The 'documents' bucket does not exist in Supabase storage");
-          toast({
-            title: "Storage Configuration Error",
-            description: "The storage bucket for documents is not properly configured",
-            variant: "destructive"
-          });
-          throw new Error("Storage bucket configuration error");
-        }
-      } else {
-        console.log("Bucket exists:", bucketData);
-      }
-      
       // Generate a unique file path
       const filePath = `${studentId}/${Date.now()}_${file.name}`;
       console.log("Generated file path:", filePath);
@@ -117,7 +98,7 @@ export const useFileUpload = (studentId: string) => {
       console.log("File uploaded to Storage successfully:", storageData);
       
       // Create a public URL for the file
-      console.log("Creating signed URL for the file...");
+      console.log("Creating public URL for the file...");
       const { data: publicUrlData } = await supabase
         .storage
         .from('documents')
@@ -126,7 +107,7 @@ export const useFileUpload = (studentId: string) => {
       const fileUrl = publicUrlData?.publicUrl || null;
       console.log("File public URL generated:", fileUrl);
       
-      // Insert record to uploads table
+      // Insert record to uploads table - remove function that was causing the error
       console.log("Inserting record into uploads table...");
       const { data: uploadData, error: uploadError } = await supabase
         .from('uploads')
@@ -137,17 +118,20 @@ export const useFileUpload = (studentId: string) => {
           file_url: fileUrl,
           file_size: file.size,
           uploaded_by: 'parent_dashboard'
-        });
+        })
+        .select();
         
       if (uploadError) {
         console.error("Error inserting record:", uploadError);
         throw uploadError;
       }
       
-      console.log("File record inserted successfully");
+      console.log("File record inserted successfully:", uploadData);
       
-      // Refresh the file list
-      await fetchFiles();
+      // Add the newly uploaded file to the files state
+      if (uploadData && uploadData.length > 0) {
+        setFiles(prevFiles => [uploadData[0], ...prevFiles]);
+      }
       
       // Success message
       toast({

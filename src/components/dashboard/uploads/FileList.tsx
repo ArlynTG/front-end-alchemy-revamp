@@ -45,9 +45,9 @@ const FileList: React.FC<FileListProps> = ({ files, isLoading }) => {
 
   if (isLoading) {
     return (
-      <div className="space-y-2">
+      <div className="space-y-2 mt-4">
         {[1, 2, 3].map((i) => (
-          <div key={i} className="flex items-center space-x-3 p-3">
+          <div key={i} className="flex items-center space-x-3 p-3 border rounded-lg">
             <Skeleton className="h-10 w-10 rounded-md" />
             <div className="space-y-2">
               <Skeleton className="h-4 w-[200px]" />
@@ -61,7 +61,7 @@ const FileList: React.FC<FileListProps> = ({ files, isLoading }) => {
 
   if (files.length === 0) {
     return (
-      <div className="text-center py-8 text-gray-500">
+      <div className="text-center py-8 text-gray-500 border-2 border-dashed rounded-lg mt-4">
         <AlertTriangle className="mx-auto h-8 w-8 mb-2" />
         <p>No academic records found for this student</p>
         <p className="text-sm">Upload new documents using the area above</p>
@@ -74,8 +74,9 @@ const FileList: React.FC<FileListProps> = ({ files, isLoading }) => {
       variants={containerVariants}
       initial="hidden"
       animate="visible"
-      className="space-y-2"
+      className="space-y-2 mt-4"
     >
+      <h3 className="font-medium text-gray-700 mb-2">Uploaded Documents</h3>
       {files.map((file) => (
         <motion.div key={file.id} variants={itemVariants}>
           <FileItem

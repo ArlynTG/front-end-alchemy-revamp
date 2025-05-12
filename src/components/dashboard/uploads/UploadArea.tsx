@@ -63,7 +63,7 @@ const UploadArea: React.FC<UploadAreaProps> = ({
 
   return (
     <div
-      className={`border-2 border-dashed rounded-lg p-4 mb-6 text-center transition-colors 
+      className={`border-2 border-dashed rounded-lg p-4 text-center transition-colors 
         ${isDragging ? 'border-primary bg-primary/10' : 'border-gray-300 hover:border-primary/50'}`}
       onDragEnter={handleDragEnter}
       onDragLeave={handleDragLeave}
@@ -82,6 +82,7 @@ const UploadArea: React.FC<UploadAreaProps> = ({
           className="hidden"
           onChange={handleFileInputChange}
           disabled={uploading}
+          accept=".pdf,.doc,.docx,.jpg,.jpeg,.png"
         />
         
         <Button
@@ -91,6 +92,12 @@ const UploadArea: React.FC<UploadAreaProps> = ({
         >
           {uploading ? 'Uploading...' : 'Select Files'}
         </Button>
+        
+        {uploading && (
+          <p className="mt-2 text-sm text-primary animate-pulse">
+            Uploading file to academic records...
+          </p>
+        )}
       </div>
     </div>
   );
