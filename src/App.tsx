@@ -25,9 +25,11 @@ function App() {
   const location = useLocation();
   const navigate = useNavigate();
   const [showToast, setShowToast] = useState(false);
+  const [isCheckingAuth, setIsCheckingAuth] = useState(true);
 
   useEffect(() => {
     const checkAuthentication = async () => {
+      setIsCheckingAuth(true);
       const { data: { session } } = await supabase.auth.getSession();
 
       if (session) {
@@ -36,16 +38,20 @@ function App() {
       } else {
         setIsLoggedIn(false);
         setUser(null);
-        // Redirect to home only if the user is not already there
-        if (location.pathname !== '/') {
+        
+        // Only redirect away from protected routes, not from all routes
+        const protectedRoutes = ['/onboarding', '/account', '/parent-dashboard', '/student-dashboard'];
+        if (protectedRoutes.includes(location.pathname)) {
           navigate('/');
         }
       }
+      
+      setIsCheckingAuth(false);
     };
 
     checkAuthentication();
 
-    supabase.auth.onAuthStateChange((event, session) => {
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
       if (event === 'SIGNED_IN') {
         setIsLoggedIn(true);
         setUser(session?.user || null);
@@ -56,7 +62,20 @@ function App() {
         navigate('/');
       }
     });
+
+    return () => {
+      subscription.unsubscribe();
+    };
   }, [setIsLoggedIn, setUser, navigate, location.pathname]);
+
+  // Show a temporary loading state while checking authentication
+  if (isCheckingAuth) {
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+        <div className="w-10 h-10 border-4 border-tobey-orange border-t-transparent rounded-full animate-spin"></div>
+      </div>
+    );
+  }
 
   return (
     <Routes>
