@@ -1,3 +1,4 @@
+
 import React, { useRef, useEffect, useState } from "react";
 import { Message } from "@/hooks/useChatState";
 import { Mic, Speaker } from "lucide-react";
@@ -11,7 +12,7 @@ interface ChatMessagesProps {
 const mockConversation: Message[] = [
   {
     id: "welcome",
-    sender: "ai",
+    sender: "assistant",
     text: "👋 Hi Alex! Welcome back! I noticed you've been practicing fractions. Great work on improving your skills!"
   },
   {
@@ -21,7 +22,7 @@ const mockConversation: Message[] = [
   },
   {
     id: "ai1",
-    sender: "ai",
+    sender: "assistant",
     text: "Absolutely! I believe in you! Dividing fractions can be tricky at first, but I've got a simple trick: 'Keep, Change, Flip!' When dividing fractions, you keep the first fraction, change the division to multiplication, and flip the second fraction. Would you like to try an example together?"
   },
   {
@@ -31,7 +32,7 @@ const mockConversation: Message[] = [
   },
   {
     id: "ai2",
-    sender: "ai",
+    sender: "assistant",
     text: "Great question! Let's work through 3/4 ÷ 1/2 together:\n\n1. Keep the first fraction: 3/4\n2. Change division to multiplication: ×\n3. Flip the second fraction: 1/2 becomes 2/1\n\nSo 3/4 ÷ 1/2 = 3/4 × 2/1 = 6/4 = 1.5 or 1½\n\nYou're doing fantastic! Would you like to try another one?"
   },
   {
@@ -41,7 +42,7 @@ const mockConversation: Message[] = [
   },
   {
     id: "ai3",
-    sender: "ai",
+    sender: "assistant",
     text: "You're on fire today! 🔥 Let's solve 2/3 ÷ 4/5:\n\n1. Keep: 2/3\n2. Change: × \n3. Flip: 4/5 becomes 5/4\n\nSo 2/3 ÷ 4/5 = 2/3 × 5/4 = 10/12 = 5/6\n\nExcellent work! Your persistence is really paying off. I'm proud of how you're tackling these problems!"
   }
 ];

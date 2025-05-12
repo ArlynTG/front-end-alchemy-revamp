@@ -58,7 +58,7 @@ const ChatInputArea: React.FC<ChatInputAreaProps> = ({
     
     recognition.onresult = (event) => {
       const transcript = event.results[0][0].transcript;
-      setInput(prev => prev + ' ' + transcript);
+      setInput(input + ' ' + transcript);
     };
     
     recognition.onerror = (event) => {

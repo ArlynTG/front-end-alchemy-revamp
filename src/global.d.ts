@@ -1,3 +1,4 @@
+
 // This file contains global type declarations for TypeScript
 import React from 'react';
 
@@ -70,6 +71,15 @@ declare global {
   interface Window {
     SpeechRecognition: SpeechRecognitionConstructor;
     webkitSpeechRecognition: SpeechRecognitionConstructor;
+  }
+
+  // Add type alias to make both "ai" and "assistant" valid sender types
+  type MessageSender = "user" | "assistant" | "ai";
+  
+  interface Message {
+    id: string;
+    sender: MessageSender;
+    text: string;
   }
 }
 
