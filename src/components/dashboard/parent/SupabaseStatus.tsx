@@ -24,7 +24,7 @@ const SupabaseStatus: React.FC<SupabaseStatusProps> = ({
         ) : supabaseError ? (
           `Supabase Error: ${supabaseError}`
         ) : (
-          `Connected to Supabase for UUID: 62987ca7-4aeb-40cf-92b2-b78a9a36c264`
+          `Connected to Supabase for UUID: 310e6d9d-d937-421f-8168-752fcb242881`
         )}
       </p>
     </motion.div>

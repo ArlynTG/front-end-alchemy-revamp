@@ -15,7 +15,8 @@ import { useStudentData } from "@/hooks/useStudentData";
 import { toast } from "@/hooks/use-toast";
 
 const ParentDashboardV2 = () => {
-  const STUDENT_ID = "62987ca7-4aeb-40cf-92b2-b78a9a36c264";
+  // Updated to the new student ID
+  const STUDENT_ID = "310e6d9d-d937-421f-8168-752fcb242881";
   const { studentData, isLoading, supabaseError } = useStudentData(STUDENT_ID);
   const isMobile = useIsMobile();
   const [isPageReady, setIsPageReady] = useState(false);
