@@ -1,6 +1,5 @@
 
 import React, { useEffect, useRef, useState } from "react";
-import { ScrollArea } from "@/components/ui/scroll-area";
 import { Check } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Link, useNavigate } from "react-router-dom";
@@ -69,9 +68,6 @@ const StudentDashboardPreview = () => {
             style={{ cursor: 'pointer' }}
           >
             <div className="relative">
-              <div className={`absolute inset-0 bg-gradient-to-b from-purple-500/30 to-transparent ${
-                isVisible ? "animate-fade-in" : "opacity-0"
-              }`}></div>
               <img 
                 src="/lovable-uploads/89c797ba-8f21-4bb2-add3-143aa5485688.png" 
                 alt="Student Dashboard Interface" 
