@@ -1,4 +1,3 @@
-
 import React, { useEffect, useRef, useState } from "react";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Check } from "lucide-react";
@@ -136,7 +135,7 @@ const StudentDashboardPreview = () => {
               <ScrollArea className="h-[500px] bg-white rounded-xl">
                 <img 
                   ref={imageRef}
-                  src="/lovable-uploads/db5788fb-881f-44f2-809d-a02ab6acee5b.png" 
+                  src="/lovable-uploads/89c797ba-8f21-4bb2-add3-143aa5485688.png" 
                   alt="Student Dashboard Interface" 
                   className="object-contain w-full"
                 />
