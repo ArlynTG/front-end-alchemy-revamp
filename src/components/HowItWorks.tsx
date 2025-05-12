@@ -3,6 +3,7 @@ import React, { useEffect, useRef } from 'react';
 import { Card, CardContent } from "@/components/ui/card";
 import { Upload, BookOpen, BarChart2 } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 const StepCard = ({ 
   step, 
@@ -47,7 +48,7 @@ const StepCard = ({
     <Card 
       ref={cardRef}
       className={cn(
-        "opacity-0 scale-95 transition-all duration-500 overflow-hidden",
+        "opacity-0 scale-95 transition-all duration-500 overflow-hidden relative",
         "border-2 border-gray-100 hover:border-orange-200"
       )}
     >
@@ -71,12 +72,51 @@ const StepCard = ({
   );
 };
 
+const ConnectingLine = ({ isAnimated, isMobile, index }: { isAnimated: boolean; isMobile: boolean; index: number }) => {
+  const lineRef = useRef<HTMLDivElement>(null);
+  
+  useEffect(() => {
+    if (isAnimated && lineRef.current) {
+      setTimeout(() => {
+        if (lineRef.current) {
+          lineRef.current.style.width = '100%';
+        }
+      }, 800 + (index * 200));
+    }
+  }, [isAnimated, index]);
+  
+  if (isMobile) return null;
+  
+  return (
+    <div className="flex-1 px-2 flex items-center justify-center">
+      <div 
+        ref={lineRef}
+        className="h-1 bg-orange-300 w-0 transition-all duration-1000"
+        style={{ transitionTimingFunction: 'cubic-bezier(0.65, 0, 0.35, 1)' }}
+      />
+    </div>
+  );
+};
+
 const HowItWorks = () => {
+  const isMobile = useIsMobile();
+  const sectionRef = useRef<HTMLDivElement>(null);
+  const [isVisible, setIsVisible] = React.useState(false);
+  
   // Animation for the section title
   const titleRef = useRef<HTMLHeadingElement>(null);
   const descriptionRef = useRef<HTMLParagraphElement>(null);
   
   useEffect(() => {
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          setIsVisible(true);
+          observer.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.2 });
+    
     const titleObserver = new IntersectionObserver((entries) => {
       entries.forEach(entry => {
         if (entry.isIntersecting) {
@@ -99,6 +139,10 @@ const HowItWorks = () => {
       });
     }, { threshold: 0.1 });
     
+    if (sectionRef.current) {
+      observer.observe(sectionRef.current);
+    }
+    
     if (titleRef.current) {
       titleObserver.observe(titleRef.current);
     }
@@ -108,6 +152,7 @@ const HowItWorks = () => {
     }
     
     return () => {
+      if (sectionRef.current) observer.unobserve(sectionRef.current);
       if (titleRef.current) titleObserver.unobserve(titleRef.current);
       if (descriptionRef.current) descObserver.unobserve(descriptionRef.current);
     };
@@ -138,7 +183,7 @@ const HowItWorks = () => {
   ];
   
   return (
-    <section className="py-16 bg-gradient-to-b from-white to-orange-50">
+    <section ref={sectionRef} className="py-16 bg-gradient-to-b from-white to-orange-50">
       <div className="container max-w-7xl mx-auto px-4">
         <div className="text-center mb-12">
           <h2 ref={titleRef} className="text-3xl md:text-4xl font-bold mb-4 opacity-0">
@@ -149,18 +194,65 @@ const HowItWorks = () => {
           </p>
         </div>
         
-        <div className="grid md:grid-cols-3 gap-8">
-          {steps.map((step) => (
-            <StepCard
-              key={step.step}
-              step={step.step}
-              title={step.title}
-              description={step.description}
-              icon={step.icon}
-              delay={step.delay}
-            />
+        <div className={`${isMobile ? 'grid gap-8' : 'flex items-center'}`}>
+          {steps.map((step, index) => (
+            <React.Fragment key={step.step}>
+              <div className={isMobile ? '' : 'flex-1'}>
+                <StepCard
+                  step={step.step}
+                  title={step.title}
+                  description={step.description}
+                  icon={step.icon}
+                  delay={step.delay}
+                />
+              </div>
+              
+              {index < steps.length - 1 && (
+                <ConnectingLine 
+                  isAnimated={isVisible} 
+                  isMobile={isMobile}
+                  index={index}
+                />
+              )}
+            </React.Fragment>
           ))}
         </div>
+        
+        {/* Mobile version of connecting dots - only shown on mobile */}
+        {isMobile && (
+          <div className="flex justify-center mt-4 space-x-2">
+            {steps.map((_, index) => (
+              <React.Fragment key={index}>
+                <div className={cn(
+                  "w-2 h-2 rounded-full",
+                  isVisible ? "bg-tobey-orange" : "bg-gray-300",
+                  isVisible && "animate-pulse"
+                )}
+                style={{
+                  animationDelay: `${index * 300}ms`,
+                  opacity: isVisible ? 1 : 0.5,
+                  transition: "opacity 0.5s ease",
+                  transitionDelay: `${index * 300}ms`
+                }}
+                />
+                
+                {index < steps.length - 1 && (
+                  <div className="relative w-12 h-2 flex items-center">
+                    <div className="absolute w-full h-0.5 bg-gray-200" />
+                    <div 
+                      className="absolute h-0.5 bg-tobey-orange" 
+                      style={{
+                        width: isVisible ? '100%' : '0',
+                        transition: 'width 0.8s ease',
+                        transitionDelay: `${(index * 300) + 300}ms`
+                      }}
+                    />
+                  </div>
+                )}
+              </React.Fragment>
+            ))}
+          </div>
+        )}
       </div>
     </section>
   );
