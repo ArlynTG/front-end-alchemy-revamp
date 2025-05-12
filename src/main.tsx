@@ -1,8 +1,6 @@
 
 import { createRoot } from 'react-dom/client';
 import { HelmetProvider } from 'react-helmet-async';
-import { BrowserRouter } from 'react-router-dom';
-import { AuthProvider } from './contexts/AuthContext';
 import App from './App.tsx';
 import './index.css';
 
@@ -29,13 +27,9 @@ addCacheBustingToResources();
 
 // Wrap app in HelmetProvider for optimized metadata management
 root.render(
-  <BrowserRouter>
-    <HelmetProvider>
-      <AuthProvider>
-        <App />
-      </AuthProvider>
-    </HelmetProvider>
-  </BrowserRouter>
+  <HelmetProvider>
+    <App />
+  </HelmetProvider>
 );
 
 // Register service worker for asset caching with improved error handling and rollback capability

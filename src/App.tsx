@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { Routes, Route, useLocation, useNavigate } from 'react-router-dom';
 import Home from './pages/Home';
@@ -16,21 +15,17 @@ import PasswordReset from './pages/PasswordReset';
 import { useAuth } from './contexts/AuthContext';
 import { ProtectedRoute } from './components/ProtectedRoute';
 import { supabase } from './integrations/supabase/client';
+import { Toast } from '@/components/ui/toast';
 import ParentDashboardV2 from './pages/ParentDashboardV2';
-import Index from './pages/Index';
-import AccountManagement from './pages/AccountManagement';
-import { Toaster } from "@/components/ui/toaster";
 
 function App() {
   const { isLoggedIn, setIsLoggedIn, setUser } = useAuth();
   const location = useLocation();
   const navigate = useNavigate();
   const [showToast, setShowToast] = useState(false);
-  const [isCheckingAuth, setIsCheckingAuth] = useState(true);
 
   useEffect(() => {
     const checkAuthentication = async () => {
-      setIsCheckingAuth(true);
       const { data: { session } } = await supabase.auth.getSession();
 
       if (session) {
@@ -39,23 +34,16 @@ function App() {
       } else {
         setIsLoggedIn(false);
         setUser(null);
-        
-        // Only redirect away from protected routes if NOT in test mode
-        // This allows our test buttons to still navigate to protected routes
-        const protectedRoutes = ['/onboarding', '/account', '/parent-dashboard', '/student-dashboard'];
-        const isTestMode = localStorage.getItem('testMode') === 'true';
-        
-        if (protectedRoutes.includes(location.pathname) && !isTestMode) {
+        // Redirect to home only if the user is not already there
+        if (location.pathname !== '/') {
           navigate('/');
         }
       }
-      
-      setIsCheckingAuth(false);
     };
 
     checkAuthentication();
 
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
+    supabase.auth.onAuthStateChange((event, session) => {
       if (event === 'SIGNED_IN') {
         setIsLoggedIn(true);
         setUser(session?.user || null);
@@ -66,58 +54,37 @@ function App() {
         navigate('/');
       }
     });
-
-    return () => {
-      subscription.unsubscribe();
-    };
   }, [setIsLoggedIn, setUser, navigate, location.pathname]);
 
-  // Show a temporary loading state while checking authentication
-  if (isCheckingAuth) {
-    return (
-      <div className="flex items-center justify-center min-h-screen">
-        <div className="w-10 h-10 border-4 border-tobey-orange border-t-transparent rounded-full animate-spin"></div>
-      </div>
-    );
-  }
-
   return (
-    <>
-      <Routes>
-        <Route path="/" element={<Index />} />
-        <Route path="/home" element={<Home />} />
-        <Route path="/pricing" element={<Pricing />} />
-        <Route path="/registration" element={<Registration />} />
-        <Route path="/password-reset" element={<PasswordReset />} />
-        <Route path="/onboarding" element={
-          <ProtectedRoute isLoggedIn={isLoggedIn}>
-            <Onboarding />
-          </ProtectedRoute>
-        } />
-        <Route path="/account" element={
-          <ProtectedRoute isLoggedIn={isLoggedIn}>
-            <AccountManagement />
-          </ProtectedRoute>
-        } />
-        <Route path="/parent-dashboard" element={
-          <ProtectedRoute isLoggedIn={isLoggedIn}>
-            <ParentDashboard />
-          </ProtectedRoute>
-        } />
-        <Route path="/student-dashboard" element={
-          <ProtectedRoute isLoggedIn={isLoggedIn}>
-            <StudentDashboard />
-          </ProtectedRoute>
-        } />
-        <Route path="/terms" element={<TermsOfService />} />
-        <Route path="/privacy" element={<PrivacyPolicy />} />
-        <Route path="/cookies" element={<CookiePolicy />} />
-        <Route path="/contact" element={<Contact />} />
-        <Route path="*" element={<NotFound />} />
-        <Route path="/parent-dashboard-v2" element={<ParentDashboardV2 />} />
-      </Routes>
-      <Toaster />
-    </>
+    <Routes>
+      <Route path="/" element={<Home />} />
+      <Route path="/pricing" element={<Pricing />} />
+      <Route path="/registration" element={<Registration />} />
+      <Route path="/password-reset" element={<PasswordReset />} />
+      <Route path="/onboarding" element={
+        <ProtectedRoute isLoggedIn={isLoggedIn}>
+          <Onboarding />
+        </ProtectedRoute>
+      } />
+      <Route path="/parent-dashboard" element={
+        <ProtectedRoute isLoggedIn={isLoggedIn}>
+          <ParentDashboard />
+        </ProtectedRoute>
+      } />
+      <Route path="/student-dashboard" element={
+        <ProtectedRoute isLoggedIn={isLoggedIn}>
+          <StudentDashboard />
+        </ProtectedRoute>
+      } />
+      <Route path="/terms" element={<TermsOfService />} />
+      <Route path="/privacy" element={<PrivacyPolicy />} />
+      <Route path="/cookies" element={<CookiePolicy />} />
+      <Route path="/contact" element={<Contact />} />
+      <Route path="*" element={<NotFound />} />
+      <Route path="/parent-dashboard" element={<ParentDashboard />} />
+      <Route path="/parent-dashboard-v2" element={<ParentDashboardV2 />} />
+    </Routes>
   );
 }
 

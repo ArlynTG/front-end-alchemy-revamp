@@ -58,6 +58,7 @@ const DesktopNav = ({ scrollToSection, onJoinBeta }: DesktopNavProps) => {
           </>
         )}
         
+        {/* Updated Demo link */}
         <NavLink to="/demo-v5" label="Demo" />
         
         <DropdownMenu>

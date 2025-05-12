@@ -81,6 +81,7 @@ const MobileMenu = ({ isOpen, onClose, onJoinBeta, scrollToSection }: MobileMenu
           </>
         )}
         
+        {/* Updated Demo link */}
         <NavLink
           to="/demo-v5"
           label="Demo"
