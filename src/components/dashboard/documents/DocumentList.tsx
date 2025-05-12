@@ -6,6 +6,7 @@ import { FileIcon, CheckCircle, ChevronLeft, ChevronRight } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { format } from 'date-fns';
 import { Skeleton } from '@/components/ui/skeleton';
+import { toast } from '@/hooks/use-toast';
 
 interface DocumentListProps {
   studentId: string;
@@ -24,7 +25,6 @@ interface DocumentItem {
 const DocumentList: React.FC<DocumentListProps> = ({ studentId, refreshTrigger }) => {
   const [documents, setDocuments] = useState<DocumentItem[]>([]);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const documentsPerPage = 10;
@@ -45,14 +45,26 @@ const DocumentList: React.FC<DocumentListProps> = ({ studentId, refreshTrigger }
     const fetchDocuments = async () => {
       setLoading(true);
       try {
+        console.log('Fetching documents...');
+        
         // Get user session to retrieve user ID
         const { data: { session } } = await supabase.auth.getSession();
+        const userId = session?.user?.id;
         
-        // Directly use the session without showing any error
-        const userId = session?.user.id;
+        // Use a default path if no userId is available (for testing)
+        const path = userId || 'temp';
+        console.log('Using storage path:', path);
         
-        if (!userId) {
-          // Silently handle missing user ID without showing an error message
+        // Check if the documents bucket exists first
+        const { data: bucketData, error: bucketError } = await supabase.storage.getBucket('documents');
+        
+        if (bucketError) {
+          console.error('Bucket error:', bucketError);
+          toast({
+            title: "Storage issue",
+            description: "Could not access document storage",
+            variant: "destructive"
+          });
           setDocuments([]);
           setLoading(false);
           return;
@@ -61,12 +73,13 @@ const DocumentList: React.FC<DocumentListProps> = ({ studentId, refreshTrigger }
         // Fetch files from storage
         const { data, error } = await supabase.storage
           .from('documents')
-          .list(userId, {
+          .list(path, {
             limit: 100,
             sortBy: { column: 'created_at', order: 'desc' }
           });
 
         if (error) {
+          console.error('List error:', error);
           throw error;
         }
 
@@ -86,7 +99,11 @@ const DocumentList: React.FC<DocumentListProps> = ({ studentId, refreshTrigger }
         }
       } catch (err) {
         console.error('Error fetching documents:', err);
-        // Don't show error to user, just clear documents
+        toast({
+          title: "Could not load documents",
+          description: "There was an issue retrieving your documents",
+          variant: "destructive"
+        });
         setDocuments([]);
       } finally {
         setLoading(false);

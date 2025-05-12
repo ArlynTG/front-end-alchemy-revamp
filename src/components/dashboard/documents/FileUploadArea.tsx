@@ -4,7 +4,7 @@ import { useDropzone } from 'react-dropzone';
 import { File, X, FileCheck, Upload } from 'lucide-react';
 import { Progress } from '@/components/ui/progress';
 import { toast } from '@/hooks/use-toast';
-import { supabase } from '@/integrations/supabase/client';
+import { useDocumentUpload } from '@/hooks/useDocumentUpload';
 
 interface FileUploadAreaProps {
   studentId: string;
@@ -12,14 +12,25 @@ interface FileUploadAreaProps {
 }
 
 const FileUploadArea: React.FC<FileUploadAreaProps> = ({ studentId, onUploadSuccess }) => {
-  const [isUploading, setIsUploading] = useState(false);
-  const [uploadProgress, setUploadProgress] = useState(0);
   const [uploadingFiles, setUploadingFiles] = useState<{ name: string; progress: number; complete: boolean }[]>([]);
+  
+  const { uploadDocument, isUploading } = useDocumentUpload({
+    bucketName: 'documents',
+    onSuccess: () => {
+      // Notify parent about successful upload after showing completion animation
+      setTimeout(() => {
+        onUploadSuccess();
+      }, 2000);
+    },
+    onError: (error) => {
+      console.error('Upload error in component:', error);
+    }
+  });
 
   // Check if file is valid (type and size)
   const validateFile = (file: File) => {
     const validTypes = ['application/pdf', 'application/msword', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document', 'image/jpeg', 'image/png'];
-    const maxSize = 1 * 1024 * 1024; // 1MB
+    const maxSize = 5 * 1024 * 1024; // 5MB
 
     if (!validTypes.includes(file.type)) {
       toast({
@@ -33,7 +44,7 @@ const FileUploadArea: React.FC<FileUploadAreaProps> = ({ studentId, onUploadSucc
     if (file.size > maxSize) {
       toast({
         title: "File too large",
-        description: "File size must be less than 1MB.",
+        description: "File size must be less than 5MB.",
         variant: "destructive"
       });
       return false;
@@ -42,98 +53,38 @@ const FileUploadArea: React.FC<FileUploadAreaProps> = ({ studentId, onUploadSucc
     return true;
   };
 
-  const uploadFile = async (file: File) => {
+  const handleFileUpload = async (file: File) => {
     try {
-      // Get user session - assume user is already authenticated
-      const { data: { session } } = await supabase.auth.getSession();
-      // Use the user ID directly without checking for session
-      const userId = session?.user.id;
-      
-      // If no userId is available, generate a temporary one for the upload
-      const uploadId = userId || `temp-${Date.now()}`;
-      
-      const timestamp = new Date().getTime();
-      const filePath = `${uploadId}/${timestamp}_${file.name}`;
-
-      // Update file progress state
+      // Add file to uploading files list
       setUploadingFiles(prev => [...prev, { name: file.name, progress: 0, complete: false }]);
-
-      // Create a function to track upload progress
-      const trackProgress = (progress: { loaded: number; total: number }) => {
-        const percent = Math.round((progress.loaded / progress.total) * 100);
-        setUploadProgress(percent);
-        
-        // Update specific file progress
-        setUploadingFiles(prev => 
-          prev.map(f => 
-            f.name === file.name ? { ...f, progress: percent } : f
-          )
-        );
-      };
-
-      // Upload file
-      const { error, data } = await supabase.storage
-        .from('documents')
-        .upload(filePath, file, {
-          cacheControl: '3600',
-          upsert: false
-        });
-
-      // Manually update progress to 100% on completion since we can't use onUploadProgress
-      trackProgress({ loaded: 1, total: 1 });
-
-      if (error) {
-        throw error;
-      }
-
+      
+      // Upload file using the hook
+      await uploadDocument(file);
+      
       // Mark file as complete
       setUploadingFiles(prev => 
         prev.map(f => 
           f.name === file.name ? { ...f, progress: 100, complete: true } : f
         )
       );
-
-      // Show success toast after small delay to show completion animation
+      
+      // Clear completed file after showing success
       setTimeout(() => {
-        toast({
-          title: "Upload successful",
-          description: "Your document has been uploaded and is being processed",
-          variant: "default"
-        });
-      }, 500);
-
-      // Notify parent about successful upload
-      setTimeout(() => {
-        onUploadSuccess();
-        
-        // Clear completed file after showing success
         setUploadingFiles(prev => prev.filter(f => f.name !== file.name));
       }, 2000);
-
+      
     } catch (error) {
-      console.error('Error uploading file:', error);
-      toast({
-        title: "Upload failed",
-        description: error instanceof Error ? error.message : "An unknown error occurred",
-        variant: "destructive"
-      });
-
       // Remove failed file from list
       setUploadingFiles(prev => prev.filter(f => f.name !== file.name));
     }
   };
 
   const onDrop = useCallback(async (acceptedFiles: File[]) => {
-    setIsUploading(true);
-
     for (const file of acceptedFiles) {
       if (validateFile(file)) {
-        await uploadFile(file);
+        await handleFileUpload(file);
       }
     }
-
-    setIsUploading(false);
-    setUploadProgress(0);
   }, [studentId]);
 
   const { getRootProps, getInputProps, isDragActive } = useDropzone({ 
@@ -166,7 +117,7 @@ const FileUploadArea: React.FC<FileUploadAreaProps> = ({ studentId, onUploadSucc
             Click to upload or drag files here
           </p>
           <p className="text-xs text-gray-500">
-            Supported formats: PDF, DOC, DOCX, JPG, PNG (Max: 1MB)
+            Supported formats: PDF, DOC, DOCX, JPG, PNG (Max: 5MB)
           </p>
         </div>
       </div>
