@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from '@/hooks/use-toast';
@@ -56,48 +57,12 @@ export const useFileUpload = (studentId: string) => {
     }
   }, [studentId]);
 
-  // Notify webhook about new document upload
-  const notifyWebhook = async (uploadId: string, fileName: string) => {
-    try {
-      console.log("Notifying webhook about new upload:", { studentId, uploadId, fileName });
-      const response = await fetch('https://tobiasedtech.app.n8n.cloud/webhook/process-document', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          student_id: studentId,
-          upload_id: uploadId,
-          file_name: fileName
-        }),
-      });
-
-      if (!response.ok) {
-        const errorText = await response.text();
-        throw new Error(`Webhook notification failed: ${response.status} - ${errorText}`);
-      }
-
-      console.log("Webhook notification successful");
-      toast({
-        title: "Document processing started",
-        description: "Your document is being processed for personalized goals.",
-      });
-    } catch (err) {
-      console.error("Error notifying webhook:", err);
-      toast({
-        title: "Document processing notification failed",
-        description: "We'll still try to process your document.",
-        variant: "destructive"
-      });
-    }
-  };
-
   // Handle file upload
   const handleFileUpload = async (files: FileList) => {
     if (!studentId || !files.length) return;
     
     setUploading(true);
-    setUploadProgress(0); // Initial progress
+    setUploadProgress(10); // Show some initial progress
     const file = files[0]; // Just handle one file for testing
     
     try {
@@ -107,12 +72,12 @@ export const useFileUpload = (studentId: string) => {
       // Step 2: Upload to Storage
       const filePath = `${studentId}/${Date.now()}.${file.name.split('.').pop()}`;
       
-      // Set up simple upload options
+      // Set up basic upload options
       const uploadOptions = {
         cacheControl: '3600'
       };
       
-      // Simple upload without progress tracking
+      // Simple upload
       const { data: storageData, error: storageError } = await supabase
         .storage
         .from('documents')
@@ -120,6 +85,8 @@ export const useFileUpload = (studentId: string) => {
         
       if (storageError) throw storageError;
       console.log("File uploaded to Storage successfully");
+      
+      setUploadProgress(50); // Update progress after storage upload
       
       // Step 3: Create a public URL for the file
       const { data: publicUrlData } = await supabase
@@ -145,18 +112,12 @@ export const useFileUpload = (studentId: string) => {
       if (uploadError) throw uploadError;
       console.log("Record inserted successfully:", uploadData);
       
-      // Step 5: Notify webhook about the new document upload
-      if (uploadData) {
-        await notifyWebhook(uploadData.id, file.name);
-      }
-      
-      // Set progress to 100% when complete
-      setUploadProgress(100);
+      setUploadProgress(100); // Complete progress
       
       // Success!
       toast({
         title: "Success",
-        description: "File uploaded and record created",
+        description: "File uploaded successfully",
         variant: "default"
       });
       

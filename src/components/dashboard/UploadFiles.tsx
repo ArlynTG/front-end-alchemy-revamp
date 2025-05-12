@@ -18,7 +18,7 @@ const UploadFiles: React.FC<UploadFilesProps> = ({ studentId }) => {
         <FileText className="mr-2 h-5 w-5" /> Academic Records
       </h2>
       
-      {/* Drag & Drop Upload Area with Progress Bar */}
+      {/* Drag & Drop Upload Area without Progress Bar */}
       <UploadArea 
         onFileUpload={handleFileUpload}
         uploading={uploading}

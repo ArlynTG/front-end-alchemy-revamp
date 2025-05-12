@@ -2,7 +2,6 @@
 import React, { useState } from 'react';
 import { Upload } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { Progress } from '@/components/ui/progress';
 
 interface UploadAreaProps {
   onFileUpload: (files: FileList) => void;
@@ -12,8 +11,7 @@ interface UploadAreaProps {
 
 const UploadArea: React.FC<UploadAreaProps> = ({ 
   onFileUpload, 
-  uploading,
-  uploadProgress 
+  uploading
 }) => {
   const [isDragging, setIsDragging] = useState(false);
   
@@ -84,20 +82,6 @@ const UploadArea: React.FC<UploadAreaProps> = ({
         >
           {uploading ? 'Uploading...' : 'Select Files'}
         </Button>
-        
-        {/* Progress bar - shows only when uploading */}
-        {uploading && (
-          <div className="w-full mt-4">
-            <div className="flex justify-between text-sm mb-1">
-              <span>Upload progress</span>
-              <span>{uploadProgress}%</span>
-            </div>
-            <Progress 
-              value={uploadProgress} 
-              className="h-2 w-full bg-gray-200" 
-            />
-          </div>
-        )}
       </div>
     </div>
   );
