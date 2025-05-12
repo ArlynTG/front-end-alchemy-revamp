@@ -4,7 +4,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Award, Star } from "lucide-react";
 import { motion } from "framer-motion";
-import { BadgeIcon } from "../dashboard/badges/BadgeIcon";
+import { BadgeIcon } from "../badges/BadgeIcon";
 
 const AchievementSection: React.FC = () => {
   // Sample achievements

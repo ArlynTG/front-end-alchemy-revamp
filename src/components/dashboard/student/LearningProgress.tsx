@@ -12,6 +12,13 @@ const LearningProgress: React.FC = () => {
     { name: "Writing", progress: 78, icon: <Pencil className="h-5 w-5 text-green-500" /> }
   ];
 
+  // Function to get progress color class based on percentage
+  const getProgressColorClass = (progress: number): string => {
+    if (progress > 70) return "bg-green-500";
+    if (progress > 40) return "bg-blue-500";
+    return "bg-amber-500";
+  };
+
   return (
     <Card className="border-4 border-blue-200 bg-blue-50">
       <CardHeader className="pb-2 bg-gradient-to-r from-blue-200 to-green-200 rounded-t-lg">
@@ -34,12 +41,7 @@ const LearningProgress: React.FC = () => {
             </div>
             <Progress 
               value={subject.progress} 
-              className="h-3 bg-gray-100" 
-              indicatorClassName={
-                subject.progress > 70 ? "bg-green-500" : 
-                subject.progress > 40 ? "bg-blue-500" : 
-                "bg-amber-500"
-              }
+              className={`h-3 bg-gray-100 [&>div]:${getProgressColorClass(subject.progress)}`} 
             />
           </div>
         ))}
