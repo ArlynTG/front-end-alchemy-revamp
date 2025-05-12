@@ -63,77 +63,80 @@ export const useFileUpload = (studentId: string) => {
     
     setUploading(true);
     setUploadProgress(10); // Show some initial progress
-    const file = files[0]; // Just handle one file for testing
+    const file = files[0]; // Just handle one file for now
     
     try {
-      // Step 1: Just log the attempt
+      // Log the attempt
       console.log("Starting upload for file:", file.name);
       
-      // Step 2: Upload to Storage
-      const filePath = `${studentId}/${Date.now()}.${file.name.split('.').pop()}`;
+      // Generate a unique file path
+      const filePath = `${studentId}/${Date.now()}_${file.name}`;
       
-      // Set up basic upload options
-      const uploadOptions = {
-        cacheControl: '3600'
-      };
-      
-      // Simple upload
+      // Upload to Storage
       const { data: storageData, error: storageError } = await supabase
         .storage
         .from('documents')
-        .upload(filePath, file, uploadOptions);
+        .upload(filePath, file, {
+          cacheControl: '3600',
+          upsert: false
+        });
         
-      if (storageError) throw storageError;
-      console.log("File uploaded to Storage successfully");
+      if (storageError) {
+        throw storageError;
+      }
       
-      setUploadProgress(50); // Update progress after storage upload
+      console.log("File uploaded to Storage successfully:", storageData);
+      setUploadProgress(60);
       
-      // Step 3: Create a public URL for the file
+      // Create a public URL for the file
       const { data: publicUrlData } = await supabase
         .storage
         .from('documents')
         .createSignedUrl(filePath, 60 * 60 * 24 * 365); // 1 year expiration
       
       const fileUrl = publicUrlData?.signedUrl || null;
+      console.log("File URL generated:", fileUrl);
       
-      // Step 4: Insert record to uploads table
-      console.log("Attempting to insert record to uploads table");
+      // Insert record to uploads table
+      console.log("Inserting record into uploads table");
       const { data: uploadData, error: uploadError } = await supabase
         .from('uploads')
         .insert({
           uuid: studentId,
           file_name: file.name,
           file_type: file.type,
-          file_url: fileUrl
-        })
-        .select('*')
-        .single();
+          file_url: fileUrl,
+          file_size: file.size,
+          uploaded_by: 'parent_dashboard'
+        });
         
-      if (uploadError) throw uploadError;
-      console.log("Record inserted successfully:", uploadData);
+      if (uploadError) {
+        console.error("Error inserting record:", uploadError);
+        throw uploadError;
+      }
       
-      setUploadProgress(100); // Complete progress
+      console.log("File record inserted successfully");
+      setUploadProgress(100);
       
-      // Success!
+      // Success message
       toast({
-        title: "Success",
-        description: "File uploaded successfully",
-        variant: "default"
+        title: "Upload Successful",
+        description: "File has been uploaded to your academic records",
       });
       
       // Refresh the file list
-      fetchFiles();
+      await fetchFiles();
       
     } catch (err) {
-      console.error("Error details:", err);
+      console.error("Upload error:", err);
       toast({
-        title: "Error",
-        description: err instanceof Error ? err.message : "Unknown error",
+        title: "Upload Failed",
+        description: err instanceof Error ? err.message : "An unknown error occurred while uploading",
         variant: "destructive"
       });
     } finally {
+      // Reset upload state
       setUploading(false);
-      // Reset progress after a delay
       setTimeout(() => {
         setUploadProgress(0);
       }, 1000);
