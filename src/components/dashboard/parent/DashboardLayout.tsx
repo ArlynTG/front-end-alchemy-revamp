@@ -1,5 +1,5 @@
 
-import React from 'react';
+import React, { useEffect } from 'react';
 import { motion } from 'framer-motion';
 
 interface DashboardLayoutProps {
@@ -13,6 +13,14 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({
   containerVariants, 
   itemVariants 
 }) => {
+  // Log when the dashboard layout mounts to help with debugging
+  useEffect(() => {
+    console.log("DashboardLayout component mounted");
+    return () => {
+      console.log("DashboardLayout component unmounted");
+    };
+  }, []);
+
   return (
     <motion.div
       variants={containerVariants}

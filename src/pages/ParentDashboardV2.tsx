@@ -13,6 +13,7 @@ import LeftSection from "@/components/dashboard/parent/LeftSection";
 import RightSection from "@/components/dashboard/parent/RightSection";
 import { useStudentData } from "@/hooks/useStudentData";
 import { toast } from "@/hooks/use-toast";
+import { useNavigate, useLocation } from "react-router-dom";
 
 const ParentDashboardV2 = () => {
   // Updated to the new student ID
@@ -20,6 +21,19 @@ const ParentDashboardV2 = () => {
   const { studentData, isLoading, supabaseError } = useStudentData(STUDENT_ID);
   const isMobile = useIsMobile();
   const [isPageReady, setIsPageReady] = useState(false);
+  const navigate = useNavigate();
+  const location = useLocation();
+
+  // Console logs to help debug navigation issues
+  useEffect(() => {
+    console.log("ParentDashboardV2 component mounted");
+    console.log("Current path:", location.pathname);
+    
+    // Prevent any automatic redirects
+    return () => {
+      console.log("ParentDashboardV2 component unmounted");
+    };
+  }, [location.pathname]);
 
   // Badge data with different levels for various skills - using the old names that will be mapped in the component
   const skillBadges = [
@@ -66,6 +80,7 @@ const ParentDashboardV2 = () => {
     // Small delay to ensure components mount properly
     const timer = setTimeout(() => {
       setIsPageReady(true);
+      console.log("Dashboard page marked as ready");
     }, 500);
     
     return () => clearTimeout(timer);

@@ -16,6 +16,12 @@ const NavLink = ({ to, label, onClick, className = "" }: NavLinkProps) => {
   const baseClasses = "text-tobey-text hover:text-tobey-orange transition-colors";
   const combinedClasses = `${baseClasses} ${className}`;
 
+  // Preserve the current URL when logging click events
+  const handleClick = (e: React.MouseEvent) => {
+    console.log(`NavLink clicked: ${to}`);
+    if (onClick) onClick(e);
+  };
+
   if (isExternal) {
     return (
       <a 
@@ -23,6 +29,7 @@ const NavLink = ({ to, label, onClick, className = "" }: NavLinkProps) => {
         className={combinedClasses}
         target="_blank" 
         rel="noopener noreferrer"
+        onClick={handleClick}
       >
         {label}
       </a>
@@ -34,7 +41,7 @@ const NavLink = ({ to, label, onClick, className = "" }: NavLinkProps) => {
       <a 
         href={to} 
         className={combinedClasses}
-        onClick={onClick}
+        onClick={handleClick}
       >
         {label}
       </a>
@@ -45,7 +52,7 @@ const NavLink = ({ to, label, onClick, className = "" }: NavLinkProps) => {
     <Link 
       to={to} 
       className={combinedClasses}
-      onClick={onClick}
+      onClick={handleClick}
     >
       {label}
     </Link>

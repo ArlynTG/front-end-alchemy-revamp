@@ -1,11 +1,10 @@
 
-import { Suspense, lazy } from "react";
+import { Suspense, lazy, useEffect } from "react";
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
-// PasswordProtection import removed
+import { BrowserRouter, Routes, Route, useLocation, useNavigate } from "react-router-dom";
 
 // Optimized imports using React.lazy for code splitting
 const Index = lazy(() => import("./pages/Index"));
@@ -29,6 +28,18 @@ const PageLoader = () => (
   </div>
 );
 
+// Router observer to fix navigation issues
+const RouterObserver = () => {
+  const location = useLocation();
+  
+  // Log route changes to help debug navigation
+  useEffect(() => {
+    console.log("Navigation to:", location.pathname);
+  }, [location]);
+  
+  return null;
+};
+
 const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
@@ -44,6 +55,7 @@ const App = () => (
       <Toaster />
       <Sonner />
       <BrowserRouter>
+        <RouterObserver />
         <Suspense fallback={<PageLoader />}>
           <Routes>
             <Route path="/" element={<Index />} />
