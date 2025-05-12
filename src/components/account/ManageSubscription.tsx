@@ -1,5 +1,5 @@
 
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
@@ -9,8 +9,7 @@ import { Input } from "@/components/ui/input";
 import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
 import { AlertCircle, CalendarIcon, CreditCard, Gift, Clock } from "lucide-react";
-import { supabase } from "@/integrations/supabase/client";
-import { format } from "date-fns";
+import { format, addMonths } from "date-fns";
 
 // Helper to format price for display
 const formatPrice = (amount: number): string => {
@@ -20,145 +19,64 @@ const formatPrice = (amount: number): string => {
   }).format(amount / 100);
 };
 
-interface Subscription {
-  id: string;
-  planName: string;
-  status: string;
-  currentPeriodEnd: string;
-  amount: number;
-  interval: string;
-  cancelAtPeriodEnd: boolean;
-}
+// Mock subscription data
+const mockSubscription = {
+  id: "sub_mock123456",
+  planName: "Early Adopter",
+  status: "active",
+  currentPeriodEnd: addMonths(new Date(), 1).toISOString(),
+  amount: 2900, // $29.00
+  interval: "month",
+  cancelAtPeriodEnd: false,
+};
 
 const ManageSubscription = () => {
-  const [subscription, setSubscription] = useState<Subscription | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
+  const [subscription, setSubscription] = useState(mockSubscription);
+  const [isLoading, setIsLoading] = useState(false);
   const [isCancelling, setIsCancelling] = useState(false);
   const [isGiftDialogOpen, setIsGiftDialogOpen] = useState(false);
   const [giftEmail, setGiftEmail] = useState("");
   const [isGifting, setIsGifting] = useState(false);
   const [isPortalLoading, setIsPortalLoading] = useState(false);
   
-  useEffect(() => {
-    const loadSubscription = async () => {
-      setIsLoading(true);
-      try {
-        // Get current user session
-        const { data: { session } } = await supabase.auth.getSession();
-        
-        if (!session) {
-          throw new Error("User not authenticated");
-        }
-        
-        // Fetch subscription status from supabase function
-        const { data, error } = await supabase.functions.invoke("check-subscription", {
-          body: {},
-        });
-        
-        if (error) throw error;
-        
-        if (data?.subscribed) {
-          // For demonstration, create a subscription object
-          setSubscription({
-            id: data.subscription_id || "sub_mock123456",
-            planName: data.subscription_tier || "Early Adopter",
-            status: "active",
-            currentPeriodEnd: data.subscription_end || new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString(),
-            amount: data.amount || 2900, // $29.00
-            interval: data.interval || "month", 
-            cancelAtPeriodEnd: data.cancel_at_period_end || false,
-          });
-        }
-      } catch (error) {
-        console.error("Error loading subscription:", error);
-        toast({
-          title: "Error loading subscription",
-          description: "We couldn't load your subscription details. Please try again later.",
-          variant: "destructive",
-        });
-      } finally {
-        setIsLoading(false);
-      }
-    };
-    
-    loadSubscription();
-  }, []);
-  
   const handleOpenStripePortal = async () => {
     setIsPortalLoading(true);
-    try {
-      const { data, error } = await supabase.functions.invoke("customer-portal", {
-        body: {},
-      });
-      
-      if (error) throw error;
-      
-      // Redirect to Stripe Customer Portal
-      if (data?.url) {
-        window.open(data.url, '_blank');
-      } else {
-        throw new Error("No portal URL returned");
-      }
-    } catch (error) {
-      console.error("Error opening Stripe portal:", error);
+    
+    // Mock delay and show toast
+    setTimeout(() => {
       toast({
-        title: "Unable to open customer portal",
-        description: "There was a problem accessing your billing management page.",
-        variant: "destructive",
+        title: "Payment Portal",
+        description: "In a production app, this would open the Stripe Customer Portal in a new tab.",
       });
-    } finally {
       setIsPortalLoading(false);
-    }
+    }, 1000);
   };
   
   const handleCancelSubscription = async () => {
     setIsCancelling(true);
-    try {
-      const { data, error } = await supabase.functions.invoke("update-subscription", {
-        body: { action: "cancel" },
+    
+    // Mock delay and update UI
+    setTimeout(() => {
+      setSubscription({
+        ...subscription,
+        cancelAtPeriodEnd: true,
       });
-      
-      if (error) throw error;
       
       toast({
         title: "Subscription updated",
         description: "Your subscription will be canceled at the end of the current billing period.",
       });
       
-      // Update the local state
-      if (subscription) {
-        setSubscription({
-          ...subscription,
-          cancelAtPeriodEnd: true,
-        });
-      }
-    } catch (error) {
-      console.error("Error cancelling subscription:", error);
-      toast({
-        title: "Error cancelling subscription",
-        description: "There was a problem cancelling your subscription.",
-        variant: "destructive", 
-      });
-    } finally {
       setIsCancelling(false);
-    }
+    }, 1000);
   };
   
   const handleGiftSubscription = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsGifting(true);
     
-    try {
-      if (!giftEmail.trim()) {
-        throw new Error("Email is required");
-      }
-      
-      const { data, error } = await supabase.functions.invoke("gift-subscription", {
-        body: { email: giftEmail },
-      });
-      
-      if (error) throw error;
-      
+    // Mock delay and show toast
+    setTimeout(() => {
       toast({
         title: "Gift sent!",
         description: `We've sent an invitation to ${giftEmail} to claim their gift subscription.`,
@@ -166,49 +84,27 @@ const ManageSubscription = () => {
       
       setIsGiftDialogOpen(false);
       setGiftEmail("");
-    } catch (error) {
-      console.error("Error gifting subscription:", error);
-      toast({
-        title: "Error sending gift",
-        description: error instanceof Error ? error.message : "There was a problem sending your gift.",
-        variant: "destructive",
-      });
-    } finally {
       setIsGifting(false);
-    }
+    }, 1000);
   };
   
   const handleResumeSubscription = async () => {
     setIsCancelling(true);
-    try {
-      const { data, error } = await supabase.functions.invoke("update-subscription", {
-        body: { action: "resume" },
+    
+    // Mock delay and update UI
+    setTimeout(() => {
+      setSubscription({
+        ...subscription,
+        cancelAtPeriodEnd: false,
       });
-      
-      if (error) throw error;
       
       toast({
         title: "Subscription resumed",
         description: "Your subscription has been resumed successfully.",
       });
       
-      // Update the local state
-      if (subscription) {
-        setSubscription({
-          ...subscription,
-          cancelAtPeriodEnd: false,
-        });
-      }
-    } catch (error) {
-      console.error("Error resuming subscription:", error);
-      toast({
-        title: "Error resuming subscription",
-        description: "There was a problem resuming your subscription.",
-        variant: "destructive",
-      });
-    } finally {
       setIsCancelling(false);
-    }
+    }, 1000);
   };
 
   if (isLoading) {
@@ -225,7 +121,8 @@ const ManageSubscription = () => {
     );
   }
 
-  if (!subscription) {
+  // Show this UI if the user doesn't have an active subscription
+  if (false) { // Changed to false to show the subscription UI instead
     return (
       <Card>
         <CardHeader>

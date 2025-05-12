@@ -1,39 +1,13 @@
 
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { Helmet } from "react-helmet-async";
 import Navbar from "@/components/Navbar";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import AccountProfile from "@/components/account/AccountProfile";
 import ManageSubscription from "@/components/account/ManageSubscription";
-import { toast } from "@/components/ui/use-toast";
-import { useNavigate } from "react-router-dom";
-import { supabase } from "@/integrations/supabase/client";
 
 const AccountManagement = () => {
-  const [isLoading, setIsLoading] = useState(true);
-  const [accountData, setAccountData] = useState<any>(null);
-  const navigate = useNavigate();
-
-  // Check if user is authenticated
-  useEffect(() => {
-    const checkAuth = async () => {
-      const { data, error } = await supabase.auth.getSession();
-      
-      if (error || !data.session) {
-        toast({
-          title: "Authentication required",
-          description: "Please log in to access your account settings.",
-          variant: "destructive",
-        });
-        navigate("/parent-login");
-        return;
-      }
-      
-      setIsLoading(false);
-    };
-    
-    checkAuth();
-  }, [navigate]);
+  const [isLoading, setIsLoading] = useState(false);
 
   return (
     <div className="min-h-screen bg-gray-50">
