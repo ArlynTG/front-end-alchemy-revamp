@@ -3,6 +3,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { toast } from "@/components/ui/use-toast";
 import { RegistrationFormValues } from "@/utils/formSchemas";
 import { Database } from "@/integrations/supabase/types";
+import { LearningDifference } from "@/components/onboarding/types";
 
 // Define a type for the beta_registrations table
 type BetaRegistration = {
@@ -78,7 +79,8 @@ export const submitBetaRegistration = async (
       student_name: data.studentName || null,
       phone: data.phone,
       student_age: data.studentAge,
-      primary_learning_difference: data.primaryLearningDifference || null,
+      // Convert extended learning difference to database enum or null
+      primary_learning_difference: data.primaryLearningDifference as Database["public"]["Enums"]["learning_difference"] || null,
       plan_type: planType,
       payment_id: paymentId,
       payment_status: paymentId ? "paid" : "pending"

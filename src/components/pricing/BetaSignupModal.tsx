@@ -1,4 +1,3 @@
-
 import { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { 
@@ -15,6 +14,7 @@ import BetaSignupForm from "./BetaSignupForm";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { supabase } from "@/integrations/supabase/client";
 import { PAYMENT_STATUSES, recordPaymentStatus, logPaymentError } from "@/utils/paymentMonitoring";
+import { Database } from "@/integrations/supabase/types";
 
 interface BetaSignupModalProps {
   isOpen: boolean;
@@ -104,7 +104,8 @@ const BetaSignupModal = ({ isOpen, onClose, planId }: BetaSignupModalProps) => {
         student_name: data.studentName || "",
         phone: data.phone,
         student_age: data.studentAge,
-        primary_learning_difference: data.primaryLearningDifference || null,
+        // Convert extended learning difference to database enum or null
+        primary_learning_difference: data.primaryLearningDifference as Database["public"]["Enums"]["learning_difference"] || null,
         plan_type: planId
       };
       
