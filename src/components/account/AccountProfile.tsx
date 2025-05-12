@@ -2,7 +2,6 @@
 import React, { useState, useEffect } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -23,6 +22,7 @@ type ProfileValues = z.infer<typeof profileSchema>;
 const AccountProfile = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [isSaving, setIsSaving] = useState(false);
+  const [userId, setUserId] = useState<string | null>(null);
   
   const form = useForm<ProfileValues>({
     resolver: zodResolver(profileSchema),
@@ -45,24 +45,34 @@ const AccountProfile = () => {
           throw new Error("User not authenticated");
         }
         
-        // Get user profile from Supabase
+        setUserId(user.id);
+        
+        // Check if user has a registration in beta_registrations
         const { data, error } = await supabase
-          .from("user_profiles")  
+          .from("beta_registrations")  
           .select("*")
-          .eq("user_id", user.id)
-          .single();
+          .eq("id", user.id)
+          .maybeSingle();
         
         if (error) {
           throw error;
         }
         
         if (data) {
-          // For demonstration, assume profile data structure
+          // For demonstration, use the beta_registrations data
           form.reset({
             firstName: data.first_name || "",
             lastName: data.last_name || "",
             email: user.email || "",
-            phoneNumber: data.phone_number || "",
+            phoneNumber: data.phone || "",
+          });
+        } else {
+          // If no registration found, just use auth user data
+          form.reset({
+            firstName: user.user_metadata?.first_name || "",
+            lastName: user.user_metadata?.last_name || "",
+            email: user.email || "",
+            phoneNumber: user.user_metadata?.phone || "",
           });
         }
       } catch (error) {
@@ -83,6 +93,7 @@ const AccountProfile = () => {
   const onSubmit = async (values: ProfileValues) => {
     setIsSaving(true);
     try {
+      // Get current user
       const { data: { user } } = await supabase.auth.getUser();
       
       if (!user) {
@@ -98,18 +109,54 @@ const AccountProfile = () => {
         if (emailError) throw emailError;
       }
       
-      // Update profile in database
-      const { error } = await supabase
-        .from("user_profiles")
-        .upsert({
-          user_id: user.id,
+      // Update user metadata for quick access
+      const { error: metadataError } = await supabase.auth.updateUser({
+        data: {
           first_name: values.firstName,
           last_name: values.lastName,
-          phone_number: values.phoneNumber || null,
-          updated_at: new Date().toISOString(),
-        });
+          phone: values.phoneNumber,
+        }
+      });
       
-      if (error) throw error;
+      if (metadataError) throw metadataError;
+      
+      // Check if user exists in beta_registrations
+      const { data: existingRegistration } = await supabase
+        .from("beta_registrations")
+        .select("id")
+        .eq("id", user.id)
+        .maybeSingle();
+      
+      if (existingRegistration) {
+        // Update existing registration
+        const { error } = await supabase
+          .from("beta_registrations")
+          .update({
+            first_name: values.firstName,
+            last_name: values.lastName,
+            phone: values.phoneNumber || null,
+            email: values.email,
+            updated_at: new Date().toISOString(),
+          })
+          .eq("id", user.id);
+        
+        if (error) throw error;
+      } else {
+        // If the user doesn't have a registration entry, create a minimal one
+        const { error } = await supabase
+          .from("beta_registrations")
+          .insert({
+            id: user.id,
+            first_name: values.firstName,
+            last_name: values.lastName,
+            phone: values.phoneNumber || null,
+            email: values.email,
+            student_age: "Unknown", // Required field in beta_registrations
+            plan_type: "account_only", // Required field in beta_registrations
+          });
+        
+        if (error) throw error;
+      }
       
       toast({
         title: "Profile updated",
