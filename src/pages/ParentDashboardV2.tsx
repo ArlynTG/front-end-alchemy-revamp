@@ -11,6 +11,7 @@ import SupabaseStatus from "@/components/dashboard/parent/SupabaseStatus";
 import DashboardLayout from "@/components/dashboard/parent/DashboardLayout";
 import LeftSection from "@/components/dashboard/parent/LeftSection";
 import RightSection from "@/components/dashboard/parent/RightSection";
+import DocumentSection from "@/components/dashboard/parent/DocumentSection";
 import { useStudentData } from "@/hooks/useStudentData";
 import { toast } from "@/hooks/use-toast";
 import { useNavigate, useLocation } from "react-router-dom";
@@ -121,6 +122,9 @@ const ParentDashboardV2 = () => {
           <motion.div variants={itemVariants}>
             <AchievementBadges skillBadges={skillBadges} />
           </motion.div>
+          
+          {/* Document Upload Section */}
+          <DocumentSection studentId={STUDENT_ID} itemVariants={itemVariants} />
           
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 md:gap-8">
             {/* Left Section */}
