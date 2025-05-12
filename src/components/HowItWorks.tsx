@@ -116,22 +116,22 @@ const HowItWorks = () => {
   const steps = [
     {
       step: 1,
-      title: "Get to Know Your Child",
-      description: "After signing up, upload your child's school records and have them tell us about their favorite things—from books to hobbies. This helps us create lessons they'll actually enjoy.",
+      title: "Personalized Onboarding",
+      description: "Once you sign up, you'll be able to securely upload your child's academic records—including IEPs, report cards, or neuropsych evaluations. Your child will also complete a fun, easy onboarding where they tell us their favorite books, shows, characters, hobbies, and sports so we can build lessons around what they already love.",
       icon: <Upload className="h-6 w-6 text-tobey-orange" />,
       delay: 300
     },
     {
       step: 2,
-      title: "Learn Through Play",
-      description: "Our system creates a personal learning plan for your child based on what they need to learn and what they love. Daily lessons adjust to their level and keep them engaged with fun challenges.",
+      title: "Smart, Individualized Learning Plans",
+      description: "Our AI analyzes your child's academic needs and interests, then uses evidence-based educational methods to create a personalized long-term learning plan. It breaks this plan into bite-sized daily lessons tailored to your child's current level—adjusting difficulty in real-time based on how they're doing. Lessons are gamified, fun, and challenging, so learning feels exciting—not like schoolwork.",
       icon: <BookOpen className="h-6 w-6 text-tobey-orange" />,
       delay: 500
     },
     {
       step: 3,
-      title: "See Growth Happen",
-      description: "Your child earns rewards as they improve, while you receive clear reports showing their progress and areas where they might need extra help.",
+      title: "Real Results, Tracked Clearly",
+      description: "Your child earns badges and achievements as they progress. Meanwhile, you get clear weekly and monthly reports showing what they're working on, how they're improving, and where support is still needed—with real examples pulled from their actual tutoring sessions.",
       icon: <BarChart2 className="h-6 w-6 text-tobey-orange" />,
       delay: 700
     }
