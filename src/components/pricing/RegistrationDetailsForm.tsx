@@ -14,10 +14,12 @@ const studentAgeOptions = Array.from({ length: 9 }, (_, i) => {
 const learningDifferenceOptions = [
   { value: "Dyslexia", label: "Dyslexia" },
   { value: "ADHD", label: "ADHD" },
-  { value: "Dysgraphia", label: "Dysgraphia" },
+  { value: "Dyscalculia", label: "Dyscalculia" }, // Updated from Dysgraphia
   { value: "Auditory Processing", label: "Auditory Processing" },
-  { value: "Executive Function", label: "Executive Function" },
-  { value: "Other", label: "Other" },
+  { value: "Executive_Functioning", label: "Executive Functioning" },
+  { value: "Self_Advocacy", label: "Self Advocacy" }, // New
+  { value: "Processing_Speed", label: "Processing Speed" }, // New
+  { value: "Autism", label: "Autism" }
 ];
 
 interface RegistrationDetailsFormProps {

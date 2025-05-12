@@ -19,12 +19,10 @@ export type Database = {
           goals_summary: string | null
           id: string
           last_name: string
+          learning_differences: string[] | null
           paid_at: string | null
           phone: string
           plan_type: string
-          primary_learning_difference:
-            | Database["public"]["Enums"]["learning_difference"]
-            | null
           reservation_id: string | null
           status: string | null
           stripe_customer_id: string | null
@@ -42,12 +40,10 @@ export type Database = {
           goals_summary?: string | null
           id?: string
           last_name: string
+          learning_differences?: string[] | null
           paid_at?: string | null
           phone: string
           plan_type: string
-          primary_learning_difference?:
-            | Database["public"]["Enums"]["learning_difference"]
-            | null
           reservation_id?: string | null
           status?: string | null
           stripe_customer_id?: string | null
@@ -65,12 +61,10 @@ export type Database = {
           goals_summary?: string | null
           id?: string
           last_name?: string
+          learning_differences?: string[] | null
           paid_at?: string | null
           phone?: string
           plan_type?: string
-          primary_learning_difference?:
-            | Database["public"]["Enums"]["learning_difference"]
-            | null
           reservation_id?: string | null
           status?: string | null
           stripe_customer_id?: string | null
@@ -584,12 +578,14 @@ export type Database = {
     }
     Enums: {
       learning_difference:
-        | "Dyslexia"
         | "ADHD"
-        | "Dysgraphia"
+        | "Dyslexia"
+        | "Executive_Functioning"
+        | "Autism"
+        | "Dyscalculia"
+        | "Self_Advocacy"
+        | "Processing_Speed"
         | "Auditory Processing"
-        | "Executive Function"
-        | "Other"
     }
     CompositeTypes: {
       http_header: {
@@ -722,12 +718,14 @@ export const Constants = {
   public: {
     Enums: {
       learning_difference: [
-        "Dyslexia",
         "ADHD",
-        "Dysgraphia",
+        "Dyslexia",
+        "Executive_Functioning",
+        "Autism",
+        "Dyscalculia",
+        "Self_Advocacy",
+        "Processing_Speed",
         "Auditory Processing",
-        "Executive Function",
-        "Other",
       ],
     },
   },

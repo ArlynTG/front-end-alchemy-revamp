@@ -1,6 +1,5 @@
 
 import { z } from "zod";
-import { Database } from "@/integrations/supabase/types";
 import { LearningDifference } from "@/components/onboarding/types";
 
 // Base schema with common fields
@@ -16,8 +15,8 @@ export const detailedSignupSchema = baseSignupSchema.extend({
   phone: z.string().min(10, "Please enter a valid phone number"),
   studentAge: z.string().min(1, "Student's age is required"),
   primaryLearningDifference: z.enum([
-    'Dyslexia', 'ADHD', 'Dyscalculia', 'Auditory Processing', 'Executive Function', 
-    'Self Advocacy', 'Processing Speed', 'Other'
+    'ADHD', 'Dyslexia', 'Dyscalculia', 'Auditory Processing', 'Executive_Functioning', 
+    'Self_Advocacy', 'Processing_Speed', 'Autism'
   ] as [LearningDifference, ...LearningDifference[]]).optional(),
 });
 
@@ -30,8 +29,8 @@ export const registrationSchema = z.object({
   phone: z.string().min(10, "Please enter a valid phone number"),
   studentAge: z.string().min(1, "Student's age is required"),
   primaryLearningDifference: z.enum([
-    'Dyslexia', 'ADHD', 'Dyscalculia', 'Auditory Processing', 'Executive Function',
-    'Self Advocacy', 'Processing Speed', 'Other'
+    'ADHD', 'Dyslexia', 'Dyscalculia', 'Auditory Processing', 'Executive_Functioning',
+    'Self_Advocacy', 'Processing_Speed', 'Autism'
   ] as [LearningDifference, ...LearningDifference[]]).optional(),
 });
 

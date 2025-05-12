@@ -1,12 +1,16 @@
 
 import { Database } from "@/integrations/supabase/types";
 
-// Extended learning difference type that includes our new values
+// Updated learning difference type that includes all our values
 export type LearningDifference = 
-  | Database["public"]["Enums"]["learning_difference"]
-  | "Dyscalculia"
-  | "Self Advocacy"
-  | "Processing Speed";
+  | 'ADHD'
+  | 'Dyslexia'
+  | 'Dyscalculia' // Replaced Dysgraphia
+  | 'Executive_Functioning'
+  | 'Autism'
+  | 'Self_Advocacy' // New
+  | 'Processing_Speed' // New
+  | 'Auditory Processing'; // Existing
 
 export interface OnboardingFormValues {
   firstName: string;

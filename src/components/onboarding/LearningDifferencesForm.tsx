@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Check, X } from "lucide-react";
@@ -23,7 +24,7 @@ const availableDifferences: { value: LearningDifference; label: string; descript
   { 
     value: "Dyscalculia", 
     label: "Dyscalculia", 
-    description: "Difficulty understanding numbers and learning math concepts" 
+    description: "Difficulty understanding number-related concepts, performing accurate math calculations, or remembering math facts and procedures" 
   },
   { 
     value: "Auditory Processing", 
@@ -31,24 +32,24 @@ const availableDifferences: { value: LearningDifference; label: string; descript
     description: "Difficulty processing and interpreting auditory information" 
   },
   { 
-    value: "Executive Function", 
-    label: "Executive Function", 
+    value: "Executive_Functioning", 
+    label: "Executive Functioning", 
     description: "Challenges with planning, organizing, and completing tasks" 
   },
   { 
-    value: "Self Advocacy", 
+    value: "Self_Advocacy", 
     label: "Self Advocacy", 
-    description: "Difficulty communicating needs and seeking appropriate support" 
+    description: "Challenges with effectively communicating needs, making informed decisions, and taking responsibility for one's learning outcomes" 
   },
   { 
-    value: "Processing Speed", 
+    value: "Processing_Speed", 
     label: "Processing Speed", 
-    description: "Takes longer to process information and respond to it" 
+    description: "Takes longer to take in, process, and respond to information, affecting the pace of learning and task completion" 
   },
   { 
-    value: "Other", 
-    label: "Other", 
-    description: "Other learning differences not listed above" 
+    value: "Autism", 
+    label: "Autism", 
+    description: "Neurodevelopmental condition affecting social interaction, communication, and behavior patterns" 
   },
 ];
 
