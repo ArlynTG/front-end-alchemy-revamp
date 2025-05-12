@@ -116,21 +116,21 @@ const HowItWorks = () => {
   const steps = [
     {
       step: 1,
-      title: "Personalized Onboarding",
+      title: "Getting to Know You",
       description: "Once you sign up, you'll be able to securely upload your child's academic records—including IEPs, report cards, or neuropsych evaluations. Your child will also complete a fun, easy onboarding where they tell us their favorite books, shows, characters, hobbies, and sports so we can build lessons around what they already love.",
       icon: <Upload className="h-6 w-6 text-tobey-orange" />,
       delay: 300
     },
     {
       step: 2,
-      title: "Smart, Individualized Learning Plans",
+      title: "Leveraging the Power of AI",
       description: "Our AI analyzes your child's academic needs and interests, then uses evidence-based educational methods to create a personalized long-term learning plan. It breaks this plan into bite-sized daily lessons tailored to your child's current level—adjusting difficulty in real-time based on how they're doing. Lessons are gamified, fun, and challenging, so learning feels exciting—not like schoolwork.",
       icon: <BookOpen className="h-6 w-6 text-tobey-orange" />,
       delay: 500
     },
     {
       step: 3,
-      title: "Real Results, Tracked Clearly",
+      title: "See Growth Happen",
       description: "Your child earns badges and achievements as they progress. Meanwhile, you get clear weekly and monthly reports showing what they're working on, how they're improving, and where support is still needed—with real examples pulled from their actual tutoring sessions.",
       icon: <BarChart2 className="h-6 w-6 text-tobey-orange" />,
       delay: 700
@@ -142,7 +142,7 @@ const HowItWorks = () => {
       <div className="container max-w-7xl mx-auto px-4">
         <div className="text-center mb-12">
           <h2 ref={titleRef} className="text-3xl md:text-4xl font-bold mb-4 opacity-0">
-            How Tobey's Tutor Works
+            Smarter Learning. Brighter Futures.
           </h2>
           <p ref={descriptionRef} className="max-w-3xl mx-auto text-lg text-gray-600 opacity-0">
             Our patent-pending platform uses advanced AI to create highly personalized learning plans that actually work for your child. We combine cutting-edge technology with robust security measures to ensure your child gets exactly what they need to succeed while keeping their information completely protected.
