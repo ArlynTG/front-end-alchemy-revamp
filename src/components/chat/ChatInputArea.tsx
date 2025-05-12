@@ -19,8 +19,8 @@ const ChatInputArea: React.FC<ChatInputAreaProps> = ({
 }) => {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [isListening, setIsListening] = useState(false);
-  // Reference the SpeechRecognition interface that's defined in the global.d.ts file
-  const recognitionRef = useRef<SpeechRecognition | null>(null);
+  // Use Window interface directly as it contains the necessary methods
+  const recognitionRef = useRef<any>(null);
 
   const handleKeyDown = (e: KeyboardEvent<HTMLTextAreaElement>) => {
     if (e.key === 'Enter' && !e.shiftKey) {
@@ -100,7 +100,7 @@ const ChatInputArea: React.FC<ChatInputAreaProps> = ({
           onKeyDown={handleKeyDown}
           disabled={isLoading}
           rows={1}
-          placeholder="Ask Kai anything..."
+          placeholder="Ask anything..."
           className="flex-1 w-full resize-none border rounded-lg px-3 py-2 pr-10 focus:outline-none focus:ring-2 focus:ring-[#f97316]"
           aria-label="Chat input"
         />
