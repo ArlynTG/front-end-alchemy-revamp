@@ -1,4 +1,3 @@
-
 import React, { useEffect, useRef, useState } from "react";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Check } from "lucide-react";
@@ -160,9 +159,9 @@ const StudentDashboardPreview = () => {
             <div className="space-y-4">
               {[
                 "Engaging, gamified mechanics—earn badges, unlock rewards, navigating challenges",
-                "24/7 AI tutor delivers help exactly when needed",
+                "24/7 AI tutoring is always on and ready to help",
                 "Visual progress trackers show concrete growth, not just effort",
-                "Streak system builds iron-clad learning discipline that sticks",
+                "Streak system reinforces persistence",
               ].map((feature, index) => (
                 <div key={index} className="flex items-start">
                   <Check className="h-5 w-5 text-green-500 mt-1 flex-shrink-0" />
