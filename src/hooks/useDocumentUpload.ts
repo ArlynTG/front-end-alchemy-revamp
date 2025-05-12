@@ -41,26 +41,25 @@ export const useDocumentUpload = ({ bucketName, onSuccess, onError }: UseDocumen
       const timestamp = new Date().getTime();
       const filePath = `${folderPath || userId}/${timestamp}_${file.name}`;
 
+      // Start progress animation - set to 10% to indicate process has started
+      setUploadState(prev => ({
+        ...prev,
+        progress: 10,
+      }));
+
       // Upload file to Supabase Storage
       const { error, data } = await supabase.storage
         .from(bucketName)
         .upload(filePath, file, {
           cacheControl: '3600',
-          upsert: false,
-          onUploadProgress: (progress) => {
-            const percent = Math.round((progress.loaded / progress.total) * 100);
-            setUploadState(prev => ({
-              ...prev,
-              progress: percent,
-            }));
-          },
+          upsert: false
         });
 
       if (error) {
         throw error;
       }
 
-      // Set success state
+      // Upload complete - set progress to 100%
       setUploadState({
         progress: 100,
         uploading: false,
