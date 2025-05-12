@@ -19,8 +19,8 @@ const ChatInputArea: React.FC<ChatInputAreaProps> = ({
 }) => {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [isListening, setIsListening] = useState(false);
-  // Using a type reference that works with our global.d.ts
-  const recognitionRef = useRef<globalThis.SpeechRecognition | null>(null);
+  // Using the correct type reference for SpeechRecognition
+  const recognitionRef = useRef<SpeechRecognition | null>(null);
 
   const handleKeyDown = (e: KeyboardEvent<HTMLTextAreaElement>) => {
     if (e.key === 'Enter' && !e.shiftKey) {
