@@ -54,21 +54,23 @@ const StepCard = ({
       )}
     >
       <CardContent className="p-6 flex flex-col h-full">
+        {/* Number at the top in the orange circle (formerly icon position) */}
         <div 
           ref={iconRef}
-          className="w-12 h-12 rounded-full bg-orange-100 flex items-center justify-center mb-4 relative z-10"
+          className="w-12 h-12 rounded-full bg-tobey-orange flex items-center justify-center mb-4 relative z-10"
           data-icon-container
         >
-          <div className="w-10 h-10 rounded-full bg-orange-200 flex items-center justify-center">
-            {icon}
-          </div>
+          <span className="text-white text-lg font-semibold">{step}</span>
         </div>
         
         <div className="mb-3">
-          <span className="inline-flex items-center justify-center w-6 h-6 rounded-full bg-tobey-orange text-white text-xs font-medium mr-2">
-            {step}
-          </span>
-          <h3 className="inline text-xl font-semibold text-tobey-text">{title}</h3>
+          <div className="inline-flex items-center">
+            {/* Icon next to title in light orange circle */}
+            <span className="inline-flex items-center justify-center w-8 h-8 rounded-full bg-orange-100 mr-2">
+              {icon}
+            </span>
+            <h3 className="inline text-xl font-semibold text-tobey-text">{title}</h3>
+          </div>
         </div>
         
         <p className="text-gray-600 flex-grow">{description}</p>
@@ -142,21 +144,21 @@ const HowItWorks = () => {
       step: 1,
       title: "Getting to Know You",
       description: "Once you sign up, you'll be able to securely upload your child's academic records—including IEPs, report cards, or neuropsych evaluations. Your child will also complete a fun, easy onboarding where they tell us their favorite books, shows, characters, hobbies, and sports so we can build lessons around what they already love.",
-      icon: <Upload className="h-6 w-6 text-tobey-orange" />,
+      icon: <Upload className="h-5 w-5 text-tobey-orange" />,
       delay: 300
     },
     {
       step: 2,
       title: "Leveraging the Power of AI",
       description: "Our AI analyzes your child's academic needs and interests, then uses evidence-based educational methods to create a personalized long-term learning plan. It breaks this plan into bite-sized daily lessons tailored to your child's current level—adjusting difficulty in real-time based on how they're doing. Lessons are gamified, fun, and challenging, so learning feels exciting—not like schoolwork.",
-      icon: <BookOpen className="h-6 w-6 text-tobey-orange" />,
+      icon: <BookOpen className="h-5 w-5 text-tobey-orange" />,
       delay: 500
     },
     {
       step: 3,
       title: "See Growth Happen",
       description: "Your child earns badges and achievements as they progress. Meanwhile, you get clear weekly and monthly reports showing what they're working on, how they're improving, and where support is still needed—with real examples pulled from their actual tutoring sessions.",
-      icon: <BarChart2 className="h-6 w-6 text-tobey-orange" />,
+      icon: <BarChart2 className="h-5 w-5 text-tobey-orange" />,
       delay: 700
     }
   ];
