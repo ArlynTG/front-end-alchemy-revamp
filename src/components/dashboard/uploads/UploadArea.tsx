@@ -85,8 +85,8 @@ const UploadArea: React.FC<UploadAreaProps> = ({
           {uploading ? 'Uploading...' : 'Select Files'}
         </Button>
         
-        {/* Progress bar */}
-        {(uploading || uploadProgress > 0) && (
+        {/* Progress bar - shows only when uploading */}
+        {uploading && (
           <div className="w-full mt-4">
             <div className="flex justify-between text-sm mb-1">
               <span>Upload progress</span>

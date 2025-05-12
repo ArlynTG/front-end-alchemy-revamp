@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from '@/hooks/use-toast';
@@ -93,46 +92,27 @@ export const useFileUpload = (studentId: string) => {
     }
   };
 
-  // Reset progress when upload completes or fails
-  const resetProgress = () => {
-    setTimeout(() => {
-      setUploadProgress(0);
-    }, 1000);
-  };
-
   // Handle file upload
   const handleFileUpload = async (files: FileList) => {
     if (!studentId || !files.length) return;
     
     setUploading(true);
-    setUploadProgress(0);
+    setUploadProgress(0); // Initial progress
     const file = files[0]; // Just handle one file for testing
     
     try {
       // Step 1: Just log the attempt
       console.log("Starting upload for file:", file.name);
       
-      // Step 2: Upload to Storage with progress tracking
+      // Step 2: Upload to Storage
       const filePath = `${studentId}/${Date.now()}.${file.name.split('.').pop()}`;
       
-      // Set up upload handlers
+      // Set up simple upload options
       const uploadOptions = {
         cacheControl: '3600'
       };
       
-      // Track upload progress manually using XHR
-      const xhr = new XMLHttpRequest();
-      const upload = xhr.upload;
-      
-      upload.addEventListener('progress', (event) => {
-        if (event.lengthComputable) {
-          const percent = (event.loaded / event.total) * 100;
-          setUploadProgress(Math.round(percent));
-          console.log(`Upload progress: ${Math.round(percent)}%`);
-        }
-      });
-      
-      // Use regular upload without the unsupported option
+      // Simple upload without progress tracking
       const { data: storageData, error: storageError } = await supabase
         .storage
         .from('documents')
@@ -170,6 +150,9 @@ export const useFileUpload = (studentId: string) => {
         await notifyWebhook(uploadData.id, file.name);
       }
       
+      // Set progress to 100% when complete
+      setUploadProgress(100);
+      
       // Success!
       toast({
         title: "Success",
@@ -189,7 +172,10 @@ export const useFileUpload = (studentId: string) => {
       });
     } finally {
       setUploading(false);
-      resetProgress(); // Reset progress after a delay
+      // Reset progress after a delay
+      setTimeout(() => {
+        setUploadProgress(0);
+      }, 1000);
     }
   };
 
