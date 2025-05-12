@@ -1,7 +1,7 @@
 
 import React, { useEffect, useRef } from 'react';
 import { Card, CardContent } from "@/components/ui/card";
-import { Upload, BookOpen, BarChart2 } from "lucide-react";
+import { Upload, BookOpen, BarChart2, ArrowRight } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useIsMobile } from "@/hooks/use-mobile";
 
@@ -19,6 +19,7 @@ const StepCard = ({
   delay: number; 
 }) => {
   const cardRef = useRef<HTMLDivElement>(null);
+  const iconRef = useRef<HTMLDivElement>(null);
   
   useEffect(() => {
     const observer = new IntersectionObserver((entries) => {
@@ -53,7 +54,11 @@ const StepCard = ({
       )}
     >
       <CardContent className="p-6">
-        <div className="w-12 h-12 rounded-full bg-orange-100 flex items-center justify-center mb-4">
+        <div 
+          ref={iconRef}
+          className="w-12 h-12 rounded-full bg-orange-100 flex items-center justify-center mb-4 relative z-10"
+          data-icon-container
+        >
           <div className="w-10 h-10 rounded-full bg-orange-200 flex items-center justify-center">
             {icon}
           </div>
@@ -72,29 +77,116 @@ const StepCard = ({
   );
 };
 
-const ConnectingLine = ({ isAnimated, isMobile, index }: { isAnimated: boolean; isMobile: boolean; index: number }) => {
-  const lineRef = useRef<HTMLDivElement>(null);
+const ConnectingArrow = ({ 
+  isAnimated, 
+  isMobile, 
+  index,
+  fromElement,
+  toElement
+}: { 
+  isAnimated: boolean; 
+  isMobile: boolean; 
+  index: number;
+  fromElement: HTMLDivElement | null;
+  toElement: HTMLDivElement | null;
+}) => {
+  const arrowRef = useRef<HTMLDivElement>(null);
   
   useEffect(() => {
-    if (isAnimated && lineRef.current) {
-      setTimeout(() => {
-        if (lineRef.current) {
-          lineRef.current.style.width = '100%';
+    if (!fromElement || !toElement || !arrowRef.current) return;
+
+    const updateArrowPosition = () => {
+      if (!fromElement || !toElement || !arrowRef.current) return;
+      
+      const fromRect = fromElement.getBoundingClientRect();
+      const toRect = toElement.getBoundingClientRect();
+      const arrow = arrowRef.current;
+      
+      if (isMobile) {
+        // Mobile - vertical arrow
+        const fromX = fromRect.left + fromRect.width / 2;
+        const fromY = fromRect.bottom;
+        const toX = toRect.left + toRect.width / 2;
+        const toY = toRect.top;
+        
+        const centerX = (fromX + toX) / 2;
+        
+        // Set position and size for the vertical arrow
+        arrow.style.top = `${fromY}px`;
+        arrow.style.left = `${centerX}px`;
+        arrow.style.height = `${toY - fromY}px`;
+        arrow.style.width = '2px';
+        
+        // Rotate for vertical arrow
+        arrow.style.transform = 'translateX(-50%)';
+        
+        // Add arrowhead at the bottom
+        if (isAnimated) {
+          setTimeout(() => {
+            const arrowhead = document.createElement('div');
+            arrowhead.className = 'absolute -bottom-1 left-1/2 transform -translate-x-1/2 -translate-y-0 w-0 h-0 border-l-4 border-r-4 border-t-6 border-t-orange-300 border-l-transparent border-r-transparent';
+            arrow.appendChild(arrowhead);
+          }, 800 + index * 200);
         }
-      }, 800 + (index * 200));
-    }
-  }, [isAnimated, index]);
-  
-  if (isMobile) return null;
-  
+      } else {
+        // Desktop - horizontal arrow
+        const fromX = fromRect.right;
+        const fromY = fromRect.top + fromRect.height / 2;
+        const toX = toRect.left;
+        const toY = toRect.top + toRect.height / 2;
+        
+        // Set position for horizontal arrow
+        arrow.style.top = `${fromY}px`;
+        arrow.style.left = `${fromX}px`;
+        arrow.style.width = `${toX - fromX}px`;
+        arrow.style.height = '2px';
+        
+        // Transform for horizontal arrow with translation
+        arrow.style.transform = 'translateY(-50%)';
+      }
+      
+      // Trigger the animation after positioning if animated
+      if (isAnimated) {
+        setTimeout(() => {
+          if (arrowRef.current) {
+            if (isMobile) {
+              arrowRef.current.style.height = '100%';
+            } else {
+              arrowRef.current.style.width = '100%';
+              
+              // Add arrow head for desktop view
+              const arrowhead = document.createElement('div');
+              arrowhead.className = 'absolute right-0 top-1/2 transform -translate-y-1/2 w-0 h-0 border-t-4 border-b-4 border-l-6 border-l-orange-300 border-t-transparent border-b-transparent';
+              arrowRef.current.appendChild(arrowhead);
+            }
+            
+            arrowRef.current.style.opacity = '1';
+          }
+        }, 800 + index * 200);
+      }
+    };
+
+    // Initial positioning
+    updateArrowPosition();
+    
+    // Update on resize
+    window.addEventListener('resize', updateArrowPosition);
+    
+    return () => {
+      window.removeEventListener('resize', updateArrowPosition);
+    };
+  }, [fromElement, toElement, isAnimated, isMobile, index]);
+
   return (
-    <div className="flex-1 px-2 flex items-center justify-center">
-      <div 
-        ref={lineRef}
-        className="h-1 bg-orange-300 w-0 transition-all duration-1000"
-        style={{ transitionTimingFunction: 'cubic-bezier(0.65, 0, 0.35, 1)' }}
-      />
-    </div>
+    <div 
+      ref={arrowRef}
+      className="fixed bg-orange-300 z-0 opacity-0"
+      style={{
+        width: '0%', 
+        height: '0%',
+        transition: 'all 0.8s cubic-bezier(0.65, 0, 0.35, 1)'
+      }}
+    />
   );
 };
 
@@ -102,6 +194,7 @@ const HowItWorks = () => {
   const isMobile = useIsMobile();
   const sectionRef = useRef<HTMLDivElement>(null);
   const [isVisible, setIsVisible] = React.useState(false);
+  const [iconRefs, setIconRefs] = React.useState<(HTMLDivElement | null)[]>([]);
   
   // Animation for the section title
   const titleRef = useRef<HTMLHeadingElement>(null);
@@ -113,6 +206,10 @@ const HowItWorks = () => {
         if (entry.isIntersecting) {
           setIsVisible(true);
           observer.unobserve(entry.target);
+          
+          // Find all icon containers and update iconRefs
+          const iconContainers = document.querySelectorAll('[data-icon-container]');
+          setIconRefs(Array.from(iconContainers) as HTMLDivElement[]);
         }
       });
     }, { threshold: 0.2 });
@@ -183,7 +280,7 @@ const HowItWorks = () => {
   ];
   
   return (
-    <section ref={sectionRef} className="py-16 bg-gradient-to-b from-white to-orange-50">
+    <section ref={sectionRef} className="py-16 bg-gradient-to-b from-white to-orange-50 relative">
       <div className="container max-w-7xl mx-auto px-4">
         <div className="text-center mb-12">
           <h2 ref={titleRef} className="text-3xl md:text-4xl font-bold mb-4 opacity-0">
@@ -194,10 +291,10 @@ const HowItWorks = () => {
           </p>
         </div>
         
-        <div className={`${isMobile ? 'grid gap-8' : 'flex items-center'}`}>
+        <div className={`${isMobile ? 'grid gap-8' : 'flex items-center relative'}`}>
           {steps.map((step, index) => (
             <React.Fragment key={step.step}>
-              <div className={isMobile ? '' : 'flex-1'}>
+              <div className={isMobile ? '' : 'flex-1 relative'}>
                 <StepCard
                   step={step.step}
                   title={step.title}
@@ -207,52 +304,39 @@ const HowItWorks = () => {
                 />
               </div>
               
-              {index < steps.length - 1 && (
-                <ConnectingLine 
+              {index < steps.length - 1 && iconRefs.length >= steps.length && (
+                <ConnectingArrow 
                   isAnimated={isVisible} 
                   isMobile={isMobile}
                   index={index}
+                  fromElement={iconRefs[index]}
+                  toElement={iconRefs[index + 1]}
                 />
               )}
             </React.Fragment>
           ))}
         </div>
         
-        {/* Mobile version of connecting dots - only shown on mobile */}
-        {isMobile && (
-          <div className="flex justify-center mt-4 space-x-2">
-            {steps.map((_, index) => (
-              <React.Fragment key={index}>
-                <div className={cn(
-                  "w-2 h-2 rounded-full",
-                  isVisible ? "bg-tobey-orange" : "bg-gray-300",
-                  isVisible && "animate-pulse"
-                )}
-                style={{
-                  animationDelay: `${index * 300}ms`,
-                  opacity: isVisible ? 1 : 0.5,
-                  transition: "opacity 0.5s ease",
-                  transitionDelay: `${index * 300}ms`
-                }}
-                />
-                
-                {index < steps.length - 1 && (
-                  <div className="relative w-12 h-2 flex items-center">
-                    <div className="absolute w-full h-0.5 bg-gray-200" />
-                    <div 
-                      className="absolute h-0.5 bg-tobey-orange" 
-                      style={{
-                        width: isVisible ? '100%' : '0',
-                        transition: 'width 0.8s ease',
-                        transitionDelay: `${(index * 300) + 300}ms`
-                      }}
-                    />
-                  </div>
-                )}
-              </React.Fragment>
-            ))}
-          </div>
-        )}
+        {/* Add some custom CSS to handle the arrow styling */}
+        <style jsx global>{`
+          @keyframes drawArrow {
+            from { width: 0; }
+            to { width: 100%; }
+          }
+          
+          @keyframes drawArrowVertical {
+            from { height: 0; }
+            to { height: 100%; }
+          }
+          
+          .border-t-6 {
+            border-top-width: 6px;
+          }
+          
+          .border-l-6 {
+            border-left-width: 6px;
+          }
+        `}</style>
       </div>
     </section>
   );
