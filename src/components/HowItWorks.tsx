@@ -49,11 +49,11 @@ const StepCard = ({
     <Card 
       ref={cardRef}
       className={cn(
-        "opacity-0 scale-95 transition-all duration-500 overflow-hidden relative",
+        "opacity-0 scale-95 transition-all duration-500 overflow-hidden relative h-full",
         "border-2 border-gray-100 hover:border-orange-200"
       )}
     >
-      <CardContent className="p-6">
+      <CardContent className="p-6 flex flex-col h-full">
         <div 
           ref={iconRef}
           className="w-12 h-12 rounded-full bg-orange-100 flex items-center justify-center mb-4 relative z-10"
@@ -71,7 +71,7 @@ const StepCard = ({
           <h3 className="inline text-xl font-semibold text-tobey-text">{title}</h3>
         </div>
         
-        <p className="text-gray-600">{description}</p>
+        <p className="text-gray-600 flex-grow">{description}</p>
       </CardContent>
     </Card>
   );
@@ -173,7 +173,7 @@ const HowItWorks = () => {
           </p>
         </div>
         
-        <div className={`${isMobile ? 'grid gap-8' : 'flex items-center gap-8'}`}>
+        <div className={`${isMobile ? 'grid gap-8' : 'flex gap-8'} h-full`}>
           {steps.map((step, index) => (
             <div key={step.step} className={isMobile ? '' : 'flex-1'}>
               <StepCard
