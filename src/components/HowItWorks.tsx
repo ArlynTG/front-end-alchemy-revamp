@@ -171,7 +171,7 @@ const HowItWorks = () => {
             Smarter Learning. Brighter Futures.
           </h2>
           <p ref={descriptionRef} className="max-w-3xl mx-auto text-lg text-gray-600 opacity-0">
-            Our patent-pending AI system creates personalized learning plans to achieve longterm goals. The technology is complex. Getting results is as easy as 1-2-3.
+            Our patent-pending AI system creates personalized learning plans to achieve longterm goals. The tech is complex. Getting results is as easy as 1-2-3.
           </p>
         </div>
         
