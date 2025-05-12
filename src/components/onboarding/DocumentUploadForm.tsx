@@ -4,9 +4,10 @@ import { useDropzone } from "react-dropzone";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import { toast } from "@/hooks/use-toast";
-import { File, UploadCloud, X, CheckCircle, AlertCircle } from "lucide-react";
+import { File, UploadCloud, X, CheckCircle, AlertCircle, HelpCircle } from "lucide-react";
 import { DocumentUpload } from "./types";
 import { useDocumentUpload } from "@/hooks/useDocumentUpload";
+import { HoverCard, HoverCardTrigger, HoverCardContent } from "@/components/ui/hover-card";
 
 interface DocumentUploadFormProps {
   studentId: string;
@@ -131,9 +132,22 @@ const DocumentUploadForm = ({ studentId, onComplete, onBack }: DocumentUploadFor
   return (
     <div className="space-y-6">
       <div>
-        <h2 className="text-lg font-medium text-gray-900">Upload Educational Documents</h2>
-        <p className="mt-1 text-sm text-gray-500">
-          Upload any educational documents like report cards, IEPs, or assessments that will help us understand your child's learning needs better.
+        <h2 className="text-lg font-medium text-gray-900">Upload Documents</h2>
+        <p className="mt-1 text-sm text-gray-500 flex items-center gap-1">
+          Our AI platform uses your child's report cards, IEPs, neuropsychological documents, and other records to formulate longterm goals and the lesson plans to achieve them.
+          <HoverCard>
+            <HoverCardTrigger asChild>
+              <button className="inline-flex items-center justify-center rounded-full h-5 w-5 text-gray-500 hover:text-tobey-orange hover:bg-orange-50 transition-colors">
+                <HelpCircle size={16} />
+                <span className="sr-only">Learn more about our approach</span>
+              </button>
+            </HoverCardTrigger>
+            <HoverCardContent className="w-80 text-sm">
+              <p>
+                Tobey's Tutor was created specifically for bright children who learn differently, including those with dyslexia, ADHD, and executive functioning challenges. We understand the frustration many families experience when traditional learning approaches don't work for their child. Our AI-powered adaptive learning system continuously responds to your child's unique learning style, offering personalized lessons that build confidence through strengths while supportively addressing challenges. Developed by a collaborative team of parents who've walked in your shoes, specialized educators, and learning disability experts, Tobey's Tutor provides the individualized support that helps these remarkable children unlock their full potential.
+              </p>
+            </HoverCardContent>
+          </HoverCard>
         </p>
       </div>
       
