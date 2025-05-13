@@ -109,7 +109,7 @@ const BetaSignupModal: React.FC<BetaSignupModalProps> = ({ isOpen, onClose, plan
         phone: formData.phone,
         student_name: formData.studentName,
         student_age: formData.studentAge,
-        learning_difference: formData.learningDifference,
+        learning_differences: formData.learningDifference ? [formData.learningDifference] : [],
         plan_type: planId,
         timestamp: new Date().toISOString()
       }));
@@ -141,6 +141,7 @@ const BetaSignupModal: React.FC<BetaSignupModalProps> = ({ isOpen, onClose, plan
         phone: formData.phone || null,
         student_name: formData.studentName || null,
         student_age: formData.studentAge || null,
+        // KEY CHANGE: Always use an array for learning_differences, even if empty
         learning_differences: formData.learningDifference ? [formData.learningDifference] : [],
         plan_type: planId
       };
