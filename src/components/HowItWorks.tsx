@@ -168,10 +168,10 @@ const HowItWorks = () => {
       <div className="container max-w-7xl mx-auto px-4">
         <div className="text-center mb-12">
           <h2 ref={titleRef} className="text-3xl md:text-4xl font-bold mb-4 opacity-0">
-            Smarter Learning. Brighter Futures.
+            Smarter Learning. Easy as 1-2-3.
           </h2>
           <p ref={descriptionRef} className="max-w-3xl mx-auto text-lg text-gray-600 opacity-0">
-            Our patent-pending AI system creates personalized learning plans to achieve longterm goals. The tech is complex. Getting results is as easy as 1-2-3.
+            Our patent-pending AI system creates personalized learning plans to achieve longterm goals -- in as little as 20 minutes/day.
           </p>
         </div>
         
