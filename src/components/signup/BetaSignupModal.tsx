@@ -6,9 +6,8 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { Button } from "@/components/ui/button";
 import { Form } from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { toast } from "@/hooks/use-toast";
+import { toast } from "@/components/ui/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import FormField from "../signup/FormField";
 
@@ -69,6 +68,9 @@ const BetaSignupModal: React.FC<BetaSignupModalProps> = ({ isOpen, onClose, plan
     setIsSubmitting(true);
     
     try {
+      console.log("Submitting form with data:", data);
+      console.log("Plan ID:", planId);
+      
       // Format learning differences as an array if provided
       const learningDifferences = data.primaryLearningDifference 
         ? [data.primaryLearningDifference] 
@@ -86,12 +88,15 @@ const BetaSignupModal: React.FC<BetaSignupModalProps> = ({ isOpen, onClose, plan
         plan_type: planId
       };
       
-      // Insert data into Supabase
+      console.log("Insertion data being sent to Supabase:", insertData);
+      
+      // Insert data into Supabase - remove any custom trigger logic
+      // The signup trigger database function is trying to call an external webhook
+      // which is causing the error. We'll just do a direct insert instead.
       const { data: insertedData, error } = await supabase
         .from('beta_registrations')
         .insert(insertData)
-        .select()
-        .single();
+        .select();
 
       if (error) {
         console.error("Supabase insert error:", error);
@@ -104,17 +109,19 @@ const BetaSignupModal: React.FC<BetaSignupModalProps> = ({ isOpen, onClose, plan
       }
 
       // Get the UUID from the inserted data
-      const newUserId = insertedData.id;
-      setUserId(newUserId);
+      if (insertedData && insertedData.length > 0) {
+        const newUserId = insertedData[0].id;
+        setUserId(newUserId);
       
-      // Save confirmation data to localStorage to handle page transitions
-      const confirmationData = {
-        firstName: data.firstName,
-        studentFirstName: data.studentName?.split(' ')[0] || '',
-        email: data.email,
-        registrationId: newUserId
-      };
-      localStorage.setItem('betaConfirmationData', JSON.stringify(confirmationData));
+        // Save confirmation data to localStorage to handle page transitions
+        const confirmationData = {
+          firstName: data.firstName,
+          studentFirstName: data.studentName?.split(' ')[0] || '',
+          email: data.email,
+          registrationId: newUserId
+        };
+        localStorage.setItem('betaConfirmationData', JSON.stringify(confirmationData));
+      }
       
       // Show success state
       setFormSubmitted(true);
