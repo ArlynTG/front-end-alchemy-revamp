@@ -93,8 +93,9 @@ const DocumentUploadForm = ({ studentId, onComplete, onBack }: DocumentUploadFor
     
     for (const file of validFiles) {
       // Add file to uploads with uploading status
+      const uploadId = `${Date.now()}-${file.name}`;
       const newUpload: DocumentUpload = {
-        id: `${Date.now()}-${file.name}`,
+        id: uploadId,
         name: file.name,
         type: getDocTypeFromMimeType(file.type),
         size: file.size,
@@ -230,7 +231,7 @@ const DocumentUploadForm = ({ studentId, onComplete, onBack }: DocumentUploadFor
                 <button
                   onClick={(e) => {
                     e.stopPropagation();
-                    removeUpload(upload.id as string);
+                    removeUpload(upload.id);
                   }}
                   className="ml-2 flex-shrink-0 p-1 hover:bg-gray-200 rounded-full"
                   disabled={upload.status === 'uploading'}

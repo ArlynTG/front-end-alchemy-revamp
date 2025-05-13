@@ -1,10 +1,11 @@
+
 import React, { useState, useCallback } from 'react';
 import { useDropzone } from 'react-dropzone';
 import { File, X, FileCheck, Upload, AlertCircle } from 'lucide-react';
 import { Progress } from '@/components/ui/progress';
 import { toast } from '@/hooks/use-toast';
 import { useDocumentUpload } from '@/hooks/useDocumentUpload';
-import { DocumentUpload } from '@/components/onboarding/types';
+import { DocumentUpload, DocumentUploadType } from '@/components/onboarding/types';
 
 interface FileUploadAreaProps {
   studentId: string;
@@ -53,13 +54,21 @@ const FileUploadArea: React.FC<FileUploadAreaProps> = ({ studentId, onUploadSucc
     return true;
   };
 
+  // Map file type to document type
+  const getDocumentType = (file: File): DocumentUploadType => {
+    if (file.type.includes('pdf')) return 'schoolReport';
+    if (file.type.includes('doc')) return 'assessmentReport';
+    return 'other';
+  };
+
   const handleFileUpload = async (file: File) => {
     try {
       // Add file to uploading files list with initial progress
+      const uploadId = `${Date.now()}-${file.name}`;
       const newUpload: DocumentUpload = {
-        id: `${Date.now()}-${file.name}`,
+        id: uploadId,
         name: file.name,
-        type: 'other', // Default type
+        type: getDocumentType(file),
         size: file.size,
         progress: 0,
         status: 'uploading',
@@ -83,7 +92,7 @@ const FileUploadArea: React.FC<FileUploadAreaProps> = ({ studentId, onUploadSucc
         );
       }, 300);
       
-      // Upload file using the hook, passing the studentId as the UUID for the path
+      // Upload file using the hook
       await uploadDocument(file, studentId);
       
       // Clear progress interval and mark as complete
@@ -105,7 +114,7 @@ const FileUploadArea: React.FC<FileUploadAreaProps> = ({ studentId, onUploadSucc
       // Update file status to show error
       setUploadingFiles(prev => 
         prev.map(f => 
-          f.id === newUpload.id 
+          f.id === uploadId 
             ? { ...f, error: error instanceof Error ? error.message : 'Upload failed', progress: 0, status: 'error' } 
             : f
         )
@@ -113,7 +122,7 @@ const FileUploadArea: React.FC<FileUploadAreaProps> = ({ studentId, onUploadSucc
       
       // Remove failed file after showing error
       setTimeout(() => {
-        setUploadingFiles(prev => prev.filter(f => f.id !== newUpload.id));
+        setUploadingFiles(prev => prev.filter(f => f.id !== uploadId));
       }, 3000);
       
       console.error('Error uploading file:', error);
@@ -202,7 +211,7 @@ const FileUploadArea: React.FC<FileUploadAreaProps> = ({ studentId, onUploadSucc
               <button
                 onClick={(e) => {
                   e.stopPropagation();
-                  removeFile(file.id as string);
+                  removeFile(file.id);
                 }}
                 className="ml-2 flex-shrink-0 p-1 hover:bg-gray-200 rounded-full"
               >
