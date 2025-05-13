@@ -30,6 +30,7 @@ serve(async (req) => {
 
     // Parse the request body
     const requestData = await req.json();
+    console.log("Received registration data:", requestData);
 
     // Insert data into beta_registrations
     const { data, error } = await supabaseAdmin
@@ -37,7 +38,7 @@ serve(async (req) => {
       .insert([requestData]);
 
     if (error) {
-      console.error("Supabase error:", error);
+      console.error("Supabase insertion error:", error);
       
       // Handle duplicate email error specifically
       if (error.code === '23505' && error.message.includes("email")) {
@@ -54,6 +55,8 @@ serve(async (req) => {
       
       throw error;
     }
+
+    console.log("Registration successful!");
 
     // Return success response with redirect URL
     return new Response(
