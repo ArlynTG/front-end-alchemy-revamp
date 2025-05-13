@@ -1,79 +1,91 @@
 
-import { useState } from "react";
-import { supabase } from "@/integrations/supabase/client";
-import { toast } from "@/hooks/use-toast";
-import { DocumentUpload, DocumentUploadType } from "@/components/onboarding/types";
+import { useState, useCallback } from 'react';
+import { v4 as uuidv4 } from 'uuid';
+import { toast } from '@/hooks/use-toast';
 
-interface UseDocumentUploadOptions {
-  bucketName: string;
-  onSuccess?: (filePath: string) => void;
-  onError?: (error: Error) => void;
+// Define the document upload types
+export type DocumentUploadStatus = 'uploading' | 'success' | 'error';
+export type DocumentUploadType = 'document' | 'report_card' | 'assessment' | 'other';
+
+// Define the document upload interface
+export interface DocumentUpload {
+  id: string;
+  name: string;
+  file: File;
+  type: DocumentUploadType;
+  status: DocumentUploadStatus;
+  progress: number;
+  error?: string;
 }
 
-export const useDocumentUpload = ({
-  bucketName,
-  onSuccess,
-  onError,
-}: UseDocumentUploadOptions) => {
-  const [isUploading, setIsUploading] = useState(false);
+export function useDocumentUpload() {
+  const [uploads, setUploads] = useState<DocumentUpload[]>([]);
 
-  const getDocumentTypeFromMimeType = (mimeType: string): DocumentUploadType => {
-    if (mimeType.includes('pdf')) return 'schoolReport';
-    if (mimeType.includes('word') || mimeType.includes('doc')) return 'assessmentReport';
-    return 'other';
-  };
-
-  const uploadDocument = async (file: File, studentId: string) => {
-    setIsUploading(true);
+  const uploadFile = useCallback((file: File, type: DocumentUploadType) => {
+    const id = uuidv4();
     
-    try {
-      // Create a unique file path using the student ID and original filename
-      const fileExt = file.name.split('.').pop();
-      const fileName = `${Date.now()}.${fileExt}`;
-      const filePath = `${studentId}/${fileName}`;
-      
-      // Upload file to Supabase Storage
-      const { data, error } = await supabase.storage
-        .from(bucketName)
-        .upload(filePath, file, {
-          cacheControl: '3600',
-          upsert: false
-        });
-      
-      if (error) {
-        console.error('Error uploading file:', error);
-        throw new Error(`Upload failed: ${error.message}`);
-      }
-      
-      // Get the public URL for the file
-      const { data: { publicUrl } } = supabase.storage
-        .from(bucketName)
-        .getPublicUrl(filePath);
-      
-      console.log('File uploaded successfully:', publicUrl);
-      
-      // Call success callback if provided
-      if (onSuccess) {
-        onSuccess(publicUrl);
-      }
-      
-      return publicUrl;
-    } catch (error) {
-      console.error('Upload error:', error);
-      
-      // Call error callback if provided
-      if (onError && error instanceof Error) {
-        onError(error);
-      }
-      
-      throw error;
-    } finally {
-      setIsUploading(false);
-    }
-  };
-
+    // Create a new upload
+    const newUpload: DocumentUpload = {
+      id,
+      name: file.name,
+      file,
+      type,
+      status: 'uploading',
+      progress: 0,
+    };
+    
+    setUploads(prev => [...prev, newUpload]);
+    
+    // Simulate file upload progress
+    const interval = setInterval(() => {
+      setUploads(currentUploads => {
+        const uploadIndex = currentUploads.findIndex(u => u.id === id);
+        
+        if (uploadIndex === -1) {
+          clearInterval(interval);
+          return currentUploads;
+        }
+        
+        const upload = currentUploads[uploadIndex];
+        
+        if (upload.status !== 'uploading' || upload.progress >= 100) {
+          clearInterval(interval);
+          return currentUploads;
+        }
+        
+        const newProgress = Math.min(upload.progress + 10, 100);
+        const updatedUpload = { ...upload, progress: newProgress };
+        
+        // If reached 100%, mark as success after a short delay
+        if (newProgress === 100) {
+          setTimeout(() => {
+            setUploads(latestUploads => {
+              const finalIndex = latestUploads.findIndex(u => u.id === id);
+              if (finalIndex === -1) return latestUploads;
+              
+              const updatedUploads = [...latestUploads];
+              updatedUploads[finalIndex] = { ...updatedUploads[finalIndex], status: 'success' };
+              return updatedUploads;
+            });
+          }, 500);
+        }
+        
+        const updatedUploads = [...currentUploads];
+        updatedUploads[uploadIndex] = updatedUpload;
+        return updatedUploads;
+      });
+    }, 300);
+    
+    return id;
+  }, []);
+  
+  const removeUpload = useCallback((id: string) => {
+    setUploads(prev => prev.filter(upload => upload.id !== id));
+  }, []);
+  
   return {
-    uploadDocument,
-    isUploading
+    uploads,
+    uploadFile,
+    removeUpload
   };
-};
+}

@@ -1,5 +1,5 @@
 
-import { toast as sonnerToast, ToastT, Toast } from "sonner";
+import { toast as sonnerToast, ToastT } from "sonner";
 
 // Define the types for our toast system
 type ToastProps = Omit<ToastT, "id"> & {

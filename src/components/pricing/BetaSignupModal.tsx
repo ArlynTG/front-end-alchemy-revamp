@@ -1,6 +1,5 @@
 
 import { useState, useEffect, useRef } from "react";
-import { useNavigate } from "react-router-dom";
 import { 
   Dialog, 
   DialogContent, 
@@ -9,14 +8,12 @@ import {
   DialogDescription 
 } from "@/components/ui/dialog";
 import { DetailedSignupFormValues } from "@/utils/formSchemas";
-import { toast } from "@/components/ui/use-toast";
+import { toast } from "@/hooks/use-toast";
 import { Button } from "@/components/ui/button";
 import BetaSignupForm from "./BetaSignupForm";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { supabase } from "@/integrations/supabase/client";
-import { PAYMENT_STATUSES, recordPaymentStatus, logPaymentError } from "@/utils/paymentMonitoring";
 import { Database } from "@/integrations/supabase/types";
-import { useFormDebug } from "@/hooks/useFormDebug";
 
 interface BetaSignupModalProps {
   isOpen: boolean;
@@ -29,27 +26,8 @@ const BetaSignupModal = ({ isOpen, onClose, planId }: BetaSignupModalProps) => {
   const [formSubmitted, setFormSubmitted] = useState(false);
   const [userId, setUserId] = useState<string | null>(null);
   const [paymentError, setPaymentError] = useState<string | null>(null);
-  const navigate = useNavigate();
   const isMobile = useIsMobile();
-  const containerRef = useRef<HTMLDivElement>(null);
   const stripeButtonInitialized = useRef(false);
-  const formDataRef = useRef<DetailedSignupFormValues | null>(null);
-
-  // Log payment processing errors to database
-  const logStripePaymentError = async (error: string, context: Record<string, any>) => {
-    console.error("Payment processing error:", error, context);
-    
-    setPaymentError(error);
-    
-    if (userId) {
-      await logPaymentError({
-        userId: userId,
-        errorType: 'stripe_payment_error',
-        errorMessage: error,
-        context: context
-      });
-    }
-  };
 
   // Update the Stripe Button with the Supabase UUID
   const updateStripeButton = (supabaseUuid: string) => {
@@ -71,31 +49,20 @@ const BetaSignupModal = ({ isOpen, onClose, planId }: BetaSignupModalProps) => {
         console.log("Stripe button updated with client-reference-id:", supabaseUuid);
         stripeButtonInitialized.current = true;
         
-        // Record successful initialization in database
-        recordPaymentStatus(supabaseUuid, PAYMENT_STATUSES.INITIALIZED);
-        
       } catch (error) {
         console.error("Error updating Stripe button:", error);
         setPaymentError("Failed to initialize payment form. Please try again.");
-        logStripePaymentError("Stripe button initialization failed", { 
-          userId: supabaseUuid, 
-          error: error instanceof Error ? error.message : String(error)
-        });
       }
     } else {
-      const errorMsg = "Could not find stripe-buy-button element";
-      console.error(errorMsg);
       setPaymentError("Payment form could not be loaded. Please refresh the page and try again.");
-      logStripePaymentError(errorMsg, { userId: supabaseUuid });
     }
   };
 
   const handleDetailsSubmit = async (data: DetailedSignupFormValues) => {
-    console.log("Modal - Submitting form with data:", data);
-    console.log("Modal - Plan ID:", planId);
+    console.log("Submitting form with data:", data);
+    console.log("Plan ID:", planId);
     setIsSubmitting(true);
     setPaymentError(null);
-    formDataRef.current = data; // Store form data for later use
 
     try {
       // Important: Store learning differences as an array in the database
@@ -109,7 +76,6 @@ const BetaSignupModal = ({ isOpen, onClose, planId }: BetaSignupModalProps) => {
         student_name: data.studentName || "",
         phone: data.phone,
         student_age: data.studentAge,
-        // Store learning differences as array, not as primary_learning_difference
         learning_differences: learningDifferences,
         plan_type: planId
       };
@@ -134,7 +100,6 @@ const BetaSignupModal = ({ isOpen, onClose, planId }: BetaSignupModalProps) => {
       }
 
       console.log("Registration successful with inserted data:", insertedData);
-      console.log("Modal - Submission result:", { success: true, data: insertedData });
       
       // Get the UUID from the inserted data
       const newUserId = insertedData.id;
@@ -158,7 +123,7 @@ const BetaSignupModal = ({ isOpen, onClose, planId }: BetaSignupModalProps) => {
       }, 100);
       
     } catch (error) {
-      console.error("Modal - Error during submission:", error);
+      console.error("Error during submission:", error);
       toast({
         title: "Error",
         description: error instanceof Error ? error.message : "An unexpected error occurred",
@@ -185,9 +150,7 @@ const BetaSignupModal = ({ isOpen, onClose, planId }: BetaSignupModalProps) => {
   useEffect(() => {
     if (formSubmitted && userId) {
       const handleStripeSuccess = () => {
-        // When Stripe redirects back after successful payment
         console.log("Stripe payment completed successfully");
-        recordPaymentStatus(userId, PAYMENT_STATUSES.COMPLETED);
       };
       
       window.addEventListener('message', (event) => {
@@ -197,9 +160,6 @@ const BetaSignupModal = ({ isOpen, onClose, planId }: BetaSignupModalProps) => {
       });
     }
   }, [formSubmitted, userId]);
-
-  // Use the debug hook to trace form submission issues
-  useFormDebug(formDataRef.current, "BetaSignupModal Form Data");
 
   return (
     <Dialog open={isOpen} onOpenChange={handleOpenChange}>

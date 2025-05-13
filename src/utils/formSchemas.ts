@@ -1,7 +1,5 @@
 
 import { z } from "zod";
-import { ALL_LEARNING_DIFFERENCES, LearningDifference } from "@/components/onboarding/types";
-import { Database } from "@/integrations/supabase/types";
 
 // Create a string enum for learning differences that match the Supabase enum
 const learningDifferenceEnum = z.enum([
@@ -12,6 +10,7 @@ const learningDifferenceEnum = z.enum([
   "Executive_Functioning",
   "Self_Advocacy",
   "Processing_Speed",
+  "Other"
 ] as const);
 
 // Base schema with common fields

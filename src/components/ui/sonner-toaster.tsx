@@ -1,19 +1,16 @@
 
-import { Toaster } from "sonner";
+import { Toaster as SonnerToaster } from "sonner";
 
-export function SonnerToaster() {
+export function Toaster() {
   return (
-    <Toaster 
-      className="group toast-root"
-      toastOptions={{
-        classNames: {
-          toast: "group toast",
-          description: "toast-description"
-        }
-      }}
+    <SonnerToaster 
       position="top-right"
       closeButton
       richColors
+      toastOptions={{
+        className: "border-border shadow-lg",
+        descriptionClassName: "text-muted-foreground",
+      }}
     />
   );
 }

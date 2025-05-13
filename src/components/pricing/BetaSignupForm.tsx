@@ -6,23 +6,21 @@ import { Button } from "@/components/ui/button";
 import { Form } from "@/components/ui/form";
 import { InputField, SelectField } from "@/components/form/FormField";
 import { detailedSignupSchema, DetailedSignupFormValues } from "@/utils/formSchemas";
-import { Database } from "@/integrations/supabase/types";
 
-// Define student age options
-const studentAgeOptions = Array.from({ length: 9 }, (_, i) => {
-  const age = i + 8;
+// Define student age options (4-18 years)
+const studentAgeOptions = Array.from({ length: 15 }, (_, i) => {
+  const age = i + 4;
   return { value: age.toString(), label: `${age} years` };
 });
 
 // Define learning difference options that match Supabase enum exactly
 const learningDifferenceOptions = [
-  { value: "Dyslexia", label: "Dyslexia" },
   { value: "ADHD", label: "ADHD" },
+  { value: "Dyslexia", label: "Dyslexia" },
   { value: "Dyscalculia", label: "Dyscalculia" },
   { value: "Auditory Processing", label: "Auditory Processing" },
-  { value: "Executive_Functioning", label: "Executive Functioning" },
-  { value: "Self_Advocacy", label: "Self Advocacy" },
-  { value: "Processing_Speed", label: "Processing Speed" },
+  { value: "Executive_Functioning", label: "Executive Function" },
+  { value: "Other", label: "Other" },
 ];
 
 interface BetaSignupFormProps {
@@ -89,7 +87,7 @@ const BetaSignupForm = ({ onSubmit, onCancel, isSubmitting }: BetaSignupFormProp
             control={form.control}
             name="studentName"
             label="Student's Name"
-            placeholder="Student's first name"
+            placeholder="Student's name"
           />
           
           <SelectField

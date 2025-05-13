@@ -1,20 +1,17 @@
 
 import { useEffect } from 'react';
 
-// A debugging hook to trace form submission issues
-export function useFormDebug(formData: any, name: string = "Form") {
+/**
+ * A hook for debugging form data in development
+ * @param data The form data to debug
+ * @param label Optional label to identify the form data in logs
+ */
+export const useFormDebug = (data: any, label = 'Form Data') => {
   useEffect(() => {
-    if (process.env.NODE_ENV === 'development' && formData) {
-      console.group(`${name} Debug`);
-      console.log('Current form data:', formData);
-      
-      // Check for potential enum mismatches with Supabase
-      if (formData?.primaryLearningDifference) {
-        console.log('Learning difference value:', formData.primaryLearningDifference);
-        console.log('Learning difference type:', typeof formData.primaryLearningDifference);
-      }
-      
+    if (process.env.NODE_ENV === 'development' && data) {
+      console.group(`🔍 ${label}`);
+      console.log(data);
       console.groupEnd();
     }
-  }, [formData, name]);
-}
+  }, [data, label]);
+};
