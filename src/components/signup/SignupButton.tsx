@@ -1,38 +1,34 @@
 
-import React, { useState } from "react";
-import BetaSignupModal from "./BetaSignupModal";
+import React from "react";
+import { Link } from "react-router-dom";
 
 interface SignupButtonProps {
   label?: string;
   className?: string;
   planId?: string;
+  to?: string;
 }
 
 const SignupButton: React.FC<SignupButtonProps> = ({
   label = "Sign Up",
   className = "",
   planId = "early-adopter",
+  to = "",
 }) => {
-  const [isModalOpen, setIsModalOpen] = useState(false);
-
-  const openModal = () => setIsModalOpen(true);
-  const closeModal = () => setIsModalOpen(false);
+  if (to) {
+    return (
+      <Link to={to} className={`px-4 py-2 rounded ${className || "bg-orange-500 hover:bg-orange-600 text-white"}`}>
+        {label}
+      </Link>
+    );
+  }
 
   return (
-    <>
-      <button 
-        onClick={openModal} 
-        className={`px-4 py-2 rounded ${className || "bg-orange-500 hover:bg-orange-600 text-white"}`}
-      >
-        {label}
-      </button>
-      
-      <BetaSignupModal 
-        isOpen={isModalOpen} 
-        onClose={closeModal}
-        planId={planId}
-      />
-    </>
+    <button 
+      className={`px-4 py-2 rounded ${className || "bg-orange-500 hover:bg-orange-600 text-white"}`}
+    >
+      {label}
+    </button>
   );
 };
 

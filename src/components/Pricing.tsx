@@ -3,7 +3,6 @@ import { useState, createContext, useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import PricingCard from "./pricing/PricingCard.tsx"; // Explicitly reference .tsx extension
 import { pricingPlans } from "./pricing/pricingData";
-import BetaSignupModal from "./pricing/BetaSignupModal";
 
 // Create a context to expose the modal functionality
 export interface PricingContextType {
@@ -22,21 +21,15 @@ export const usePricing = () => {
 
 const Pricing = () => {
   const navigate = useNavigate();
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [selectedPlanId, setSelectedPlanId] = useState("");
   
+  // Function to navigate to signup page
   const handlePlanSelect = (planId: string) => {
-    setSelectedPlanId(planId);
-    setIsModalOpen(true);
+    navigate("/signup-test");
   };
   
-  // Function to open the Early Adopter modal specifically
+  // Function to open the Early Adopter signup page
   const openEarlyAdopterModal = () => {
-    const earlyAdopterPlan = pricingPlans.find(plan => plan.id === "early-adopter");
-    if (earlyAdopterPlan) {
-      setSelectedPlanId(earlyAdopterPlan.id);
-      setIsModalOpen(true);
-    }
+    navigate("/signup-test");
   };
   
   const pricingValue = {
@@ -62,12 +55,6 @@ const Pricing = () => {
             ))}
           </div>
         </div>
-        
-        <BetaSignupModal 
-          isOpen={isModalOpen} 
-          onClose={() => setIsModalOpen(false)} 
-          planId={selectedPlanId}
-        />
       </section>
     </PricingContext.Provider>
   );

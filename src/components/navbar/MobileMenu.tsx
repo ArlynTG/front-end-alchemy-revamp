@@ -122,6 +122,7 @@ const MobileMenu = ({ isOpen, onClose, onJoinBeta, scrollToSection }: MobileMenu
         <SignupButton 
           className="btn-primary w-full flex items-center justify-center gap-2 px-4 py-2 rounded-md bg-tobey-orange text-white hover:bg-tobey-orange/90" 
           label="Join the Beta for $1"
+          to="/signup-test"
         />
       </div>
     </div>
