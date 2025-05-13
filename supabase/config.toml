@@ -3,3 +3,4 @@ project_id = "hgpplvegqlvxwszlhzwc"
 
 [functions.beta-signup]
 verify_jwt = false
+

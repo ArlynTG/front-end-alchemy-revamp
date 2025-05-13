@@ -28,6 +28,9 @@ interface FormData {
   learningDifference: string;
 }
 
+// Stripe checkout URL
+const STRIPE_CHECKOUT_URL = "https://buy.stripe.com/aEU29XbjrclwgO49AC";
+
 const BetaSignupModal: React.FC<BetaSignupModalProps> = ({ isOpen, onClose, planId = "early-adopter" }) => {
   // Form state
   const [formData, setFormData] = useState<FormData>({
@@ -45,6 +48,18 @@ const BetaSignupModal: React.FC<BetaSignupModalProps> = ({ isOpen, onClose, plan
   
   // Submission state
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [shouldRedirect, setShouldRedirect] = useState(false);
+
+  // Handle redirect to Stripe
+  useEffect(() => {
+    if (shouldRedirect) {
+      const redirectTimer = setTimeout(() => {
+        window.location.href = STRIPE_CHECKOUT_URL;
+      }, 1000);
+      
+      return () => clearTimeout(redirectTimer);
+    }
+  }, [shouldRedirect]);
 
   // Reset form when modal is closed
   useEffect(() => {
@@ -61,6 +76,7 @@ const BetaSignupModal: React.FC<BetaSignupModalProps> = ({ isOpen, onClose, plan
       });
       setErrors({});
       setIsSubmitting(false);
+      setShouldRedirect(false);
     }
   }, [isOpen]);
 
@@ -118,7 +134,7 @@ const BetaSignupModal: React.FC<BetaSignupModalProps> = ({ isOpen, onClose, plan
     }
   };
 
-  // Handle form submission - super simplified
+  // Handle form submission
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
@@ -133,7 +149,7 @@ const BetaSignupModal: React.FC<BetaSignupModalProps> = ({ isOpen, onClose, plan
       // Always save to localStorage first
       saveToLocalStorage();
       
-      // Super simple data structure
+      // Prepare data for Supabase
       const registrationData = {
         first_name: formData.firstName,
         last_name: formData.lastName,
@@ -141,14 +157,14 @@ const BetaSignupModal: React.FC<BetaSignupModalProps> = ({ isOpen, onClose, plan
         phone: formData.phone || null,
         student_name: formData.studentName || null,
         student_age: formData.studentAge || null,
-        // KEY CHANGE: Always use an array for learning_differences, even if empty
+        // Always use an array for learning_differences, even if empty
         learning_differences: formData.learningDifference ? [formData.learningDifference] : [],
         plan_type: planId
       };
 
       console.log("Attempting to save registration:", registrationData);
       
-      // Simple insert
+      // Insert data into Supabase
       const { error } = await supabase
         .from('beta_registrations')
         .insert(registrationData);
@@ -171,20 +187,11 @@ const BetaSignupModal: React.FC<BetaSignupModalProps> = ({ isOpen, onClose, plan
         variant: "destructive",
       });
     } finally {
-      // Always redirect to Stripe regardless of success/failure
-      setTimeout(() => {
-        window.location.href = "https://buy.stripe.com/aEU29XbjrclwgO49AC";
-      }, 1500);
-      
+      // Set redirect flag to true regardless of success/failure
+      setShouldRedirect(true);
       setIsSubmitting(false);
     }
   };
-
-  // Generate age options for dropdown (8-16 years)
-  const ageOptions = Array.from({ length: 9 }, (_, i) => {
-    const age = i + 8;
-    return { value: age.toString(), label: `${age} years` };
-  });
 
   // Learning difference options
   const learningDifferenceOptions = [
@@ -195,6 +202,12 @@ const BetaSignupModal: React.FC<BetaSignupModalProps> = ({ isOpen, onClose, plan
     { value: "Executive_Function", label: "Executive Function" },
     { value: "Other", label: "Other" }
   ];
+
+  // Generate age options for dropdown (8-16 years)
+  const ageOptions = Array.from({ length: 9 }, (_, i) => {
+    const age = i + 8;
+    return { value: age.toString(), label: `${age} years` };
+  });
 
   // Use the Dialog component to handle modal display and backdrop
   return (
@@ -362,10 +375,10 @@ const BetaSignupModal: React.FC<BetaSignupModalProps> = ({ isOpen, onClose, plan
             </button>
             <button
               type="submit"
-              disabled={isSubmitting}
+              disabled={isSubmitting || shouldRedirect}
               className="px-4 py-2 text-white bg-orange-500 hover:bg-orange-600 rounded-md transition-colors focus:outline-none focus:ring-2 focus:ring-orange-400 disabled:opacity-70 disabled:cursor-not-allowed"
             >
-              {isSubmitting ? "Processing..." : "Reserve Your Spot for $1"}
+              {isSubmitting ? "Processing..." : shouldRedirect ? "Redirecting..." : "Reserve Your Spot for $1"}
             </button>
           </div>
         </form>

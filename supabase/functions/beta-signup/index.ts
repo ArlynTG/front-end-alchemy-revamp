@@ -1,137 +1,95 @@
 
-import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
-import { createClient } from "https://esm.sh/@supabase/supabase-js@2.23.0";
+import { serve } from 'https://deno.land/std@0.168.0/http/server.ts'
+import { createClient } from 'https://esm.sh/@supabase/supabase-js@2'
 
-// CORS headers for browser requests
+// Set CORS headers
 const corsHeaders = {
-  "Access-Control-Allow-Origin": "*",
-  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
-};
+  'Access-Control-Allow-Origin': '*',
+  'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
+}
 
 serve(async (req) => {
   // Handle CORS preflight requests
-  if (req.method === "OPTIONS") {
-    return new Response(null, { headers: corsHeaders });
-  }
-
-  if (req.method !== "POST") {
-    return new Response(JSON.stringify({ error: "Method not allowed" }), {
-      status: 405,
-      headers: { ...corsHeaders, "Content-Type": "application/json" },
-    });
+  if (req.method === 'OPTIONS') {
+    return new Response('ok', { headers: corsHeaders })
   }
 
   try {
-    console.log("Beta signup function started");
-    
-    // Debug environment variables
-    console.log("Environment variables check:", {
-      urlExists: !!Deno.env.get("SUPABASE_URL"),
-      keyExists: !!Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")
-    });
-    
-    // Create a Supabase client with the service role key
-    const supabaseUrl = Deno.env.get("SUPABASE_URL") ?? "";
-    const supabaseKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? "";
-    
-    if (!supabaseUrl || !supabaseKey) {
-      throw new Error("Missing Supabase environment variables");
-    }
-    
-    const supabase = createClient(supabaseUrl, supabaseKey);
+    const supabaseClient = createClient(
+      // Use Deno.env to access environment variables
+      Deno.env.get('SUPABASE_URL') ?? '',
+      Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ?? '',
+      { auth: { persistSession: false } }
+    )
 
-    // Parse the request body
-    const requestData = await req.json();
-    console.log("Received registration data:", requestData);
-
-    // Validate required fields
-    if (!requestData.first_name || !requestData.last_name || !requestData.email || !requestData.plan_type) {
-      return new Response(
-        JSON.stringify({ error: "Missing required fields" }),
-        {
-          status: 400,
-          headers: { ...corsHeaders, "Content-Type": "application/json" },
-        }
-      );
-    }
-
-    // First check if email already exists to give a clear error message
-    const { data: existingUser, error: checkError } = await supabase
-      .from("beta_registrations")
-      .select("email")
-      .eq("email", requestData.email)
-      .maybeSingle();
-      
-    if (checkError) {
-      console.error("Error checking for existing user:", checkError);
-      throw new Error(`Database error: ${checkError.message}`);
-    }
+    const requestData = await req.json()
     
-    if (existingUser) {
-      return new Response(
-        JSON.stringify({ 
-          error: "This email has already been registered for the beta." 
-        }),
-        {
-          status: 400,
-          headers: { ...corsHeaders, "Content-Type": "application/json" },
-        }
-      );
+    // Parse the request data
+    const { 
+      firstName, 
+      lastName, 
+      email, 
+      phone = null, 
+      studentName = null, 
+      studentAge = null, 
+      learningDifference = null,
+      planId = 'early-adopter' 
+    } = requestData
+
+    // Format the data for insertion
+    const betaRegistration = {
+      first_name: firstName,
+      last_name: lastName,
+      email: email,
+      phone: phone,
+      student_name: studentName,
+      student_age: studentAge,
+      learning_differences: learningDifference ? [learningDifference] : [],
+      plan_type: planId
     }
 
-    // Prepare the data for insertion - explicit mapping to avoid any unexpected fields
-    const insertData = {
-      first_name: requestData.first_name,
-      last_name: requestData.last_name,
-      email: requestData.email,
-      phone: requestData.phone || null,
-      student_name: requestData.student_name || null,
-      student_age: requestData.student_age || null,
-      learning_differences: Array.isArray(requestData.learning_differences) 
-        ? requestData.learning_differences 
-        : (requestData.learning_differences ? [requestData.learning_differences] : null),
-      plan_type: requestData.plan_type,
-      status: "pending"
-    };
-    
-    console.log("Data prepared for insertion:", insertData);
-
-    // Insert the registration data
-    const { data, error } = await supabase
-      .from("beta_registrations")
-      .insert(insertData)
-      .select();
+    // Insert the data using the service role client
+    const { data, error } = await supabaseClient
+      .from('beta_registrations')
+      .insert(betaRegistration)
+      .select()
 
     if (error) {
-      console.error("Supabase insertion error:", error);
-      throw new Error(`Insert failed: ${error.message}`);
+      throw error
     }
 
-    console.log("Registration successful:", data);
-
-    // Return success response with redirect URL
+    // Return a success response
     return new Response(
-      JSON.stringify({ 
-        success: true, 
-        redirectUrl: "https://buy.stripe.com/aEU29XbjrclwgO49AC"
+      JSON.stringify({
+        success: true,
+        data: data[0],
+        stripeUrl: 'https://buy.stripe.com/aEU29XbjrclwgO49AC'
       }),
-      {
-        status: 200,
-        headers: { ...corsHeaders, "Content-Type": "application/json" },
+      { 
+        headers: { 
+          ...corsHeaders,
+          'Content-Type': 'application/json' 
+        },
+        status: 200 
       }
-    );
+    )
   } catch (error) {
-    console.error("Error in beta-signup function:", error);
+    console.error('Error in beta-signup function:', error)
     
+    // Return an error response
     return new Response(
-      JSON.stringify({ 
-        error: "Failed to register", 
-        details: error.message || "Unknown error occurred" 
+      JSON.stringify({
+        success: false,
+        error: error.message,
+        stripeUrl: 'https://buy.stripe.com/aEU29XbjrclwgO49AC' // Always include the Stripe URL
       }),
-      {
-        status: 500,
-        headers: { ...corsHeaders, "Content-Type": "application/json" },
+      { 
+        headers: { 
+          ...corsHeaders,
+          'Content-Type': 'application/json' 
+        },
+        status: 400 
       }
-    );
+    )
   }
-});
+})
