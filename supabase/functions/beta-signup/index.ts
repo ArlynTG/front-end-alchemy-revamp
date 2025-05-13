@@ -25,10 +25,14 @@ serve(async (req) => {
     console.log("Function started");
     
     // Create a Supabase client with the service role key
-    const supabaseAdmin = createClient(
-      Deno.env.get("SUPABASE_URL") ?? "",
-      Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? ""
-    );
+    const supabaseUrl = Deno.env.get("SUPABASE_URL") ?? "";
+    const supabaseKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? "";
+    
+    if (!supabaseUrl || !supabaseKey) {
+      throw new Error("Missing Supabase environment variables");
+    }
+    
+    const supabase = createClient(supabaseUrl, supabaseKey);
 
     // Parse the request body
     const requestData = await req.json();
@@ -46,7 +50,7 @@ serve(async (req) => {
     }
 
     // First check if email already exists to give a clear error message
-    const { data: existingUser, error: checkError } = await supabaseAdmin
+    const { data: existingUser, error: checkError } = await supabase
       .from("beta_registrations")
       .select("email")
       .eq("email", requestData.email)
@@ -54,7 +58,7 @@ serve(async (req) => {
       
     if (checkError) {
       console.error("Error checking for existing user:", checkError);
-      throw checkError;
+      throw new Error(`Database error: ${checkError.message}`);
     }
     
     if (existingUser) {
@@ -85,17 +89,17 @@ serve(async (req) => {
     console.log("Data prepared for insertion:", insertData);
 
     // Insert the registration data
-    const { data, error } = await supabaseAdmin
+    const { data, error } = await supabase
       .from("beta_registrations")
       .insert(insertData)
       .select();
 
     if (error) {
       console.error("Supabase insertion error:", error);
-      throw error;
+      throw new Error(`Insert failed: ${error.message}`);
     }
 
-    console.log("Registration successful!");
+    console.log("Registration successful:", data);
 
     // Return success response with redirect URL
     return new Response(
