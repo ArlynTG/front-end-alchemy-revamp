@@ -1,61 +1,42 @@
 
-// Learning difference types that match Supabase enum
+export type OnboardingStep = 'profile' | 'learning-differences' | 'payment' | 'document-upload' | 'complete';
+
 export type LearningDifference = 
+  | "Dyslexia"
   | "ADHD"
-  | "Dyslexia" 
-  | "Dyscalculia"
+  | "Dyscalculia" 
   | "Auditory Processing"
   | "Executive_Functioning"
   | "Self_Advocacy"
   | "Processing_Speed";
 
+// Export this array for validation and UI purposes
 export const ALL_LEARNING_DIFFERENCES: LearningDifference[] = [
-  "ADHD",
   "Dyslexia",
+  "ADHD",
   "Dyscalculia",
   "Auditory Processing",
-  "Executive_Functioning", 
+  "Executive_Functioning",
   "Self_Advocacy",
   "Processing_Speed"
 ];
 
-// Onboarding step types
-export type OnboardingStep = 
-  | "profile" 
-  | "learning-differences" 
-  | "payment" 
-  | "document-upload" 
-  | "complete";
+export type DocumentUploadType = 'schoolReport' | 'assessmentReport' | 'iepDocument' | 'other';
 
-// Form values for onboarding process
+export interface DocumentUpload {
+  type: DocumentUploadType;
+  file: File;
+  description?: string;
+}
+
 export interface OnboardingFormValues {
   firstName: string;
   lastName: string;
   email: string;
-  phone: string;
   studentName: string;
   studentAge: string;
-  school: string;
-  grade: string;
-  learningDifferences: LearningDifference[];
-}
-
-// Types for achievements and badges system
-export interface Achievement {
-  id: string;
-  name: string;
-  description: string;
-  iconName: string;
-  unlockedAt?: string;
-  progress?: number;
-  maxProgress?: number;
-}
-
-// Types for student data
-export interface StudentBasicInfo {
-  firstName: string;
-  lastName: string;
-  age: number;
-  grade: string;
-  school: string;
+  phone: string;
+  learningDifferences?: LearningDifference[];
+  goals?: string[];
+  uploads?: DocumentUpload[];
 }

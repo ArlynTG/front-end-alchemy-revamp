@@ -3,6 +3,17 @@ import { z } from "zod";
 import { ALL_LEARNING_DIFFERENCES, LearningDifference } from "@/components/onboarding/types";
 import { Database } from "@/integrations/supabase/types";
 
+// Create a string enum for learning differences that match the Supabase enum
+const learningDifferenceEnum = z.enum([
+  "Dyslexia",
+  "ADHD", 
+  "Dyscalculia",
+  "Auditory Processing",
+  "Executive_Functioning",
+  "Self_Advocacy",
+  "Processing_Speed",
+] as const);
+
 // Base schema with common fields
 export const baseSignupSchema = z.object({
   firstName: z.string().min(1, "First name is required"),
@@ -10,17 +21,6 @@ export const baseSignupSchema = z.object({
   email: z.string().email("Please enter a valid email address"),
   studentName: z.string().min(1, "Student's name is required"),
 });
-
-// Create a string enum for learning differences that match the Supabase enum
-const learningDifferenceEnum = z.enum([
-  "Dyslexia",
-  "ADHD",
-  "Dyscalculia",
-  "Auditory Processing",
-  "Executive_Functioning",
-  "Self_Advocacy",
-  "Processing_Speed",
-] as const);
 
 // Extended schema with additional fields for detailed signup
 export const detailedSignupSchema = baseSignupSchema.extend({

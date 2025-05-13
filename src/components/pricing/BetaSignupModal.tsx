@@ -16,6 +16,7 @@ import { useIsMobile } from "@/hooks/use-mobile";
 import { supabase } from "@/integrations/supabase/client";
 import { PAYMENT_STATUSES, recordPaymentStatus, logPaymentError } from "@/utils/paymentMonitoring";
 import { Database } from "@/integrations/supabase/types";
+import { useFormDebug } from "@/hooks/useFormDebug";
 
 interface BetaSignupModalProps {
   isOpen: boolean;
@@ -97,6 +98,9 @@ const BetaSignupModal = ({ isOpen, onClose, planId }: BetaSignupModalProps) => {
     formDataRef.current = data; // Store form data for later use
 
     try {
+      // Important: Store learning differences as an array in the database
+      const learningDifferences = data.primaryLearningDifference ? [data.primaryLearningDifference] : null;
+      
       // Create the insertion object with all necessary fields
       const insertData = {
         first_name: data.firstName,
@@ -105,8 +109,8 @@ const BetaSignupModal = ({ isOpen, onClose, planId }: BetaSignupModalProps) => {
         student_name: data.studentName || "",
         phone: data.phone,
         student_age: data.studentAge,
-        // Safely cast the learning difference to match Supabase enum
-        primary_learning_difference: data.primaryLearningDifference as Database["public"]["Enums"]["learning_difference"] || null,
+        // Store learning differences as array, not as primary_learning_difference
+        learning_differences: learningDifferences,
         plan_type: planId
       };
       
@@ -193,6 +197,9 @@ const BetaSignupModal = ({ isOpen, onClose, planId }: BetaSignupModalProps) => {
       });
     }
   }, [formSubmitted, userId]);
+
+  // Use the debug hook to trace form submission issues
+  useFormDebug(formDataRef.current, "BetaSignupModal Form Data");
 
   return (
     <Dialog open={isOpen} onOpenChange={handleOpenChange}>

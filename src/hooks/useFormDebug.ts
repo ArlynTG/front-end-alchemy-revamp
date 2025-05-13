@@ -9,7 +9,7 @@ export function useFormDebug(formData: any, name: string = "Form") {
       console.log('Current form data:', formData);
       
       // Check for potential enum mismatches with Supabase
-      if (formData.primaryLearningDifference) {
+      if (formData?.primaryLearningDifference) {
         console.log('Learning difference value:', formData.primaryLearningDifference);
         console.log('Learning difference type:', typeof formData.primaryLearningDifference);
       }

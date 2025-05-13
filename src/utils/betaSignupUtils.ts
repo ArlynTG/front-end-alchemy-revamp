@@ -14,7 +14,7 @@ type BetaSignup = {
   student_name: string;
   phone: string;
   student_age: string;
-  primary_learning_difference: Database["public"]["Enums"]["learning_difference"] | null;
+  learning_differences: Database["public"]["Enums"]["learning_difference"][] | null;
   plan_type: string;
   created_at?: string;
   updated_at?: string;
@@ -37,6 +37,11 @@ export const submitBetaSignup = async (data: DetailedSignupFormValues, planType:
       throw new Error('Missing required fields for registration');
     }
     
+    // Convert single learning difference to array format for database
+    const learningDifferences = data.primaryLearningDifference 
+      ? [data.primaryLearningDifference as Database["public"]["Enums"]["learning_difference"]] 
+      : null;
+    
     // Create the insertion object with all necessary fields
     const insertData: BetaSignup = {
       first_name: data.firstName,
@@ -45,8 +50,7 @@ export const submitBetaSignup = async (data: DetailedSignupFormValues, planType:
       student_name: data.studentName || "",
       phone: data.phone,
       student_age: data.studentAge,
-      // Convert extended learning difference to database enum or null
-      primary_learning_difference: data.primaryLearningDifference as Database["public"]["Enums"]["learning_difference"] || null,
+      learning_differences: learningDifferences,
       plan_type: planType
     };
     
