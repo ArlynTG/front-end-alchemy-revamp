@@ -1,22 +1,43 @@
 
-import React from "react";
+import React, { useEffect } from "react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { Toaster } from "@/components/ui/toaster";
 import { Card } from "@/components/ui/card";
-import { Helmet } from "react-helmet-async";
 
 const DemoV5 = () => {
+  // Set document title and metadata when component mounts
+  useEffect(() => {
+    document.title = "Tobey's Tutor: AI Learning Assistant for Dyslexia & ADHD | Demo";
+    
+    // Update meta tags
+    const updateMetaTag = (name, content) => {
+      let metaTag = document.querySelector(`meta[${name.includes(':') ? 'property' : 'name'}="${name}"]`);
+      if (!metaTag) {
+        metaTag = document.createElement('meta');
+        if (name.includes(':')) {
+          metaTag.setAttribute('property', name);
+        } else {
+          metaTag.setAttribute('name', name);
+        }
+        document.head.appendChild(metaTag);
+      }
+      metaTag.setAttribute('content', content);
+    };
+
+    updateMetaTag('description', 'AI tutoring transforms learning for bright kids with dyslexia and ADHD. Our evidence-based approach celebrates neurodiversity while unlocking academic potential.');
+    updateMetaTag('og:title', 'Tobey\'s Tutor: AI Learning Assistant for Dyslexia & ADHD | Demo');
+    updateMetaTag('og:description', 'AI tutoring transforms learning for bright kids with dyslexia and ADHD. Our evidence-based approach celebrates neurodiversity while unlocking academic potential.');
+    updateMetaTag('og:type', 'website');
+
+    // Cleanup function to restore original title when component unmounts
+    return () => {
+      document.title = 'Tobey\'s Tutor';
+    };
+  }, []);
+
   return (
     <div className="flex flex-col min-h-screen bg-gradient-to-br from-white to-tobey-peach/30">
-      <Helmet>
-        <title>Tobey's Tutor: AI Learning Assistant for Dyslexia & ADHD | Demo</title>
-        <meta name="description" content="AI tutoring transforms learning for bright kids with dyslexia and ADHD. Our evidence-based approach celebrates neurodiversity while unlocking academic potential." />
-        <meta property="og:title" content="Tobey's Tutor: AI Learning Assistant for Dyslexia & ADHD | Demo" />
-        <meta property="og:description" content="AI tutoring transforms learning for bright kids with dyslexia and ADHD. Our evidence-based approach celebrates neurodiversity while unlocking academic potential." />
-        <meta property="og:type" content="website" />
-      </Helmet>
-
       <Navbar />
       <main className="flex-grow flex flex-col justify-center">
         <section className="py-8 md:py-16 flex flex-col flex-grow justify-center">
