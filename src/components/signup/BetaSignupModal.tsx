@@ -1,6 +1,7 @@
 
 import React, { useState, useEffect } from "react";
 import { toast } from "@/components/ui/use-toast";
+import { supabase } from "@/integrations/supabase/client";
 import {
   Dialog,
   DialogContent,
@@ -27,11 +28,6 @@ interface FormData {
   learningDifference: string;
 }
 
-// Registration data format for localStorage backup
-interface BackupRegistration extends FormData {
-  timestamp: string;
-}
-
 const BetaSignupModal: React.FC<BetaSignupModalProps> = ({ isOpen, onClose, planId = "early-adopter" }) => {
   // Form state
   const [formData, setFormData] = useState<FormData>({
@@ -49,8 +45,6 @@ const BetaSignupModal: React.FC<BetaSignupModalProps> = ({ isOpen, onClose, plan
   
   // Submission state
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [submitError, setSubmitError] = useState<string | null>(null);
-  const [useLocalStorageFallback, setUseLocalStorageFallback] = useState(false);
 
   // Reset form when modal is closed
   useEffect(() => {
@@ -66,9 +60,7 @@ const BetaSignupModal: React.FC<BetaSignupModalProps> = ({ isOpen, onClose, plan
         learningDifference: ""
       });
       setErrors({});
-      setSubmitError(null);
       setIsSubmitting(false);
-      setUseLocalStorageFallback(false);
     }
   }, [isOpen]);
 
@@ -80,11 +72,6 @@ const BetaSignupModal: React.FC<BetaSignupModalProps> = ({ isOpen, onClose, plan
     // Clear error when field is edited
     if (errors[name]) {
       setErrors({ ...errors, [name]: "" });
-    }
-    
-    // Clear submit error when form is edited
-    if (submitError) {
-      setSubmitError(null);
     }
   };
 
@@ -114,19 +101,22 @@ const BetaSignupModal: React.FC<BetaSignupModalProps> = ({ isOpen, onClose, plan
   
   // Save registration data to localStorage as backup
   const saveToLocalStorage = () => {
-    const backupData: BackupRegistration = {
-      ...formData,
-      timestamp: new Date().toISOString()
-    };
-    
-    localStorage.setItem(`beta_registration_${Date.now()}`, JSON.stringify(backupData));
-    console.log("Saved registration data to localStorage");
+    try {
+      const backupData = {
+        ...formData,
+        timestamp: new Date().toISOString()
+      };
+      
+      localStorage.setItem(`beta_registration_${Date.now()}`, JSON.stringify(backupData));
+      console.log("Saved registration data to localStorage");
+    } catch (err) {
+      console.error("Failed to save to localStorage:", err);
+    }
   };
 
   // Handle form submission
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setSubmitError(null);
     
     // Validate form
     if (!validateForm()) {
@@ -140,11 +130,6 @@ const BetaSignupModal: React.FC<BetaSignupModalProps> = ({ isOpen, onClose, plan
       saveToLocalStorage();
       
       console.log("Submitting registration form with plan:", planId);
-      
-      // Add timeout for the fetch request to prevent hanging
-      const controller = new AbortController();
-      const signal = controller.signal;
-      const timeoutId = setTimeout(() => controller.abort(), 10000); // 10 second timeout
       
       try {
         // Prepare the registration data
@@ -161,30 +146,22 @@ const BetaSignupModal: React.FC<BetaSignupModalProps> = ({ isOpen, onClose, plan
         
         console.log("Registration data being sent:", registrationData);
         
-        // Call the Supabase Edge Function with the full URL
-        const response = await fetch("https://hgpplvegqlvxwszlhzwc.supabase.co/functions/v1/beta-signup", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(registrationData),
-          signal: signal
-        });
+        // Direct insert into Supabase
+        const { error } = await supabase
+          .from('beta_registrations')
+          .insert(registrationData);
         
-        clearTimeout(timeoutId);
-        console.log("Registration response status:", response.status);
-        
-        const result = await response.json();
-        console.log("Registration response:", result);
-        
-        // Handle unsuccessful response
-        if (!response.ok) {
-          if (result.error) {
-            throw new Error(result.error);
-          } else {
-            throw new Error(`Registration failed with status: ${response.status}`);
+        if (error) {
+          console.error("Supabase insert error:", error);
+          
+          if (error.code === '23505') {
+            throw new Error('This email has already been registered for the beta.');
           }
+          
+          throw new Error(`Registration failed: ${error.message || 'Unknown error'}`);
         }
         
-        // Handle successful response
+        // Handle successful submission
         toast({
           title: "Registration successful!",
           description: "Redirecting to payment page...",
@@ -194,33 +171,32 @@ const BetaSignupModal: React.FC<BetaSignupModalProps> = ({ isOpen, onClose, plan
         setTimeout(() => {
           // Redirect to Stripe payment page
           window.location.href = "https://buy.stripe.com/aEU29XbjrclwgO49AC";
-        }, 500);
+        }, 1000);
         
-      } catch (fetchError: any) {
-        clearTimeout(timeoutId);
+      } catch (error: any) {
+        console.error("Error during submission:", error);
+        toast({
+          title: "Registration error",
+          description: error.message || "An unexpected error occurred. Please try again.",
+          variant: "destructive",
+        });
         
-        if (fetchError.name === 'AbortError') {
-          console.error("Request timed out");
-          throw new Error("Registration request timed out. Please try the direct payment option.");
-        } else {
-          throw fetchError;
-        }
+        // Even if there's an error with Supabase, we'll still redirect to Stripe
+        // since we've saved the data to localStorage as a backup
+        setTimeout(() => {
+          window.location.href = "https://buy.stripe.com/aEU29XbjrclwgO49AC";
+        }, 3000);
       }
     } catch (error: any) {
-      console.error("Error during submission:", error);
-      setSubmitError(`${error.message || "An unexpected error occurred"}. Please try the direct payment option below.`);
-      setUseLocalStorageFallback(true);
+      console.error("Form submission error:", error);
+      toast({
+        title: "Form submission error",
+        description: "There was a problem submitting your form. Please try again.",
+        variant: "destructive",
+      });
     } finally {
       setIsSubmitting(false);
     }
-  };
-  
-  // Fallback submission that just uses localStorage and redirects to Stripe
-  const handleLocalStorageFallback = () => {
-    // Already saved to localStorage in handleSubmit, just redirect
-    console.log("Using localStorage fallback and redirecting to payment page");
-    saveToLocalStorage();
-    window.location.href = "https://buy.stripe.com/aEU29XbjrclwgO49AC";
   };
 
   // Generate age options for dropdown (8-16 years)
@@ -249,13 +225,6 @@ const BetaSignupModal: React.FC<BetaSignupModalProps> = ({ isOpen, onClose, plan
             Join our founding community of 200 families. Complete the form below to secure your place.
           </DialogDescription>
         </DialogHeader>
-        
-        {/* Display submission error if any */}
-        {submitError && (
-          <div className="mb-4 p-3 bg-red-50 border border-red-200 text-red-700 rounded-md text-sm">
-            {submitError}
-          </div>
-        )}
         
         {/* Signup form */}
         <form onSubmit={handleSubmit} className="space-y-5">
@@ -418,22 +387,6 @@ const BetaSignupModal: React.FC<BetaSignupModalProps> = ({ isOpen, onClose, plan
               {isSubmitting ? "Processing..." : "Reserve Your Spot for $1"}
             </button>
           </div>
-          
-          {/* Fallback button if the edge function fails */}
-          {useLocalStorageFallback && (
-            <div className="mt-4 pt-4 border-t border-gray-200">
-              <p className="text-sm text-gray-600 mb-3">
-                If you're experiencing issues with registration, you can proceed directly to payment:
-              </p>
-              <button
-                type="button"
-                onClick={handleLocalStorageFallback}
-                className="w-full px-4 py-2 text-white bg-blue-500 hover:bg-blue-600 rounded-md transition-colors focus:outline-none focus:ring-2 focus:ring-blue-400"
-              >
-                Continue to Payment
-              </button>
-            </div>
-          )}
         </form>
       </DialogContent>
     </Dialog>
