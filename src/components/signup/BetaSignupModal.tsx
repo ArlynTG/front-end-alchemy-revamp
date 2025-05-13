@@ -8,8 +8,8 @@ import { Button } from "@/components/ui/button";
 import { Form } from "@/components/ui/form";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { toast } from "@/components/ui/use-toast";
-import { supabase } from "@/integrations/supabase/client";
 import FormField from "../signup/FormField";
+import { insertBetaRegistration } from "@/utils/supabaseHelpers";
 
 // Define the validation schema
 const signupSchema = z.object({
@@ -68,49 +68,20 @@ const BetaSignupModal: React.FC<BetaSignupModalProps> = ({ isOpen, onClose, plan
     setIsSubmitting(true);
     
     try {
-      console.log("Submitting form with data:", data);
-      console.log("Plan ID:", planId);
-      
-      // Format learning differences as an array if provided
-      const learningDifferences = data.primaryLearningDifference 
-        ? [data.primaryLearningDifference] 
-        : null;
-      
-      // Create the insertion data object
-      const insertData = {
-        first_name: data.firstName,
-        last_name: data.lastName,
+      // Use the helper function to insert data
+      const result = await insertBetaRegistration({
+        firstName: data.firstName,
+        lastName: data.lastName,
         email: data.email,
-        phone: data.phone || null,
-        student_name: data.studentName || null,
-        student_age: data.studentAge || null,
-        learning_differences: learningDifferences,
-        plan_type: planId
-      };
-      
-      console.log("Insertion data being sent to Supabase:", insertData);
-      
-      // Insert data into Supabase - remove any custom trigger logic
-      // The signup trigger database function is trying to call an external webhook
-      // which is causing the error. We'll just do a direct insert instead.
-      const { data: insertedData, error } = await supabase
-        .from('beta_registrations')
-        .insert(insertData)
-        .select();
+        phone: data.phone,
+        studentName: data.studentName,
+        studentAge: data.studentAge,
+        primaryLearningDifference: data.primaryLearningDifference,
+        planId
+      });
 
-      if (error) {
-        console.error("Supabase insert error:", error);
-        
-        if (error.code === '23505') {
-          throw new Error('This email has already been registered for the beta.');
-        }
-        
-        throw new Error(`Failed to submit registration: ${error.message || 'Unknown error'}`);
-      }
-
-      // Get the UUID from the inserted data
-      if (insertedData && insertedData.length > 0) {
-        const newUserId = insertedData[0].id;
+      if (result.success && result.data) {
+        const newUserId = result.data.id;
         setUserId(newUserId);
       
         // Save confirmation data to localStorage to handle page transitions
@@ -121,11 +92,10 @@ const BetaSignupModal: React.FC<BetaSignupModalProps> = ({ isOpen, onClose, plan
           registrationId: newUserId
         };
         localStorage.setItem('betaConfirmationData', JSON.stringify(confirmationData));
+        
+        // Show success state
+        setFormSubmitted(true);
       }
-      
-      // Show success state
-      setFormSubmitted(true);
-      
     } catch (error) {
       console.error("Error during submission:", error);
       toast({
