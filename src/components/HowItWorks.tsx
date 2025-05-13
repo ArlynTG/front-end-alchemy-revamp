@@ -157,7 +157,7 @@ const HowItWorks = () => {
     {
       step: 3,
       title: "See Growth Happen",
-      description: "Your child earns badges and achievements as they progress. Meanwhile, you get clear weekly and monthly reports showing what they're working on, how they're improving, and where support is still needed—with real examples pulled from their actual tutoring sessions.",
+      description: "Every milestone unlocks a new badge, boosting your child's pride and motivation. On your side, crystal-clear weekly and monthly reports reveal their wins, next steps, and real lesson snapshots—so you can celebrate progress together and spot any gaps before they grow.",
       icon: <BarChart2 className="h-5 w-5 text-tobey-orange" />,
       delay: 700
     }
