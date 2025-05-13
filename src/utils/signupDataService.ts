@@ -1,7 +1,7 @@
 
 import { supabase } from "@/integrations/supabase/client";
 
-// The Stripe checkout URL
+// The Stripe checkout URL - fixed URL without any extra parameters
 export const STRIPE_CHECKOUT_URL = "https://buy.stripe.com/aEU29XbjrclwgO49AC";
 
 // Interface for signup data

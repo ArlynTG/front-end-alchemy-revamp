@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from "react";
 import { toast } from "@/components/ui/use-toast";
 import {
@@ -10,8 +9,7 @@ import {
 } from "@/components/ui/dialog";
 import { 
   submitSignupData, 
-  STRIPE_CHECKOUT_URL,
-  saveToLocalStorage 
+  STRIPE_CHECKOUT_URL 
 } from "@/utils/signupDataService";
 
 // Define the modal props
@@ -56,12 +54,8 @@ const BetaSignupModal: React.FC<BetaSignupModalProps> = ({ isOpen, onClose, plan
     if (shouldRedirect) {
       console.log("Redirecting to Stripe in effect:", STRIPE_CHECKOUT_URL);
       
-      // Use a short timeout to ensure the toast message is visible before redirect
-      const redirectTimer = setTimeout(() => {
-        window.location.href = STRIPE_CHECKOUT_URL;
-      }, 1000);
-      
-      return () => clearTimeout(redirectTimer);
+      // Navigate directly to Stripe checkout URL
+      window.location.href = STRIPE_CHECKOUT_URL;
     }
   }, [shouldRedirect]);
 
@@ -160,18 +154,6 @@ const BetaSignupModal: React.FC<BetaSignupModalProps> = ({ isOpen, onClose, plan
       
     } catch (error: any) {
       console.error("Error in form submission:", error);
-      
-      // Save to localStorage as backup if database submission fails
-      saveToLocalStorage({
-        first_name: formData.firstName,
-        last_name: formData.lastName,
-        email: formData.email,
-        phone: formData.phone,
-        student_name: formData.studentName,
-        student_age: formData.studentAge,
-        learning_difference: formData.learningDifference,
-        plan_type: planId
-      });
       
       toast({
         title: "Registration Issue",
