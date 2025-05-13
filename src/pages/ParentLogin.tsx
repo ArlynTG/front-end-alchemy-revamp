@@ -1,11 +1,10 @@
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useToast } from "@/hooks/use-toast";
 import { Link, useNavigate } from "react-router-dom";
 import Navbar from "@/components/Navbar";
-import { Helmet } from "react-helmet-async";
 
 const ParentLogin = () => {
   const [email, setEmail] = useState("");
@@ -13,6 +12,36 @@ const ParentLogin = () => {
   const [isLoading, setIsLoading] = useState(false);
   const { toast } = useToast();
   const navigate = useNavigate();
+
+  // Set document title and metadata when component mounts
+  useEffect(() => {
+    document.title = "Tobey's Tutor: Parent Login | AI Learning Assistant";
+    
+    // Update meta tags
+    const updateMetaTag = (name: string, content: string) => {
+      let metaTag = document.querySelector(`meta[${name.includes(':') ? 'property' : 'name'}="${name}"]`);
+      if (!metaTag) {
+        metaTag = document.createElement('meta');
+        if (name.includes(':')) {
+          metaTag.setAttribute('property', name);
+        } else {
+          metaTag.setAttribute('name', name);
+        }
+        document.head.appendChild(metaTag);
+      }
+      metaTag.setAttribute('content', content);
+    };
+
+    updateMetaTag('description', 'AI tutoring transforms learning for bright kids with dyslexia and ADHD. Our evidence-based approach celebrates neurodiversity while unlocking academic potential.');
+    updateMetaTag('og:title', 'Tobey\'s Tutor: Parent Login | AI Learning Assistant');
+    updateMetaTag('og:description', 'AI tutoring transforms learning for bright kids with dyslexia and ADHD. Our evidence-based approach celebrates neurodiversity while unlocking academic potential.');
+    updateMetaTag('og:type', 'website');
+
+    // Cleanup function to restore original title when component unmounts
+    return () => {
+      document.title = 'Tobey\'s Tutor';
+    };
+  }, []);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -31,13 +60,6 @@ const ParentLogin = () => {
 
   return (
     <div className="flex flex-col min-h-screen">
-      <Helmet>
-        <title>Tobey's Tutor: Parent Login | AI Learning Assistant</title>
-        <meta name="description" content="AI tutoring transforms learning for bright kids with dyslexia and ADHD. Our evidence-based approach celebrates neurodiversity while unlocking academic potential." />
-        <meta property="og:title" content="Tobey's Tutor: Parent Login | AI Learning Assistant" />
-        <meta property="og:description" content="AI tutoring transforms learning for bright kids with dyslexia and ADHD. Our evidence-based approach celebrates neurodiversity while unlocking academic potential." />
-        <meta property="og:type" content="website" />
-      </Helmet>
       <Navbar />
       <div className="container max-w-md mx-auto py-16 px-4 sm:px-0 flex-grow relative">
         {/* Overlay - removing the full-opacity overlay to make it more visible */}
