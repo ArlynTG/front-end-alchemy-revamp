@@ -1,6 +1,33 @@
 
-export type OnboardingStep = "profile" | "learning-differences" | "payment" | "document-upload" | "complete";
+// Learning difference types that match Supabase enum
+export type LearningDifference = 
+  | "ADHD"
+  | "Dyslexia" 
+  | "Dyscalculia"
+  | "Auditory Processing"
+  | "Executive_Functioning"
+  | "Self_Advocacy"
+  | "Processing_Speed";
 
+export const ALL_LEARNING_DIFFERENCES: LearningDifference[] = [
+  "ADHD",
+  "Dyslexia",
+  "Dyscalculia",
+  "Auditory Processing",
+  "Executive_Functioning", 
+  "Self_Advocacy",
+  "Processing_Speed"
+];
+
+// Onboarding step types
+export type OnboardingStep = 
+  | "profile" 
+  | "learning-differences" 
+  | "payment" 
+  | "document-upload" 
+  | "complete";
+
+// Form values for onboarding process
 export interface OnboardingFormValues {
   firstName: string;
   lastName: string;
@@ -8,39 +35,27 @@ export interface OnboardingFormValues {
   phone: string;
   studentName: string;
   studentAge: string;
-  schoolName?: string;
-  schoolGrade?: string;
+  school: string;
+  grade: string;
   learningDifferences: LearningDifference[];
 }
 
-export type LearningDifference = 
-  | 'ADHD'
-  | 'Dyslexia'
-  | 'Dyscalculia'
-  | 'Executive_Functioning'
-  | 'Self_Advocacy'
-  | 'Processing_Speed'
-  | 'Auditory Processing';
-
-// Helper array of all learning differences (useful for Zod schema)
-export const ALL_LEARNING_DIFFERENCES: LearningDifference[] = [
-  'ADHD',
-  'Dyslexia', 
-  'Dyscalculia',
-  'Executive_Functioning',
-  'Self_Advocacy',
-  'Processing_Speed',
-  'Auditory Processing'
-];
-
-export interface DocumentUpload {
+// Types for achievements and badges system
+export interface Achievement {
   id: string;
   name: string;
-  type: string;
-  size: number;
-  progress: number;
-  status: 'uploading' | 'complete' | 'error';
-  error?: string;
-  url?: string;
-  file?: File; // Optional file property for uploads in progress
+  description: string;
+  iconName: string;
+  unlockedAt?: string;
+  progress?: number;
+  maxProgress?: number;
+}
+
+// Types for student data
+export interface StudentBasicInfo {
+  firstName: string;
+  lastName: string;
+  age: number;
+  grade: string;
+  school: string;
 }

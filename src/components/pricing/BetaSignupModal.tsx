@@ -105,10 +105,12 @@ const BetaSignupModal = ({ isOpen, onClose, planId }: BetaSignupModalProps) => {
         student_name: data.studentName || "",
         phone: data.phone,
         student_age: data.studentAge,
-        // Correctly map the learning difference to the database field
+        // Safely cast the learning difference to match Supabase enum
         primary_learning_difference: data.primaryLearningDifference as Database["public"]["Enums"]["learning_difference"] || null,
         plan_type: planId
       };
+      
+      console.log("Insertion data being sent to Supabase:", insertData);
       
       // Insert data into Supabase
       const { data: insertedData, error } = await supabase

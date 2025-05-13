@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
@@ -5,20 +6,23 @@ import { Button } from "@/components/ui/button";
 import { Form } from "@/components/ui/form";
 import { InputField, SelectField } from "@/components/form/FormField";
 import { detailedSignupSchema, DetailedSignupFormValues } from "@/utils/formSchemas";
+import { Database } from "@/integrations/supabase/types";
 
+// Define student age options
 const studentAgeOptions = Array.from({ length: 9 }, (_, i) => {
   const age = i + 8;
   return { value: age.toString(), label: `${age} years` };
 });
 
+// Define learning difference options that match Supabase enum exactly
 const learningDifferenceOptions = [
   { value: "Dyslexia", label: "Dyslexia" },
   { value: "ADHD", label: "ADHD" },
-  { value: "Dyscalculia", label: "Dyscalculia" }, // Updated from Dysgraphia
+  { value: "Dyscalculia", label: "Dyscalculia" },
   { value: "Auditory Processing", label: "Auditory Processing" },
   { value: "Executive_Functioning", label: "Executive Functioning" },
-  { value: "Self_Advocacy", label: "Self Advocacy" }, // New
-  { value: "Processing_Speed", label: "Processing Speed" }, // New
+  { value: "Self_Advocacy", label: "Self Advocacy" },
+  { value: "Processing_Speed", label: "Processing Speed" },
 ];
 
 interface BetaSignupFormProps {
