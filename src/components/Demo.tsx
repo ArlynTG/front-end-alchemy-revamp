@@ -1,7 +1,7 @@
 
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
-import SimpleChatInterface from "@/components/chat/SimpleChatInterface";
+import DemoChat from "@/components/chat/DemoChat";
 import ReportCardUpload from "@/components/chat/ReportCardUpload";
 import { useState } from "react";
 
@@ -23,7 +23,7 @@ const Demo = () => {
         
         <div className="relative rounded-xl overflow-hidden shadow-xl mb-16 bg-white border border-gray-200">
           <div className="p-4">
-            <SimpleChatInterface reportText={reportText} />
+            <DemoChat />
           </div>
         </div>
 

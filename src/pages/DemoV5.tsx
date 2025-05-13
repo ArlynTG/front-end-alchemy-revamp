@@ -25,9 +25,9 @@ const DemoV5 = () => {
       metaTag.setAttribute('content', content);
     };
 
-    updateMetaTag('description', 'AI tutoring transforms learning for bright kids with dyslexia and ADHD. Our evidence-based approach celebrates neurodiversity while unlocking academic potential.');
+    updateMetaTag('description', 'Personalized AI tutoring for dyslexic & ADHD students transforms struggling learners into confident achievers. Our proven methods boost grades and celebrates unique minds.');
     updateMetaTag('og:title', 'Tobey\'s Tutor: AI Learning Assistant for Dyslexia & ADHD | Demo');
-    updateMetaTag('og:description', 'AI tutoring transforms learning for bright kids with dyslexia and ADHD. Our evidence-based approach celebrates neurodiversity while unlocking academic potential.');
+    updateMetaTag('og:description', 'Personalized AI tutoring for dyslexic & ADHD students transforms struggling learners into confident achievers. Our proven methods boost grades and celebrates unique minds.');
     updateMetaTag('og:type', 'website');
 
     // Cleanup function to restore original title when component unmounts
