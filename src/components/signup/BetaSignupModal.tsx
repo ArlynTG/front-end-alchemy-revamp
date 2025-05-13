@@ -95,7 +95,7 @@ const BetaSignupModal: React.FC<BetaSignupModalProps> = ({ isOpen, onClose }) =>
     setIsSubmitting(true);
     
     try {
-      // Prepare data for Supabase insert
+      // Create data object for Supabase insert
       const insertData = {
         id: uuidv4(), // Generate UUID for the record
         first_name: formData.firstName,
@@ -111,7 +111,7 @@ const BetaSignupModal: React.FC<BetaSignupModalProps> = ({ isOpen, onClose }) =>
       
       console.log("Submitting to Supabase:", insertData);
       
-      // Insert data directly into Supabase
+      // Insert data directly into Supabase beta_registrations table
       const { data, error } = await supabase
         .from('beta_registrations')
         .insert([insertData])
