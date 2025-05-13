@@ -1,3 +1,4 @@
+
 import React, { useEffect, useRef } from 'react';
 import { Card, CardContent } from "@/components/ui/card";
 import { Upload, BookOpen, BarChart2 } from "lucide-react";
@@ -142,7 +143,7 @@ const HowItWorks = () => {
     {
       step: 1,
       title: "Getting to Know You",
-      description: "Once you sign up, you'll be able to securely upload your child's academic records—including IEPs, report cards, or neuropsych evaluations. Your child will also complete a fun, easy onboarding where they tell us their favorite books, shows, characters, hobbies, and sports so we can build lessons around what they already love.",
+      description: "After you sign up, simply upload any IEPs, report cards, or neuro-psych evaluations—securely and in minutes. Next, your child completes a quick, kid-friendly quiz about their favorite books, shows, and hobbies. We use that input to build lessons around what already excites them.",
       icon: <Upload className="h-5 w-5 text-tobey-orange" />,
       delay: 300
     },
