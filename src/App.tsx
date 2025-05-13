@@ -1,4 +1,3 @@
-
 import { Suspense, lazy, useEffect } from "react";
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
@@ -23,6 +22,7 @@ const StudentDashboard = lazy(() => import("./pages/StudentDashboard"));
 const AccountManagement = lazy(() => import("./pages/AccountManagement"));
 const Onboarding = lazy(() => import("./pages/Onboarding"));
 const HeroTest = lazy(() => import("./pages/HeroTest"));
+const SignupTest = lazy(() => import("./pages/SignupTest"));
 
 // Create a reusable loading component
 const PageLoader = () => (
@@ -76,6 +76,7 @@ const App = () => (
             <Route path="/account-management" element={<AccountManagement />} />
             <Route path="/onboarding" element={<Onboarding />} />
             <Route path="/herotest" element={<HeroTest />} />
+            <Route path="/signup-test" element={<SignupTest />} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
           </Routes>
