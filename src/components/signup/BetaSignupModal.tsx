@@ -95,6 +95,8 @@ const BetaSignupModal: React.FC<BetaSignupModalProps> = ({ isOpen, onClose, plan
     setIsSubmitting(true);
     
     try {
+      console.log("Submitting registration form with plan:", planId);
+      
       const response = await fetch("https://hgpplvegqlvxwszlhzwc.supabase.co/functions/v1/beta-signup", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -112,20 +114,25 @@ const BetaSignupModal: React.FC<BetaSignupModalProps> = ({ isOpen, onClose, plan
         })
       });
       
-      if (!response.ok) {
-        const errorText = await response.text();
-        console.error("Registration failed with status:", response.status, errorText);
-        throw new Error(`Registration failed: ${response.status}`);
-      }
+      console.log("Registration response status:", response.status);
       
       const result = await response.json();
+      console.log("Registration response:", result);
+      
+      if (!response.ok) {
+        if (result.error) {
+          setSubmitError(result.error);
+        } else {
+          setSubmitError(`Registration failed with status: ${response.status}`);
+        }
+        return;
+      }
       
       if (result.success) {
         // Show success toast
         toast({
           title: "Registration successful!",
           description: "Redirecting to payment page...",
-          variant: "success",
         });
         
         // Redirect to Stripe payment page
