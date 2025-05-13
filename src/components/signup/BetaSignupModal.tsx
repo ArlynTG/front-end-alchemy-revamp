@@ -3,6 +3,7 @@ import React, { useState } from "react";
 import { X } from "lucide-react";
 import { v4 as uuidv4 } from "uuid";
 import { supabase } from "@/integrations/supabase/client";
+import { toast } from "@/components/ui/use-toast";
 
 // Define the modal props
 interface BetaSignupModalProps {
@@ -126,8 +127,15 @@ const BetaSignupModal: React.FC<BetaSignupModalProps> = ({ isOpen, onClose }) =>
       
       console.log("Registration successful:", data);
       
+      // Show success toast
+      toast({
+        title: "Registration successful!",
+        description: "Redirecting to payment page...",
+        variant: "success",
+      });
+      
       // Redirect to Stripe payment page
-      window.location.href = "https://buy.stripe.com/aEU29XbjrclwgO49AC";
+      window.location.href = "https://buy.stripe.com/aEU29XbjrclwgO49ACxx";
       
     } catch (error) {
       console.error("Error during submission:", error);
