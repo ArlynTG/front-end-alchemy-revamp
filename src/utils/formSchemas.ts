@@ -1,6 +1,6 @@
 
 import { z } from "zod";
-import { LearningDifference } from "@/components/onboarding/types";
+import { ALL_LEARNING_DIFFERENCES, LearningDifference } from "@/components/onboarding/types";
 
 // Base schema with common fields
 export const baseSignupSchema = z.object({
@@ -14,10 +14,7 @@ export const baseSignupSchema = z.object({
 export const detailedSignupSchema = baseSignupSchema.extend({
   phone: z.string().min(10, "Please enter a valid phone number"),
   studentAge: z.string().min(1, "Student's age is required"),
-  primaryLearningDifference: z.enum([
-    'ADHD', 'Dyslexia', 'Dyscalculia', 'Auditory Processing', 'Executive_Functioning', 
-    'Self_Advocacy', 'Processing_Speed'
-  ] as [LearningDifference, ...LearningDifference[]]).optional(),
+  primaryLearningDifference: z.enum(ALL_LEARNING_DIFFERENCES),
 });
 
 // Registration-specific schema with optional student name
@@ -28,10 +25,7 @@ export const registrationSchema = z.object({
   email: z.string().email("Please enter a valid email address"),
   phone: z.string().min(10, "Please enter a valid phone number"),
   studentAge: z.string().min(1, "Student's age is required"),
-  primaryLearningDifference: z.enum([
-    'ADHD', 'Dyslexia', 'Dyscalculia', 'Auditory Processing', 'Executive_Functioning',
-    'Self_Advocacy', 'Processing_Speed'
-  ] as [LearningDifference, ...LearningDifference[]]).optional(),
+  primaryLearningDifference: z.enum(ALL_LEARNING_DIFFERENCES).optional(),
 });
 
 // Export types for use in components

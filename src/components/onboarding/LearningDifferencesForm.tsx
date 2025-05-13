@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Check, X } from "lucide-react";
@@ -9,7 +10,14 @@ interface LearningDifferencesFormProps {
   onBack: () => void;
 }
 
-const availableDifferences: { value: LearningDifference; label: string; description: string }[] = [
+// Define the learning difference options with their descriptions
+interface LearningDifferenceOption {
+  value: LearningDifference;
+  label: string;
+  description: string;
+}
+
+const availableDifferences: LearningDifferenceOption[] = [
   { 
     value: "Dyslexia", 
     label: "Dyslexia", 
@@ -114,7 +122,7 @@ const LearningDifferencesForm = ({
               {differences.map((difference, index) => {
                 const item = availableDifferences.find(d => d.value === difference);
                 return (
-                  <li key={difference} className="flex items-center text-sm text-blue-700">
+                  <li key={`${difference}-${index}`} className="flex items-center text-sm text-blue-700">
                     <span className="w-5 text-center mr-2">{index + 1}.</span> 
                     {item?.label}
                     <button 

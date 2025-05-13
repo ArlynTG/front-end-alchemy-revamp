@@ -6,19 +6,32 @@ export interface OnboardingFormValues {
   lastName: string;
   email: string;
   phone: string;
-  childName: string;
-  childAge: number;
-  schoolName: string;
-  schoolGrade: string;
+  studentName: string;
+  studentAge: string;
+  schoolName?: string;
+  schoolGrade?: string;
   learningDifferences: LearningDifference[];
 }
 
-export type LearningDifference = {
-  id: string;
-  name: string;
-  description: string;
-  selected: boolean;
-};
+export type LearningDifference = 
+  | 'ADHD'
+  | 'Dyslexia'
+  | 'Dyscalculia'
+  | 'Executive_Functioning'
+  | 'Self_Advocacy'
+  | 'Processing_Speed'
+  | 'Auditory Processing';
+
+// Helper array of all learning differences (useful for Zod schema)
+export const ALL_LEARNING_DIFFERENCES: LearningDifference[] = [
+  'ADHD',
+  'Dyslexia', 
+  'Dyscalculia',
+  'Executive_Functioning',
+  'Self_Advocacy',
+  'Processing_Speed',
+  'Auditory Processing'
+];
 
 export interface DocumentUpload {
   id: string;
