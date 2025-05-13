@@ -14,6 +14,7 @@ import {
 interface BetaSignupModalProps {
   isOpen: boolean;
   onClose: () => void;
+  planId?: string;
 }
 
 // Form field data types
@@ -27,7 +28,7 @@ interface FormData {
   learningDifference: string;
 }
 
-const BetaSignupModal: React.FC<BetaSignupModalProps> = ({ isOpen, onClose }) => {
+const BetaSignupModal: React.FC<BetaSignupModalProps> = ({ isOpen, onClose, planId = "early-adopter" }) => {
   // Form state
   const [formData, setFormData] = useState<FormData>({
     firstName: "",
@@ -107,9 +108,15 @@ const BetaSignupModal: React.FC<BetaSignupModalProps> = ({ isOpen, onClose }) =>
           student_age: formData.studentAge || null,
           learning_differences: formData.learningDifference ? [formData.learningDifference] : null,
           created_at: new Date().toISOString(),
-          plan_type: "early-adopter"
+          plan_type: planId
         })
       });
+      
+      if (!response.ok) {
+        const errorText = await response.text();
+        console.error("Registration failed with status:", response.status, errorText);
+        throw new Error(`Registration failed: ${response.status}`);
+      }
       
       const result = await response.json();
       

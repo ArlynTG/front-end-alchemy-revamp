@@ -22,6 +22,7 @@ serve(async (req) => {
   }
 
   try {
+    console.log("Function started");
     // Create a Supabase client with the service role key
     const supabaseAdmin = createClient(
       Deno.env.get("SUPABASE_URL") || "",
@@ -32,10 +33,10 @@ serve(async (req) => {
     const requestData = await req.json();
     console.log("Received registration data:", requestData);
 
-    // Insert data into beta_registrations
+    // Directly perform the database insertion
     const { data, error } = await supabaseAdmin
       .from("beta_registrations")
-      .insert([requestData]);
+      .insert(requestData);
 
     if (error) {
       console.error("Supabase insertion error:", error);
