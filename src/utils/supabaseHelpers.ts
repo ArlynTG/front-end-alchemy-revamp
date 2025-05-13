@@ -16,6 +16,8 @@ export const insertBetaRegistration = async (data: {
   planId: string;
 }) => {
   try {
+    console.log("Submitting registration data:", data);
+    
     // Format the data for Supabase
     const insertData = {
       first_name: data.firstName,
@@ -28,7 +30,9 @@ export const insertBetaRegistration = async (data: {
       plan_type: data.planId
     };
     
-    // Insert data into Supabase
+    console.log("Formatted data for insertion:", insertData);
+    
+    // Direct insert using Supabase client
     const { data: insertedData, error } = await supabase
       .from('beta_registrations')
       .insert(insertData)
@@ -44,6 +48,7 @@ export const insertBetaRegistration = async (data: {
       throw new Error(`Failed to submit registration: ${error.message || 'Unknown error'}`);
     }
 
+    console.log("Registration successful:", insertedData);
     return { success: true, data: insertedData?.[0] || null };
     
   } catch (error) {

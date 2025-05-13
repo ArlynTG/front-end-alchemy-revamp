@@ -7,7 +7,7 @@ import { z } from "zod";
 import { Button } from "@/components/ui/button";
 import { Form } from "@/components/ui/form";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { toast } from "@/components/ui/use-toast";
+import { toast } from "@/hooks/use-toast";
 import FormField from "../signup/FormField";
 import { insertBetaRegistration } from "@/utils/supabaseHelpers";
 
@@ -16,7 +16,7 @@ const signupSchema = z.object({
   firstName: z.string().min(1, "First name is required"),
   lastName: z.string().min(1, "Last name is required"),
   email: z.string().email("Please enter a valid email address"),
-  phone: z.string().min(10, "Please enter a valid phone number").optional(),
+  phone: z.string().optional(),
   studentName: z.string().optional(),
   studentAge: z.string().optional(),
   primaryLearningDifference: z.string().optional(),
@@ -65,9 +65,15 @@ const BetaSignupModal: React.FC<BetaSignupModalProps> = ({ isOpen, onClose, plan
   });
 
   const handleSubmit = async (data: SignupFormValues) => {
+    console.log("Form submitted with data:", data);
     setIsSubmitting(true);
     
     try {
+      console.log("Calling insertBetaRegistration with data:", {
+        ...data,
+        planId,
+      });
+      
       // Use the helper function to insert data
       const result = await insertBetaRegistration({
         firstName: data.firstName,
@@ -79,6 +85,8 @@ const BetaSignupModal: React.FC<BetaSignupModalProps> = ({ isOpen, onClose, plan
         primaryLearningDifference: data.primaryLearningDifference,
         planId
       });
+
+      console.log("Registration result:", result);
 
       if (result.success && result.data) {
         const newUserId = result.data.id;
@@ -93,7 +101,13 @@ const BetaSignupModal: React.FC<BetaSignupModalProps> = ({ isOpen, onClose, plan
         };
         localStorage.setItem('betaConfirmationData', JSON.stringify(confirmationData));
         
-        // Show success state
+        // Show success message 
+        toast({
+          title: "Registration successful!",
+          description: "Please complete your payment to secure your spot.",
+        });
+        
+        // Show success state with Stripe button
         setFormSubmitted(true);
       }
     } catch (error) {
