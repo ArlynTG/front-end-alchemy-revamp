@@ -1,3 +1,4 @@
+
 import { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { 
@@ -104,7 +105,7 @@ const BetaSignupModal = ({ isOpen, onClose, planId }: BetaSignupModalProps) => {
         student_name: data.studentName || "",
         phone: data.phone,
         student_age: data.studentAge,
-        // Convert extended learning difference to database enum or null
+        // Correctly map the learning difference to the database field
         primary_learning_difference: data.primaryLearningDifference as Database["public"]["Enums"]["learning_difference"] || null,
         plan_type: planId
       };
