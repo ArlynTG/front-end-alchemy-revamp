@@ -2,12 +2,10 @@
 import React from 'react';
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
-import { usePricing } from "@/components/Pricing";
+import { SignupButton } from "@/components/signup";
 import { Timer } from "lucide-react";
 
 const Hero = () => {
-  const { openEarlyAdopterModal } = usePricing();
-  
   return (
     <section className="py-16 md:py-24">
       <div className="container relative">
@@ -54,14 +52,10 @@ const Hero = () => {
               <Button asChild className="bg-tobey-orange hover:bg-tobey-orange/90 text-white">
                 <Link to="/demo-v5">Try the Demo</Link>
               </Button>
-              <Button 
-                onClick={openEarlyAdopterModal}
-                variant="outline" 
+              <SignupButton 
+                label="Join the Beta for $1"
                 className="border-tobey-orange text-tobey-orange hover:bg-tobey-orange/10 flex items-center gap-2"
-              >
-                Join the Beta for $1
-                <Timer className="h-4 w-4" />
-              </Button>
+              />
             </div>
           </div>
         </div>

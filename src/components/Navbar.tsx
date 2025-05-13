@@ -6,13 +6,11 @@ import { useNavbarScroll } from "@/hooks/useNavbarScroll";
 import NavbarLogo from "./navbar/NavbarLogo";
 import DesktopNav from "./navbar/DesktopNav";
 import MobileMenu from "./navbar/MobileMenu";
-import { usePricingActions } from "@/hooks/usePricingActions";
 
 const Navbar = () => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const location = useLocation();
   const { navbarClasses } = useNavbarScroll();
-  const { openEarlyAdopterSignup } = usePricingActions();
 
   // Function to handle section navigation
   const scrollToSection = (sectionId: string) => {
@@ -31,10 +29,9 @@ const Navbar = () => {
     }
   };
 
-  // Handle join beta button click - now using our hook
+  // Handle join beta button click - now just closes the mobile menu
   const handleJoinBeta = () => {
     setMobileMenuOpen(false);
-    openEarlyAdopterSignup();
   };
 
   return (
