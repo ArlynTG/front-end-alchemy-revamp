@@ -28,7 +28,7 @@ interface FormData {
   learningDifference: string;
 }
 
-// Stripe checkout URL
+// Stripe checkout URL - ensure this is correct
 const STRIPE_CHECKOUT_URL = "https://buy.stripe.com/aEU29XbjrclwgO49AC";
 
 const BetaSignupModal: React.FC<BetaSignupModalProps> = ({ isOpen, onClose, planId = "early-adopter" }) => {
@@ -50,9 +50,12 @@ const BetaSignupModal: React.FC<BetaSignupModalProps> = ({ isOpen, onClose, plan
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [shouldRedirect, setShouldRedirect] = useState(false);
 
-  // Handle redirect to Stripe
+  // Handle redirect to Stripe - using a dedicated useEffect for redirection
   useEffect(() => {
     if (shouldRedirect) {
+      console.log("Redirecting to Stripe:", STRIPE_CHECKOUT_URL);
+      
+      // Use a short timeout to ensure the toast message is visible before redirect
       const redirectTimer = setTimeout(() => {
         window.location.href = STRIPE_CHECKOUT_URL;
       }, 1000);
@@ -129,6 +132,7 @@ const BetaSignupModal: React.FC<BetaSignupModalProps> = ({ isOpen, onClose, plan
         plan_type: planId,
         timestamp: new Date().toISOString()
       }));
+      console.log("Data saved to localStorage successfully");
     } catch (err) {
       console.error("Failed to save to localStorage:", err);
     }
@@ -140,16 +144,17 @@ const BetaSignupModal: React.FC<BetaSignupModalProps> = ({ isOpen, onClose, plan
     
     // Validate form
     if (!validateForm()) {
+      console.log("Form validation failed", errors);
       return;
     }
     
     setIsSubmitting(true);
     
     try {
-      // Always save to localStorage first
+      // Always save to localStorage first as backup
       saveToLocalStorage();
       
-      // Prepare data for Supabase
+      // Prepare data for Supabase - ensure all required fields are included
       const registrationData = {
         first_name: formData.firstName,
         last_name: formData.lastName,
@@ -170,7 +175,7 @@ const BetaSignupModal: React.FC<BetaSignupModalProps> = ({ isOpen, onClose, plan
         .insert(registrationData);
       
       if (error) {
-        console.error("Database error:", error);
+        console.error("Supabase insert error:", error);
         throw new Error(error.message);
       }
       
@@ -179,17 +184,22 @@ const BetaSignupModal: React.FC<BetaSignupModalProps> = ({ isOpen, onClose, plan
         description: "Redirecting to payment page...",
       });
       
-    } catch (error) {
-      console.error("Error:", error);
+      console.log("Registration successful, setting redirect flag");
+      // Set redirect flag to true to trigger the useEffect
+      setShouldRedirect(true);
+      
+    } catch (error: any) {
+      console.error("Error in form submission:", error);
+      
       toast({
-        title: "Could not save registration",
+        title: "Registration Issue",
         description: "Your information was saved locally. Redirecting to payment...",
         variant: "destructive",
       });
-    } finally {
-      // Set redirect flag to true regardless of success/failure
+      
+      // Even on error, we still want to redirect to Stripe
+      console.log("Setting redirect flag despite error");
       setShouldRedirect(true);
-      setIsSubmitting(false);
     }
   };
 
@@ -198,8 +208,8 @@ const BetaSignupModal: React.FC<BetaSignupModalProps> = ({ isOpen, onClose, plan
     { value: "ADHD", label: "ADHD" },
     { value: "Dyslexia", label: "Dyslexia" },
     { value: "Dyscalculia", label: "Dyscalculia" },
-    { value: "Auditory Processing", label: "Auditory Processing" },
-    { value: "Executive_Function", label: "Executive Function" },
+    { value: "Auditory_Processing", label: "Auditory Processing" },
+    { value: "Executive_Functioning", label: "Executive Function" },
     { value: "Other", label: "Other" }
   ];
 

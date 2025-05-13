@@ -31,6 +31,7 @@ export const saveBetaSignupToLocalStorage = (data: BetaSignupData): void => {
       plan_type: data.planId,
       timestamp: new Date().toISOString()
     }));
+    console.log("Data saved to localStorage successfully");
   } catch (err) {
     console.error("Failed to save to localStorage:", err);
   }
@@ -69,7 +70,7 @@ export const submitBetaSignup = async (data: BetaSignupData): Promise<{success: 
     }
     
     return { success: true };
-  } catch (error) {
+  } catch (error: any) {
     console.error("Error in submitBetaSignup:", error);
     return { success: false, error: error.message };
   }
@@ -79,5 +80,6 @@ export const submitBetaSignup = async (data: BetaSignupData): Promise<{success: 
  * Redirect to Stripe checkout page
  */
 export const redirectToStripeCheckout = (): void => {
+  console.log("Redirecting to Stripe:", STRIPE_CHECKOUT_URL);
   window.location.href = STRIPE_CHECKOUT_URL;
 };
