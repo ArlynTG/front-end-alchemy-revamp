@@ -82,7 +82,7 @@ const PrivacyPolicy = () => {
             <li>Withdraw consent (where processing is based on consent)</li>
           </ul>
           <p className="mt-4">
-            To exercise these rights, please contact us at privacy@tobeystutor.com.
+            To exercise these rights, please contact us at support@tobeystutor.com.
           </p>
         </section>
         
