@@ -167,8 +167,8 @@ const BetaSignupModal: React.FC<BetaSignupModalProps> = ({ isOpen, onClose, plan
           description: "Redirecting to payment page...",
         });
         
-        // Redirect to Stripe payment page
-        window.location.href = result.redirectUrl;
+        // Redirect to Stripe payment page with the updated URL
+        window.location.href = "https://buy.stripe.com/aEU29XbjrclwgO49AC";
       } else {
         if (result.error) {
           setSubmitError(result.error);
@@ -190,7 +190,7 @@ const BetaSignupModal: React.FC<BetaSignupModalProps> = ({ isOpen, onClose, plan
   // Fallback submission that just uses localStorage and redirects to Stripe
   const handleLocalStorageFallback = () => {
     // Already saved to localStorage in handleSubmit, just redirect
-    window.location.href = "https://buy.stripe.com/aEU29XbjrclwgO49ACxx";
+    window.location.href = "https://buy.stripe.com/aEU29XbjrclwgO49AC";
   };
 
   // Generate age options for dropdown (8-16 years)

@@ -113,7 +113,7 @@ serve(async (req) => {
     return new Response(
       JSON.stringify({ 
         success: true, 
-        redirectUrl: "https://buy.stripe.com/aEU29XbjrclwgO49ACxx"
+        redirectUrl: "https://buy.stripe.com/aEU29XbjrclwgO49AC"
       }),
       {
         status: 200,
