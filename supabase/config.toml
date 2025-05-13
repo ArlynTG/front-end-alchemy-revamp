@@ -12,3 +12,7 @@ port = 54322
 [studio]
 enabled = true
 port = 54323
+
+# Enable beta-signup function
+[functions.beta-signup]
+verify_jwt = false

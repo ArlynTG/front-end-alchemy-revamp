@@ -1,7 +1,6 @@
 
 import React, { useState } from "react";
 import { v4 as uuidv4 } from "uuid";
-import { supabase } from "@/integrations/supabase/client";
 import { toast } from "@/components/ui/use-toast";
 import {
   Dialog,
@@ -95,12 +94,10 @@ const BetaSignupModal: React.FC<BetaSignupModalProps> = ({ isOpen, onClose }) =>
     setIsSubmitting(true);
     
     try {
-      console.log("Preparing to submit registration data");
-      
-      // Direct Supabase insert without using any extension
-      const { error } = await supabase
-        .from("beta_registrations")
-        .insert([{
+      const response = await fetch("https://hgpplvegqlvxwszlhzwc.supabase.co/functions/v1/beta-signup", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
           id: uuidv4(),
           first_name: formData.firstName,
           last_name: formData.lastName,
@@ -111,37 +108,32 @@ const BetaSignupModal: React.FC<BetaSignupModalProps> = ({ isOpen, onClose }) =>
           learning_differences: formData.learningDifference ? [formData.learningDifference] : null,
           created_at: new Date().toISOString(),
           plan_type: "early-adopter"
-        }]);
-      
-      if (error) {
-        console.error("Supabase error:", error);
-        
-        // Handle duplicate email error
-        if (error.code === '23505') {
-          setSubmitError("This email has already been registered for the beta.");
-        } else {
-          setSubmitError(`Registration failed: ${error.message}`);
-        }
-        
-        setIsSubmitting(false);
-        return;
-      }
-      
-      console.log("Registration successful");
-      
-      // Show success toast
-      toast({
-        title: "Registration successful!",
-        description: "Redirecting to payment page...",
-        variant: "success",
+        })
       });
       
-      // Redirect to Stripe payment page
-      window.location.href = "https://buy.stripe.com/aEU29XbjrclwgO49ACxx";
+      const result = await response.json();
       
+      if (result.success) {
+        // Show success toast
+        toast({
+          title: "Registration successful!",
+          description: "Redirecting to payment page...",
+          variant: "success",
+        });
+        
+        // Redirect to Stripe payment page
+        window.location.href = result.redirectUrl;
+      } else {
+        if (result.error) {
+          setSubmitError(result.error);
+        } else {
+          setSubmitError("Registration failed. Please try again.");
+        }
+      }
     } catch (error) {
       console.error("Error during submission:", error);
       setSubmitError("An unexpected error occurred. Please try again.");
+    } finally {
       setIsSubmitting(false);
     }
   };
