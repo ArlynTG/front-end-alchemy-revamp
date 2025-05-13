@@ -1,4 +1,3 @@
-
 import React, { useEffect, useRef } from 'react';
 import { Card, CardContent } from "@/components/ui/card";
 import { Upload, BookOpen, BarChart2 } from "lucide-react";
@@ -171,7 +170,7 @@ const HowItWorks = () => {
             Smarter Learning. Easy as 1-2-3.
           </h2>
           <p ref={descriptionRef} className="max-w-3xl mx-auto text-lg text-gray-600 opacity-0">
-            Our patent-pending AI system creates personalized learning plans to achieve longterm goals -- in as little as 20 minutes/day.
+            Our patent-pending AI crafts personalized lessons that move your child toward lasting success—in just 20 minutes a day.
           </p>
         </div>
         
