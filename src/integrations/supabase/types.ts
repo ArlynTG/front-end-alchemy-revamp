@@ -21,13 +21,13 @@ export type Database = {
           last_name: string
           learning_differences: string[] | null
           paid_at: string | null
-          phone: string
+          phone: string | null
           plan_type: string
           reservation_id: string | null
           status: string | null
           stripe_customer_id: string | null
           stripe_session_id: string | null
-          student_age: string
+          student_age: string | null
           student_name: string | null
           updated_at: string
         }
@@ -42,13 +42,13 @@ export type Database = {
           last_name: string
           learning_differences?: string[] | null
           paid_at?: string | null
-          phone: string
+          phone?: string | null
           plan_type: string
           reservation_id?: string | null
           status?: string | null
           stripe_customer_id?: string | null
           stripe_session_id?: string | null
-          student_age: string
+          student_age?: string | null
           student_name?: string | null
           updated_at?: string
         }
@@ -63,13 +63,13 @@ export type Database = {
           last_name?: string
           learning_differences?: string[] | null
           paid_at?: string | null
-          phone?: string
+          phone?: string | null
           plan_type?: string
           reservation_id?: string | null
           status?: string | null
           stripe_customer_id?: string | null
           stripe_session_id?: string | null
-          student_age?: string
+          student_age?: string | null
           student_name?: string | null
           updated_at?: string
         }
