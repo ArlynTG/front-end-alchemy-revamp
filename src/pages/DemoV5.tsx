@@ -15,7 +15,6 @@ const DemoV5 = () => {
         <meta property="og:title" content="Tobey's Tutor: AI Learning Assistant for Dyslexia & ADHD | Demo" />
         <meta property="og:description" content="AI tutoring transforms learning for bright kids with dyslexia and ADHD. Our evidence-based approach celebrates neurodiversity while unlocking academic potential." />
         <meta property="og:type" content="website" />
-        <link rel="preconnect" href="https://tutor-assistant-arlyn11.replit.app/" />
       </Helmet>
 
       <Navbar />
@@ -36,6 +35,7 @@ const DemoV5 = () => {
                   <iframe 
                     src="https://tutor-assistant-arlyn11.replit.app/"
                     style={{width: "100%", height: "650px", border: "none"}}
+                    title="Tobey's Tutor Demo"
                     allow="microphone; camera"
                   />
                 </div>
