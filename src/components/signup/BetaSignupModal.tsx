@@ -169,27 +169,27 @@ const BetaSignupModal: React.FC<BetaSignupModalProps> = ({ isOpen, onClose }) =>
   // Use the Dialog component to handle modal display and backdrop
   return (
     <Dialog open={isOpen} onOpenChange={(open) => !open && onClose()}>
-      <DialogContent className="w-full max-w-md p-6 bg-white rounded-lg">
-        <DialogHeader>
-          <DialogTitle className="text-2xl font-medium mb-2">Reserve Your Spot for $1</DialogTitle>
-          <DialogDescription className="text-gray-600 mb-6">
+      <DialogContent className="w-full max-w-md p-6 bg-white rounded-lg shadow-xl overflow-y-auto max-h-[90vh] sm:max-h-[85vh]">
+        <DialogHeader className="mb-4">
+          <DialogTitle className="text-2xl font-bold text-gray-800">Reserve Your Spot for $1</DialogTitle>
+          <DialogDescription className="text-gray-600">
             Join our founding community of 200 families. Complete the form below to secure your place.
           </DialogDescription>
         </DialogHeader>
         
         {/* Display submission error if any */}
         {submitError && (
-          <div className="mb-4 p-3 bg-red-100 text-red-700 rounded-md text-sm">
+          <div className="mb-4 p-3 bg-red-50 border border-red-200 text-red-700 rounded-md text-sm">
             {submitError}
           </div>
         )}
         
         {/* Signup form */}
-        <form onSubmit={handleSubmit} className="space-y-4">
+        <form onSubmit={handleSubmit} className="space-y-5">
           {/* Name fields (side by side) */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
-              <label htmlFor="firstName" className="block text-sm font-medium mb-1">
+              <label htmlFor="firstName" className="block text-sm font-medium text-gray-700 mb-1">
                 First Name <span className="text-red-500">*</span>
               </label>
               <input
@@ -199,17 +199,17 @@ const BetaSignupModal: React.FC<BetaSignupModalProps> = ({ isOpen, onClose }) =>
                 value={formData.firstName}
                 onChange={handleChange}
                 placeholder="Your first name"
-                className={`w-full px-4 py-2 bg-blue-50 border rounded-md ${
+                className={`w-full px-4 py-2 bg-blue-50 border rounded-md focus:ring-2 focus:ring-blue-300 focus:outline-none transition-colors ${
                   errors.firstName ? "border-red-500" : "border-gray-300"
                 }`}
               />
               {errors.firstName && (
-                <p className="mt-1 text-sm text-red-500">{errors.firstName}</p>
+                <p className="mt-1 text-xs text-red-500">{errors.firstName}</p>
               )}
             </div>
             
             <div>
-              <label htmlFor="lastName" className="block text-sm font-medium mb-1">
+              <label htmlFor="lastName" className="block text-sm font-medium text-gray-700 mb-1">
                 Last Name <span className="text-red-500">*</span>
               </label>
               <input
@@ -219,12 +219,12 @@ const BetaSignupModal: React.FC<BetaSignupModalProps> = ({ isOpen, onClose }) =>
                 value={formData.lastName}
                 onChange={handleChange}
                 placeholder="Your last name"
-                className={`w-full px-4 py-2 bg-blue-50 border rounded-md ${
+                className={`w-full px-4 py-2 bg-blue-50 border rounded-md focus:ring-2 focus:ring-blue-300 focus:outline-none transition-colors ${
                   errors.lastName ? "border-red-500" : "border-gray-300"
                 }`}
               />
               {errors.lastName && (
-                <p className="mt-1 text-sm text-red-500">{errors.lastName}</p>
+                <p className="mt-1 text-xs text-red-500">{errors.lastName}</p>
               )}
             </div>
           </div>
@@ -232,7 +232,7 @@ const BetaSignupModal: React.FC<BetaSignupModalProps> = ({ isOpen, onClose }) =>
           {/* Email and Phone */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
-              <label htmlFor="email" className="block text-sm font-medium mb-1">
+              <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1">
                 Email Address <span className="text-red-500">*</span>
               </label>
               <input
@@ -242,17 +242,17 @@ const BetaSignupModal: React.FC<BetaSignupModalProps> = ({ isOpen, onClose }) =>
                 value={formData.email}
                 onChange={handleChange}
                 placeholder="your.email@example.com"
-                className={`w-full px-4 py-2 bg-blue-50 border rounded-md ${
+                className={`w-full px-4 py-2 bg-blue-50 border rounded-md focus:ring-2 focus:ring-blue-300 focus:outline-none transition-colors ${
                   errors.email ? "border-red-500" : "border-gray-300"
                 }`}
               />
               {errors.email && (
-                <p className="mt-1 text-sm text-red-500">{errors.email}</p>
+                <p className="mt-1 text-xs text-red-500">{errors.email}</p>
               )}
             </div>
             
             <div>
-              <label htmlFor="phone" className="block text-sm font-medium mb-1">
+              <label htmlFor="phone" className="block text-sm font-medium text-gray-700 mb-1">
                 Phone Number
               </label>
               <input
@@ -262,7 +262,7 @@ const BetaSignupModal: React.FC<BetaSignupModalProps> = ({ isOpen, onClose }) =>
                 value={formData.phone}
                 onChange={handleChange}
                 placeholder="(555) 123-4567"
-                className="w-full px-4 py-2 bg-blue-50 border border-gray-300 rounded-md"
+                className="w-full px-4 py-2 bg-blue-50 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-300 focus:outline-none transition-colors"
               />
             </div>
           </div>
@@ -270,7 +270,7 @@ const BetaSignupModal: React.FC<BetaSignupModalProps> = ({ isOpen, onClose }) =>
           {/* Student Name and Age */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
-              <label htmlFor="studentName" className="block text-sm font-medium mb-1">
+              <label htmlFor="studentName" className="block text-sm font-medium text-gray-700 mb-1">
                 Student's Name
               </label>
               <input
@@ -280,12 +280,12 @@ const BetaSignupModal: React.FC<BetaSignupModalProps> = ({ isOpen, onClose }) =>
                 value={formData.studentName}
                 onChange={handleChange}
                 placeholder="Student's first name"
-                className="w-full px-4 py-2 bg-blue-50 border border-gray-300 rounded-md"
+                className="w-full px-4 py-2 bg-blue-50 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-300 focus:outline-none transition-colors"
               />
             </div>
             
             <div>
-              <label htmlFor="studentAge" className="block text-sm font-medium mb-1">
+              <label htmlFor="studentAge" className="block text-sm font-medium text-gray-700 mb-1">
                 Student's Age
               </label>
               <select
@@ -293,7 +293,8 @@ const BetaSignupModal: React.FC<BetaSignupModalProps> = ({ isOpen, onClose }) =>
                 name="studentAge"
                 value={formData.studentAge}
                 onChange={handleChange}
-                className="w-full px-4 py-2 bg-blue-50 border border-gray-300 rounded-md appearance-none"
+                className="w-full px-4 py-2 bg-blue-50 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-300 focus:outline-none transition-colors appearance-none"
+                style={{ backgroundImage: "url('data:image/svg+xml;utf8,<svg fill=\"none\" stroke=\"currentColor\" viewBox=\"0 0 24 24\" xmlns=\"http://www.w3.org/2000/svg\"><path stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\" d=\"M19 9l-7 7-7-7\"></path></svg>')", backgroundRepeat: "no-repeat", backgroundPosition: "right 0.5rem center", backgroundSize: "1.5em" }}
               >
                 <option value="">Select age</option>
                 {ageOptions.map((option) => (
@@ -307,7 +308,7 @@ const BetaSignupModal: React.FC<BetaSignupModalProps> = ({ isOpen, onClose }) =>
           
           {/* Learning Difference */}
           <div>
-            <label htmlFor="learningDifference" className="block text-sm font-medium mb-1">
+            <label htmlFor="learningDifference" className="block text-sm font-medium text-gray-700 mb-1">
               Primary Learning Difference (Optional)
             </label>
             <select
@@ -315,7 +316,8 @@ const BetaSignupModal: React.FC<BetaSignupModalProps> = ({ isOpen, onClose }) =>
               name="learningDifference"
               value={formData.learningDifference}
               onChange={handleChange}
-              className="w-full px-4 py-2 bg-blue-50 border border-gray-300 rounded-md appearance-none"
+              className="w-full px-4 py-2 bg-blue-50 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-300 focus:outline-none transition-colors appearance-none"
+              style={{ backgroundImage: "url('data:image/svg+xml;utf8,<svg fill=\"none\" stroke=\"currentColor\" viewBox=\"0 0 24 24\" xmlns=\"http://www.w3.org/2000/svg\"><path stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\" d=\"M19 9l-7 7-7-7\"></path></svg>')", backgroundRepeat: "no-repeat", backgroundPosition: "right 0.5rem center", backgroundSize: "1.5em" }}
             >
               <option value="">Select if applicable</option>
               {learningDifferenceOptions.map((option) => (
@@ -331,14 +333,14 @@ const BetaSignupModal: React.FC<BetaSignupModalProps> = ({ isOpen, onClose }) =>
             <button
               type="button"
               onClick={onClose}
-              className="px-4 py-2 text-gray-600 bg-gray-200 rounded-md hover:bg-gray-300"
+              className="px-4 py-2 text-gray-600 bg-gray-200 rounded-md hover:bg-gray-300 transition-colors focus:outline-none focus:ring-2 focus:ring-gray-400"
             >
               Cancel
             </button>
             <button
               type="submit"
               disabled={isSubmitting}
-              className="px-4 py-2 text-white bg-tobey-orange hover:bg-tobey-orange/90 rounded-md"
+              className="px-4 py-2 text-white bg-orange-500 hover:bg-orange-600 rounded-md transition-colors focus:outline-none focus:ring-2 focus:ring-orange-400 disabled:opacity-70 disabled:cursor-not-allowed"
             >
               {isSubmitting ? "Submitting..." : "Reserve Your Spot for $1"}
             </button>
