@@ -97,21 +97,25 @@ const BetaSignupModal: React.FC<BetaSignupModalProps> = ({ isOpen, onClose, plan
     try {
       console.log("Submitting registration form with plan:", planId);
       
+      // Prepare the registration data
+      const registrationData = {
+        first_name: formData.firstName,
+        last_name: formData.lastName,
+        email: formData.email,
+        phone: formData.phone || null,
+        student_name: formData.studentName || null,
+        student_age: formData.studentAge || null,
+        learning_differences: formData.learningDifference ? [formData.learningDifference] : null,
+        plan_type: planId
+      };
+      
+      console.log("Registration data being sent:", registrationData);
+      
+      // Call the Supabase Edge Function
       const response = await fetch("https://hgpplvegqlvxwszlhzwc.supabase.co/functions/v1/beta-signup", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          id: uuidv4(),
-          first_name: formData.firstName,
-          last_name: formData.lastName,
-          email: formData.email,
-          phone: formData.phone || null,
-          student_name: formData.studentName || null,
-          student_age: formData.studentAge || null,
-          learning_differences: formData.learningDifference ? [formData.learningDifference] : null,
-          created_at: new Date().toISOString(),
-          plan_type: planId
-        })
+        body: JSON.stringify(registrationData)
       });
       
       console.log("Registration response status:", response.status);
@@ -119,6 +123,7 @@ const BetaSignupModal: React.FC<BetaSignupModalProps> = ({ isOpen, onClose, plan
       const result = await response.json();
       console.log("Registration response:", result);
       
+      // Handle unsuccessful response
       if (!response.ok) {
         if (result.error) {
           setSubmitError(result.error);
@@ -128,6 +133,7 @@ const BetaSignupModal: React.FC<BetaSignupModalProps> = ({ isOpen, onClose, plan
         return;
       }
       
+      // Handle successful response
       if (result.success) {
         // Show success toast
         toast({
@@ -144,7 +150,7 @@ const BetaSignupModal: React.FC<BetaSignupModalProps> = ({ isOpen, onClose, plan
           setSubmitError("Registration failed. Please try again.");
         }
       }
-    } catch (error) {
+    } catch (error: any) {
       console.error("Error during submission:", error);
       setSubmitError("An unexpected error occurred. Please try again.");
     } finally {

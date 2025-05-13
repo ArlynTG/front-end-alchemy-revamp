@@ -26,8 +26,8 @@ serve(async (req) => {
     
     // Create a Supabase client with the service role key
     const supabaseAdmin = createClient(
-      Deno.env.get("SUPABASE_URL") || "",
-      Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") || ""
+      Deno.env.get("SUPABASE_URL") ?? "",
+      Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? ""
     );
 
     // Parse the request body
@@ -45,37 +45,53 @@ serve(async (req) => {
       );
     }
 
-    // Insert the registration data directly into the beta_registrations table
+    // First check if email already exists to give a clear error message
+    const { data: existingUser, error: checkError } = await supabaseAdmin
+      .from("beta_registrations")
+      .select("email")
+      .eq("email", requestData.email)
+      .maybeSingle();
+      
+    if (checkError) {
+      console.error("Error checking for existing user:", checkError);
+      throw checkError;
+    }
+    
+    if (existingUser) {
+      return new Response(
+        JSON.stringify({ 
+          error: "This email has already been registered for the beta." 
+        }),
+        {
+          status: 400,
+          headers: { ...corsHeaders, "Content-Type": "application/json" },
+        }
+      );
+    }
+
+    // Prepare the data for insertion - explicit mapping to avoid any unexpected fields
+    const insertData = {
+      first_name: requestData.first_name,
+      last_name: requestData.last_name,
+      email: requestData.email,
+      phone: requestData.phone || null,
+      student_name: requestData.student_name || null,
+      student_age: requestData.student_age || null,
+      learning_differences: requestData.learning_differences || null,
+      plan_type: requestData.plan_type,
+      status: "pending"
+    };
+    
+    console.log("Data prepared for insertion:", insertData);
+
+    // Insert the registration data
     const { data, error } = await supabaseAdmin
       .from("beta_registrations")
-      .insert({
-        first_name: requestData.first_name,
-        last_name: requestData.last_name,
-        email: requestData.email,
-        phone: requestData.phone || null,
-        student_name: requestData.student_name || null,
-        student_age: requestData.student_age || null,
-        learning_differences: requestData.learning_differences || null,
-        plan_type: requestData.plan_type,
-        status: "pending"
-      });
+      .insert(insertData)
+      .select();
 
     if (error) {
       console.error("Supabase insertion error:", error);
-      
-      // Handle duplicate email error specifically
-      if (error.code === '23505' && error.message.includes("email")) {
-        return new Response(
-          JSON.stringify({ 
-            error: "This email has already been registered for the beta." 
-          }),
-          {
-            status: 400,
-            headers: { ...corsHeaders, "Content-Type": "application/json" },
-          }
-        );
-      }
-      
       throw error;
     }
 
@@ -96,7 +112,10 @@ serve(async (req) => {
     console.error("Error in beta-signup function:", error);
     
     return new Response(
-      JSON.stringify({ error: "Failed to register", details: error.message }),
+      JSON.stringify({ 
+        error: "Failed to register", 
+        details: error.message || "Unknown error occurred" 
+      }),
       {
         status: 500,
         headers: { ...corsHeaders, "Content-Type": "application/json" },
