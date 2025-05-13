@@ -25,7 +25,7 @@ const ParentLogin = () => {
         title: "Login Successful",
         description: "You have been logged in successfully.",
       });
-      navigate("/parent-dashboard"); // Redirect to dashboard
+      navigate("/parent-dashboard-v2"); // Redirect to v2 dashboard instead
     }, 1500);
   };
 
@@ -46,7 +46,7 @@ const ParentLogin = () => {
             <h3 className="text-xl font-semibold text-gray-800 mb-2">Coming Soon!</h3>
             <p className="text-gray-600">This feature will be live when we launch in June 2025</p>
             <div className="mt-4">
-              <Link to="/parent-dashboard" className="inline-flex items-center justify-center text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-tobey-orange text-white hover:bg-tobey-orange/90 h-9 rounded-md px-4 py-2">
+              <Link to="/parent-dashboard-v2" className="inline-flex items-center justify-center text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-tobey-orange text-white hover:bg-tobey-orange/90 h-9 rounded-md px-4 py-2">
                 View Dashboard Preview
               </Link>
             </div>
@@ -109,7 +109,7 @@ const ParentLogin = () => {
             </Button>
 
             <div className="text-center text-sm text-gray-500">
-              <Link to="/parent-dashboard" className="text-tobey-orange hover:underline">
+              <Link to="/parent-dashboard-v2" className="text-tobey-orange hover:underline">
                 Demo: View Dashboard
               </Link>
             </div>

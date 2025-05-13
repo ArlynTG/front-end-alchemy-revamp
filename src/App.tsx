@@ -18,7 +18,7 @@ const BetaConfirmed = lazy(() => import("./pages/BetaConfirmed"));
 const BetaRegistration = lazy(() => import("./pages/BetaRegistration"));
 const BetaConfirmation = lazy(() => import("./pages/BetaConfirmation"));
 const DemoV5 = lazy(() => import("./pages/DemoV5"));
-const ParentDashboard = lazy(() => import("./pages/ParentDashboard"));
+// Removed the ParentDashboard import
 const ParentDashboardV2 = lazy(() => import("./pages/ParentDashboardV2"));
 const StudentDashboard = lazy(() => import("./pages/StudentDashboard"));
 const AccountManagement = lazy(() => import("./pages/AccountManagement"));
@@ -68,7 +68,7 @@ const App = () => (
             <Route path="/parent-login" element={<ParentLogin />} />
             <Route path="/student-login" element={<StudentLogin />} />
             <Route path="/demo-v5" element={<DemoV5 />} />
-            <Route path="/parent-dashboard" element={<ParentDashboard />} />
+            {/* Removed the /parent-dashboard route */}
             <Route path="/beta-confirmed" element={<BetaConfirmed />} />
             <Route path="/beta-registration" element={<BetaRegistration />} />
             <Route path="/beta-confirmation" element={<BetaConfirmation />} />
