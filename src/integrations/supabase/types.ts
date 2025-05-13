@@ -202,6 +202,45 @@ export type Database = {
         }
         Relationships: []
       }
+      signup_data: {
+        Row: {
+          created_at: string | null
+          email: string
+          first_name: string
+          id: string
+          last_name: string
+          learning_difference: string | null
+          phone: string | null
+          plan_type: string | null
+          student_age: string | null
+          student_name: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          email: string
+          first_name: string
+          id?: string
+          last_name: string
+          learning_difference?: string | null
+          phone?: string | null
+          plan_type?: string | null
+          student_age?: string | null
+          student_name?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          email?: string
+          first_name?: string
+          id?: string
+          last_name?: string
+          learning_difference?: string | null
+          phone?: string | null
+          plan_type?: string | null
+          student_age?: string | null
+          student_name?: string | null
+        }
+        Relationships: []
+      }
       student_access: {
         Row: {
           access_level: string | null

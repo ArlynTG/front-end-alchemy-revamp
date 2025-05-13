@@ -14,7 +14,7 @@ const SignupTest = () => {
         <div className="flex justify-center">
           <SignupButton 
             label="Reserve Your Spot for $1" 
-            className="bg-tobey-orange hover:bg-tobey-orange/90 text-white px-6 py-3"
+            className="bg-tobey-orange hover:bg-tobey-orange/90 text-white px-6 py-3 rounded-md"
           />
         </div>
       </div>

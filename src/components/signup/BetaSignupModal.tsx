@@ -1,7 +1,6 @@
 
 import React, { useState, useEffect } from "react";
 import { toast } from "@/components/ui/use-toast";
-import { supabase } from "@/integrations/supabase/client";
 import {
   Dialog,
   DialogContent,
@@ -9,6 +8,11 @@ import {
   DialogTitle,
   DialogDescription
 } from "@/components/ui/dialog";
+import { 
+  submitSignupData, 
+  STRIPE_CHECKOUT_URL,
+  saveToLocalStorage 
+} from "@/utils/signupDataService";
 
 // Define the modal props
 interface BetaSignupModalProps {
@@ -27,9 +31,6 @@ interface FormData {
   studentAge: string;
   learningDifference: string;
 }
-
-// Stripe checkout URL - ensure this is correct
-const STRIPE_CHECKOUT_URL = "https://buy.stripe.com/aEU29XbjrclwgO49AC";
 
 const BetaSignupModal: React.FC<BetaSignupModalProps> = ({ isOpen, onClose, planId = "early-adopter" }) => {
   // Form state
@@ -53,7 +54,7 @@ const BetaSignupModal: React.FC<BetaSignupModalProps> = ({ isOpen, onClose, plan
   // Handle redirect to Stripe - using a dedicated useEffect for redirection
   useEffect(() => {
     if (shouldRedirect) {
-      console.log("Redirecting to Stripe:", STRIPE_CHECKOUT_URL);
+      console.log("Redirecting to Stripe in effect:", STRIPE_CHECKOUT_URL);
       
       // Use a short timeout to ensure the toast message is visible before redirect
       const redirectTimer = setTimeout(() => {
@@ -118,26 +119,6 @@ const BetaSignupModal: React.FC<BetaSignupModalProps> = ({ isOpen, onClose, plan
     return Object.keys(newErrors).length === 0;
   };
 
-  // Save registration data to localStorage as backup
-  const saveToLocalStorage = () => {
-    try {
-      localStorage.setItem("beta_signup_data", JSON.stringify({
-        first_name: formData.firstName,
-        last_name: formData.lastName,
-        email: formData.email,
-        phone: formData.phone,
-        student_name: formData.studentName,
-        student_age: formData.studentAge,
-        learning_differences: formData.learningDifference ? [formData.learningDifference] : [],
-        plan_type: planId,
-        timestamp: new Date().toISOString()
-      }));
-      console.log("Data saved to localStorage successfully");
-    } catch (err) {
-      console.error("Failed to save to localStorage:", err);
-    }
-  };
-
   // Handle form submission
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -151,33 +132,22 @@ const BetaSignupModal: React.FC<BetaSignupModalProps> = ({ isOpen, onClose, plan
     setIsSubmitting(true);
     
     try {
-      // Always save to localStorage first as backup
-      saveToLocalStorage();
-      
-      // Prepare data for Supabase - ensure all required fields are included
-      const registrationData = {
+      // Format data for the new signup_data table
+      const signupData = {
         first_name: formData.firstName,
         last_name: formData.lastName,
         email: formData.email,
         phone: formData.phone || null,
         student_name: formData.studentName || null,
         student_age: formData.studentAge || null,
-        // Always use an array for learning_differences, even if empty
-        learning_differences: formData.learningDifference ? [formData.learningDifference] : [],
+        learning_difference: formData.learningDifference || null,
         plan_type: planId
       };
 
-      console.log("Attempting to save registration:", registrationData);
+      console.log("Submitting signup data:", signupData);
       
-      // Insert data into Supabase
-      const { error } = await supabase
-        .from('beta_registrations')
-        .insert(registrationData);
-      
-      if (error) {
-        console.error("Supabase insert error:", error);
-        throw new Error(error.message);
-      }
+      // Save to the new signup_data table
+      await submitSignupData(signupData);
       
       toast({
         title: "Registration successful!",
@@ -190,6 +160,18 @@ const BetaSignupModal: React.FC<BetaSignupModalProps> = ({ isOpen, onClose, plan
       
     } catch (error: any) {
       console.error("Error in form submission:", error);
+      
+      // Save to localStorage as backup if database submission fails
+      saveToLocalStorage({
+        first_name: formData.firstName,
+        last_name: formData.lastName,
+        email: formData.email,
+        phone: formData.phone,
+        student_name: formData.studentName,
+        student_age: formData.studentAge,
+        learning_difference: formData.learningDifference,
+        plan_type: planId
+      });
       
       toast({
         title: "Registration Issue",
