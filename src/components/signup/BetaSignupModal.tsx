@@ -1,9 +1,15 @@
 
 import React, { useState } from "react";
-import { X } from "lucide-react";
 import { v4 as uuidv4 } from "uuid";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "@/components/ui/use-toast";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription
+} from "@/components/ui/dialog";
 
 // Define the modal props
 interface BetaSignupModalProps {
@@ -159,26 +165,17 @@ const BetaSignupModal: React.FC<BetaSignupModalProps> = ({ isOpen, onClose }) =>
     { value: "Executive_Function", label: "Executive Function" },
     { value: "Other", label: "Other" }
   ];
-  
-  // Don't render anything if not open
-  if (!isOpen) return null;
 
+  // Use the Dialog component to handle modal display and backdrop
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
-      <div className="relative w-full max-w-md p-6 bg-white rounded-lg shadow-xl">
-        {/* Close button */}
-        <button 
-          onClick={onClose} 
-          className="absolute top-4 right-4 text-gray-500 hover:text-gray-700"
-        >
-          <X size={20} />
-        </button>
-        
-        {/* Modal header */}
-        <h2 className="text-2xl font-medium mb-2">Reserve Your Spot for $1</h2>
-        <p className="text-gray-600 mb-6">
-          Join our founding community of 200 families. Complete the form below to secure your place.
-        </p>
+    <Dialog open={isOpen} onOpenChange={(open) => !open && onClose()}>
+      <DialogContent className="w-full max-w-md p-6 bg-white rounded-lg">
+        <DialogHeader>
+          <DialogTitle className="text-2xl font-medium mb-2">Reserve Your Spot for $1</DialogTitle>
+          <DialogDescription className="text-gray-600 mb-6">
+            Join our founding community of 200 families. Complete the form below to secure your place.
+          </DialogDescription>
+        </DialogHeader>
         
         {/* Display submission error if any */}
         {submitError && (
@@ -188,9 +185,9 @@ const BetaSignupModal: React.FC<BetaSignupModalProps> = ({ isOpen, onClose }) =>
         )}
         
         {/* Signup form */}
-        <form onSubmit={handleSubmit}>
+        <form onSubmit={handleSubmit} className="space-y-4">
           {/* Name fields (side by side) */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
               <label htmlFor="firstName" className="block text-sm font-medium mb-1">
                 First Name <span className="text-red-500">*</span>
@@ -233,7 +230,7 @@ const BetaSignupModal: React.FC<BetaSignupModalProps> = ({ isOpen, onClose }) =>
           </div>
           
           {/* Email and Phone */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
               <label htmlFor="email" className="block text-sm font-medium mb-1">
                 Email Address <span className="text-red-500">*</span>
@@ -271,7 +268,7 @@ const BetaSignupModal: React.FC<BetaSignupModalProps> = ({ isOpen, onClose }) =>
           </div>
           
           {/* Student Name and Age */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
               <label htmlFor="studentName" className="block text-sm font-medium mb-1">
                 Student's Name
@@ -309,7 +306,7 @@ const BetaSignupModal: React.FC<BetaSignupModalProps> = ({ isOpen, onClose }) =>
           </div>
           
           {/* Learning Difference */}
-          <div className="mb-6">
+          <div>
             <label htmlFor="learningDifference" className="block text-sm font-medium mb-1">
               Primary Learning Difference (Optional)
             </label>
@@ -347,8 +344,8 @@ const BetaSignupModal: React.FC<BetaSignupModalProps> = ({ isOpen, onClose }) =>
             </button>
           </div>
         </form>
-      </div>
-    </div>
+      </DialogContent>
+    </Dialog>
   );
 };
 
