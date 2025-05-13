@@ -95,30 +95,26 @@ const BetaSignupModal: React.FC<BetaSignupModalProps> = ({ isOpen, onClose }) =>
     setIsSubmitting(true);
     
     try {
-      // Create data object for Supabase insert
-      const insertData = {
-        id: uuidv4(), // Generate UUID for the record
-        first_name: formData.firstName,
-        last_name: formData.lastName,
-        email: formData.email,
-        phone: formData.phone || null,
-        student_name: formData.studentName || null,
-        student_age: formData.studentAge || null,
-        learning_differences: formData.learningDifference ? [formData.learningDifference] : null,
-        created_at: new Date().toISOString(),
-        plan_type: "early-adopter"
-      };
-      
-      console.log("Submitting to Supabase:", insertData);
-      
-      // Insert data directly into Supabase beta_registrations table
+      // Insert directly to beta_registrations table
       const { data, error } = await supabase
         .from('beta_registrations')
-        .insert([insertData])
+        .insert({
+          id: uuidv4(), // Generate UUID for the record
+          first_name: formData.firstName,
+          last_name: formData.lastName,
+          email: formData.email,
+          phone: formData.phone || null,
+          student_name: formData.studentName || null,
+          student_age: formData.studentAge || null,
+          learning_differences: formData.learningDifference ? [formData.learningDifference] : null,
+          created_at: new Date().toISOString(),
+          plan_type: "early-adopter"
+        })
         .select();
       
       if (error) {
         console.error("Supabase error:", error);
+        console.error("Error details:", JSON.stringify(error, null, 2));
         
         // Handle duplicate email error
         if (error.code === '23505') {
