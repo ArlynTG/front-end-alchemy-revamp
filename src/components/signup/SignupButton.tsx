@@ -6,11 +6,13 @@ import { Button } from "@/components/ui/button";
 interface SignupButtonProps {
   label?: string;
   className?: string;
+  planId?: string;
 }
 
 const SignupButton: React.FC<SignupButtonProps> = ({
   label = "Sign Up",
   className = "",
+  planId = "early-adopter",
 }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
 
@@ -28,7 +30,8 @@ const SignupButton: React.FC<SignupButtonProps> = ({
       
       <BetaSignupModal 
         isOpen={isModalOpen} 
-        onClose={closeModal} 
+        onClose={closeModal}
+        planId={planId}
       />
     </>
   );
