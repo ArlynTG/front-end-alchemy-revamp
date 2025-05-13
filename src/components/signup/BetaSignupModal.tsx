@@ -98,24 +98,27 @@ const BetaSignupModal: React.FC<BetaSignupModalProps> = ({ isOpen, onClose, plan
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
-  
+
   // Save registration data to localStorage as backup
   const saveToLocalStorage = () => {
     try {
-      const backupData = {
-        ...formData,
-        timestamp: new Date().toISOString(),
-        planId
-      };
-      
-      localStorage.setItem(`beta_registration_${Date.now()}`, JSON.stringify(backupData));
-      console.log("Saved registration data to localStorage");
+      localStorage.setItem("beta_signup_data", JSON.stringify({
+        first_name: formData.firstName,
+        last_name: formData.lastName,
+        email: formData.email,
+        phone: formData.phone,
+        student_name: formData.studentName,
+        student_age: formData.studentAge,
+        learning_difference: formData.learningDifference,
+        plan_type: planId,
+        timestamp: new Date().toISOString()
+      }));
     } catch (err) {
       console.error("Failed to save to localStorage:", err);
     }
   };
 
-  // Handle form submission
+  // Handle form submission - super simplified
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
@@ -127,12 +130,10 @@ const BetaSignupModal: React.FC<BetaSignupModalProps> = ({ isOpen, onClose, plan
     setIsSubmitting(true);
     
     try {
-      // Always store in localStorage as a backup
+      // Always save to localStorage first
       saveToLocalStorage();
       
-      console.log("Submitting registration form with plan:", planId);
-      
-      // Format the data for Supabase
+      // Super simple data structure
       const registrationData = {
         first_name: formData.firstName,
         last_name: formData.lastName,
@@ -140,53 +141,40 @@ const BetaSignupModal: React.FC<BetaSignupModalProps> = ({ isOpen, onClose, plan
         phone: formData.phone || null,
         student_name: formData.studentName || null,
         student_age: formData.studentAge || null,
-        learning_differences: formData.learningDifference ? [formData.learningDifference] : null,
+        learning_differences: formData.learningDifference ? [formData.learningDifference] : [],
         plan_type: planId
       };
+
+      console.log("Attempting to save registration:", registrationData);
       
-      console.log("Registration data being sent:", registrationData);
-      
-      // Insert data directly using Supabase client
+      // Simple insert
       const { error } = await supabase
         .from('beta_registrations')
         .insert(registrationData);
       
       if (error) {
-        console.error("Supabase insert error:", error);
-        
-        if (error.code === '23505') {
-          throw new Error('This email has already been registered for the beta.');
-        }
-        
-        throw new Error(`Registration failed: ${error.message || 'Unknown error'}`);
+        console.error("Database error:", error);
+        throw new Error(error.message);
       }
       
-      // Handle successful submission
       toast({
         title: "Registration successful!",
         description: "Redirecting to payment page...",
       });
       
-      // Add a short delay before redirect to ensure toast is visible
+    } catch (error) {
+      console.error("Error:", error);
+      toast({
+        title: "Could not save registration",
+        description: "Your information was saved locally. Redirecting to payment...",
+        variant: "destructive",
+      });
+    } finally {
+      // Always redirect to Stripe regardless of success/failure
       setTimeout(() => {
-        // Redirect to Stripe payment page
         window.location.href = "https://buy.stripe.com/aEU29XbjrclwgO49AC";
       }, 1500);
       
-    } catch (error: any) {
-      console.error("Error during submission:", error);
-      toast({
-        title: "Registration error",
-        description: error.message || "An unexpected error occurred. Please try again.",
-        variant: "destructive",
-      });
-      
-      // Even if there's an error with Supabase, we'll still redirect to Stripe
-      // since we've saved the data to localStorage as a backup
-      setTimeout(() => {
-        window.location.href = "https://buy.stripe.com/aEU29XbjrclwgO49AC";
-      }, 3000);
-    } finally {
       setIsSubmitting(false);
     }
   };
