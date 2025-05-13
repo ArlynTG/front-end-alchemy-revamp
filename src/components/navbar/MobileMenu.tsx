@@ -7,7 +7,7 @@ import {
   CollapsibleContent,
   CollapsibleTrigger,
 } from "@/components/ui/collapsible";
-import { ChevronDown, ChevronUp, Stopwatch } from "lucide-react";
+import { ChevronDown, ChevronUp, Clock } from "lucide-react";
 import { useState } from "react";
 import { SignupButton } from "@/components/signup";
 

@@ -2,7 +2,7 @@
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { PricingPlan } from "./PricingCard";
-import { Stopwatch } from "lucide-react";
+import { Clock } from "lucide-react";
 
 interface PricingCardProps {
   plan: PricingPlan;
@@ -58,7 +58,7 @@ const PricingCard = ({ plan, onSelect }: PricingCardProps) => {
         {plan.disabled ? "Coming Soon" : (
           <>
             Reserve Your Spot for $1
-            <Stopwatch className="h-4 w-4" />
+            <Clock className="h-4 w-4" />
           </>
         )}
       </Button>

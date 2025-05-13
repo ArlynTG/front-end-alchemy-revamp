@@ -1,7 +1,7 @@
 
 import React from "react";
 import { Button } from "@/components/ui/button";
-import { ArrowRight, Stopwatch } from "lucide-react";
+import { ArrowRight, Clock } from "lucide-react";
 import { Link } from "react-router-dom";
 
 const FullWidthCTA = () => {
@@ -23,7 +23,7 @@ const FullWidthCTA = () => {
                 style={{ animationDelay: '600ms', animationFillMode: 'forwards' }}
               >
                 Try the Demo Now 
-                <Stopwatch className="h-4 w-4" />
+                <Clock className="h-4 w-4" />
                 <ArrowRight className="ml-2 h-4 w-4" />
               </Button>
             </Link>

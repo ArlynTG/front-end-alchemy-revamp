@@ -8,7 +8,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { ChevronDown, Stopwatch } from "lucide-react";
+import { ChevronDown, Clock } from "lucide-react";
 import { SignupButton } from "@/components/signup";
 
 interface DesktopNavProps {

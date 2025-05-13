@@ -3,7 +3,7 @@ import React from 'react';
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 import { SignupButton } from "@/components/signup";
-import { Stopwatch } from "lucide-react";
+import { Clock } from "lucide-react";
 
 const Hero = () => {
   return (
@@ -52,7 +52,7 @@ const Hero = () => {
               <Button asChild className="bg-tobey-orange hover:bg-tobey-orange/90 text-white">
                 <Link to="/demo-v5" className="flex items-center gap-2">
                   Try the Demo
-                  <Stopwatch className="h-4 w-4" />
+                  <Clock className="h-4 w-4" />
                 </Link>
               </Button>
               <SignupButton 
