@@ -150,7 +150,7 @@ const HowItWorks = () => {
     {
       step: 2,
       title: "Leveraging the Power of AI",
-      description: "Our AI analyzes your child's academic needs and interests, then uses evidence-based educational methods to create a personalized long-term learning plan. It breaks this plan into bite-sized daily lessons tailored to your child's current level—adjusting difficulty in real-time based on how they're doing. Lessons are gamified, fun, and challenging, so learning feels exciting—not like schoolwork.",
+      description: "Our AI pinpoints your child's strengths, gaps, and passions, then designs a research-backed roadmap to mastery. Each day it serves up a 20-minute, gamified challenge that adapts in real time—easing up when they struggle, leveling up when they soar—so progress feels like play, not homework.",
       icon: <BookOpen className="h-5 w-5 text-tobey-orange" />,
       delay: 500
     },
