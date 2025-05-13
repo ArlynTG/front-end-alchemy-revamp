@@ -1,36 +1,42 @@
 
 import React, { useState } from "react";
-import { Button } from "@/components/ui/button";
+import { Button, ButtonProps } from "@/components/ui/button";
 import BetaSignupModal from "./BetaSignupModal";
 
-interface SignupButtonProps {
+interface SignupButtonProps extends ButtonProps {
   label?: string;
-  className?: string;
   planId?: string;
-  variant?: 'default' | 'destructive' | 'outline' | 'secondary' | 'ghost' | 'link';
 }
 
 const SignupButton: React.FC<SignupButtonProps> = ({ 
-  label = "Join the Beta", 
-  className = "",
+  label = "Join Beta", 
   planId = "early-adopter",
-  variant = "default"
+  className,
+  ...buttonProps 
 }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
+
+  const openModal = () => {
+    setIsModalOpen(true);
+  };
+
+  const closeModal = () => {
+    setIsModalOpen(false);
+  };
 
   return (
     <>
       <Button 
-        onClick={() => setIsModalOpen(true)}
+        onClick={openModal} 
         className={className}
-        variant={variant}
+        {...buttonProps}
       >
         {label}
       </Button>
       
       <BetaSignupModal 
         isOpen={isModalOpen} 
-        onClose={() => setIsModalOpen(false)} 
+        onClose={closeModal}
         planId={planId}
       />
     </>

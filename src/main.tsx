@@ -1,174 +1,33 @@
 
-import { createRoot } from 'react-dom/client';
-import { HelmetProvider } from 'react-helmet-async';
-import App from './App.tsx';
-import './index.css';
+import React from 'react'
+import ReactDOM from 'react-dom/client'
+import { createBrowserRouter, RouterProvider } from 'react-router-dom'
+import App from './App.tsx'
+import './index.css'
+import { Toaster } from 'sonner'
 
-// Function to add cache-busting query parameter to CSS resource URLs
-const addCacheBustingToResources = () => {
-  const timestamp = new Date().getTime();
-  
-  // Process all stylesheet links in the document
-  const styleLinks = document.querySelectorAll('link[rel="stylesheet"]');
-  styleLinks.forEach(link => {
-    const currentHref = link.getAttribute('href');
-    if (currentHref && !currentHref.includes('?v=')) {
-      link.setAttribute('href', `${currentHref}?v=${timestamp}`);
-    }
-  });
-};
+// Import pages
+import SignupTest from './pages/SignupTest.tsx'
+import Onboarding from './pages/Onboarding.tsx'
 
-// Use createRoot for React 18's concurrent features
-const container = document.getElementById("root");
-const root = createRoot(container!);
-
-// Apply cache-busting to stylesheets
-addCacheBustingToResources();
-
-// Wrap app in HelmetProvider for optimized metadata management
-root.render(
-  <HelmetProvider>
-    <App />
-  </HelmetProvider>
-);
-
-// Register service worker for asset caching with improved error handling and rollback capability
-if ('serviceWorker' in navigator) {
-  window.addEventListener('load', () => {
-    const swUrl = '/sw.js';
-    
-    // Track the current service worker for potential rollback
-    let currentSW: ServiceWorker | null = null;
-    
-    // Function to check for service worker updates
-    const checkForUpdates = (registration: ServiceWorkerRegistration) => {
-      registration.update()
-        .then(() => {
-          console.log('Checked for service worker updates');
-        })
-        .catch(error => {
-          console.warn('Service worker update check failed:', error);
-        });
-    };
-    
-    // Register the service worker
-    navigator.serviceWorker.register(swUrl)
-      .then(registration => {
-        console.log('ServiceWorker registration successful with scope:', registration.scope);
-        
-        // Store reference to current service worker
-        currentSW = registration.active;
-        
-        // Check for updates more frequently (every 15 minutes instead of every hour)
-        setInterval(() => {
-          checkForUpdates(registration);
-        }, 15 * 60 * 1000);
-        
-        // Handle updates
-        registration.addEventListener('updatefound', () => {
-          const newWorker = registration.installing;
-          console.log('New service worker installing');
-          
-          newWorker?.addEventListener('statechange', () => {
-            if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
-              console.log('New content available, refresh to update');
-              
-              const updateNotification = document.createElement('div');
-              updateNotification.style.position = 'fixed';
-              updateNotification.style.bottom = '20px';
-              updateNotification.style.right = '20px';
-              updateNotification.style.backgroundColor = '#4CAF50';
-              updateNotification.style.color = 'white';
-              updateNotification.style.padding = '15px';
-              updateNotification.style.borderRadius = '5px';
-              updateNotification.style.zIndex = '9999';
-              updateNotification.style.boxShadow = '0 2px 5px rgba(0,0,0,0.3)';
-              updateNotification.innerHTML = `
-                New content is available! 
-                <button id="update-btn" style="background: white; color: #4CAF50; border: none; margin-left: 10px; padding: 5px 10px; cursor: pointer; border-radius: 3px;">
-                  Update Now
-                </button>
-              `;
-              
-              document.body.appendChild(updateNotification);
-              
-              document.getElementById('update-btn')?.addEventListener('click', () => {
-                // Clear cache before reloading
-                if (window.caches) {
-                  caches.keys().then(cacheNames => {
-                    cacheNames.forEach(cacheName => {
-                      caches.delete(cacheName);
-                    });
-                    window.location.reload();
-                  });
-                } else {
-                  window.location.reload();
-                }
-              });
-            }
-          });
-        });
-        
-        // Add rollback capability
-        window.rollbackServiceWorker = () => {
-          if (registration.active) {
-            // Send rollback message to SW
-            navigator.serviceWorker.controller?.postMessage({
-              type: 'ROLLBACK'
-            });
-            
-            // Reload the page to apply rollback
-            setTimeout(() => {
-              window.location.reload();
-            }, 1000);
-            
-            return true;
-          }
-          return false;
-        };
-      })
-      .catch(error => {
-        console.error('Service worker registration failed:', error);
-      });
-  });
-  
-  // Check for updates when the page becomes visible again (more aggressively)
-  document.addEventListener('visibilitychange', () => {
-    if (document.visibilityState === 'visible') {
-      navigator.serviceWorker.getRegistration().then(reg => {
-        if (reg) reg.update();
-      });
-    }
-  });
-  
-  // Add service worker status check to window object for debugging
-  window.checkServiceWorkerStatus = () => {
-    return navigator.serviceWorker.getRegistration()
-      .then(registration => {
-        if (!registration) {
-          return { status: 'not-registered' };
-        }
-        
-        return {
-          status: 'registered',
-          scope: registration.scope,
-          active: !!registration.active,
-          installing: !!registration.installing,
-          waiting: !!registration.waiting
-        };
-      });
-  };
-}
-
-// Add a timestamp to force cache-busting
-const appVersion = import.meta.env.VITE_APP_VERSION || '1.0.0';
-const buildTimestamp = import.meta.env.VITE_BUILD_TIMESTAMP || new Date().toISOString();
-console.log(`App initialized at: ${new Date().toISOString()}, Version: ${appVersion}, Build: ${buildTimestamp}`);
-
-// Add TypeScript interface for window object
-declare global {
-  interface Window {
-    rollbackServiceWorker: () => boolean;
-    checkServiceWorkerStatus: () => Promise<any>;
+const router = createBrowserRouter([
+  {
+    path: '/',
+    element: <App />,
+  },
+  {
+    path: '/signup-test',
+    element: <SignupTest />,
+  },
+  {
+    path: '/onboarding',
+    element: <Onboarding />,
   }
-}
+])
+
+ReactDOM.createRoot(document.getElementById('root')!).render(
+  <React.StrictMode>
+    <RouterProvider router={router} />
+    <Toaster />
+  </React.StrictMode>,
+)

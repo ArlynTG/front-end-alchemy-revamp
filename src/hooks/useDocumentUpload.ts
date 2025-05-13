@@ -18,9 +18,16 @@ export interface DocumentUpload {
   error?: string;
 }
 
-export function useDocumentUpload() {
-  const [uploads, setUploads] = useState<DocumentUpload[]>([]);
+interface UseDocumentUploadProps {
+  bucketName?: string;
+  onSuccess?: (filePath: string) => void;
+  onError?: (error: Error) => void;
+}
 
+export function useDocumentUpload(props?: UseDocumentUploadProps) {
+  const [uploads, setUploads] = useState<DocumentUpload[]>([]);
+  const [isUploading, setIsUploading] = useState(false);
+  
   const uploadFile = useCallback((file: File, type: DocumentUploadType) => {
     const id = uuidv4();
     
@@ -65,6 +72,12 @@ export function useDocumentUpload() {
               
               const updatedUploads = [...latestUploads];
               updatedUploads[finalIndex] = { ...updatedUploads[finalIndex], status: 'success' };
+              
+              // Call onSuccess callback if provided
+              if (props?.onSuccess) {
+                props.onSuccess(`/bucket/${id}/${file.name}`);
+              }
+              
               return updatedUploads;
             });
           }, 500);
@@ -77,15 +90,39 @@ export function useDocumentUpload() {
     }, 300);
     
     return id;
-  }, []);
+  }, [props]);
   
   const removeUpload = useCallback((id: string) => {
     setUploads(prev => prev.filter(upload => upload.id !== id));
   }, []);
   
+  // Add uploadDocument function to match expected interface in DocumentUploadForm
+  const uploadDocument = useCallback(async (file: File, studentId?: string) => {
+    setIsUploading(true);
+    
+    try {
+      // Simulate document upload
+      const id = uploadFile(file, "document");
+      
+      // Wait for upload to finish
+      await new Promise(resolve => setTimeout(resolve, 3000));
+      
+      setIsUploading(false);
+      return id;
+    } catch (error) {
+      setIsUploading(false);
+      if (props?.onError) {
+        props.onError(error instanceof Error ? error : new Error('Unknown error'));
+      }
+      throw error;
+    }
+  }, [uploadFile, props]);
+  
   return {
     uploads,
     uploadFile,
-    removeUpload
+    removeUpload,
+    uploadDocument, // Add this function to match expected interface
+    isUploading    // Add this state to match expected interface
   };
 }

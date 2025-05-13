@@ -1,4 +1,3 @@
-
 import { useRef, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { toast } from "@/hooks/use-toast";
@@ -12,6 +11,8 @@ interface FileUploadAreaProps {
   acceptedFileTypes?: string;
   maxSizeMB?: number;
   className?: string;
+  studentId?: string; // Add studentId prop
+  onUploadSuccess?: () => void; // Add onUploadSuccess prop
 }
 
 const FileUploadArea = ({
@@ -19,7 +20,9 @@ const FileUploadArea = ({
   maxFiles = 5,
   acceptedFileTypes = "application/pdf,image/*,.doc,.docx",
   maxSizeMB = 10,
-  className
+  className,
+  onUploadSuccess, // Add to destructured props
+  studentId // Add to destructured props
 }: FileUploadAreaProps) => {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [isDragging, setIsDragging] = useState(false);
@@ -88,6 +91,11 @@ const FileUploadArea = ({
       // Notify parent component if callback provided
       if (onUploadComplete && uploadId) {
         onUploadComplete(uploadId);
+      }
+      
+      // Call onUploadSuccess if provided
+      if (onUploadSuccess) {
+        onUploadSuccess();
       }
     }
   };
