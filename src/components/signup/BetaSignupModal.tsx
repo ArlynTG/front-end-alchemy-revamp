@@ -95,11 +95,13 @@ const BetaSignupModal: React.FC<BetaSignupModalProps> = ({ isOpen, onClose }) =>
     setIsSubmitting(true);
     
     try {
-      // Insert directly to beta_registrations table
-      const { data, error } = await supabase
-        .from('beta_registrations')
-        .insert({
-          id: uuidv4(), // Generate UUID for the record
+      console.log("Preparing to submit registration data");
+      
+      // Direct Supabase insert without using any extension
+      const { error } = await supabase
+        .from("beta_registrations")
+        .insert([{
+          id: uuidv4(),
           first_name: formData.firstName,
           last_name: formData.lastName,
           email: formData.email,
@@ -109,12 +111,10 @@ const BetaSignupModal: React.FC<BetaSignupModalProps> = ({ isOpen, onClose }) =>
           learning_differences: formData.learningDifference ? [formData.learningDifference] : null,
           created_at: new Date().toISOString(),
           plan_type: "early-adopter"
-        })
-        .select();
+        }]);
       
       if (error) {
         console.error("Supabase error:", error);
-        console.error("Error details:", JSON.stringify(error, null, 2));
         
         // Handle duplicate email error
         if (error.code === '23505') {
@@ -127,7 +127,7 @@ const BetaSignupModal: React.FC<BetaSignupModalProps> = ({ isOpen, onClose }) =>
         return;
       }
       
-      console.log("Registration successful:", data);
+      console.log("Registration successful");
       
       // Show success toast
       toast({

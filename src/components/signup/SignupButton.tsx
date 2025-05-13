@@ -1,7 +1,7 @@
 
 import React, { useState } from "react";
 import BetaSignupModal from "./BetaSignupModal";
-import { Clock } from "lucide-react";
+import { Button } from "@/components/ui/button";
 
 interface SignupButtonProps {
   label?: string;
@@ -24,7 +24,6 @@ const SignupButton: React.FC<SignupButtonProps> = ({
         className={className}
       >
         {label}
-        <Clock className="h-4 w-4" />
       </button>
       
       <BetaSignupModal 
