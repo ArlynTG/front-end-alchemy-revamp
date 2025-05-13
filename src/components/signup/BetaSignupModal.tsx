@@ -52,6 +52,26 @@ const BetaSignupModal: React.FC<BetaSignupModalProps> = ({ isOpen, onClose, plan
   const [submitError, setSubmitError] = useState<string | null>(null);
   const [useLocalStorageFallback, setUseLocalStorageFallback] = useState(false);
 
+  // Reset form when modal is closed
+  useEffect(() => {
+    if (!isOpen) {
+      // Reset form when modal is closed
+      setFormData({
+        firstName: "",
+        lastName: "",
+        email: "",
+        phone: "",
+        studentName: "",
+        studentAge: "",
+        learningDifference: ""
+      });
+      setErrors({});
+      setSubmitError(null);
+      setIsSubmitting(false);
+      setUseLocalStorageFallback(false);
+    }
+  }, [isOpen]);
+
   // Handle input changes
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
@@ -100,6 +120,7 @@ const BetaSignupModal: React.FC<BetaSignupModalProps> = ({ isOpen, onClose, plan
     };
     
     localStorage.setItem(`beta_registration_${Date.now()}`, JSON.stringify(backupData));
+    console.log("Saved registration data to localStorage");
   };
 
   // Handle form submission
@@ -120,67 +141,74 @@ const BetaSignupModal: React.FC<BetaSignupModalProps> = ({ isOpen, onClose, plan
       
       console.log("Submitting registration form with plan:", planId);
       
-      // Prepare the registration data
-      const registrationData = {
-        first_name: formData.firstName,
-        last_name: formData.lastName,
-        email: formData.email,
-        phone: formData.phone || null,
-        student_name: formData.studentName || null,
-        student_age: formData.studentAge || null,
-        learning_differences: formData.learningDifference ? [formData.learningDifference] : null,
-        plan_type: planId // Make sure plan_type is included
-      };
+      // Add timeout for the fetch request to prevent hanging
+      const controller = new AbortController();
+      const signal = controller.signal;
+      const timeoutId = setTimeout(() => controller.abort(), 10000); // 10 second timeout
       
-      console.log("Registration data being sent:", registrationData);
-      
-      // Call the Supabase Edge Function with the full URL
-      const response = await fetch("https://hgpplvegqlvxwszlhzwc.supabase.co/functions/v1/beta-signup", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(registrationData)
-      });
-      
-      console.log("Registration response status:", response.status);
-      
-      const result = await response.json();
-      console.log("Registration response:", result);
-      
-      // Handle unsuccessful response
-      if (!response.ok) {
-        if (result.error) {
-          setSubmitError(result.error);
-          // Show fallback option if the edge function fails
-          setUseLocalStorageFallback(true);
-        } else {
-          setSubmitError(`Registration failed with status: ${response.status}`);
-          setUseLocalStorageFallback(true);
+      try {
+        // Prepare the registration data
+        const registrationData = {
+          first_name: formData.firstName,
+          last_name: formData.lastName,
+          email: formData.email,
+          phone: formData.phone || null,
+          student_name: formData.studentName || null,
+          student_age: formData.studentAge || null,
+          learning_differences: formData.learningDifference ? [formData.learningDifference] : null,
+          plan_type: planId // Make sure plan_type is included
+        };
+        
+        console.log("Registration data being sent:", registrationData);
+        
+        // Call the Supabase Edge Function with the full URL
+        const response = await fetch("https://hgpplvegqlvxwszlhzwc.supabase.co/functions/v1/beta-signup", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(registrationData),
+          signal: signal
+        });
+        
+        clearTimeout(timeoutId);
+        console.log("Registration response status:", response.status);
+        
+        const result = await response.json();
+        console.log("Registration response:", result);
+        
+        // Handle unsuccessful response
+        if (!response.ok) {
+          if (result.error) {
+            throw new Error(result.error);
+          } else {
+            throw new Error(`Registration failed with status: ${response.status}`);
+          }
         }
-        return;
-      }
-      
-      // Handle successful response
-      if (result.success) {
-        // Show success toast
+        
+        // Handle successful response
         toast({
           title: "Registration successful!",
           description: "Redirecting to payment page...",
         });
         
-        // Redirect to Stripe payment page with the updated URL
-        window.location.href = "https://buy.stripe.com/aEU29XbjrclwgO49AC";
-      } else {
-        if (result.error) {
-          setSubmitError(result.error);
-          setUseLocalStorageFallback(true);
+        // Add a short delay before redirect to ensure toast is visible
+        setTimeout(() => {
+          // Redirect to Stripe payment page
+          window.location.href = "https://buy.stripe.com/aEU29XbjrclwgO49AC";
+        }, 500);
+        
+      } catch (fetchError: any) {
+        clearTimeout(timeoutId);
+        
+        if (fetchError.name === 'AbortError') {
+          console.error("Request timed out");
+          throw new Error("Registration request timed out. Please try the direct payment option.");
         } else {
-          setSubmitError("Registration failed. Please try again.");
-          setUseLocalStorageFallback(true);
+          throw fetchError;
         }
       }
     } catch (error: any) {
       console.error("Error during submission:", error);
-      setSubmitError("An unexpected error occurred. Please try the direct payment option below.");
+      setSubmitError(`${error.message || "An unexpected error occurred"}. Please try the direct payment option below.`);
       setUseLocalStorageFallback(true);
     } finally {
       setIsSubmitting(false);
@@ -190,6 +218,8 @@ const BetaSignupModal: React.FC<BetaSignupModalProps> = ({ isOpen, onClose, plan
   // Fallback submission that just uses localStorage and redirects to Stripe
   const handleLocalStorageFallback = () => {
     // Already saved to localStorage in handleSubmit, just redirect
+    console.log("Using localStorage fallback and redirecting to payment page");
+    saveToLocalStorage();
     window.location.href = "https://buy.stripe.com/aEU29XbjrclwgO49AC";
   };
 
