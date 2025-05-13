@@ -1,10 +1,10 @@
-
 import React, { useState, useCallback } from 'react';
 import { useDropzone } from 'react-dropzone';
 import { File, X, FileCheck, Upload, AlertCircle } from 'lucide-react';
 import { Progress } from '@/components/ui/progress';
 import { toast } from '@/hooks/use-toast';
 import { useDocumentUpload } from '@/hooks/useDocumentUpload';
+import { DocumentUpload } from '@/components/onboarding/types';
 
 interface FileUploadAreaProps {
   studentId: string;
@@ -12,7 +12,7 @@ interface FileUploadAreaProps {
 }
 
 const FileUploadArea: React.FC<FileUploadAreaProps> = ({ studentId, onUploadSuccess }) => {
-  const [uploadingFiles, setUploadingFiles] = useState<{ name: string; progress: number; complete: boolean; error?: string }[]>([]);
+  const [uploadingFiles, setUploadingFiles] = useState<DocumentUpload[]>([]);
   
   const { uploadDocument, isUploading } = useDocumentUpload({
     bucketName: 'documents',
@@ -56,7 +56,16 @@ const FileUploadArea: React.FC<FileUploadAreaProps> = ({ studentId, onUploadSucc
   const handleFileUpload = async (file: File) => {
     try {
       // Add file to uploading files list with initial progress
-      setUploadingFiles(prev => [...prev, { name: file.name, progress: 0, complete: false }]);
+      const newUpload: DocumentUpload = {
+        id: `${Date.now()}-${file.name}`,
+        name: file.name,
+        type: 'other', // Default type
+        size: file.size,
+        progress: 0,
+        status: 'uploading',
+      };
+      
+      setUploadingFiles(prev => [...prev, newUpload]);
       
       // Create progress simulation
       let progress = 0;
@@ -69,7 +78,7 @@ const FileUploadArea: React.FC<FileUploadAreaProps> = ({ studentId, onUploadSucc
         
         setUploadingFiles(prev => 
           prev.map(f => 
-            f.name === file.name ? { ...f, progress } : f
+            f.id === newUpload.id ? { ...f, progress } : f
           )
         );
       }, 300);
@@ -83,28 +92,28 @@ const FileUploadArea: React.FC<FileUploadAreaProps> = ({ studentId, onUploadSucc
       // Mark file as complete with 100% progress
       setUploadingFiles(prev => 
         prev.map(f => 
-          f.name === file.name ? { ...f, progress: 100, complete: true } : f
+          f.id === newUpload.id ? { ...f, progress: 100, status: 'complete' } : f
         )
       );
       
       // Clear completed file after showing success
       setTimeout(() => {
-        setUploadingFiles(prev => prev.filter(f => f.name !== file.name));
+        setUploadingFiles(prev => prev.filter(f => f.id !== newUpload.id));
       }, 2000);
       
     } catch (error) {
       // Update file status to show error
       setUploadingFiles(prev => 
         prev.map(f => 
-          f.name === file.name 
-            ? { ...f, error: error instanceof Error ? error.message : 'Upload failed', progress: 0, complete: false } 
+          f.id === newUpload.id 
+            ? { ...f, error: error instanceof Error ? error.message : 'Upload failed', progress: 0, status: 'error' } 
             : f
         )
       );
       
       // Remove failed file after showing error
       setTimeout(() => {
-        setUploadingFiles(prev => prev.filter(f => f.name !== file.name));
+        setUploadingFiles(prev => prev.filter(f => f.id !== newUpload.id));
       }, 3000);
       
       console.error('Error uploading file:', error);
@@ -132,8 +141,8 @@ const FileUploadArea: React.FC<FileUploadAreaProps> = ({ studentId, onUploadSucc
     disabled: isUploading
   });
 
-  const removeFile = (fileName: string) => {
-    setUploadingFiles(prev => prev.filter(f => f.name !== fileName));
+  const removeFile = (fileId: string) => {
+    setUploadingFiles(prev => prev.filter(f => f.id !== fileId));
   };
 
   return (
@@ -164,14 +173,14 @@ const FileUploadArea: React.FC<FileUploadAreaProps> = ({ studentId, onUploadSucc
         <div className="space-y-3 mt-4">
           <h3 className="text-sm font-medium">Uploading Documents</h3>
           {uploadingFiles.map((file, index) => (
-            <div key={`${file.name}-${index}`} className="flex items-center justify-between bg-gray-50 p-3 rounded-md">
+            <div key={`${file.id}-${index}`} className="flex items-center justify-between bg-gray-50 p-3 rounded-md">
               <div className="flex items-center space-x-3 flex-1">
                 <div className="flex-shrink-0">
-                  {file.complete ? (
+                  {file.status === 'complete' ? (
                     <div className="w-8 h-8 bg-green-100 rounded-full flex items-center justify-center">
                       <FileCheck className="h-5 w-5 text-green-500" />
                     </div>
-                  ) : file.error ? (
+                  ) : file.status === 'error' ? (
                     <div className="w-8 h-8 bg-red-100 rounded-full flex items-center justify-center">
                       <AlertCircle className="h-5 w-5 text-red-500" />
                     </div>
@@ -182,7 +191,7 @@ const FileUploadArea: React.FC<FileUploadAreaProps> = ({ studentId, onUploadSucc
                 <div className="flex-1 min-w-0">
                   <p className="text-sm font-medium text-gray-900 truncate">{file.name}</p>
                   <div className="w-full mt-1">
-                    {file.error ? (
+                    {file.status === 'error' ? (
                       <p className="text-xs text-red-500">{file.error}</p>
                     ) : (
                       <Progress value={file.progress} className="h-1.5" />
@@ -193,7 +202,7 @@ const FileUploadArea: React.FC<FileUploadAreaProps> = ({ studentId, onUploadSucc
               <button
                 onClick={(e) => {
                   e.stopPropagation();
-                  removeFile(file.name);
+                  removeFile(file.id as string);
                 }}
                 className="ml-2 flex-shrink-0 p-1 hover:bg-gray-200 rounded-full"
               >

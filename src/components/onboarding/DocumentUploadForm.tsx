@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import { toast } from "@/hooks/use-toast";
 import { File, UploadCloud, X, CheckCircle, AlertCircle, HelpCircle } from "lucide-react";
-import { DocumentUpload } from "./types";
+import { DocumentUpload, DocumentUploadType } from "./types";
 import { useDocumentUpload } from "@/hooks/useDocumentUpload";
 import { HoverCard, HoverCardTrigger, HoverCardContent } from "@/components/ui/hover-card";
 
@@ -79,6 +79,13 @@ const DocumentUploadForm = ({ studentId, onComplete, onBack }: DocumentUploadFor
     return true;
   };
   
+  // Map MIME type to our DocumentUploadType
+  const getDocTypeFromMimeType = (mimeType: string): DocumentUploadType => {
+    if (mimeType.includes('pdf')) return 'schoolReport';
+    if (mimeType.includes('word')) return 'assessmentReport';
+    return 'other';
+  };
+  
   const handleUpload = useCallback(async (files: File[]) => {
     const validFiles = files.filter(validateFile);
     
@@ -89,9 +96,7 @@ const DocumentUploadForm = ({ studentId, onComplete, onBack }: DocumentUploadFor
       const newUpload: DocumentUpload = {
         id: `${Date.now()}-${file.name}`,
         name: file.name,
-        type: file.type.includes('pdf') ? 'PDF' : 
-              file.type.includes('word') ? 'DOC' : 
-              file.type.includes('image') ? 'Image' : 'Other',
+        type: getDocTypeFromMimeType(file.type),
         size: file.size,
         progress: 0,
         status: 'uploading',
@@ -225,7 +230,7 @@ const DocumentUploadForm = ({ studentId, onComplete, onBack }: DocumentUploadFor
                 <button
                   onClick={(e) => {
                     e.stopPropagation();
-                    removeUpload(upload.id);
+                    removeUpload(upload.id as string);
                   }}
                   className="ml-2 flex-shrink-0 p-1 hover:bg-gray-200 rounded-full"
                   disabled={upload.status === 'uploading'}

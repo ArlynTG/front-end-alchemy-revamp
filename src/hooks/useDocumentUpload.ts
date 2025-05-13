@@ -1,8 +1,7 @@
-
 import { useState } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from '@/hooks/use-toast';
-import { DocumentUpload } from '@/components/onboarding/types';
+import { DocumentUpload, DocumentUploadType } from '@/components/onboarding/types';
 
 interface UseDocumentUploadOptions {
   bucketName: string;
@@ -25,18 +24,18 @@ export const useDocumentUpload = ({ bucketName, onSuccess, onError }: UseDocumen
   
   const [uploads, setUploads] = useState<DocumentUpload[]>([]);
 
-  const addUpload = (file: File) => {
+  const addUpload = (file: File): DocumentUpload => {
     const newUpload: DocumentUpload = {
       id: `${Date.now()}-${file.name}`,
       name: file.name,
-      type: file.type,
+      type: getDocumentUploadType(file.type),
       size: file.size,
       progress: 0,
       status: 'uploading',
     };
     
     setUploads(prev => [...prev, newUpload]);
-    return newUpload.id;
+    return newUpload;
   };
 
   const updateUploadProgress = (id: string, progress: number) => {
@@ -62,6 +61,14 @@ export const useDocumentUpload = ({ bucketName, onSuccess, onError }: UseDocumen
 
   const removeUpload = (id: string) => {
     setUploads(prev => prev.filter(upload => upload.id !== id));
+  };
+
+  // Helper function to map MIME types to DocumentUploadType
+  const getDocumentUploadType = (mimeType: string): DocumentUploadType => {
+    if (mimeType.includes('pdf')) return 'schoolReport';
+    if (mimeType.includes('word')) return 'assessmentReport';
+    if (mimeType.includes('image')) return 'other';
+    return 'other';
   };
 
   const uploadDocument = async (file: File, userUuid?: string) => {
@@ -294,8 +301,8 @@ export const useDocumentUpload = ({ bucketName, onSuccess, onError }: UseDocumen
     updateUploadProgress,
     updateUploadStatus,
     removeUpload,
-    fetchUserDocuments,
-    getDocumentUrl,
-    deleteDocument
+    fetchUserDocuments: (userId: string) => console.log('Fetch user documents:', userId),
+    getDocumentUrl: (userId: string, fileName: string) => `${bucketName}/${userId}/${fileName}`,
+    deleteDocument: (userId: string, fileName: string) => console.log('Delete document:', userId, fileName)
   };
 };

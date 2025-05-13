@@ -23,9 +23,17 @@ export const ALL_LEARNING_DIFFERENCES: LearningDifference[] = [
 
 export type DocumentUploadType = 'schoolReport' | 'assessmentReport' | 'iepDocument' | 'other';
 
+// Extended DocumentUpload type with all required properties
 export interface DocumentUpload {
+  id?: string;
   type: DocumentUploadType;
-  file: File;
+  file?: File;
+  name?: string;
+  size?: number;
+  progress?: number;
+  status?: 'uploading' | 'complete' | 'error';
+  url?: string;
+  error?: string;
   description?: string;
 }
 

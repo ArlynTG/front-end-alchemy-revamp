@@ -1,6 +1,6 @@
 
 import * as React from "react";
-import { toast as sonnerToast } from "sonner";
+import { toast as sonnerToast, type ToastT } from "sonner";
 
 const TOAST_LIMIT = 5;
 const TOAST_REMOVE_DELAY = 1000000;
@@ -136,14 +136,22 @@ function dispatch(action: Action) {
 
 type Toast = Omit<ToasterToast, "id">;
 
+// Map our variants to sonner's variants
+const mapVariantToSonnerType = (variant?: "default" | "destructive" | "success"): ToastT => {
+  if (variant === "destructive") return "error";
+  if (variant === "success") return "success";
+  return "default";
+};
+
 function toast({ title, description, variant, action, className, showIcon }: Toast) {
   const id = genId();
 
   const dismiss = () => dispatch({ type: actionTypes.DISMISS_TOAST, toastId: id });
 
-  const mappedVariant = variant === "destructive" ? "error" : variant === "success" ? "success" : "default";
+  // Map variant to sonner's format
+  const sonnerType = mapVariantToSonnerType(variant);
 
-  // Use sonner toast instead
+  // Use sonner toast
   sonnerToast(title, {
     description: description,
     action: action,
@@ -151,7 +159,8 @@ function toast({ title, description, variant, action, className, showIcon }: Toa
     className: className,
     icon: showIcon ? undefined : null,
     cancel: { label: 'Dismiss', onClick: dismiss },
-    type: mappedVariant,
+    // Use the mapped type that sonner accepts
+    type: sonnerType,
   });
 
   return {
