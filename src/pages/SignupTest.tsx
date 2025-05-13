@@ -1,6 +1,5 @@
 
 import { SignupButton } from "@/components/signup";
-import { Button } from "@/components/ui/button";
 
 const SignupTest = () => {
   return (
