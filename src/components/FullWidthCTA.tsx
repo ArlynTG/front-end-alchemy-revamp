@@ -1,7 +1,7 @@
 
 import React from "react";
 import { Button } from "@/components/ui/button";
-import { ArrowRight } from "lucide-react";
+import { ArrowRight, Stopwatch } from "lucide-react";
 import { Link } from "react-router-dom";
 
 const FullWidthCTA = () => {
@@ -19,10 +19,12 @@ const FullWidthCTA = () => {
             <Link to="/demo-v5">
               <Button 
                 size="lg" 
-                className="bg-tobey-orange hover:bg-tobey-darkOrange text-white font-medium transform transition-transform duration-300 hover:scale-105 animate-fade-in opacity-0"
+                className="bg-tobey-orange hover:bg-tobey-darkOrange text-white font-medium transform transition-transform duration-300 hover:scale-105 animate-fade-in opacity-0 flex items-center gap-2"
                 style={{ animationDelay: '600ms', animationFillMode: 'forwards' }}
               >
-                Try the Demo Now <ArrowRight className="ml-2 h-4 w-4" />
+                Try the Demo Now 
+                <Stopwatch className="h-4 w-4" />
+                <ArrowRight className="ml-2 h-4 w-4" />
               </Button>
             </Link>
           </div>

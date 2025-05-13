@@ -3,7 +3,7 @@ import React from 'react';
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 import { SignupButton } from "@/components/signup";
-import { Timer } from "lucide-react";
+import { Stopwatch } from "lucide-react";
 
 const Hero = () => {
   return (
@@ -50,11 +50,14 @@ const Hero = () => {
             
             <div className="flex flex-wrap gap-4 animate-fade-in opacity-0" style={{ animationDelay: '1400ms', animationFillMode: 'forwards' }}>
               <Button asChild className="bg-tobey-orange hover:bg-tobey-orange/90 text-white">
-                <Link to="/demo-v5">Try the Demo</Link>
+                <Link to="/demo-v5" className="flex items-center gap-2">
+                  Try the Demo
+                  <Stopwatch className="h-4 w-4" />
+                </Link>
               </Button>
               <SignupButton 
                 label="Join the Beta for $1"
-                className="border-tobey-orange text-tobey-orange hover:bg-tobey-orange/10 flex items-center gap-2"
+                className="border border-tobey-orange text-tobey-orange hover:bg-tobey-orange/10 px-4 py-2 rounded-md flex items-center gap-2"
               />
             </div>
           </div>

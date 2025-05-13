@@ -8,7 +8,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { ChevronDown, Timer } from "lucide-react";
+import { ChevronDown, Stopwatch } from "lucide-react";
 import { SignupButton } from "@/components/signup";
 
 interface DesktopNavProps {
@@ -81,7 +81,7 @@ const DesktopNav = ({ scrollToSection, onJoinBeta }: DesktopNavProps) => {
         </DropdownMenu>
         
         <SignupButton 
-          className="btn-primary flex items-center gap-2" 
+          className="btn-primary flex items-center justify-center gap-2 px-4 py-2 rounded-md bg-tobey-orange text-white hover:bg-tobey-orange/90" 
           label="Join the Beta for $1"
         />
       </div>

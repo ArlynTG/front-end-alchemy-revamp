@@ -1,6 +1,7 @@
 
 import React, { useState } from "react";
 import BetaSignupModal from "./BetaSignupModal";
+import { Stopwatch } from "lucide-react";
 
 interface SignupButtonProps {
   label?: string;
@@ -23,6 +24,7 @@ const SignupButton: React.FC<SignupButtonProps> = ({
         className={className}
       >
         {label}
+        <Stopwatch className="h-4 w-4" />
       </button>
       
       <BetaSignupModal 

@@ -7,7 +7,7 @@ import {
   CollapsibleContent,
   CollapsibleTrigger,
 } from "@/components/ui/collapsible";
-import { ChevronDown, ChevronUp, Timer } from "lucide-react";
+import { ChevronDown, ChevronUp, Stopwatch } from "lucide-react";
 import { useState } from "react";
 import { SignupButton } from "@/components/signup";
 
@@ -120,7 +120,7 @@ const MobileMenu = ({ isOpen, onClose, onJoinBeta, scrollToSection }: MobileMenu
           </CollapsibleContent>
         </Collapsible>
         <SignupButton 
-          className="btn-primary w-full flex items-center justify-center gap-2" 
+          className="btn-primary w-full flex items-center justify-center gap-2 px-4 py-2 rounded-md bg-tobey-orange text-white hover:bg-tobey-orange/90" 
           label="Join the Beta for $1"
         />
       </div>
