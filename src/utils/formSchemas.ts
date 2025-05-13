@@ -10,11 +10,14 @@ export const baseSignupSchema = z.object({
   studentName: z.string().min(1, "Student's name is required"),
 });
 
+// We need to cast the array as a tuple with at least one element to satisfy Zod's enum requirements
+const learningDifferencesEnum = z.enum(ALL_LEARNING_DIFFERENCES as [LearningDifference, ...LearningDifference[]]);
+
 // Extended schema with additional fields for detailed signup
 export const detailedSignupSchema = baseSignupSchema.extend({
   phone: z.string().min(10, "Please enter a valid phone number"),
   studentAge: z.string().min(1, "Student's age is required"),
-  primaryLearningDifference: z.enum(ALL_LEARNING_DIFFERENCES),
+  primaryLearningDifference: learningDifferencesEnum,
 });
 
 // Registration-specific schema with optional student name
@@ -25,7 +28,7 @@ export const registrationSchema = z.object({
   email: z.string().email("Please enter a valid email address"),
   phone: z.string().min(10, "Please enter a valid phone number"),
   studentAge: z.string().min(1, "Student's age is required"),
-  primaryLearningDifference: z.enum(ALL_LEARNING_DIFFERENCES).optional(),
+  primaryLearningDifference: learningDifferencesEnum.optional(),
 });
 
 // Export types for use in components
