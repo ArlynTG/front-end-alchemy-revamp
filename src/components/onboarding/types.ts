@@ -42,4 +42,5 @@ export interface DocumentUpload {
   status: 'uploading' | 'complete' | 'error';
   error?: string;
   url?: string;
+  file?: File; // Optional file property for uploads in progress
 }

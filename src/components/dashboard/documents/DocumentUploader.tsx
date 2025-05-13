@@ -18,13 +18,13 @@ const DocumentUploader: React.FC<DocumentUploaderProps> = ({ studentId }) => {
   };
 
   return (
-    <Card className="w-full">
+    <Card className="w-full shadow-sm bg-white">
       <CardHeader>
-        <CardTitle className="flex items-center">
+        <CardTitle className="flex items-center text-lg">
           <Upload className="h-5 w-5 mr-2 text-blue-500" />
           Educational Documents
         </CardTitle>
-        <CardDescription>
+        <CardDescription className="text-gray-600">
           Upload student documents for assessment and personalized learning goals
         </CardDescription>
       </CardHeader>

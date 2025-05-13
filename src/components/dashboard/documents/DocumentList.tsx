@@ -2,11 +2,13 @@
 import React, { useState, useEffect } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
-import { FileIcon, CheckCircle, ChevronLeft, ChevronRight } from 'lucide-react';
+import { FileIcon, CheckCircle, ChevronLeft, ChevronRight, Trash2, ExternalLink } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { format } from 'date-fns';
 import { Skeleton } from '@/components/ui/skeleton';
 import { toast } from '@/hooks/use-toast';
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from '@/components/ui/alert-dialog';
+import { useDocumentUpload } from '@/hooks/useDocumentUpload';
 
 interface DocumentListProps {
   studentId: string;
@@ -28,6 +30,11 @@ const DocumentList: React.FC<DocumentListProps> = ({ studentId, refreshTrigger }
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const documentsPerPage = 10;
+  const [documentToDelete, setDocumentToDelete] = useState<DocumentItem | null>(null);
+  
+  const { getDocumentUrl, deleteDocument } = useDocumentUpload({
+    bucketName: 'documents'
+  });
 
   const getFileType = (fileName: string): string => {
     const extension = fileName.split('.').pop();
@@ -112,6 +119,49 @@ const DocumentList: React.FC<DocumentListProps> = ({ studentId, refreshTrigger }
     }
   };
 
+  const handleViewDocument = async (document: DocumentItem) => {
+    try {
+      const url = await getDocumentUrl(studentId, document.name);
+      if (url) {
+        window.open(url, '_blank');
+      } else {
+        toast({
+          title: "Could not retrieve document",
+          description: "The document URL could not be generated",
+          variant: "destructive"
+        });
+      }
+    } catch (error) {
+      console.error('Error viewing document:', error);
+      toast({
+        title: "Error",
+        description: "Could not open the document",
+        variant: "destructive"
+      });
+    }
+  };
+
+  const handleDeleteConfirmed = async () => {
+    if (!documentToDelete) return;
+    
+    try {
+      const success = await deleteDocument(studentId, documentToDelete.name);
+      if (success) {
+        // Remove from local state
+        setDocuments(docs => docs.filter(doc => doc.id !== documentToDelete.id));
+        // Recalculate pagination
+        setTotalPages(Math.ceil((documents.length - 1) / documentsPerPage));
+        if (currentPage > Math.ceil((documents.length - 1) / documentsPerPage)) {
+          setCurrentPage(Math.max(1, currentPage - 1));
+        }
+      }
+    } catch (error) {
+      console.error('Delete error:', error);
+    } finally {
+      setDocumentToDelete(null);
+    }
+  };
+
   if (loading) {
     return (
       <div className="space-y-4">
@@ -139,6 +189,7 @@ const DocumentList: React.FC<DocumentListProps> = ({ studentId, refreshTrigger }
             <TableHead>Upload Date</TableHead>
             <TableHead>Type</TableHead>
             <TableHead>Status</TableHead>
+            <TableHead className="text-right">Actions</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
@@ -166,6 +217,49 @@ const DocumentList: React.FC<DocumentListProps> = ({ studentId, refreshTrigger }
                     <div className="h-2 w-2 bg-amber-500 rounded-full animate-pulse delay-300"></div>
                   </div>
                 )}
+              </TableCell>
+              <TableCell className="text-right">
+                <div className="flex justify-end space-x-2">
+                  <Button
+                    variant="ghost" 
+                    size="sm" 
+                    onClick={() => handleViewDocument(doc)}
+                    className="text-blue-600 hover:text-blue-800 p-1 h-auto"
+                  >
+                    <ExternalLink size={16} />
+                    <span className="sr-only">View</span>
+                  </Button>
+
+                  <AlertDialog>
+                    <AlertDialogTrigger asChild>
+                      <Button
+                        variant="ghost" 
+                        size="sm" 
+                        className="text-red-600 hover:text-red-800 p-1 h-auto"
+                        onClick={() => setDocumentToDelete(doc)}
+                      >
+                        <Trash2 size={16} />
+                        <span className="sr-only">Delete</span>
+                      </Button>
+                    </AlertDialogTrigger>
+                    <AlertDialogContent>
+                      <AlertDialogHeader>
+                        <AlertDialogTitle>Confirm Deletion</AlertDialogTitle>
+                        <AlertDialogDescription>
+                          Are you sure you want to delete this document? This action cannot be undone.
+                        </AlertDialogDescription>
+                      </AlertDialogHeader>
+                      <AlertDialogFooter>
+                        <AlertDialogCancel onClick={() => setDocumentToDelete(null)}>
+                          Cancel
+                        </AlertDialogCancel>
+                        <AlertDialogAction onClick={handleDeleteConfirmed} className="bg-red-600 hover:bg-red-700">
+                          Delete
+                        </AlertDialogAction>
+                      </AlertDialogFooter>
+                    </AlertDialogContent>
+                  </AlertDialog>
+                </div>
               </TableCell>
             </TableRow>
           ))}

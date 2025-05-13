@@ -1,7 +1,7 @@
 
 import React, { useState, useCallback } from 'react';
 import { useDropzone } from 'react-dropzone';
-import { File, X, FileCheck, Upload } from 'lucide-react';
+import { File, X, FileCheck, Upload, AlertCircle } from 'lucide-react';
 import { Progress } from '@/components/ui/progress';
 import { toast } from '@/hooks/use-toast';
 import { useDocumentUpload } from '@/hooks/useDocumentUpload';
@@ -12,7 +12,7 @@ interface FileUploadAreaProps {
 }
 
 const FileUploadArea: React.FC<FileUploadAreaProps> = ({ studentId, onUploadSuccess }) => {
-  const [uploadingFiles, setUploadingFiles] = useState<{ name: string; progress: number; complete: boolean }[]>([]);
+  const [uploadingFiles, setUploadingFiles] = useState<{ name: string; progress: number; complete: boolean; error?: string }[]>([]);
   
   const { uploadDocument, isUploading } = useDocumentUpload({
     bucketName: 'documents',
@@ -20,7 +20,7 @@ const FileUploadArea: React.FC<FileUploadAreaProps> = ({ studentId, onUploadSucc
       // Notify parent about successful upload after showing completion animation
       setTimeout(() => {
         onUploadSuccess();
-      }, 2000);
+      }, 1000);
     },
     onError: (error) => {
       console.error('Upload error in component:', error);
@@ -55,13 +55,32 @@ const FileUploadArea: React.FC<FileUploadAreaProps> = ({ studentId, onUploadSucc
 
   const handleFileUpload = async (file: File) => {
     try {
-      // Add file to uploading files list
+      // Add file to uploading files list with initial progress
       setUploadingFiles(prev => [...prev, { name: file.name, progress: 0, complete: false }]);
+      
+      // Create progress simulation
+      let progress = 0;
+      const progressInterval = setInterval(() => {
+        progress += Math.floor(Math.random() * 15) + 5;
+        if (progress > 90) {
+          clearInterval(progressInterval);
+          progress = 90; // Cap at 90% until actual completion
+        }
+        
+        setUploadingFiles(prev => 
+          prev.map(f => 
+            f.name === file.name ? { ...f, progress } : f
+          )
+        );
+      }, 300);
       
       // Upload file using the hook, passing the studentId as the UUID for the path
       await uploadDocument(file, studentId);
       
-      // Mark file as complete
+      // Clear progress interval and mark as complete
+      clearInterval(progressInterval);
+      
+      // Mark file as complete with 100% progress
       setUploadingFiles(prev => 
         prev.map(f => 
           f.name === file.name ? { ...f, progress: 100, complete: true } : f
@@ -74,8 +93,20 @@ const FileUploadArea: React.FC<FileUploadAreaProps> = ({ studentId, onUploadSucc
       }, 2000);
       
     } catch (error) {
-      // Remove failed file from list
-      setUploadingFiles(prev => prev.filter(f => f.name !== file.name));
+      // Update file status to show error
+      setUploadingFiles(prev => 
+        prev.map(f => 
+          f.name === file.name 
+            ? { ...f, error: error instanceof Error ? error.message : 'Upload failed', progress: 0, complete: false } 
+            : f
+        )
+      );
+      
+      // Remove failed file after showing error
+      setTimeout(() => {
+        setUploadingFiles(prev => prev.filter(f => f.name !== file.name));
+      }, 3000);
+      
       console.error('Error uploading file:', error);
     }
   };
@@ -86,7 +117,7 @@ const FileUploadArea: React.FC<FileUploadAreaProps> = ({ studentId, onUploadSucc
         await handleFileUpload(file);
       }
     }
-  }, []);
+  }, [studentId]);
 
   const { getRootProps, getInputProps, isDragActive } = useDropzone({ 
     onDrop,
@@ -97,7 +128,8 @@ const FileUploadArea: React.FC<FileUploadAreaProps> = ({ studentId, onUploadSucc
       'image/jpeg': ['.jpg', '.jpeg'],
       'image/png': ['.png'],
     },
-    multiple: true 
+    multiple: true,
+    disabled: isUploading
   });
 
   const removeFile = (fileName: string) => {
@@ -109,13 +141,18 @@ const FileUploadArea: React.FC<FileUploadAreaProps> = ({ studentId, onUploadSucc
       <div 
         {...getRootProps()} 
         className={`border-2 border-dashed rounded-lg p-6 text-center cursor-pointer transition-colors
-          ${isDragActive ? 'border-blue-500 bg-blue-50' : 'border-gray-300 hover:border-blue-400'}`}
+          ${isDragActive ? 'border-blue-500 bg-blue-50' : 'border-gray-300 hover:border-blue-400'}
+          ${isUploading ? 'opacity-80 cursor-not-allowed' : ''}`}
       >
         <input {...getInputProps()} />
         <div className="flex flex-col items-center justify-center space-y-2">
           <Upload className="h-10 w-10 text-gray-400" />
           <p className="text-gray-600">
-            Click to upload or drag files here
+            {isDragActive 
+              ? "Drop files here..." 
+              : isUploading 
+                ? "Uploading..." 
+                : "Click to upload or drag files here"}
           </p>
           <p className="text-xs text-gray-500">
             Supported formats: PDF, DOC, DOCX, JPG, PNG (Max: 10MB)
@@ -134,6 +171,10 @@ const FileUploadArea: React.FC<FileUploadAreaProps> = ({ studentId, onUploadSucc
                     <div className="w-8 h-8 bg-green-100 rounded-full flex items-center justify-center">
                       <FileCheck className="h-5 w-5 text-green-500" />
                     </div>
+                  ) : file.error ? (
+                    <div className="w-8 h-8 bg-red-100 rounded-full flex items-center justify-center">
+                      <AlertCircle className="h-5 w-5 text-red-500" />
+                    </div>
                   ) : (
                     <File className="h-5 w-5 text-gray-400" />
                   )}
@@ -141,7 +182,11 @@ const FileUploadArea: React.FC<FileUploadAreaProps> = ({ studentId, onUploadSucc
                 <div className="flex-1 min-w-0">
                   <p className="text-sm font-medium text-gray-900 truncate">{file.name}</p>
                   <div className="w-full mt-1">
-                    <Progress value={file.progress} className="h-1.5" />
+                    {file.error ? (
+                      <p className="text-xs text-red-500">{file.error}</p>
+                    ) : (
+                      <Progress value={file.progress} className="h-1.5" />
+                    )}
                   </div>
                 </div>
               </div>
