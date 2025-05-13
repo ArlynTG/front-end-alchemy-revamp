@@ -5,6 +5,7 @@ import { createBrowserRouter, RouterProvider, Route, createRoutesFromElements } 
 import App from './App.tsx'
 import './index.css'
 import { Toaster } from 'sonner'
+import { HelmetProvider } from 'react-helmet-async'
 
 // Import pages
 import SignupTest from './pages/SignupTest.tsx'
@@ -51,7 +52,9 @@ const router = createBrowserRouter(
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
-    <RouterProvider router={router} />
-    <Toaster />
+    <HelmetProvider>
+      <RouterProvider router={router} />
+      <Toaster />
+    </HelmetProvider>
   </React.StrictMode>,
 )
