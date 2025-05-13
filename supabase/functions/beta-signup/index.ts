@@ -22,7 +22,13 @@ serve(async (req) => {
   }
 
   try {
-    console.log("Function started");
+    console.log("Beta signup function started");
+    
+    // Debug environment variables
+    console.log("Environment variables check:", {
+      urlExists: !!Deno.env.get("SUPABASE_URL"),
+      keyExists: !!Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")
+    });
     
     // Create a Supabase client with the service role key
     const supabaseUrl = Deno.env.get("SUPABASE_URL") ?? "";
@@ -81,7 +87,9 @@ serve(async (req) => {
       phone: requestData.phone || null,
       student_name: requestData.student_name || null,
       student_age: requestData.student_age || null,
-      learning_differences: requestData.learning_differences || null,
+      learning_differences: Array.isArray(requestData.learning_differences) 
+        ? requestData.learning_differences 
+        : (requestData.learning_differences ? [requestData.learning_differences] : null),
       plan_type: requestData.plan_type,
       status: "pending"
     };
