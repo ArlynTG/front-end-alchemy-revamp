@@ -1,283 +1,346 @@
 
 import React, { useState } from "react";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { z } from "zod";
-import { Button } from "@/components/ui/button";
-import { Form } from "@/components/ui/form";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { toast } from "@/hooks/use-toast";
-import FormField from "../signup/FormField";
-import { insertBetaRegistration } from "@/utils/supabaseHelpers";
+import { X } from "lucide-react";
+import { v4 as uuidv4 } from "uuid";
+import { supabase } from "@/integrations/supabase/client";
 
-// Define the validation schema
-const signupSchema = z.object({
-  firstName: z.string().min(1, "First name is required"),
-  lastName: z.string().min(1, "Last name is required"),
-  email: z.string().email("Please enter a valid email address"),
-  phone: z.string().optional(),
-  studentName: z.string().optional(),
-  studentAge: z.string().optional(),
-  primaryLearningDifference: z.string().optional(),
-});
-
-type SignupFormValues = z.infer<typeof signupSchema>;
-
-// Generate age options for dropdown (4-18 years)
-const studentAgeOptions = Array.from({ length: 15 }, (_, i) => {
-  const age = i + 4;
-  return { value: age.toString(), label: `${age} years` };
-});
-
-// Learning difference options
-const learningDifferenceOptions = [
-  { value: "ADHD", label: "ADHD" },
-  { value: "Dyslexia", label: "Dyslexia" },
-  { value: "Dyscalculia", label: "Dyscalculia" },
-  { value: "Auditory Processing", label: "Auditory Processing" },
-  { value: "Executive_Functioning", label: "Executive Function" },
-  { value: "Other", label: "Other" },
-];
-
+// Define the modal props
 interface BetaSignupModalProps {
   isOpen: boolean;
   onClose: () => void;
-  planId?: string;
 }
 
-const BetaSignupModal: React.FC<BetaSignupModalProps> = ({ isOpen, onClose, planId = "early-adopter" }) => {
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const [formSubmitted, setFormSubmitted] = useState(false);
-  const [userId, setUserId] = useState<string | null>(null);
+// Form field data types
+interface FormData {
+  firstName: string;
+  lastName: string;
+  email: string;
+  phone: string;
+  studentName: string;
+  studentAge: string;
+  learningDifference: string;
+}
 
-  const form = useForm<SignupFormValues>({
-    resolver: zodResolver(signupSchema),
-    defaultValues: {
-      firstName: "",
-      lastName: "",
-      email: "",
-      phone: "",
-      studentName: "",
-      studentAge: "",
-      primaryLearningDifference: "",
-    },
+const BetaSignupModal: React.FC<BetaSignupModalProps> = ({ isOpen, onClose }) => {
+  // Form state
+  const [formData, setFormData] = useState<FormData>({
+    firstName: "",
+    lastName: "",
+    email: "",
+    phone: "",
+    studentName: "",
+    studentAge: "",
+    learningDifference: ""
   });
+  
+  // Form validation errors
+  const [errors, setErrors] = useState<Record<string, string>>({});
+  
+  // Submission state
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submitError, setSubmitError] = useState<string | null>(null);
 
-  const handleSubmit = async (data: SignupFormValues) => {
-    console.log("Form submitted with data:", data);
+  // Handle input changes
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+    const { name, value } = e.target;
+    setFormData({ ...formData, [name]: value });
+    
+    // Clear error when field is edited
+    if (errors[name]) {
+      setErrors({ ...errors, [name]: "" });
+    }
+  };
+
+  // Validate form
+  const validateForm = (): boolean => {
+    const newErrors: Record<string, string> = {};
+    
+    // Required fields
+    if (!formData.firstName.trim()) {
+      newErrors.firstName = "First name is required";
+    }
+    
+    if (!formData.lastName.trim()) {
+      newErrors.lastName = "Last name is required";
+    }
+    
+    // Email validation
+    if (!formData.email.trim()) {
+      newErrors.email = "Email address is required";
+    } else if (!/^\S+@\S+\.\S+$/.test(formData.email)) {
+      newErrors.email = "Please enter a valid email address";
+    }
+    
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
+
+  // Handle form submission
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setSubmitError(null);
+    
+    // Validate form
+    if (!validateForm()) {
+      return;
+    }
+    
     setIsSubmitting(true);
     
     try {
-      console.log("Calling insertBetaRegistration with data:", {
-        ...data,
-        planId,
-      });
+      // Prepare data for Supabase insert
+      const insertData = {
+        id: uuidv4(), // Generate UUID for the record
+        first_name: formData.firstName,
+        last_name: formData.lastName,
+        email: formData.email,
+        phone: formData.phone || null,
+        student_name: formData.studentName || null,
+        student_age: formData.studentAge || null,
+        learning_differences: formData.learningDifference ? [formData.learningDifference] : null,
+        created_at: new Date().toISOString(),
+        plan_type: "early-adopter"
+      };
       
-      // Use the helper function to insert data
-      const result = await insertBetaRegistration({
-        firstName: data.firstName,
-        lastName: data.lastName,
-        email: data.email,
-        phone: data.phone,
-        studentName: data.studentName,
-        studentAge: data.studentAge,
-        primaryLearningDifference: data.primaryLearningDifference,
-        planId
-      });
-
-      console.log("Registration result:", result);
-
-      if (result.success && result.data) {
-        const newUserId = result.data.id;
-        setUserId(newUserId);
+      console.log("Submitting to Supabase:", insertData);
       
-        // Save confirmation data to localStorage to handle page transitions
-        const confirmationData = {
-          firstName: data.firstName,
-          studentFirstName: data.studentName?.split(' ')[0] || '',
-          email: data.email,
-          registrationId: newUserId
-        };
-        localStorage.setItem('betaConfirmationData', JSON.stringify(confirmationData));
+      // Insert data directly into Supabase
+      const { data, error } = await supabase
+        .from('beta_registrations')
+        .insert([insertData])
+        .select();
+      
+      if (error) {
+        console.error("Supabase error:", error);
         
-        // Show success message 
-        toast({
-          title: "Registration successful!",
-          description: "Please complete your payment to secure your spot.",
-        });
+        // Handle duplicate email error
+        if (error.code === '23505') {
+          setSubmitError("This email has already been registered for the beta.");
+        } else {
+          setSubmitError(`Registration failed: ${error.message}`);
+        }
         
-        // Show success state with Stripe button
-        setFormSubmitted(true);
+        setIsSubmitting(false);
+        return;
       }
+      
+      console.log("Registration successful:", data);
+      
+      // Redirect to Stripe payment page
+      window.location.href = "https://buy.stripe.com/aEU29XbjrclwgO49AC";
+      
     } catch (error) {
       console.error("Error during submission:", error);
-      toast({
-        title: "Error",
-        description: error instanceof Error ? error.message : "An unexpected error occurred",
-        variant: "destructive",
-      });
-    } finally {
+      setSubmitError("An unexpected error occurred. Please try again.");
       setIsSubmitting(false);
     }
   };
 
-  const redirectToStripe = () => {
-    // Redirect to Stripe checkout
-    window.location.href = "https://buy.stripe.com/aEU29XbjrclwgO49AC";
-  };
+  // Generate age options for dropdown (8-16 years)
+  const ageOptions = Array.from({ length: 9 }, (_, i) => {
+    const age = i + 8;
+    return { value: age.toString(), label: `${age} years` };
+  });
 
-  // Reset form when modal is closed
-  const handleOpenChange = (open: boolean) => {
-    if (!open) {
-      setFormSubmitted(false);
-      setUserId(null);
-      form.reset();
-      onClose();
-    }
-  };
+  // Learning difference options
+  const learningDifferenceOptions = [
+    { value: "ADHD", label: "ADHD" },
+    { value: "Dyslexia", label: "Dyslexia" },
+    { value: "Dyscalculia", label: "Dyscalculia" },
+    { value: "Auditory Processing", label: "Auditory Processing" },
+    { value: "Executive_Function", label: "Executive Function" },
+    { value: "Other", label: "Other" }
+  ];
+  
+  // Don't render anything if not open
+  if (!isOpen) return null;
 
   return (
-    <Dialog open={isOpen} onOpenChange={handleOpenChange}>
-      <DialogContent className="sm:max-w-md md:max-w-xl">
-        <DialogHeader>
-          <DialogTitle className="text-2xl font-medium">Reserve Your Spot for $1</DialogTitle>
-          <DialogDescription>
-            Join our founding community of 200 families. Complete the form below to secure your place.
-          </DialogDescription>
-        </DialogHeader>
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
+      <div className="relative w-full max-w-md p-6 bg-white rounded-lg shadow-xl">
+        {/* Close button */}
+        <button 
+          onClick={onClose} 
+          className="absolute top-4 right-4 text-gray-500 hover:text-gray-700"
+        >
+          <X size={20} />
+        </button>
         
-        {!formSubmitted ? (
-          <Form {...form}>
-            <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-4 py-4">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <FormField
-                  control={form.control}
-                  name="firstName"
-                  label="First Name"
-                  placeholder="Your first name"
-                  required
-                />
-                
-                <FormField
-                  control={form.control}
-                  name="lastName"
-                  label="Last Name"
-                  placeholder="Your last name"
-                  required
-                />
-              </div>
-              
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <FormField
-                  control={form.control}
-                  name="email"
-                  label="Email Address"
-                  placeholder="your.email@example.com"
-                  type="email"
-                  required
-                />
-                
-                <FormField
-                  control={form.control}
-                  name="phone"
-                  label="Phone Number"
-                  placeholder="(555) 123-4567"
-                  type="tel"
-                />
-              </div>
-              
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <FormField
-                  control={form.control}
-                  name="studentName"
-                  label="Student's Name"
-                  placeholder="Student's name"
-                />
-                
-                <div className="space-y-2">
-                  <label htmlFor="studentAge" className="text-sm font-medium">
-                    Student's Age
-                  </label>
-                  <Select
-                    onValueChange={(value) => form.setValue("studentAge", value)}
-                    defaultValue={form.getValues("studentAge")}
-                  >
-                    <SelectTrigger id="studentAge" className="w-full">
-                      <SelectValue placeholder="Select age" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {studentAgeOptions.map((option) => (
-                        <SelectItem key={option.value} value={option.value}>
-                          {option.label}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                </div>
-              </div>
-              
-              <div className="space-y-2">
-                <label htmlFor="primaryLearningDifference" className="text-sm font-medium">
-                  Primary Learning Difference (Optional)
-                </label>
-                <Select
-                  onValueChange={(value) => form.setValue("primaryLearningDifference", value)}
-                  defaultValue={form.getValues("primaryLearningDifference")}
-                >
-                  <SelectTrigger id="primaryLearningDifference" className="w-full">
-                    <SelectValue placeholder="Select if applicable" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {learningDifferenceOptions.map((option) => (
-                      <SelectItem key={option.value} value={option.value}>
-                        {option.label}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </div>
-              
-              <div className="flex justify-end pt-4">
-                <Button variant="outline" onClick={onClose} className="mr-2">
-                  Cancel
-                </Button>
-                <Button 
-                  type="submit" 
-                  disabled={isSubmitting}
-                  className="bg-tobey-orange hover:bg-tobey-orange/90 text-white"
-                >
-                  {isSubmitting ? "Submitting..." : "Reserve Your Spot for $1"}
-                </Button>
-              </div>
-            </form>
-          </Form>
-        ) : (
-          <div className="py-6 text-center">
-            <div className="mb-6">
-              <div className="bg-green-100 p-3 rounded-full mb-4 inline-block">
-                <svg className="h-6 w-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                </svg>
-              </div>
-              <h3 className="text-lg font-medium mb-2">Registration Complete!</h3>
-              <p className="text-gray-600 mb-6">
-                Complete your payment to secure your spot in our beta program.
-              </p>
-            </div>
-
-            <div className="flex justify-center mb-4">
-              <Button 
-                onClick={redirectToStripe} 
-                className="bg-tobey-orange hover:bg-tobey-orange/90 text-white px-6 py-3"
-              >
-                Pay $1 to Complete Registration
-              </Button>
-            </div>
+        {/* Modal header */}
+        <h2 className="text-2xl font-medium mb-2">Reserve Your Spot for $1</h2>
+        <p className="text-gray-600 mb-6">
+          Join our founding community of 200 families. Complete the form below to secure your place.
+        </p>
+        
+        {/* Display submission error if any */}
+        {submitError && (
+          <div className="mb-4 p-3 bg-red-100 text-red-700 rounded-md text-sm">
+            {submitError}
           </div>
         )}
-      </DialogContent>
-    </Dialog>
+        
+        {/* Signup form */}
+        <form onSubmit={handleSubmit}>
+          {/* Name fields (side by side) */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+            <div>
+              <label htmlFor="firstName" className="block text-sm font-medium mb-1">
+                First Name <span className="text-red-500">*</span>
+              </label>
+              <input
+                type="text"
+                id="firstName"
+                name="firstName"
+                value={formData.firstName}
+                onChange={handleChange}
+                placeholder="Your first name"
+                className={`w-full px-4 py-2 bg-blue-50 border rounded-md ${
+                  errors.firstName ? "border-red-500" : "border-gray-300"
+                }`}
+              />
+              {errors.firstName && (
+                <p className="mt-1 text-sm text-red-500">{errors.firstName}</p>
+              )}
+            </div>
+            
+            <div>
+              <label htmlFor="lastName" className="block text-sm font-medium mb-1">
+                Last Name <span className="text-red-500">*</span>
+              </label>
+              <input
+                type="text"
+                id="lastName"
+                name="lastName"
+                value={formData.lastName}
+                onChange={handleChange}
+                placeholder="Your last name"
+                className={`w-full px-4 py-2 bg-blue-50 border rounded-md ${
+                  errors.lastName ? "border-red-500" : "border-gray-300"
+                }`}
+              />
+              {errors.lastName && (
+                <p className="mt-1 text-sm text-red-500">{errors.lastName}</p>
+              )}
+            </div>
+          </div>
+          
+          {/* Email and Phone */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+            <div>
+              <label htmlFor="email" className="block text-sm font-medium mb-1">
+                Email Address <span className="text-red-500">*</span>
+              </label>
+              <input
+                type="email"
+                id="email"
+                name="email"
+                value={formData.email}
+                onChange={handleChange}
+                placeholder="your.email@example.com"
+                className={`w-full px-4 py-2 bg-blue-50 border rounded-md ${
+                  errors.email ? "border-red-500" : "border-gray-300"
+                }`}
+              />
+              {errors.email && (
+                <p className="mt-1 text-sm text-red-500">{errors.email}</p>
+              )}
+            </div>
+            
+            <div>
+              <label htmlFor="phone" className="block text-sm font-medium mb-1">
+                Phone Number
+              </label>
+              <input
+                type="tel"
+                id="phone"
+                name="phone"
+                value={formData.phone}
+                onChange={handleChange}
+                placeholder="(555) 123-4567"
+                className="w-full px-4 py-2 bg-blue-50 border border-gray-300 rounded-md"
+              />
+            </div>
+          </div>
+          
+          {/* Student Name and Age */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+            <div>
+              <label htmlFor="studentName" className="block text-sm font-medium mb-1">
+                Student's Name
+              </label>
+              <input
+                type="text"
+                id="studentName"
+                name="studentName"
+                value={formData.studentName}
+                onChange={handleChange}
+                placeholder="Student's first name"
+                className="w-full px-4 py-2 bg-blue-50 border border-gray-300 rounded-md"
+              />
+            </div>
+            
+            <div>
+              <label htmlFor="studentAge" className="block text-sm font-medium mb-1">
+                Student's Age
+              </label>
+              <select
+                id="studentAge"
+                name="studentAge"
+                value={formData.studentAge}
+                onChange={handleChange}
+                className="w-full px-4 py-2 bg-blue-50 border border-gray-300 rounded-md appearance-none"
+              >
+                <option value="">Select age</option>
+                {ageOptions.map((option) => (
+                  <option key={option.value} value={option.value}>
+                    {option.label}
+                  </option>
+                ))}
+              </select>
+            </div>
+          </div>
+          
+          {/* Learning Difference */}
+          <div className="mb-6">
+            <label htmlFor="learningDifference" className="block text-sm font-medium mb-1">
+              Primary Learning Difference (Optional)
+            </label>
+            <select
+              id="learningDifference"
+              name="learningDifference"
+              value={formData.learningDifference}
+              onChange={handleChange}
+              className="w-full px-4 py-2 bg-blue-50 border border-gray-300 rounded-md appearance-none"
+            >
+              <option value="">Select if applicable</option>
+              {learningDifferenceOptions.map((option) => (
+                <option key={option.value} value={option.value}>
+                  {option.label}
+                </option>
+              ))}
+            </select>
+          </div>
+          
+          {/* Form actions */}
+          <div className="flex justify-end gap-3 mt-6">
+            <button
+              type="button"
+              onClick={onClose}
+              className="px-4 py-2 text-gray-600 bg-gray-200 rounded-md hover:bg-gray-300"
+            >
+              Cancel
+            </button>
+            <button
+              type="submit"
+              disabled={isSubmitting}
+              className="px-4 py-2 text-white bg-tobey-orange hover:bg-tobey-orange/90 rounded-md"
+            >
+              {isSubmitting ? "Submitting..." : "Reserve Your Spot for $1"}
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
   );
 };
 
