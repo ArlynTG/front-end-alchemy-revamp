@@ -1,7 +1,8 @@
 
 import { supabase } from "@/integrations/supabase/client";
 
-// The Stripe checkout URL - fixed URL without any extra parameters
+// No longer needed since we're using the Stripe Buy Button
+// but kept for compatibility
 export const STRIPE_CHECKOUT_URL = "https://buy.stripe.com/aEU29XbjrclwgO49AC";
 
 // Interface for signup data
@@ -55,12 +56,4 @@ export const submitSignupData = async (data: SignupData): Promise<{success: bool
     console.error("Error in submitSignupData:", error);
     return { success: false, error: error.message };
   }
-};
-
-/**
- * Redirect to Stripe checkout page
- */
-export const redirectToStripeCheckout = (): void => {
-  console.log("Redirecting to Stripe:", STRIPE_CHECKOUT_URL);
-  window.location.href = STRIPE_CHECKOUT_URL;
 };
