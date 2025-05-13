@@ -65,7 +65,7 @@ export const useDocumentUpload = ({ bucketName, onSuccess, onError }: UseDocumen
         throw new Error('Missing user ID for upload path');
       }
       
-      // Simplify file path
+      // Create file path
       const filePath = `${uuid}/${file.name}`;
       console.log(`Starting upload to ${bucketName}/${filePath}`);
 
@@ -75,7 +75,7 @@ export const useDocumentUpload = ({ bucketName, onSuccess, onError }: UseDocumen
         progress: 10,
       }));
 
-      // Upload file to Supabase Storage using the specified bucket and path format
+      // Upload file to Supabase Storage
       const { error, data } = await supabase.storage
         .from(bucketName)
         .upload(filePath, file, {
