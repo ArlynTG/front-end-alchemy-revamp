@@ -28,11 +28,13 @@ const SignupButton: React.FC<SignupButtonProps> = ({
         {label}
       </button>
       
-      <BetaSignupModal 
-        isOpen={isModalOpen} 
-        onClose={closeModal}
-        planId={planId}
-      />
+      {isModalOpen && (
+        <BetaSignupModal 
+          isOpen={isModalOpen} 
+          onClose={closeModal}
+          planId={planId}
+        />
+      )}
     </>
   );
 };

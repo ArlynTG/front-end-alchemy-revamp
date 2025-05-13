@@ -23,6 +23,7 @@ serve(async (req) => {
 
   try {
     console.log("Function started");
+    
     // Create a Supabase client with the service role key
     const supabaseAdmin = createClient(
       Deno.env.get("SUPABASE_URL") || "",
@@ -33,10 +34,31 @@ serve(async (req) => {
     const requestData = await req.json();
     console.log("Received registration data:", requestData);
 
-    // Directly perform the database insertion
+    // Validate required fields
+    if (!requestData.first_name || !requestData.last_name || !requestData.email || !requestData.plan_type) {
+      return new Response(
+        JSON.stringify({ error: "Missing required fields" }),
+        {
+          status: 400,
+          headers: { ...corsHeaders, "Content-Type": "application/json" },
+        }
+      );
+    }
+
+    // Insert the registration data directly into the beta_registrations table
     const { data, error } = await supabaseAdmin
       .from("beta_registrations")
-      .insert(requestData);
+      .insert({
+        first_name: requestData.first_name,
+        last_name: requestData.last_name,
+        email: requestData.email,
+        phone: requestData.phone || null,
+        student_name: requestData.student_name || null,
+        student_age: requestData.student_age || null,
+        learning_differences: requestData.learning_differences || null,
+        plan_type: requestData.plan_type,
+        status: "pending"
+      });
 
     if (error) {
       console.error("Supabase insertion error:", error);
@@ -74,7 +96,7 @@ serve(async (req) => {
     console.error("Error in beta-signup function:", error);
     
     return new Response(
-      JSON.stringify({ error: "Failed to register" }),
+      JSON.stringify({ error: "Failed to register", details: error.message }),
       {
         status: 500,
         headers: { ...corsHeaders, "Content-Type": "application/json" },

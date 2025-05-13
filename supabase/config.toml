@@ -1,10 +1,9 @@
 
-project_id = "hgpplvegqlvxwszlhzwc"
+# This file is used to configure your Supabase project.
+# It's very minimal at the moment and uses default values.
+# For full list of options, see the documentation: https://supabase.com/docs/guides/hosting/overview
 
-[api]
-enabled = true
-port = 54321
-schemas = ["public", "storage"]
+project_id = "hgpplvegqlvxwszlhzwc"
 
 [db]
 port = 54322
@@ -28,5 +27,6 @@ file_size_limit = "50MiB"
 enabled = true
 site_url = "http://localhost:3000"
 
+[functions]
 [functions.beta-signup]
 verify_jwt = false
