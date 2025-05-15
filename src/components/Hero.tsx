@@ -4,7 +4,17 @@ import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 import { SignupButton } from "@/components/signup";
 
-const Hero = () => {
+interface HeroProps {
+  title?: string;
+  description?: string;
+  detailText?: string;
+}
+
+const Hero = ({ 
+  title = "Tobey's Tutor", 
+  description = "Unlock potential. Celebrate neurodiversity. Transform learning.",
+  detailText = "As parents, we know what it's like to feel stuck. Watching our children struggle with traditional learning methods can be heartbreaking. That's why we built Tobey's Tutor, a patent pending AI system for bright kids with dyslexia, ADHD, and related learning differences. It's designed to help students unlock their academic potential, build confidence, find their voice — and have fun too."
+}: HeroProps) => {
   return (
     <section className="py-16 md:py-24">
       <div className="container relative">
@@ -27,24 +37,30 @@ const Hero = () => {
           </div>
           <div className="order-2 md:order-2">
             <h1 className="text-5xl font-bold mb-4 text-tobey-orange animate-fade-in opacity-0" style={{ animationDelay: '400ms', animationFillMode: 'forwards' }}>
-              Tobey's Tutor
+              {title}
             </h1>
-            <h2 className="text-2xl mb-4 text-black flex flex-col space-y-2">
-              {['Unlock potential.', 'Celebrate neurodiversity.', 'Transform learning.'].map((text, index) => (
-                <span 
-                  key={index} 
-                  className="animate-fade-in opacity-0"
-                  style={{ 
-                    animationDelay: `${600 + (index * 200)}ms`,
-                    animationFillMode: 'forwards'
-                  }}
-                >
-                  {text}
-                </span>
-              ))}
-            </h2>
+            {description.includes('.') ? (
+              <h2 className="text-2xl mb-4 text-black flex flex-col space-y-2">
+                {description.split('.').filter(text => text.trim()).map((text, index) => (
+                  <span 
+                    key={index} 
+                    className="animate-fade-in opacity-0"
+                    style={{ 
+                      animationDelay: `${600 + (index * 200)}ms`,
+                      animationFillMode: 'forwards'
+                    }}
+                  >
+                    {text.trim()}.
+                  </span>
+                ))}
+              </h2>
+            ) : (
+              <h2 className="text-2xl mb-4 text-black animate-fade-in opacity-0" style={{ animationDelay: '600ms', animationFillMode: 'forwards' }}>
+                {description}
+              </h2>
+            )}
             <p className="text-base text-gray-700 animate-fade-in opacity-0 mb-6" style={{ animationDelay: '1200ms', animationFillMode: 'forwards' }}>
-              As parents, we know what it's like to feel stuck. Watching our children struggle with traditional learning methods can be heartbreaking. That's why we built Tobey's Tutor, a patent pending AI system for bright kids with dyslexia, ADHD, and related learning differences. It's designed to help students unlock their academic potential, build confidence, find their voice — and have fun too.
+              {detailText}
             </p>
             
             <div className="flex flex-wrap gap-4 animate-fade-in opacity-0" style={{ animationDelay: '1400ms', animationFillMode: 'forwards' }}>
