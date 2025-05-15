@@ -170,7 +170,7 @@ const HowItWorks = () => {
             How Does it Work? It's as Easy as 1-2-3.
           </h2>
           <p ref={descriptionRef} className="max-w-3xl mx-auto text-lg text-gray-600 opacity-0">
-            Our patent-pending AI crafts personalized lessons that move your child toward lasting success—in just 20 minutes a day.
+            Our patent-pending AI crafts personalized lessons that move your child toward lasting success—in as little as 20 minutes a day.
           </p>
         </div>
         
