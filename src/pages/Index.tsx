@@ -40,7 +40,11 @@ const Index = () => {
     
     return (
       <PricingContext.Provider value={pricingProps}>
-        <Hero />
+        <Hero 
+          title={<>What if Dyslexia<br />and ADHD were<br />Superpowers?</>}
+          description="Tobey's Tutor transforms learning differences into strengths through AI powered lessons tailored to your child's unique mind."
+          detailText="As parents, we know the heartbreak of watching a child struggle with traditional teaching methods. So we built what we couldn't find—game-based lessons that adapt to how our children actually thinks, not how schools expect them to learn. See real progress, celebrate real victories. Register for our Beta today."
+        />
         <HowItWorks /> 
         <Features />
         <ParentDashboardPreview />
