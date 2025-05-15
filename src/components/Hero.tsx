@@ -5,7 +5,7 @@ import { Link } from "react-router-dom";
 import { SignupButton } from "@/components/signup";
 
 interface HeroProps {
-  title?: string;
+  title?: React.ReactNode;
   description?: string;
   detailText?: string;
 }
