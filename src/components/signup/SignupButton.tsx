@@ -1,34 +1,27 @@
 
 import React from "react";
-import { Link } from "react-router-dom";
+import { Button } from "@/components/ui/button";
+import { useNavigate } from "react-router-dom";
 
 interface SignupButtonProps {
-  label?: string;
+  children?: React.ReactNode;
   className?: string;
-  planId?: string;
-  to?: string;
 }
 
-const SignupButton: React.FC<SignupButtonProps> = ({
-  label = "Sign Up",
-  className = "",
-  planId = "early-adopter",
-  to = "",
-}) => {
-  if (to) {
-    return (
-      <Link to={to} className={`px-4 py-2 rounded ${className || "bg-orange-500 hover:bg-orange-600 text-white"}`}>
-        {label}
-      </Link>
-    );
-  }
+const SignupButton = ({ children = "Sign Up", className }: SignupButtonProps) => {
+  const navigate = useNavigate();
+
+  const handleClick = () => {
+    navigate("/signup-test");
+  };
 
   return (
-    <button 
-      className={`px-4 py-2 rounded ${className || "bg-orange-500 hover:bg-orange-600 text-white"}`}
+    <Button 
+      onClick={handleClick}
+      className={className}
     >
-      {label}
-    </button>
+      {children}
+    </Button>
   );
 };
 
