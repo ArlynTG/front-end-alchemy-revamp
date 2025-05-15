@@ -43,7 +43,7 @@ const Index = () => {
         <Hero 
           title={<>What if Dyslexia<br />and ADHD were<br />Superpowers?</>}
           description="Tobey's Tutor uses the latest AI to create academic goals and lessons tailored to your child's unique mind."
-          detailText="As parents, we know the heartbreak of watching a child struggle with traditional teaching methods. So we built what we couldn't find—patent-pending, game-based lessons that adapt to how our children actually think, not how schools expect them to learn. See real progress, celebrate real victories. Register for our Beta today."
+          detailText="As parents, we know the heartbreak of watching a child struggle with traditional teaching methods. So we built what we couldn't find—a patent-pending system that leverages the latest AI to create game-based lessons that adapt to how our children actually think, not how schools expect them to learn. See real progress, celebrate real victories. Register for our Beta today."
         />
         <HowItWorks /> 
         <Features />
