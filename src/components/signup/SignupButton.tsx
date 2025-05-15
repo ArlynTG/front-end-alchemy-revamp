@@ -6,13 +6,20 @@ import { useNavigate } from "react-router-dom";
 interface SignupButtonProps {
   children?: React.ReactNode;
   className?: string;
+  label?: string;
+  to?: string;
 }
 
-const SignupButton = ({ children = "Sign Up", className }: SignupButtonProps) => {
+const SignupButton = ({ 
+  children, 
+  className, 
+  label, 
+  to = "/signup-test" 
+}: SignupButtonProps) => {
   const navigate = useNavigate();
 
   const handleClick = () => {
-    navigate("/signup-test");
+    navigate(to);
   };
 
   return (
@@ -20,7 +27,7 @@ const SignupButton = ({ children = "Sign Up", className }: SignupButtonProps) =>
       onClick={handleClick}
       className={className}
     >
-      {children}
+      {children || label || "Sign Up"}
     </Button>
   );
 };

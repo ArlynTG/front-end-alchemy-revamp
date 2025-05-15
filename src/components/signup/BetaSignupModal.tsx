@@ -10,6 +10,7 @@ import {
 import { useNavigate } from "react-router-dom";
 import BetaSignupForm from "@/components/pricing/BetaSignupForm";
 import { useIsMobile } from "@/hooks/use-mobile";
+import { DetailedSignupFormValues } from "@/utils/formSchemas";
 
 interface BetaSignupModalProps {
   isOpen: boolean;
@@ -29,6 +30,12 @@ const BetaSignupModal = ({ isOpen, onClose, planId }: BetaSignupModalProps) => {
     }
   };
 
+  // Updated to return a Promise to satisfy type requirements
+  const handleSubmit = async (data: DetailedSignupFormValues): Promise<void> => {
+    // This is a placeholder that returns a resolved promise
+    return Promise.resolve();
+  };
+
   return (
     <Dialog open={isOpen} onOpenChange={handleOpenChange}>
       <DialogContent className={`sm:max-w-md ${isMobile ? 'h-[90vh] max-h-full mt-16 pt-6' : ''}`}>
@@ -40,7 +47,7 @@ const BetaSignupModal = ({ isOpen, onClose, planId }: BetaSignupModalProps) => {
         </DialogHeader>
         
         <BetaSignupForm 
-          onSubmit={() => {}}
+          onSubmit={handleSubmit}
           onCancel={onClose}
           isSubmitting={false}
         />
