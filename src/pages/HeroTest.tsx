@@ -18,7 +18,7 @@ const HeroTest = () => {
         <Hero 
           title="What if Dyslexia and ADHD were superpowers?"
           description="Tobey's Tutor turns different brains into brilliant ones with AI-powered lessons that improve grades, skills, and confidence in as little as 20 minutes a day."
-          detailText="As parents, we know what it's like to feel stuck. Watching our children struggle with traditional learning methods can be heartbreaking. Our patent-pending AI builds daily, game-like lessons around what your child already loves, adjusts in real time, and tracks progress you can see. Less frustration, more "I did it!""
+          detailText="As parents, we know what it's like to feel stuck. Watching our children struggle with traditional learning methods can be heartbreaking. Our patent-pending AI builds daily, game-like lessons around what your child already loves, adjusts in real time, and tracks progress you can see. Less frustration, more 'I did it!'"
         />
       </PricingContext.Provider>
     </div>
