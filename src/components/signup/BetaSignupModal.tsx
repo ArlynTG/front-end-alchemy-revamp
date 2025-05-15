@@ -13,6 +13,7 @@ import { useNavigate } from "react-router-dom";
 import BetaSignupForm from "@/components/pricing/BetaSignupForm";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { supabase } from "@/integrations/supabase/client";
+import { submitSignupData } from "@/utils/signupDataService";
 
 interface BetaSignupModalProps {
   isOpen: boolean;
@@ -58,45 +59,45 @@ const BetaSignupModal = ({ isOpen, onClose, planId }: BetaSignupModalProps) => {
     }
   };
 
-  const handleDetailsSubmit = async (data: DetailedSignupFormValues) => {
+  const handleDetailsSubmit = async (data: DetailedSignupFormValues): Promise<void> => {
     console.log("Submitting form with data:", data);
     console.log("Plan ID:", planId);
     setIsSubmitting(true);
     setPaymentError(null);
 
     try {
-      // Important: Store learning differences as an array in the database
-      const learningDifferences = data.primaryLearningDifference ? [data.primaryLearningDifference] : null;
-      
-      // Create the insertion object with all necessary fields
-      const insertData = {
+      // Format the data for the signup_data table
+      const signupData = {
         first_name: data.firstName,
         last_name: data.lastName,
         email: data.email,
         student_name: data.studentName || "",
         phone: data.phone,
         student_age: data.studentAge,
-        learning_differences: learningDifferences,
+        learning_difference: data.primaryLearningDifference,
         plan_type: planId
       };
       
-      console.log("Insertion data being sent to Supabase:", insertData);
+      console.log("Submitting data to signup_data table:", signupData);
       
-      // Insert data into Supabase
-      const { data: insertedData, error } = await supabase
-        .from('beta_registrations')
-        .insert(insertData)
-        .select()
+      // Use the submitSignupData function from signupDataService.ts
+      const { success, error } = await submitSignupData(signupData);
+      
+      if (!success) {
+        throw new Error(error || "Failed to submit registration");
+      }
+      
+      // Re-fetch the inserted data to get its ID (we need this for Stripe)
+      const { data: insertedData, error: fetchError } = await supabase
+        .from('signup_data')
+        .select('id')
+        .eq('email', data.email)
+        .limit(1)
         .single();
 
-      if (error) {
-        console.error("Supabase insert error:", error);
-        
-        if (error.code === '23505') {
-          throw new Error('This email has already been registered for the beta.');
-        }
-        
-        throw new Error(`Failed to submit registration: ${error.message || 'Unknown error'}`);
+      if (fetchError) {
+        console.error("Error fetching inserted data:", fetchError);
+        throw new Error(`Failed to retrieve registration details: ${fetchError.message || 'Unknown error'}`);
       }
 
       console.log("Registration successful with inserted data:", insertedData);
