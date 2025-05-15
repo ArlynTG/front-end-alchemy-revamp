@@ -1,4 +1,3 @@
-
 import React, { useEffect, useRef } from 'react';
 import { Card, CardContent } from "@/components/ui/card";
 import { Upload, BookOpen, BarChart2 } from "lucide-react";
@@ -168,7 +167,7 @@ const HowItWorks = () => {
       <div className="container max-w-7xl mx-auto px-4">
         <div className="text-center mb-12">
           <h2 ref={titleRef} className="text-3xl md:text-4xl font-bold mb-4 opacity-0">
-            Smarter Learning. Easy as 1-2-3.
+            How Does it Work? It's as Easy as 1-2-3.
           </h2>
           <p ref={descriptionRef} className="max-w-3xl mx-auto text-lg text-gray-600 opacity-0">
             Our patent-pending AI crafts personalized lessons that move your child toward lasting success—in just 20 minutes a day.
