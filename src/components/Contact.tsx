@@ -1,4 +1,3 @@
-
 import React, { useState } from "react";
 import { Mail, Send } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -86,7 +85,7 @@ const Contact = ({ id }: ContactProps) => {
           {/* Left Column with Form */}
           <div className="w-full md:w-1/2 space-y-8">
             <div className="max-w-md">
-              <h2 className="text-3xl font-bold mb-4">Got more questions?</h2>
+              <h2 className="text-3xl font-bold mb-4">Send us your questions and feedback.</h2>
               <div className="space-y-2 text-gray-600 mb-8">
                 <p>Fill out the form below and we'll get back to you as soon as possible. Please allow 24 to 48 hours for us to respond.</p>
               </div>
@@ -164,7 +163,7 @@ const Contact = ({ id }: ContactProps) => {
             </Form>
           </div>
           
-          {/* Right Column with Image Only - Removed the email box */}
+          {/* Right Column with Image Only */}
           <div className="w-full md:w-1/2">
             <img 
               src="/lovable-uploads/f2c71f68-209f-47d8-9df7-25bc9297ae3f.png" 
