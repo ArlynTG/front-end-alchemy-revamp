@@ -142,7 +142,7 @@ const Contact = ({ id }: ContactProps) => {
                 
                 <Button 
                   type="submit" 
-                  className="w-full bg-tobey-orange hover:bg-tobey-darkOrange text-white" 
+                  className="w-full bg-tobey-orange hover:bg-tobey-darkOrange text-white transform transition-transform duration-300 hover:scale-105" 
                   disabled={isSubmitting}
                 >
                   {isSubmitting ? (

@@ -47,7 +47,7 @@ const PricingCard = ({ plan, onSelect }: PricingCardProps) => {
       <Button
         onClick={() => !plan.disabled && onSelect(plan.id)}
         disabled={plan.disabled}
-        className={`w-full flex items-center justify-center gap-2 ${
+        className={`w-full flex items-center justify-center gap-2 transform transition-transform duration-300 hover:scale-105 ${
           plan.highlighted
             ? 'bg-tobey-orange hover:bg-tobey-orange/90 text-white'
             : plan.disabled 

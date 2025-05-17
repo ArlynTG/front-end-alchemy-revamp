@@ -48,7 +48,7 @@ const StudentDashboardPreview = () => {
             <Button 
               variant="outline"
               size="sm"
-              className="bg-tobey-orange text-white hover:bg-orange-600 border-none text-xs font-medium uppercase tracking-wider px-4 py-1 h-auto rounded-full"
+              className="bg-tobey-orange text-white hover:bg-orange-600 border-none text-xs font-medium uppercase tracking-wider px-4 py-1 h-auto rounded-full transform transition-transform duration-300 hover:scale-105"
             >
               Student Dashboard
             </Button>
@@ -98,7 +98,7 @@ const StudentDashboardPreview = () => {
             </div>
             <div className="mt-8">
               <Link to="/student-dashboard">
-                <Button className="bg-tobey-orange hover:bg-orange-600 text-white px-6 py-2">
+                <Button className="bg-tobey-orange hover:bg-orange-600 text-white px-6 py-2 transform transition-transform duration-300 hover:scale-105">
                   View Dashboard Preview
                 </Button>
               </Link>
