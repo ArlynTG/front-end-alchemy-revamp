@@ -4,8 +4,11 @@ import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { Toaster } from "@/components/ui/toaster";
 import { Card } from "@/components/ui/card";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 const DemoV5 = () => {
+  const isMobile = useIsMobile();
+  
   // Set document title and metadata when component mounts
   useEffect(() => {
     document.title = "Tobey's Tutor: AI Learning Assistant for Dyslexia & ADHD | Demo";
@@ -40,23 +43,27 @@ const DemoV5 = () => {
     <div className="flex flex-col min-h-screen bg-gradient-to-br from-white to-tobey-peach/30">
       <Navbar />
       <main className="flex-grow flex flex-col justify-center">
-        <section className="py-8 md:py-16 flex flex-col flex-grow justify-center">
-          <div className="container max-w-6xl mx-auto px-4">
-            <h1 className="text-3xl md:text-4xl font-bold text-center mb-4 animate-fade-in opacity-0" style={{ animationDelay: '400ms', animationFillMode: 'forwards' }}>
-              See How Tobey's Tutor Works
-            </h1>
+        <section className={`py-8 md:py-16 flex flex-col flex-grow justify-center ${isMobile ? 'px-0' : ''}`}>
+          <div className={`container mx-auto ${isMobile ? 'px-2' : 'px-4 max-w-6xl'}`}>
+            {!isMobile && (
+              <>
+                <h1 className="text-3xl md:text-4xl font-bold text-center mb-4 animate-fade-in opacity-0" style={{ animationDelay: '400ms', animationFillMode: 'forwards' }}>
+                  See How Tobey's Tutor Works
+                </h1>
+                
+                <p className="text-center text-lg md:text-xl text-gray-600 mb-8 md:mb-10 max-w-2xl mx-auto animate-fade-in opacity-0" style={{ animationDelay: '600ms', animationFillMode: 'forwards' }}>
+                  Curious if this could help your child? Chat with our patent pending AI tutor and get a feel for how we support bright kids with dyslexia, ADHD, and related learning differences—one smart, personalized step at a time.
+                </p>
+              </>
+            )}
             
-            <p className="text-center text-lg md:text-xl text-gray-600 mb-8 md:mb-10 max-w-2xl mx-auto animate-fade-in opacity-0" style={{ animationDelay: '600ms', animationFillMode: 'forwards' }}>
-              Curious if this could help your child? Chat with our patent pending AI tutor and get a feel for how we support bright kids with dyslexia, ADHD, and related learning differences—one smart, personalized step at a time.
-            </p>
-            
-            <div className="max-w-3xl mx-auto animate-fade-in opacity-0" style={{ animationDelay: '800ms', animationFillMode: 'forwards' }}>              
-              <Card className="rounded-2xl overflow-hidden shadow-md bg-white">
+            <div className={`mx-auto animate-fade-in opacity-0 ${isMobile ? 'w-full' : 'max-w-3xl'}`} style={{ animationDelay: '800ms', animationFillMode: 'forwards' }}>              
+              <Card className={`overflow-hidden ${isMobile ? 'rounded-3xl shadow-sm bg-white/90 h-full' : 'rounded-2xl shadow-md bg-white'}`}>
                 <iframe 
                   src="https://tutor-assistant-arlyn11.replit.app/"
                   style={{
                     width: "100%", 
-                    height: "700px", 
+                    height: isMobile ? "calc(100vh - 96px)" : "700px", 
                     border: "none",
                     display: "block"
                   }}
@@ -68,7 +75,7 @@ const DemoV5 = () => {
           </div>
         </section>
       </main>
-      <Footer />
+      {!isMobile && <Footer />}
       <Toaster />
     </div>
   );
