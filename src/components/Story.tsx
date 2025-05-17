@@ -1,7 +1,7 @@
 
 import React from 'react';
 import { Card } from "@/components/ui/card";
-import { Quote } from "lucide-react";
+import { TextQuote } from "lucide-react";
 
 const Story = () => {
   return (
@@ -16,13 +16,13 @@ const Story = () => {
             We created Tobey's Tutor for our son—a bright 11-year-old with dyslexia who inspired both our mission and our name.
           </p>
           
-          <div className="my-10 relative">
-            <Card className="bg-white/80 shadow-lg p-8 backdrop-blur-sm border-tobey-orange border-l-4">
-              <Quote className="text-tobey-orange h-10 w-10 mb-4 opacity-50 absolute -top-5 -left-2" />
-              <p className="text-xl font-medium text-gray-800 italic">
-                By thoughtfully weaving his passions into structured learning sessions, we've created a platform that makes academic progress both effective and enjoyable. The result? Tobey now voluntarily asks for study time—words we never expected to hear.
+          <div className="my-8 relative max-w-lg mx-auto">
+            <Card className="bg-white/80 shadow-md p-6 backdrop-blur-sm border-tobey-orange border-l-4">
+              <TextQuote className="text-tobey-orange h-8 w-8 mb-2 opacity-60 absolute -top-4 -left-2" />
+              <p className="text-lg font-medium text-gray-800 italic">
+                "Tobey now voluntarily asks for study time—words we never expected to hear."
               </p>
-              <div className="mt-4 text-right text-tobey-orange font-bold">
+              <div className="mt-2 text-right text-tobey-orange font-bold">
                 — Tobey's Parents
               </div>
             </Card>
