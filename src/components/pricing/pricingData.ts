@@ -7,12 +7,12 @@ export const pricingPlans: PricingPlan[] = [
     name: "Early Adopter Special",
     price: "29",
     period: "mo",
-    description: "Limited Offer: 25% off future pricing",
+    description: "Pay monthly, cancel anytime",
     features: [
       "Unlimited 24/7 AI tutoring personalized to your child's learning style",
       "Parental dashboard with progress insights and weekly reports", 
       "The first 200 users lock in beta pricing of $29/month for life. Only 1 subscription per family",
-      "Free access to future enhancements and features"
+      "Limited Offer: 25% off future pricing"
     ],
     highlighted: true,
     disabled: false
