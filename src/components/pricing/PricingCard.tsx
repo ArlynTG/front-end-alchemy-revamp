@@ -54,7 +54,7 @@ const PricingCard = ({ plan, onSelect }: PricingCardProps) => {
               : 'bg-white text-tobey-orange border border-tobey-orange hover:bg-orange-50'
         }`}
       >
-        {plan.disabled ? "Coming Soon" : (
+        {plan.disabled ? "Coming September 2025" : (
           <>
             Reserve Your Spot for $1
             <Clock className="h-4 w-4" />
