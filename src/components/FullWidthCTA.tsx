@@ -17,8 +17,8 @@ const FullWidthCTA = () => {
             </p>
             <Link to="/demo-v5">
               <div className="relative inline-block animate-fade-in opacity-0" style={{ animationDelay: '600ms', animationFillMode: 'forwards' }}>
-                {/* Chat balloon point/triangle */}
-                <div className="absolute -left-2 top-1/2 -translate-y-1/2 w-4 h-4 bg-tobey-orange transform rotate-45"></div>
+                {/* Chat balloon point/triangle - moved to upper left */}
+                <div className="absolute -left-2 top-0 w-4 h-4 bg-tobey-orange transform rotate-45"></div>
                 <Button 
                   size="lg" 
                   className="bg-tobey-orange hover:bg-tobey-darkOrange text-white font-medium transform transition-transform duration-300 hover:scale-105 pl-6 pr-6 flex items-center"
