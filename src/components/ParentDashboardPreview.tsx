@@ -95,7 +95,7 @@ const ParentDashboardPreview = () => {
   }, [isVisible]);
 
   const handleImageClick = () => {
-    navigate('/parent-dashboard-v2');
+    navigate('/parent-dashboard-v3B');
   };
 
   return (
@@ -105,7 +105,7 @@ const ParentDashboardPreview = () => {
     >
       <div className="container mx-auto">
         <div className="mb-10">
-          <Link to="/parent-dashboard-v2">
+          <Link to="/parent-dashboard-v3B">
             <Button 
               variant="outline"
               size="sm"
@@ -138,7 +138,7 @@ const ParentDashboardPreview = () => {
               ))}
             </div>
             <div className="mt-8">
-              <Link to="/parent-dashboard-v2">
+              <Link to="/parent-dashboard-v3B">
                 <Button className="bg-tobey-orange hover:bg-orange-600 text-white px-6 py-2">
                   View Dashboard Preview
                 </Button>

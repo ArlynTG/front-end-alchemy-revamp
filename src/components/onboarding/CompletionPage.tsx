@@ -7,7 +7,7 @@ const CompletionPage = () => {
   const navigate = useNavigate();
 
   const handleContinue = () => {
-    navigate("/parent-dashboard-v2"); // Updated to v2 dashboard
+    navigate("/parent-dashboard-v3B"); // Updated to v3B dashboard
   };
 
   return (
