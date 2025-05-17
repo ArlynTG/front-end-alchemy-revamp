@@ -1,6 +1,5 @@
 
 import React, { useState, useEffect } from 'react';
-import { supabase } from '@/integrations/supabase/client';
 import { FileText, FileQuestion, FileImage, Clock, Download } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
@@ -25,34 +24,45 @@ const DocumentList: React.FC<DocumentListProps> = ({ studentId, refreshTrigger }
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    const fetchDocuments = async () => {
-      setIsLoading(true);
-      setError(null);
-      
-      try {
-        // Fetch documents for the student
-        const { data, error } = await supabase
-          .from('uploads')
-          .select('id, file_name, file_url, file_type, uploaded_at, processed')
-          .eq('uuid', studentId)
-          .order('uploaded_at', { ascending: false });
-
-        if (error) {
-          throw error;
-        }
-
-        setDocuments(data || []);
-      } catch (err) {
-        console.error('Error fetching documents:', err);
-        setError('Unable to load documents');
-      } finally {
-        setIsLoading(false);
+    // Simulate loading time
+    setIsLoading(true);
+    setError(null);
+    
+    // Mock documents data
+    const mockDocuments: Document[] = [
+      {
+        id: "doc1",
+        file_name: "Winter 2025 Report Card.pdf",
+        file_url: "#",
+        file_type: "pdf",
+        uploaded_at: "2025-01-15T14:32:00Z",
+        processed: true
+      },
+      {
+        id: "doc2",
+        file_name: "2024 IEP.pdf",
+        file_url: "#",
+        file_type: "pdf",
+        uploaded_at: "2024-09-05T10:15:00Z",
+        processed: true
+      },
+      {
+        id: "doc3",
+        file_name: "Neuropsychological Evaluation 2024.pdf",
+        file_url: "#",
+        file_type: "pdf",
+        uploaded_at: "2024-06-22T09:45:00Z",
+        processed: true
       }
-    };
-
-    if (studentId) {
-      fetchDocuments();
-    }
+    ];
+    
+    // Simulate API call delay
+    const timer = setTimeout(() => {
+      setDocuments(mockDocuments);
+      setIsLoading(false);
+    }, 800);
+    
+    return () => clearTimeout(timer);
   }, [studentId, refreshTrigger]);
 
   // Helper function to determine the icon to display based on file type
@@ -116,13 +126,11 @@ const DocumentList: React.FC<DocumentListProps> = ({ studentId, refreshTrigger }
   }
 
   const handleDownload = (fileUrl: string, fileName: string) => {
-    // Create a temporary link and trigger the download
-    const link = document.createElement('a');
-    link.href = fileUrl;
-    link.download = fileName;
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
+    // This is a mock function - in a real app, we would download the file
+    console.log(`Downloading ${fileName} from ${fileUrl}`);
+    
+    // Display a simulated message for the demo
+    alert(`Downloading ${fileName} - This is a demo feature`);
   };
 
   return (

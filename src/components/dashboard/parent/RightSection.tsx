@@ -20,7 +20,7 @@ const RightSection: React.FC<RightSectionProps> = ({
     >
       <NotificationSettings />
       <motion.div 
-        className="h-[350px] md:h-[400px]"
+        className="h-[500px] md:h-[550px]" // Increased height for more chat visibility
         variants={itemVariants}
         transition={{ delay: 0.3 }}
       >
