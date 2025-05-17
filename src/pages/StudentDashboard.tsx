@@ -1,5 +1,5 @@
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import Navbar from "@/components/Navbar";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -10,10 +10,14 @@ import LearningProgress from "@/components/dashboard/student/LearningProgress";
 import StreakCalendar from "@/components/dashboard/student/StreakCalendar";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { Sparkles } from "lucide-react";
+import ReactConfetti from "react-confetti";
 
 const StudentDashboard: React.FC = () => {
   const isMobile = useIsMobile();
   const [activeTab, setActiveTab] = useState("chat");
+  const [showConfetti, setShowConfetti] = useState(true);
+  const [confettiWidth, setConfettiWidth] = useState(0);
+  const [confettiHeight, setConfettiHeight] = useState(0);
   
   // Animation variants
   const containerVariants = {
@@ -38,10 +42,50 @@ const StudentDashboard: React.FC = () => {
       }
     }
   };
+  
+  // Set confetti dimensions to window size for full width effect
+  useEffect(() => {
+    const updateDimensions = () => {
+      setConfettiWidth(window.innerWidth);
+      setConfettiHeight(400); // Fixed height for top of page effect
+    };
+    
+    updateDimensions();
+    window.addEventListener('resize', updateDimensions);
+    
+    return () => {
+      window.removeEventListener('resize', updateDimensions);
+    };
+  }, []);
+
+  // Hide confetti after 5 seconds
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setShowConfetti(false);
+    }, 5000);
+    
+    return () => clearTimeout(timer);
+  }, []);
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-indigo-50 via-purple-50 to-pink-50">
       <Navbar />
+      
+      {/* Global confetti effect - positioned fixed */}
+      {showConfetti && (
+        <div className="fixed top-0 left-0 right-0 z-50 pointer-events-none">
+          <ReactConfetti
+            width={confettiWidth}
+            height={confettiHeight}
+            recycle={false}
+            numberOfPieces={500}
+            gravity={0.2}
+            initialVelocityY={10}
+            confettiSource={{x: 0, y: 0, w: confettiWidth, h: 0}}
+          />
+        </div>
+      )}
+      
       <motion.div 
         className="container py-4 md:py-8"
         initial={{ opacity: 0 }}
@@ -68,6 +112,19 @@ const StudentDashboard: React.FC = () => {
             🚀SNEAK PEAK: This is a preview of the Student Dashboard. Available June 2025🎉
           </p>
         </div>
+
+        {/* Welcome back message with confetti effect */}
+        {showConfetti && (
+          <motion.div 
+            className="bg-gradient-to-r from-indigo-100 to-purple-100 p-3 mb-6 rounded-lg text-center"
+            initial={{ opacity: 0, y: -20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5 }}
+          >
+            <p className="font-bold text-indigo-800">Welcome back, Alex! 🎉</p>
+            <p className="text-sm text-indigo-600">Ready to continue your learning journey?</p>
+          </motion.div>
+        )}
 
         {/* Stats Row */}
         <motion.div variants={containerVariants} initial="hidden" animate="visible">
@@ -126,7 +183,7 @@ const StudentDashboard: React.FC = () => {
               className="col-span-12 lg:col-span-6 h-[750px]"
             >
               <div className="h-full rounded-xl overflow-hidden border-4 border-purple-300 shadow-lg">
-                <ChatContainer />
+                <ChatContainer removeConfetti={true} />
               </div>
             </motion.div>
             
