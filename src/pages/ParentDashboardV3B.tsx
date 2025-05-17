@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from "react";
 import Navbar from "@/components/Navbar";
 import StudentStats from "@/components/dashboard/StudentStats";
@@ -117,7 +116,7 @@ const ParentDashboardV3B = () => {
         >
           <p className="font-medium flex items-center justify-center">
             <span className="mr-2">🚀</span>
-            SNEAK PEEK: This is a preview of the Student Dashboard. Available June 2025
+            SNEAK PEEK: This is a preview of the Parent's Dashboard. Available June 2025
             <span className="ml-2">🚀</span>
           </p>
         </motion.div>
