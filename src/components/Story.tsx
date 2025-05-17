@@ -22,9 +22,6 @@ const Story = () => {
               <p className="text-lg font-medium text-gray-800 italic">
                 "Tobey now voluntarily asks for study time—words we never expected to hear."
               </p>
-              <div className="mt-2 text-right text-tobey-orange font-bold">
-                — Tobey's Parents
-              </div>
             </Card>
           </div>
           
