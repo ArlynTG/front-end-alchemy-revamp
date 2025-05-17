@@ -86,7 +86,7 @@ const Contact = ({ id }: ContactProps) => {
           {/* Left Column with Form */}
           <div className="w-full md:w-1/2 space-y-8">
             <div className="max-w-md">
-              <h2 className="text-3xl font-bold mb-4">We're Listening.</h2>
+              <h2 className="text-3xl font-bold mb-4">Got Questions or Feedback? Drop Us a Line.</h2>
               <div className="space-y-2 text-gray-600 mb-8">
                 <p>Please fill out the form below and we'll get back to within 24 hours.</p>
               </div>
