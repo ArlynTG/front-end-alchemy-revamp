@@ -32,13 +32,19 @@ const ChatContainer: React.FC = () => {
   const [confettiWidth, setConfettiWidth] = useState(0);
   const [hasScrolled, setHasScrolled] = useState(false);
   
-  // Set confetti dimensions
+  // Set confetti dimensions to window size for full width effect
   useEffect(() => {
-    const container = document.querySelector('.chat-container');
-    if (container) {
-      setConfettiWidth(container.clientWidth);
-      setConfettiHeight(container.clientHeight);
-    }
+    const updateDimensions = () => {
+      setConfettiWidth(window.innerWidth);
+      setConfettiHeight(400); // Fixed height for top of page effect
+    };
+    
+    updateDimensions();
+    window.addEventListener('resize', updateDimensions);
+    
+    return () => {
+      window.removeEventListener('resize', updateDimensions);
+    };
   }, []);
 
   // Hide confetti after 5 seconds
@@ -69,21 +75,25 @@ const ChatContainer: React.FC = () => {
   }, [hasScrolled]);
 
   return (
-    <div className="flex flex-col h-full bg-white rounded-lg shadow-lg overflow-hidden font-sans chat-container">
+    <div className="flex flex-col h-full bg-white rounded-lg shadow-lg overflow-hidden font-sans chat-container relative">
       {/* Header with branded gradient */}
       <div className="bg-gradient-to-r from-[#f97316] to-[#c2410c] text-white px-4 py-3 font-semibold text-lg">
         Tobey AI Tutor
       </div>
 
-      {/* Confetti effect */}
+      {/* Confetti effect - positioned absolutely */}
       {showConfetti && (
-        <ReactConfetti
-          width={confettiWidth}
-          height={confettiHeight}
-          recycle={false}
-          numberOfPieces={500}
-          gravity={0.2}
-        />
+        <div className="absolute top-0 left-0 right-0 z-10 pointer-events-none">
+          <ReactConfetti
+            width={confettiWidth}
+            height={confettiHeight}
+            recycle={false}
+            numberOfPieces={500}
+            gravity={0.2}
+            initialVelocityY={10}
+            confettiSource={{x: 0, y: 0, w: confettiWidth, h: 0}}
+          />
+        </div>
       )}
       
       {/* Welcome back message */}
