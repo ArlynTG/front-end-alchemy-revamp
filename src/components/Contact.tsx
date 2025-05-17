@@ -101,7 +101,7 @@ const Contact = ({ id }: ContactProps) => {
                     <FormItem>
                       <FormLabel>Your Name</FormLabel>
                       <FormControl>
-                        <Input placeholder="John Doe" {...field} />
+                        <Input placeholder="Loving Parent" {...field} />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -164,30 +164,13 @@ const Contact = ({ id }: ContactProps) => {
             </Form>
           </div>
           
-          {/* Right Column with Image and Alternative Contact Method */}
-          <div className="w-full md:w-1/2 space-y-8">
+          {/* Right Column with Image Only - Removed the email box */}
+          <div className="w-full md:w-1/2">
             <img 
               src="/lovable-uploads/f2c71f68-209f-47d8-9df7-25bc9297ae3f.png" 
               alt="Students collaborating on laptops" 
               className="w-full h-auto rounded-xl object-cover shadow-lg"
             />
-            
-            <div className="bg-tobey-peach/30 p-8 rounded-xl">
-              <div className="space-y-6">
-                <h3 className="text-xl font-semibold">Prefer email?</h3>
-                <div className="flex items-center gap-4">
-                  <div className="h-10 w-10 rounded-full bg-tobey-orange/20 flex items-center justify-center">
-                    <Mail className="h-5 w-5 text-tobey-orange" />
-                  </div>
-                  <div>
-                    <p className="text-sm text-gray-500">Email Us Directly</p>
-                    <a href="mailto:support@tobeystutor.com" className="text-tobey-text hover:text-tobey-orange transition-colors">
-                      support@tobeystutor.com
-                    </a>
-                  </div>
-                </div>
-              </div>
-            </div>
           </div>
         </div>
       </div>
