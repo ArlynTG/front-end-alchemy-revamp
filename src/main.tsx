@@ -21,6 +21,7 @@ import BetaRegistration from './pages/BetaRegistration.tsx'
 import BetaConfirmation from './pages/BetaConfirmation.tsx'
 import DemoV5 from './pages/DemoV5.tsx'
 import ParentDashboardV2 from './pages/ParentDashboardV2.tsx'
+import ParentDashboardV3B from './pages/ParentDashboardV3B.tsx'
 import StudentDashboard from './pages/StudentDashboard.tsx'
 import AccountManagement from './pages/AccountManagement.tsx'
 import HeroTest from './pages/HeroTest.tsx'
@@ -39,6 +40,7 @@ const router = createBrowserRouter(
       <Route path="/beta-registration" element={<BetaRegistration />} />
       <Route path="/beta-confirmation" element={<BetaConfirmation />} />
       <Route path="/parent-dashboard-v2" element={<ParentDashboardV2 />} />
+      <Route path="/parent-dashboard-v3B" element={<ParentDashboardV3B />} />
       <Route path="/student-dashboard" element={<StudentDashboard />} />
       <Route path="/account-management" element={<AccountManagement />} />
       <Route path="/onboarding" element={<Onboarding />} />
