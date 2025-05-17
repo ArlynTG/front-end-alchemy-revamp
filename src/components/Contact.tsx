@@ -88,7 +88,7 @@ const Contact = ({ id }: ContactProps) => {
             <div className="max-w-md">
               <h2 className="text-3xl font-bold mb-4">Got more questions?</h2>
               <div className="space-y-2 text-gray-600 mb-8">
-                <p>Fill out the form below and we'll get back to you as soon as possible.</p>
+                <p>Fill out the form below and we'll get back to you as soon as possible. Please allow 24 to 48 hours for us to respond.</p>
               </div>
             </div>
 
