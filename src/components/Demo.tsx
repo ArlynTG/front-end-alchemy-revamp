@@ -31,15 +31,19 @@ const Demo = () => {
         
         <div className="text-center mt-8 space-y-4">
           <Link to="/demo-v5">
-            <Button className="bg-tobey-orange hover:bg-tobey-darkOrange text-white font-medium">
-              Try Our Full-Screen Demo
-            </Button>
+            <div className="relative inline-block">
+              <Button className="bg-tobey-orange hover:bg-tobey-darkOrange text-white font-medium transform transition-transform duration-300 hover:scale-105">
+                Try Our Full-Screen Demo
+              </Button>
+            </div>
           </Link>
           <div className="mt-2">
             <Link to="/demo-v5">
-              <Button variant="outline" className="border-tobey-orange text-tobey-orange hover:bg-tobey-peach/20 font-medium">
-                Try Our Latest Demo Version
-              </Button>
+              <div className="relative inline-block">
+                <Button variant="outline" className="border-tobey-orange text-tobey-orange hover:bg-tobey-peach/20 font-medium transform transition-transform duration-300 hover:scale-105">
+                  Try Our Latest Demo Version
+                </Button>
+              </div>
             </Link>
           </div>
         </div>

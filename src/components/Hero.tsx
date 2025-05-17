@@ -64,16 +64,20 @@ const Hero = ({
             </p>
             
             <div className="flex flex-wrap gap-4 animate-fade-in opacity-0" style={{ animationDelay: '1400ms', animationFillMode: 'forwards' }}>
-              <Button asChild className="bg-tobey-orange hover:bg-tobey-orange/90 text-white">
-                <Link to="/demo-v5">
-                  Try the Demo
-                </Link>
-              </Button>
-              <SignupButton 
-                label="Join the Beta for $1"
-                className="bg-white text-tobey-orange hover:bg-white/90 border border-tobey-orange px-4 py-2 rounded-md flex items-center gap-2"
-                to="/signup-test"
-              />
+              <div className="relative inline-block">
+                <Button asChild className="bg-tobey-orange hover:bg-tobey-orange/90 text-white transform transition-transform duration-300 hover:scale-105">
+                  <Link to="/demo-v5">
+                    Try the Demo
+                  </Link>
+                </Button>
+              </div>
+              <div className="relative inline-block">
+                <SignupButton 
+                  label="Join the Beta for $1"
+                  className="bg-white text-tobey-orange hover:bg-white/90 border border-tobey-orange px-4 py-2 rounded-md flex items-center gap-2 transform transition-transform duration-300 hover:scale-105"
+                  to="/signup-test"
+                />
+              </div>
             </div>
           </div>
         </div>

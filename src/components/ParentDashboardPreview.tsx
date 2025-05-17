@@ -106,13 +106,15 @@ const ParentDashboardPreview = () => {
       <div className="container mx-auto">
         <div className="mb-10">
           <Link to="/parent-dashboard-v3B">
-            <Button 
-              variant="outline"
-              size="sm"
-              className="bg-tobey-orange text-white hover:bg-orange-600 border-none text-xs font-medium uppercase tracking-wider px-4 py-1 h-auto rounded-full"
-            >
-              Parent Dashboard
-            </Button>
+            <div className="relative inline-block">
+              <Button 
+                variant="outline"
+                size="sm"
+                className="bg-tobey-orange text-white hover:bg-orange-600 border-none text-xs font-medium uppercase tracking-wider px-4 py-1 h-auto rounded-full transform transition-transform duration-300 hover:scale-105"
+              >
+                Parent Dashboard
+              </Button>
+            </div>
           </Link>
         </div>
         <div className="grid md:grid-cols-2 gap-10 items-center">
@@ -139,9 +141,11 @@ const ParentDashboardPreview = () => {
             </div>
             <div className="mt-8">
               <Link to="/parent-dashboard-v3B">
-                <Button className="bg-tobey-orange hover:bg-orange-600 text-white px-6 py-2">
-                  View Dashboard Preview
-                </Button>
+                <div className="relative inline-block">
+                  <Button className="bg-tobey-orange hover:bg-orange-600 text-white px-6 py-2 transform transition-transform duration-300 hover:scale-105">
+                    View Dashboard Preview
+                  </Button>
+                </div>
               </Link>
             </div>
           </div>
