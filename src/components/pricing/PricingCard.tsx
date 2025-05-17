@@ -29,7 +29,7 @@ const PricingCard = ({ plan, onSelect }: PricingCardProps) => {
         <div className="mt-4 mb-6">
           <span className={`text-3xl font-bold ${plan.disabled ? 'text-gray-600' : ''}`}>${plan.price}</span>
           {plan.period && <span className="text-sm ml-1">/{plan.period}</span>}
-          {plan.id === "early-adopter" && <span className="text-sm ml-1">one-time payment</span>}
+          {plan.id === "early-adopter" && <span className="text-sm ml-1">, cancel anytime</span>}
         </div>
         <p className={`mb-6 ${plan.disabled ? 'text-gray-600' : 'text-gray-600'}`}>{plan.description}</p>
         <ul className="space-y-3 mb-8">
