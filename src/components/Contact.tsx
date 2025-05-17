@@ -41,9 +41,32 @@ const Contact = ({ id }: ContactProps) => {
   async function onSubmit(data: FormValues) {
     setIsSubmitting(true);
     try {
-      // In a real implementation, this would send the data to a server
-      // For now, we'll just simulate a successful submission
-      await new Promise((resolve) => setTimeout(resolve, 1000));
+      // Create a formatted email body
+      const emailBody = {
+        to: "support@tobeystutor.com",
+        from: data.email,
+        name: data.name,
+        message: data.message,
+      };
+      
+      // Send the form data to emailjs
+      const response = await fetch('https://formsubmit.co/ajax/support@tobeystutor.com', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json'
+        },
+        body: JSON.stringify({
+          name: data.name,
+          email: data.email,
+          message: data.message,
+          _subject: `Contact Form Submission from ${data.name}`
+        })
+      });
+      
+      if (!response.ok) {
+        throw new Error('Failed to submit form');
+      }
       
       console.log("Form submitted:", data);
       toast.success("Message sent! We'll get back to you soon.");
