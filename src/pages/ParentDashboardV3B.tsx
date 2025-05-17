@@ -106,7 +106,21 @@ const ParentDashboardV3B = () => {
         animate={{ opacity: 1 }}
         transition={{ duration: 0.5 }}
       >
-        <DashboardHeader title="Parent Dashboard V3B" />
+        <DashboardHeader title="Parent's Dashboard" />
+        
+        {/* Student Dashboard Sneak Peek Banner */}
+        <motion.div
+          className="mb-6 bg-gradient-to-r from-blue-400 to-blue-300 rounded-lg p-3 text-white text-center shadow-md"
+          initial={{ opacity: 0, y: -20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.2, duration: 0.5 }}
+        >
+          <p className="font-medium flex items-center justify-center">
+            <span className="mr-2">🚀</span>
+            SNEAK PEEK: This is a preview of the Student Dashboard. Available June 2025
+            <span className="ml-2">🚀</span>
+          </p>
+        </motion.div>
         
         <DashboardLayout 
           containerVariants={containerVariants} 
