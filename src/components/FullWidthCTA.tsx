@@ -1,7 +1,7 @@
 
 import React from "react";
 import { Button } from "@/components/ui/button";
-import { ArrowRight, Clock } from "lucide-react";
+import { ArrowRight } from "lucide-react";
 import { Link } from "react-router-dom";
 
 const FullWidthCTA = () => {
@@ -17,15 +17,17 @@ const FullWidthCTA = () => {
               Try out the demo version of Tobey's Tutor. See how our patent pending AI-powered technology can level up your kids skills in a fun and supportive way. Give it a try, for free!
             </p>
             <Link to="/demo-v5">
-              <Button 
-                size="lg" 
-                className="bg-tobey-orange hover:bg-tobey-darkOrange text-white font-medium transform transition-transform duration-300 hover:scale-105 animate-fade-in opacity-0 flex items-center gap-2"
-                style={{ animationDelay: '600ms', animationFillMode: 'forwards' }}
-              >
-                Try the Demo Now 
-                <Clock className="h-4 w-4" />
-                <ArrowRight className="ml-2 h-4 w-4" />
-              </Button>
+              <div className="relative inline-block animate-fade-in opacity-0" style={{ animationDelay: '600ms', animationFillMode: 'forwards' }}>
+                {/* Chat balloon point/triangle */}
+                <div className="absolute -left-2 top-1/2 -translate-y-1/2 w-4 h-4 bg-tobey-orange transform rotate-45"></div>
+                <Button 
+                  size="lg" 
+                  className="bg-tobey-orange hover:bg-tobey-darkOrange text-white font-medium transform transition-transform duration-300 hover:scale-105 pl-6 flex items-center gap-2"
+                >
+                  Try the Demo Now 
+                  <ArrowRight className="ml-2 h-4 w-4" />
+                </Button>
+              </div>
             </Link>
           </div>
           
