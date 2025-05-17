@@ -51,10 +51,15 @@ const DemoV5 = () => {
             </p>
             
             <div className="max-w-3xl mx-auto animate-fade-in opacity-0" style={{ animationDelay: '800ms', animationFillMode: 'forwards' }}>              
-              <Card className="shadow-lg border-0 overflow-hidden rounded-lg">
+              <Card className="rounded-2xl overflow-hidden shadow-md bg-white">
                 <iframe 
                   src="https://tutor-assistant-arlyn11.replit.app/"
-                  style={{width: "100%", height: "650px", border: "none"}}
+                  style={{
+                    width: "100%", 
+                    height: "700px", 
+                    border: "none",
+                    display: "block"
+                  }}
                   title="Tobey's Tutor Demo"
                   allow="microphone; camera"
                 />
