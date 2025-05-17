@@ -6,19 +6,21 @@ import AchievementBadges from "@/components/dashboard/AchievementBadges";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { motion } from "framer-motion";
 import DashboardHeader from "@/components/dashboard/parent/DashboardHeader";
-import TestingBanner from "@/components/dashboard/parent/TestingBanner";
-import SupabaseStatus from "@/components/dashboard/parent/SupabaseStatus";
 import DashboardLayout from "@/components/dashboard/parent/DashboardLayout";
 import LeftSection from "@/components/dashboard/parent/LeftSection";
 import RightSection from "@/components/dashboard/parent/RightSection";
-import { useStudentData } from "@/hooks/useStudentData";
-import { toast } from "@/hooks/use-toast";
 import { useNavigate, useLocation } from "react-router-dom";
 
 const ParentDashboardV3B = () => {
-  // Updated to the new student ID
+  // Updated to use mockup data instead of Supabase
   const STUDENT_ID = "310e6d9d-d937-421f-8168-752fcb242881";
-  const { studentData, isLoading, supabaseError } = useStudentData(STUDENT_ID);
+  const studentData = {
+    name: "Alex Johnson",
+    totalLessons: 24,
+    averageSessionDuration: 45,
+    longTermPlan: "Improve reading comprehension and develop stronger math skills for upcoming grade level challenges."
+  };
+  
   const isMobile = useIsMobile();
   const [isPageReady, setIsPageReady] = useState(false);
   const navigate = useNavigate();
@@ -104,9 +106,7 @@ const ParentDashboardV3B = () => {
         animate={{ opacity: 1 }}
         transition={{ duration: 0.5 }}
       >
-        <DashboardHeader title="Parent Dashboard V3B (Supabase Testing)" />
-        <TestingBanner />
-        <SupabaseStatus isLoading={isLoading} supabaseError={supabaseError} />
+        <DashboardHeader title="Parent Dashboard V3B" />
         
         <DashboardLayout 
           containerVariants={containerVariants} 
