@@ -16,10 +16,16 @@ const Story = () => {
             We created Tobey's Tutor for our son—a bright 11-year-old with dyslexia who inspired both our mission and our name.
           </p>
           
-          <div className="my-8 relative max-w-lg mx-auto">
-            <Card className="bg-white/80 shadow-md p-6 backdrop-blur-sm border-tobey-orange border-l-4">
-              <TextQuote className="text-tobey-orange h-8 w-8 mb-2 opacity-60 absolute -top-4 -left-2" />
-              <p className="text-lg font-medium text-gray-800 italic">
+          <div className="my-12 relative max-w-md mx-auto">
+            <div className="absolute inset-0 bg-tobey-blue rounded-xl transform rotate-1"></div>
+            <Card className="relative bg-white p-8 rounded-xl border-2 border-tobey-orange">
+              <div className="absolute -top-3 -left-3 text-tobey-orange opacity-80">
+                <TextQuote size={32} />
+              </div>
+              <div className="absolute -bottom-3 -right-3 text-tobey-orange opacity-80 transform rotate-180">
+                <TextQuote size={32} />
+              </div>
+              <p className="text-lg font-medium text-center text-tobey-text px-4 italic">
                 "Tobey now voluntarily asks for study time—words we never expected to hear."
               </p>
             </Card>
