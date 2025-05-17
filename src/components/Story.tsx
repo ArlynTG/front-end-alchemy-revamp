@@ -18,8 +18,8 @@ const Story = () => {
           
           <div className="float-right ml-8 mb-6 w-64 aspect-square">
             <div className="relative h-full">
-              <div className="absolute inset-0 bg-white rounded-lg border-2 border-tobey-orange"></div>
-              <Card className="relative h-full flex items-center justify-center p-6 rounded-lg">
+              <div className="absolute inset-0 bg-white rounded-lg border-2 border-tobey-orange shadow-md"></div>
+              <Card className="relative h-full flex items-center justify-center p-6 rounded-lg shadow-[0_4px_12px_-2px_rgba(0,0,0,0.15)]">
                 <div className="absolute top-2 left-2 text-tobey-orange">
                   <Quote size={24} />
                 </div>
