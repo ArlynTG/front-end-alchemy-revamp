@@ -1,7 +1,7 @@
 
 import React from 'react';
 import { Card } from "@/components/ui/card";
-import { TextQuote } from "lucide-react";
+import { Quote } from "lucide-react";
 
 const Story = () => {
   return (
@@ -16,19 +16,21 @@ const Story = () => {
             We created Tobey's Tutor for our son—a bright 11-year-old with dyslexia who inspired both our mission and our name.
           </p>
           
-          <div className="my-12 relative max-w-md mx-auto">
-            <div className="absolute inset-0 bg-tobey-blue rounded-xl transform rotate-1"></div>
-            <Card className="relative bg-white p-8 rounded-xl border-2 border-tobey-orange">
-              <div className="absolute -top-3 -left-3 text-tobey-orange opacity-80">
-                <TextQuote size={32} />
-              </div>
-              <div className="absolute -bottom-3 -right-3 text-tobey-orange opacity-80 transform rotate-180">
-                <TextQuote size={32} />
-              </div>
-              <p className="text-lg font-medium text-center text-tobey-text px-4 italic">
-                "Tobey now voluntarily asks for study time—words we never expected to hear."
-              </p>
-            </Card>
+          <div className="float-right ml-8 mb-6 w-64 aspect-square">
+            <div className="relative h-full">
+              <div className="absolute inset-0 bg-white rounded-lg border-2 border-tobey-orange"></div>
+              <Card className="relative h-full flex items-center justify-center p-6 rounded-lg">
+                <div className="absolute top-2 left-2 text-tobey-orange">
+                  <Quote size={24} />
+                </div>
+                <div className="absolute bottom-2 right-2 text-tobey-orange transform rotate-180">
+                  <Quote size={24} />
+                </div>
+                <p className="text-base font-medium text-center text-tobey-text italic">
+                  "Tobey now voluntarily asks for study time—words we never expected to hear."
+                </p>
+              </Card>
+            </div>
           </div>
           
           <p className="mb-6">
