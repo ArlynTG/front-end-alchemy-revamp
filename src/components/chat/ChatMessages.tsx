@@ -8,42 +8,52 @@ interface ChatMessagesProps {
   isLoading: boolean;
 }
 
-// Mock conversation data for initial display
+// Mock conversation data for initial display - Updated to focus on math word problems and executive functioning
 const mockConversation: Message[] = [
   {
     id: "welcome",
     sender: "assistant",
-    text: "👋 Hi Alex! Welcome back! I noticed you've been practicing fractions. Great work on improving your skills!"
+    text: "👋 Hi Alex! Welcome back! I see you're working on math word problems today. How can I help you with today's assignment?"
   },
   {
     id: "user1",
     sender: "user",
-    text: "Thanks! I've been struggling with dividing fractions though. Can you help me?"
+    text: "I have this word problem for homework and I'm completely stuck. 'If a train travels 240 miles in 4 hours, how far will it travel in 7 hours?' There's too many steps and I keep getting confused."
   },
   {
     id: "ai1",
     sender: "assistant",
-    text: "Absolutely! I believe in you! Dividing fractions can be tricky at first, but I've got a simple trick: 'Keep, Change, Flip!' When dividing fractions, you keep the first fraction, change the division to multiplication, and flip the second fraction. Would you like to try an example together?"
+    text: "I understand how these multi-step problems can feel overwhelming. Let's break this down into smaller pieces so it's easier to manage:\n\n1️⃣ First, let's find how far the train travels in 1 hour (the rate)\n2️⃣ Then we'll use that rate to calculate the distance for 7 hours\n\nFor step 1: If the train travels 240 miles in 4 hours, the rate is 240 ÷ 4 = 60 miles per hour\n\nFor step 2: At 60 miles per hour, in 7 hours it will travel: 60 × 7 = 420 miles\n\nDoes this approach make more sense when we break it down?"
   },
   {
     id: "user2",
     sender: "user",
-    text: "Yes please! How about 3/4 ÷ 1/2?"
+    text: "Yeah, that helps! But I have 5 more problems to do and I'm already out of time. I'm supposed to finish this and start my science project tonight too. I don't know how to get it all done."
   },
   {
     id: "ai2",
     sender: "assistant",
-    text: "Great question! Let's work through 3/4 ÷ 1/2 together:\n\n1. Keep the first fraction: 3/4\n2. Change division to multiplication: ×\n3. Flip the second fraction: 1/2 becomes 2/1\n\nSo 3/4 ÷ 1/2 = 3/4 × 2/1 = 6/4 = 1.5 or 1½\n\nYou're doing fantastic! Would you like to try another one?"
+    text: "I can tell you're feeling overwhelmed with the workload. That's completely understandable! Let's create a quick plan to help you manage your time:\n\n📝 HOMEWORK PLAN 📝\n\n1. Math problems (30 mins total):\n   - Break them into 5-minute chunks with short breaks\n   - We can solve them one at a time together\n\n2. Science project (start tonight, continue tomorrow):\n   - Tonight: Just gather materials and create outline (15 mins)\n   - Tomorrow: Work on the actual project\n\nWould this help? We can set a timer for each math problem to stay focused. Which math problem should we tackle next?"
   },
   {
     id: "user3",
     sender: "user",
-    text: "This makes so much sense now! Can we try 2/3 ÷ 4/5?"
+    text: "That sounds better. Ok, here's the next one: 'A rectangle has an area of 72 square feet. If the width is 8 feet, what is the length?' I know there's a formula but I keep mixing them up."
   },
   {
     id: "ai3",
     sender: "assistant",
-    text: "You're on fire today! 🔥 Let's solve 2/3 ÷ 4/5:\n\n1. Keep: 2/3\n2. Change: × \n3. Flip: 4/5 becomes 5/4\n\nSo 2/3 ÷ 4/5 = 2/3 × 5/4 = 10/12 = 5/6\n\nExcellent work! Your persistence is really paying off. I'm proud of how you're tackling these problems!"
+    text: "You're doing great by tackling one problem at a time! For rectangles, here's an easy way to remember:\n\nArea = Length × Width\n\nLet's use that formula with your problem:\n- Area = 72 square feet\n- Width = 8 feet\n- Length = ?\n\nWe can rearrange the formula to find length:\nLength = Area ÷ Width\nLength = 72 ÷ 8\nLength = 9 feet\n\nVisualizing this: imagine a rectangle with 8 feet across, and to make 72 square feet total, it needs to be 9 feet long.\n\nDoes this make sense? Should we move on to the next problem?"
+  },
+  {
+    id: "user4",
+    sender: "user",
+    text: "That makes sense! I'm feeling better about this now. I think I can try the next ones on my own, but can you remind me how to organize my science project? I have to compare plant growth with different types of water."
+  },
+  {
+    id: "ai4",
+    sender: "assistant",
+    text: "I'm so glad you're feeling more confident with the math problems! For your science project on plant growth, here's a simple organization plan:\n\n🌱 SCIENCE PROJECT STEPS 🌱\n\n1. Materials List (Tonight - 5 mins):\n   - 3 identical plants\n   - 3 types of water\n   - Measuring tape\n   - Notebook for observations\n\n2. Project Schedule (Tonight - 10 mins):\n   - Day 1: Set up plants with different water types\n   - Days 2-7: Measure plants daily at the same time (make a chart!)\n   - Day 8: Create results & conclusion\n\nTIP: Take a picture every day with a ruler next to each plant - this visual record helps if you miss a day, and it's perfect for your presentation!\n\nDo you want me to help you create a simple tracking chart for your observations?"
   }
 ];
 
