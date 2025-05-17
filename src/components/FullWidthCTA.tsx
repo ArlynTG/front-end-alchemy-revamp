@@ -1,7 +1,6 @@
 
 import React from "react";
 import { Button } from "@/components/ui/button";
-import { ArrowRight } from "lucide-react";
 import { Link } from "react-router-dom";
 
 const FullWidthCTA = () => {
@@ -22,10 +21,9 @@ const FullWidthCTA = () => {
                 <div className="absolute -left-2 top-1/2 -translate-y-1/2 w-4 h-4 bg-tobey-orange transform rotate-45"></div>
                 <Button 
                   size="lg" 
-                  className="bg-tobey-orange hover:bg-tobey-darkOrange text-white font-medium transform transition-transform duration-300 hover:scale-105 pl-6 flex items-center gap-2"
+                  className="bg-tobey-orange hover:bg-tobey-darkOrange text-white font-medium transform transition-transform duration-300 hover:scale-105 pl-6 pr-6 rounded-full flex items-center"
                 >
-                  Try the Demo Now 
-                  <ArrowRight className="ml-2 h-4 w-4" />
+                  Try the Demo Now
                 </Button>
               </div>
             </Link>
