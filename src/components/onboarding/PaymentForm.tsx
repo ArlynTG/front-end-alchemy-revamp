@@ -6,7 +6,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from '@/components/ui/label';
 import { CheckCircle } from 'lucide-react';
 import { loadStripe } from '@stripe/stripe-js';
-import type { StripeElementsOptions } from '@stripe/stripe-js';
+import type { StripeElementsOptions, Appearance } from '@stripe/stripe-js';
 import { Elements } from '@stripe/react-stripe-js';
 import { useToast } from '@/components/ui/use-toast';
 import { supabase } from '@/integrations/supabase/client';
@@ -81,20 +81,21 @@ const PaymentForm = ({ onPaymentComplete, onBack, profileData }: PaymentFormProp
   }, [profileData, toast]);
 
   // Configure Stripe appearance options
-  const appearance = {
+  const appearance: Appearance = {
     theme: 'stripe',
     variables: {
       colorPrimary: '#ff6b35', // tobey-orange
     },
   };
 
-  // Options to pass to Elements - properly typed for SetupIntent
-  const options: StripeElementsOptions = clientSecret ? {
-    // Use explicit type casting to handle the SetupIntent options
-    clientSecret: clientSecret as string,
-    appearance,
-    mode: 'setup' as const,
-  } : { mode: 'setup' as const };
+  // Define proper options for SetupIntent
+  const options: StripeElementsOptions = clientSecret 
+    ? {
+        clientSecret,
+        appearance,
+        mode: 'setup' as const,
+      } 
+    : { mode: 'setup' as const };
 
   return (
     <div className="space-y-6">
