@@ -15,7 +15,6 @@ interface PaymentFormProps {
 const PaymentForm = ({ onPaymentComplete, onBack }: PaymentFormProps) => {
   const [isAgreed, setIsAgreed] = useState(false);
   const [isProcessing, setIsProcessing] = useState(false);
-  const [error, setError] = useState<string | null>(null);
   
   useEffect(() => {
     // Debug: Log all localStorage items at mount
@@ -30,8 +29,7 @@ const PaymentForm = ({ onPaymentComplete, onBack }: PaymentFormProps) => {
     // Check for email on component mount
     const email = localStorage.getItem('user_email');
     if (!email) {
-      setError('Email address is missing. Please go back and complete the profile form first.');
-      // Only show toast notification, don't duplicate with error state
+      // Only show toast notification, don't use error state
       toast({
         title: "Missing Information",
         description: "Email address is required. Please complete the profile form.",
@@ -62,7 +60,6 @@ const PaymentForm = ({ onPaymentComplete, onBack }: PaymentFormProps) => {
     }
 
     setIsProcessing(true);
-    setError(null);
     
     try {
       // Get data from localStorage with detailed logging
@@ -115,9 +112,7 @@ const PaymentForm = ({ onPaymentComplete, onBack }: PaymentFormProps) => {
       }
     } catch (err) {
       console.error('Error:', err);
-      // Set error state but don't show duplicate toast
-      setError(err instanceof Error ? err.message : 'An unknown error occurred');
-      // Show only one toast notification for errors
+      // Only show toast, don't use separate error state
       toast({
         title: "Payment Setup Failed",
         description: err instanceof Error ? err.message : "There was an error processing your request. Please try again.",
@@ -191,7 +186,7 @@ const PaymentForm = ({ onPaymentComplete, onBack }: PaymentFormProps) => {
         </CardFooter>
       </Card>
 
-      {/* Remove this error display to prevent duplication with toast notifications */}
+      {/* No error display here - we only use toast notifications */}
 
       <form onSubmit={handleSubscribe}>
         <div className="pt-4 border-t border-gray-200 mt-8">
