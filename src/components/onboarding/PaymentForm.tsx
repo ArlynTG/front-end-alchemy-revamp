@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 
@@ -5,6 +6,9 @@ interface PaymentFormProps {
   onPaymentComplete: (paymentId: string) => void;
   onBack: () => void;
 }
+
+// The direct Stripe checkout URL
+const STRIPE_CHECKOUT_URL = "https://buy.stripe.com/00w7sKbnj3Tg4KQ1sP9bO03";
 
 const PaymentForm = ({ onPaymentComplete, onBack }: PaymentFormProps) => {
   const [isLoading, setIsLoading] = useState(false);
@@ -62,41 +66,17 @@ const PaymentForm = ({ onPaymentComplete, onBack }: PaymentFormProps) => {
       // Generate a unique ID for this transaction
       const signupId = localStorage.getItem('signup_id') || `user-${Date.now()}`;
       
-      // Get the current origin for dynamic success and cancel URLs
-      const origin = window.location.origin;
-      const successUrl = `${origin}/onboarding?step=complete`;
-      const cancelUrl = `${origin}/onboarding?step=payment`;
+      // Log the customer click for analytics purposes
+      console.log(`Redirecting to Stripe checkout: User ${userEmail}, ID ${signupId}`);
       
-      // Call Stripe checkout function with hardcoded auth
-      const response = await fetch('https://hgpplvegqlvxwszlhzwc.supabase.co/functions/v1/create-checkout-session-june-beta', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhncHBsdmVncWx2eHdzemxoendjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDQ3NzU2NDEsImV4cCI6MjA2MDM1MTY0MX0.yMqquc9J0EhBA7lS7c-vInK6NC00BqTt5gKjMt7jl4I'
-        },
-        body: JSON.stringify({
-          signup_id: signupId,
-          email: userEmail,
-          success_url: `${successUrl}?session_id={CHECKOUT_SESSION_ID}`,
-          cancel_url: cancelUrl
-        })
-      });
+      // Call onPaymentComplete with 'pending' to update the UI state
+      onPaymentComplete('pending');
       
-      const data = await response.json();
-      
-      if (data.url) {
-        // Call onPaymentComplete with a success ID
-        onPaymentComplete('pending');
-        
-        // Redirect to Stripe
-        window.location.href = data.url;
-      } else {
-        throw new Error('Failed to create checkout session. Please try again.');
-      }
+      // Redirect to Stripe checkout URL
+      window.location.href = STRIPE_CHECKOUT_URL;
     } catch (error) {
       console.error('Payment error:', error);
       setErrorMessage(error instanceof Error ? error.message : 'An unexpected error occurred');
-    } finally {
       setIsLoading(false);
     }
   };
