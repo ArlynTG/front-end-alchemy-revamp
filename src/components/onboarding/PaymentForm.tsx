@@ -5,7 +5,8 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from '@/components/ui/label';
 import { CheckCircle } from 'lucide-react';
-import { loadStripe, StripeElementsOptions, SetupIntentResult } from '@stripe/stripe-js';
+import { loadStripe } from '@stripe/stripe-js';
+import type { StripeElementsOptions } from '@stripe/stripe-js';
 import { Elements } from '@stripe/react-stripe-js';
 import { useToast } from '@/components/ui/use-toast';
 import { supabase } from '@/integrations/supabase/client';
@@ -87,9 +88,10 @@ const PaymentForm = ({ onPaymentComplete, onBack, profileData }: PaymentFormProp
     },
   };
 
-  // Options to pass to Elements
+  // Options to pass to Elements - properly typed for SetupIntent
   const options: StripeElementsOptions = clientSecret ? {
-    clientSecret,
+    // Use explicit type casting to handle the SetupIntent options
+    clientSecret: clientSecret as string,
     appearance,
     mode: 'setup' as const,
   } : { mode: 'setup' as const };
