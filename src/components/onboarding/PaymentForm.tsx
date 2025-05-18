@@ -31,6 +31,7 @@ const PaymentForm = ({ onPaymentComplete, onBack }: PaymentFormProps) => {
     const email = localStorage.getItem('user_email');
     if (!email) {
       setError('Email address is missing. Please go back and complete the profile form first.');
+      // Only show toast notification, don't duplicate with error state
       toast({
         title: "Missing Information",
         description: "Email address is required. Please complete the profile form.",
@@ -114,7 +115,9 @@ const PaymentForm = ({ onPaymentComplete, onBack }: PaymentFormProps) => {
       }
     } catch (err) {
       console.error('Error:', err);
+      // Set error state but don't show duplicate toast
       setError(err instanceof Error ? err.message : 'An unknown error occurred');
+      // Show only one toast notification for errors
       toast({
         title: "Payment Setup Failed",
         description: err instanceof Error ? err.message : "There was an error processing your request. Please try again.",
@@ -188,11 +191,7 @@ const PaymentForm = ({ onPaymentComplete, onBack }: PaymentFormProps) => {
         </CardFooter>
       </Card>
 
-      {error && (
-        <div className="p-4 bg-red-50 border border-red-200 rounded-md">
-          <p className="text-red-600 font-medium">{error}</p>
-        </div>
-      )}
+      {/* Remove this error display to prevent duplication with toast notifications */}
 
       <form onSubmit={handleSubscribe}>
         <div className="pt-4 border-t border-gray-200 mt-8">
