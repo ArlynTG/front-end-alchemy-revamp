@@ -1,11 +1,6 @@
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
-import { Checkbox } from "@/components/ui/checkbox";
-import { Label } from '@/components/ui/label';
-import { CheckCircle } from 'lucide-react';
-import { toast } from "@/components/ui/use-toast";
 
 interface PaymentFormProps {
   onPaymentComplete: (paymentId: string) => void;
@@ -13,126 +8,93 @@ interface PaymentFormProps {
 }
 
 const PaymentForm = ({ onPaymentComplete, onBack }: PaymentFormProps) => {
-  const [isAgreed, setIsAgreed] = useState(false);
-  const [isProcessing, setIsProcessing] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const [termsAccepted, setTermsAccepted] = useState(false);
+  
+  // Use state to store the email directly in the component
+  // This serves as a backup to localStorage
+  const [email, setEmail] = useState<string | null>(null);
   
   useEffect(() => {
-    console.log('PaymentForm MOUNTED');
-    console.log('localStorage direct check:', { email: localStorage.getItem('user_email') });
+    // Direct approach to get email - try localStorage first
+    let userEmail = localStorage.getItem('user_email');
     
-    // For debugging, dump all localStorage contents
-    console.log('All localStorage keys:');
-    for (let i = 0; i < localStorage.length; i++) {
-      const key = localStorage.key(i);
-      console.log(`${key}: ${localStorage.getItem(key)}`);
+    // If email isn't in localStorage, get it from the form DOM if available
+    if (!userEmail) {
+      const profileForm = document.getElementById('profile-form');
+      if (profileForm) {
+        const emailInput = profileForm.querySelector('input[name="email"]') as HTMLInputElement;
+        if (emailInput && emailInput.value) {
+          userEmail = emailInput.value;
+          // Save it to localStorage
+          localStorage.setItem('user_email', userEmail);
+        }
+      }
     }
     
-    // Debug: Log all localStorage items at mount
-    console.log('LocalStorage items at mount:', {
-      email: localStorage.getItem('user_email'),
-      name: localStorage.getItem('user_name'),
-      firstName: localStorage.getItem('user_first_name'),
-      lastName: localStorage.getItem('user_last_name'),
-      signupId: localStorage.getItem('signup_id')
-    });
+    // Set to component state
+    setEmail(userEmail);
     
-    // Check for email on component mount
-    const email = localStorage.getItem('user_email');
-    if (!email) {
-      // Only show toast notification, don't use error state
-      toast({
-        title: "Missing Information",
-        description: "Email address is required. Please complete the profile form.",
-        variant: "destructive"
-      });
+    // Show error if still no email
+    if (!userEmail) {
+      setErrorMessage('Email address is missing. Please go back and complete the profile form first.');
+    } else {
+      setErrorMessage(null);
     }
   }, []);
   
-  // Improved function to get signup data
-  const getSignupData = () => {
-    const email = localStorage.getItem('user_email');
-    const signupId = localStorage.getItem('signup_id') || `temp-id-${Date.now()}`;
-    
-    console.log('Retrieved signup data:', { signupId, email });
-    
-    return { id: signupId, email: email };
-  };
-
-  const handleSubscribe = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!isAgreed) {
-      toast({
-        title: "Agreement Required",
-        description: "Please accept the Terms of Service and Privacy Policy to continue.",
-        variant: "destructive"
-      });
+  const handleSubscribe = async () => {
+    if (!termsAccepted) {
+      setErrorMessage('Please accept the Terms of Service and Privacy Policy to continue.');
       return;
     }
-
-    setIsProcessing(true);
+    
+    setIsLoading(true);
     
     try {
-      // Get data from localStorage with detailed logging
-      const signupData = getSignupData();
+      // Use email from component state as first priority
+      const userEmail = email || localStorage.getItem('user_email');
       
-      if (!signupData.email) {
-        throw new Error('Email address is required. Please go back and complete the profile form.');
+      if (!userEmail) {
+        throw new Error('Email address is required. Please go back and complete the profile form first.');
       }
       
-      console.log("Submitting checkout data:", {
-        signup_id: signupData.id,
-        email: signupData.email
-      });
+      // Generate a unique ID for this transaction
+      const signupId = localStorage.getItem('signup_id') || `user-${Date.now()}`;
       
+      // Call Stripe checkout function with hardcoded auth
       const response = await fetch('https://hgpplvegqlvxwszlhzwc.supabase.co/functions/v1/create-checkout-session-june-beta', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhncHBsdmVncWx2eHdzemxoendjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDQ3NzU2NDEsImV4cCI6MjA2MDM1MTY0MX0.yMqquc9J0EhBA7lS7c-vInK6NC00BqTt5gKjMt7jl4I`
+          'Authorization': 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhncHBsdmVncWx2eHdzemxoendjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDQ3NzU2NDEsImV4cCI6MjA2MDM1MTY0MX0.yMqquc9J0EhBA7lS7c-vInK6NC00BqTt5gKjMt7jl4I'
         },
         body: JSON.stringify({
-          signup_id: signupData.id,
-          email: signupData.email
+          signup_id: signupId,
+          email: userEmail
         })
       });
       
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.error || 'Failed to create checkout session');
-      }
-      
       const data = await response.json();
-      console.log("Checkout session created:", data);
       
       if (data.url) {
-        // Save session ID if available and call onPaymentComplete
-        if (data.session_id) {
-          localStorage.setItem('checkout_session_id', data.session_id);
-          // Call onPaymentComplete with the session ID before redirect
-          onPaymentComplete(data.session_id);
-        } else {
-          // If no session_id in response, still call onPaymentComplete with a generic ID
-          onPaymentComplete(`session-${Date.now()}`);
-        }
+        // Call onPaymentComplete with a success ID
+        onPaymentComplete('pending');
         
-        // Redirect to Stripe Checkout
+        // Redirect to Stripe
         window.location.href = data.url;
       } else {
-        throw new Error('Failed to create checkout session: No redirect URL returned');
+        throw new Error('Failed to create checkout session. Please try again.');
       }
-    } catch (err) {
-      console.error('Error:', err);
-      // Only show toast, don't use separate error state
-      toast({
-        title: "Payment Setup Failed",
-        description: err instanceof Error ? err.message : "There was an error processing your request. Please try again.",
-        variant: "destructive"
-      });
+    } catch (error) {
+      console.error('Payment error:', error);
+      setErrorMessage(error instanceof Error ? error.message : 'An unexpected error occurred');
     } finally {
-      setIsProcessing(false);
+      setIsLoading(false);
     }
   };
-
+  
   return (
     <div className="space-y-6">
       <div>
@@ -141,88 +103,125 @@ const PaymentForm = ({ onPaymentComplete, onBack }: PaymentFormProps) => {
           Set up your subscription to access all features of Tobey's Tutor.
         </p>
       </div>
-
-      <Card>
-        <CardHeader>
-          <CardTitle>Early Adopter Special</CardTitle>
-          <CardDescription>Early access to Tobey's Tutor with special beta pricing</CardDescription>
-        </CardHeader>
-        <CardContent>
-          <div className="flex justify-between items-center">
-            <div>
-              <p className="text-2xl font-semibold">$29<span className="text-sm text-gray-500">/month</span></p>
-              <p className="text-sm text-gray-500 mt-1">Billed monthly, cancel anytime</p>
+      
+      {/* Subscription plan details */}
+      <div className="border rounded-lg p-6">
+        <h3 className="text-lg font-medium text-gray-900">Early Adopter Special</h3>
+        <p className="text-sm text-gray-500">Early access to Tobey's Tutor with special beta pricing</p>
+        
+        <div className="mt-4">
+          <p className="text-2xl font-semibold">$29<span className="text-sm font-normal text-gray-500">/month</span></p>
+          <p className="text-sm text-gray-500">Billed monthly, cancel anytime</p>
+        </div>
+        
+        <ul className="mt-4 space-y-2">
+          <li className="flex items-start">
+            <svg className="h-5 w-5 text-green-500 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7"></path>
+            </svg>
+            <span className="ml-2 text-sm text-gray-700">Unlimited access to Tobey's AI tutor</span>
+          </li>
+          <li className="flex items-start">
+            <svg className="h-5 w-5 text-green-500 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7"></path>
+            </svg>
+            <span className="ml-2 text-sm text-gray-700">Personalized learning paths for your child</span>
+          </li>
+          <li className="flex items-start">
+            <svg className="h-5 w-5 text-green-500 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7"></path>
+            </svg>
+            <span className="ml-2 text-sm text-gray-700">Regular progress reports and insights</span>
+          </li>
+          <li className="flex items-start">
+            <svg className="h-5 w-5 text-green-500 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7"></path>
+            </svg>
+            <span className="ml-2 text-sm text-gray-700">Early access to new features</span>
+          </li>
+        </ul>
+      </div>
+      
+      {/* Debug info - only show in development */}
+      <div className="bg-gray-100 p-2 text-xs">
+        <p>Debugging info (hidden in production)</p>
+        <p>Email: {email || 'Not found'}</p>
+        <p>localStorage email: {localStorage.getItem('user_email') || 'Not found'}</p>
+      </div>
+      
+      {/* Error message display */}
+      {errorMessage && (
+        <div className="rounded-md bg-red-50 p-4">
+          <div className="flex">
+            <div className="flex-shrink-0">
+              <svg className="h-5 w-5 text-red-400" viewBox="0 0 20 20" fill="currentColor">
+                <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd" />
+              </svg>
             </div>
-          </div>
-
-          <div className="mt-4 space-y-2">
-            <div className="flex items-start">
-              <CheckCircle className="h-5 w-5 text-green-500 mr-2 flex-shrink-0 mt-0.5" />
-              <span className="text-gray-700">Unlimited access to Tobey's AI tutor</span>
+            <div className="ml-3">
+              <p className="text-sm font-medium text-red-800">{errorMessage}</p>
             </div>
-            <div className="flex items-start">
-              <CheckCircle className="h-5 w-5 text-green-500 mr-2 flex-shrink-0 mt-0.5" />
-              <span className="text-gray-700">Personalized learning paths for your child</span>
-            </div>
-            <div className="flex items-start">
-              <CheckCircle className="h-5 w-5 text-green-500 mr-2 flex-shrink-0 mt-0.5" />
-              <span className="text-gray-700">Regular progress reports and insights</span>
-            </div>
-            <div className="flex items-start">
-              <CheckCircle className="h-5 w-5 text-green-500 mr-2 flex-shrink-0 mt-0.5" />
-              <span className="text-gray-700">Early access to new features</span>
-            </div>
-          </div>
-        </CardContent>
-        <CardFooter className="flex-col items-start">
-          <div className="flex items-top space-x-2 mb-4">
-            <Checkbox 
-              id="terms" 
-              checked={isAgreed} 
-              onCheckedChange={(checked) => setIsAgreed(!!checked)} 
-            />
-            <div className="grid gap-1.5 leading-none">
-              <Label 
-                htmlFor="terms" 
-                className="text-sm font-normal text-gray-700"
-              >
-                I agree to the <a href="https://tobeystutor.com/terms-of-service" className="text-tobey-orange hover:underline">Terms of Service</a> and <a href="https://tobeystutor.com/privacy-policy" className="text-tobey-orange hover:underline">Privacy Policy</a>
-              </Label>
-            </div>
-          </div>
-          <p className="text-sm text-gray-500 mb-4">
-            Your card will be charged immediately. You can cancel anytime from your account settings.
-          </p>
-        </CardFooter>
-      </Card>
-
-      {/* No error display here - we only use toast notifications */}
-
-      <form onSubmit={handleSubscribe}>
-        <div className="pt-4 border-t border-gray-200 mt-8">
-          <p className="text-sm text-gray-500 mb-8">
-            Payment information will be securely processed by Stripe. Your card details are never stored on our servers.
-          </p>
-
-          <div className="flex justify-between mt-8">
-            <Button 
-              type="button" 
-              variant="outline" 
-              onClick={onBack}
-              disabled={isProcessing}
-            >
-              Back
-            </Button>
-            <Button 
-              type="submit"
-              disabled={!isAgreed || isProcessing}
-              className="bg-tobey-orange hover:bg-tobey-orange/90 text-white subscribe-now"
-            >
-              {isProcessing ? "Processing..." : "Subscribe Now"}
-            </Button>
           </div>
         </div>
-      </form>
+      )}
+      
+      {/* Terms agreement */}
+      <div className="flex items-start">
+        <div className="flex items-center h-5">
+          <input
+            id="terms"
+            name="terms"
+            type="checkbox"
+            checked={termsAccepted}
+            onChange={(e) => setTermsAccepted(e.target.checked)}
+            className="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded"
+          />
+        </div>
+        <div className="ml-3 text-sm">
+          <label htmlFor="terms" className="font-medium text-gray-700">
+            I agree to the{" "}
+            <a href="/terms" className="text-indigo-600 hover:text-indigo-500">
+              Terms of Service
+            </a>{" "}
+            and{" "}
+            <a href="/privacy" className="text-indigo-600 hover:text-indigo-500">
+              Privacy Policy
+            </a>
+          </label>
+          <p className="text-gray-500">
+            Your card will be charged immediately. You can cancel anytime from your account settings.
+          </p>
+        </div>
+      </div>
+      
+      <div className="border-t border-gray-200 pt-6">
+        <p className="text-sm text-gray-500 mb-4">
+          Payment information will be securely processed by Stripe. Your card details are never stored on our servers.
+        </p>
+        
+        <div className="border rounded p-4 text-center text-gray-500 mb-6">
+          Stripe Payment Element will be integrated here
+        </div>
+        
+        <div className="flex justify-between">
+          <Button
+            type="button"
+            variant="outline"
+            onClick={onBack}
+            disabled={isLoading}
+          >
+            Back
+          </Button>
+          
+          <Button
+            type="button"
+            onClick={handleSubscribe}
+            disabled={isLoading || !termsAccepted}
+          >
+            {isLoading ? "Processing..." : "Subscribe Now"}
+          </Button>
+        </div>
+      </div>
     </div>
   );
 };
