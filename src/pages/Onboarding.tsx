@@ -3,10 +3,11 @@ import { Helmet } from "react-helmet-async";
 import OnboardingContainer from "@/components/onboarding/OnboardingContainer";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Info } from "lucide-react";
+import { HelmetProvider } from "react-helmet-async";
 
 const Onboarding = () => {
   return (
-    <>
+    <HelmetProvider>
       <Helmet>
         <title>Complete Your Setup | Tobey's Tutor</title>
         <meta name="description" content="Complete your account setup to get started with Tobey's Tutor, the AI learning assistant for bright kids with dyslexia and ADHD." />
@@ -20,7 +21,7 @@ const Onboarding = () => {
       </Alert>
       
       <OnboardingContainer />
-    </>
+    </HelmetProvider>
   );
 };
 
