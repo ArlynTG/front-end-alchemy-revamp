@@ -29,17 +29,13 @@ const StripePaymentElement = ({
       setError(null);
       
       try {
-        const { data, error } = await supabase.functions.invoke("create-payment-intent", {
-          body: { firstName, lastName, email }
-        });
-
-        if (error) throw new Error(error.message || "Failed to create payment intent");
-        
-        if (data && data.clientSecret) {
-          setClientSecret(data.clientSecret);
-        } else {
-          throw new Error("No client secret returned");
-        }
+        // Simulate a successful payment intent creation without actual Supabase function call
+        setTimeout(() => {
+          // Mock client secret
+          const mockClientSecret = `pi_mock_${Math.random().toString(36).substring(2, 15)}_secret_${Math.random().toString(36).substring(2, 15)}`;
+          setClientSecret(mockClientSecret);
+          setIsLoading(false);
+        }, 1000);
       } catch (err) {
         console.error("Error creating payment intent:", err);
         setError(err instanceof Error ? err.message : "An unknown error occurred");
@@ -48,7 +44,6 @@ const StripePaymentElement = ({
           description: err instanceof Error ? err.message : "Failed to set up payment",
           variant: "destructive",
         });
-      } finally {
         setIsLoading(false);
       }
     };

@@ -1,6 +1,4 @@
 
-import { supabase } from "@/integrations/supabase/client";
-
 export interface PaymentErrorDetails {
   userId?: string | null;
   email?: string;
@@ -21,7 +19,7 @@ export const PAYMENT_STATUSES = {
 };
 
 /**
- * Logs payment errors to the database and console
+ * Logs payment errors to the console
  */
 export const logPaymentError = async (details: PaymentErrorDetails): Promise<void> => {
   // Always log to console for debugging
@@ -32,28 +30,12 @@ export const logPaymentError = async (details: PaymentErrorDetails): Promise<voi
     details.timestamp = new Date().toISOString();
   }
   
-  // Log to database if user ID is available
-  if (details.userId) {
-    try {
-      await supabase.from('payment_records').insert({
-        registration_id: details.userId,
-        payment_status: 'error',
-        payment_method: 'stripe',
-        stripe_customer_id: details.context?.stripeCustomerId || null,
-        stripe_payment_id: details.context?.stripePaymentId || null,
-        error_message: details.errorMessage,
-        error_type: details.errorType,
-        payment_date: details.timestamp
-      });
-      console.log("Error logged to database successfully");
-    } catch (error) {
-      console.error("Failed to log payment error to database:", error);
-    }
-  }
+  // This function previously logged to Supabase, but is now just a console logger
+  console.log("Payment error recorded:", details);
 };
 
 /**
- * Records payment attempt status in database
+ * Records payment attempt status (mock implementation)
  */
 export const recordPaymentStatus = async (
   userId: string,
@@ -67,17 +49,8 @@ export const recordPaymentStatus = async (
   }
 ): Promise<void> => {
   try {
-    await supabase.from('payment_records').insert({
-      registration_id: userId,
-      payment_status: status,
-      payment_method: details?.paymentMethod || 'stripe',
-      payment_amount: details?.amount || 100, // $1.00 default
-      stripe_payment_id: details?.paymentId,
-      stripe_customer_id: details?.customerId,
-      payment_date: new Date().toISOString(),
-      metadata: details?.additionalData || null
-    });
-    console.log(`Payment status recorded: ${status}`);
+    // Mock implementation that just logs to console
+    console.log(`Payment status recorded for user ${userId}: ${status}`, details);
   } catch (error) {
     console.error("Failed to record payment status:", error);
   }
@@ -139,10 +112,10 @@ class PaymentStatsTracker {
 
 // Export a singleton instance with improved monitoring
 export const paymentStats = new PaymentStatsTracker(3, (failures) => {
-  const errorMessage = `ALERT: ${failures} payment failures detected. Check Stripe integration.`;
+  const errorMessage = `ALERT: ${failures} payment failures detected. Check payment integration.`;
   console.warn(errorMessage);
   
-  // Log to database for persistent monitoring
+  // Log to console for monitoring
   logPaymentError({
     errorType: 'threshold_exceeded',
     errorMessage: errorMessage,
