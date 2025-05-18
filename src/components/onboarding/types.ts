@@ -1,8 +1,8 @@
+
 export type OnboardingStep =
   | "profile"
   | "learning-differences"
   | "payment"
-  | "document-upload"
   | "complete";
 
 export type LearningDifference =

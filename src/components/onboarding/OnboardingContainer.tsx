@@ -5,7 +5,6 @@ import OnboardingLayout from "./OnboardingLayout";
 import ProfileForm from "./ProfileForm";
 import LearningDifferencesForm from "./LearningDifferencesForm";
 import PaymentForm from "./PaymentForm";
-import DocumentUploadForm from "./DocumentUploadForm";
 import CompletionPage from "./CompletionPage";
 import { OnboardingFormValues, OnboardingStep, LearningDifference } from "./types";
 import { Button } from "@/components/ui/button";
@@ -46,13 +45,6 @@ const OnboardingContainer = ({ studentId = "temp-id" }: OnboardingContainerProps
   // Payment step handler
   const handlePaymentComplete = (paymentId: string) => {
     setPaymentId(paymentId);
-    setCurrentStep("document-upload");
-  };
-
-  // Document upload step handler
-  const handleDocumentUploadComplete = () => {
-    // Here you would typically store all the collected data in the database
-    console.log("Onboarding complete with data:", { ...formData, paymentId });
     setCurrentStep("complete");
   };
 
@@ -102,14 +94,6 @@ const OnboardingContainer = ({ studentId = "temp-id" }: OnboardingContainerProps
             <Button 
               variant="outline" 
               size="sm" 
-              onClick={() => navigateToStep("document-upload")}
-              className={`text-xs ${currentStep === "document-upload" ? "bg-blue-100" : ""}`}
-            >
-              Document Upload
-            </Button>
-            <Button 
-              variant="outline" 
-              size="sm" 
               onClick={() => navigateToStep("complete")}
               className={`text-xs ${currentStep === "complete" ? "bg-blue-100" : ""}`}
             >
@@ -138,14 +122,6 @@ const OnboardingContainer = ({ studentId = "temp-id" }: OnboardingContainerProps
         <PaymentForm 
           onPaymentComplete={handlePaymentComplete}
           onBack={() => setCurrentStep("learning-differences")}
-        />
-      )}
-
-      {currentStep === "document-upload" && (
-        <DocumentUploadForm 
-          studentId={studentId}
-          onComplete={handleDocumentUploadComplete}
-          onBack={() => setCurrentStep("payment")}
         />
       )}
 

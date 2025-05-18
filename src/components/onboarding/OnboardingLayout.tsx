@@ -12,7 +12,6 @@ const steps: { id: OnboardingStep; title: string }[] = [
   { id: "profile", title: "Profile" },
   { id: "learning-differences", title: "Learning Differences" },
   { id: "payment", title: "Payment" },
-  { id: "document-upload", title: "Documents" },
   { id: "complete", title: "Complete" },
 ];
 
