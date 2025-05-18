@@ -86,7 +86,7 @@ const PaymentForm = ({ onPaymentComplete, onBack }: PaymentFormProps) => {
                 htmlFor="terms" 
                 className="text-sm font-normal text-gray-700"
               >
-                I agree to the <a href="#" className="text-tobey-orange hover:underline">Terms of Service</a> and <a href="#" className="text-tobey-orange hover:underline">Privacy Policy</a>
+                I agree to the <a href="https://tobeystutor.com/terms-of-service" className="text-tobey-orange hover:underline">Terms of Service</a> and <a href="https://tobeystutor.com/privacy-policy" className="text-tobey-orange hover:underline">Privacy Policy</a>
               </Label>
             </div>
           </div>
