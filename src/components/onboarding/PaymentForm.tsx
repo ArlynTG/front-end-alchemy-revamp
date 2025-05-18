@@ -1,101 +1,37 @@
 
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from '@/components/ui/label';
 import { CheckCircle } from 'lucide-react';
-import { loadStripe } from '@stripe/stripe-js';
-import type { StripeElementsOptions, Appearance } from '@stripe/stripe-js';
-import { Elements } from '@stripe/react-stripe-js';
-import { useToast } from '@/components/ui/use-toast';
-import { supabase } from '@/integrations/supabase/client';
-
-// Import our custom Stripe payment component
-import StripePaymentElement from '@/components/payment/StripePaymentElement';
 
 interface PaymentFormProps {
   onPaymentComplete: (paymentId: string) => void;
   onBack: () => void;
-  profileData?: {
-    firstName?: string;
-    lastName?: string;
-    email?: string;
-  };
 }
 
-// Initialize Stripe outside component to avoid recreating on renders
-// This uses the public key which is safe to expose in client-side code
-const stripePromise = loadStripe(import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY || 
-  'pk_test_51PEymDIoP8aRuMvMGExvvOLgU5TJvpXY8UHftGpQcYvSXNwZyiR1ULQDl9NerGwTbqD3hPGcWO5NsytaLLTIbGaw00oZ4o4Sum');
-
-const PaymentForm = ({ onPaymentComplete, onBack, profileData }: PaymentFormProps) => {
+// This is a placeholder that will be replaced with actual Stripe integration
+const PaymentForm = ({ onPaymentComplete, onBack }: PaymentFormProps) => {
   const [isAgreed, setIsAgreed] = useState(false);
   const [isProcessing, setIsProcessing] = useState(false);
-  const [clientSecret, setClientSecret] = useState<string | null>(null);
-  const { toast } = useToast();
 
-  // Create payment intent when component mounts or profile data changes
-  useEffect(() => {
-    const createPaymentIntent = async () => {
-      try {
-        setIsProcessing(true);
-        
-        // Call our Supabase Edge Function to create a payment intent
-        const { data, error } = await supabase.functions.invoke('create-payment-intent', {
-          body: {
-            firstName: profileData?.firstName || '',
-            lastName: profileData?.lastName || '',
-            email: profileData?.email || '',
-            priceId: 'price_monthly_subscription', // This would be your actual price ID
-          },
-        });
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!isAgreed) return;
 
-        if (error) {
-          console.error('Error creating payment intent:', error);
-          toast({
-            title: "Payment Setup Error",
-            description: "Unable to initialize payment. Please try again.",
-            variant: "destructive",
-          });
-          return;
-        }
-
-        setClientSecret(data.clientSecret);
-      } catch (err) {
-        console.error('Error setting up payment:', err);
-        toast({
-          title: "Payment Setup Error",
-          description: "There was a problem connecting to Stripe. Please try again.",
-          variant: "destructive",
-        });
-      } finally {
-        setIsProcessing(false);
-      }
-    };
-
-    // Only create payment intent if we have user data
-    if (profileData?.email) {
-      createPaymentIntent();
-    }
-  }, [profileData, toast]);
-
-  // Configure Stripe appearance options
-  const appearance: Appearance = {
-    theme: 'stripe',
-    variables: {
-      colorPrimary: '#ff6b35', // tobey-orange
-    },
+    setIsProcessing(true);
+    
+    // This is a placeholder for the actual Stripe payment processing
+    // In the future, this will be replaced with a real Stripe checkout
+    setTimeout(() => {
+      // Simulate successful payment
+      const mockPaymentId = `pi_${Math.random().toString(36).substring(2, 15)}`;
+      
+      setIsProcessing(false);
+      onPaymentComplete(mockPaymentId);
+    }, 2000);
   };
-
-  // Define proper options for SetupIntent
-  const options: StripeElementsOptions = clientSecret 
-    ? {
-        clientSecret,
-        appearance,
-        mode: 'setup' as const,
-      } 
-    : { mode: 'setup' as const };
 
   return (
     <div className="space-y-6">
@@ -160,31 +96,19 @@ const PaymentForm = ({ onPaymentComplete, onBack, profileData }: PaymentFormProp
         </CardFooter>
       </Card>
 
-      <div className="pt-4 border-t border-gray-200 mt-8">
-        <p className="text-sm text-gray-500 mb-6">
-          Payment information will be securely processed by Stripe. Your card details are never stored on our servers.
-        </p>
+      <form onSubmit={handleSubmit}>
+        <div className="pt-4 border-t border-gray-200 mt-8">
+          <p className="text-sm text-gray-500 mb-8">
+            Payment information will be securely processed by Stripe. Your card details are never stored on our servers.
+          </p>
 
-        {clientSecret ? (
-          <div className="mb-6">
-            <Elements stripe={stripePromise} options={options}>
-              <StripePaymentElement 
-                isAgreed={isAgreed}
-                onBack={onBack}
-                onPaymentComplete={onPaymentComplete}
-                customerInfo={profileData}
-              />
-            </Elements>
-          </div>
-        ) : (
-          <div className="p-4 border border-gray-200 rounded-md bg-gray-50 mb-6">
+          {/* This is a placeholder for the Stripe payment form */}
+          <div className="p-4 border border-gray-200 rounded-md bg-gray-50">
             <p className="text-center text-gray-500">
-              {isProcessing ? "Setting up payment form..." : "Unable to load payment form. Please check your connection."}
+              Stripe Payment Element will be integrated here
             </p>
           </div>
-        )}
 
-        {!clientSecret && (
           <div className="flex justify-between mt-8">
             <Button 
               type="button" 
@@ -194,15 +118,15 @@ const PaymentForm = ({ onPaymentComplete, onBack, profileData }: PaymentFormProp
               Back
             </Button>
             <Button 
-              type="button"
-              disabled={true}
+              type="submit"
+              disabled={!isAgreed || isProcessing}
               className="bg-tobey-orange hover:bg-tobey-orange/90 text-white"
             >
               {isProcessing ? "Processing..." : "Subscribe Now"}
             </Button>
           </div>
-        )}
-      </div>
+        </div>
+      </form>
     </div>
   );
 };

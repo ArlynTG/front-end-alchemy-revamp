@@ -56,15 +56,6 @@ const OnboardingContainer = ({ studentId = "temp-id" }: OnboardingContainerProps
     setCurrentStep("complete");
   };
 
-  // Extract profile data for payment form
-  const getProfileData = () => {
-    return {
-      firstName: formData.firstName,
-      lastName: formData.lastName,
-      email: formData.email
-    };
-  };
-
   return (
     <OnboardingLayout currentStep={currentStep}>
       {/* Development testing controls */}
@@ -147,7 +138,6 @@ const OnboardingContainer = ({ studentId = "temp-id" }: OnboardingContainerProps
         <PaymentForm 
           onPaymentComplete={handlePaymentComplete}
           onBack={() => setCurrentStep("learning-differences")}
-          profileData={getProfileData()}
         />
       )}
 

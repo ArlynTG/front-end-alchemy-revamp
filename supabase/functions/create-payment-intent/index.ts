@@ -27,31 +27,24 @@ serve(async (req) => {
       name: `${firstName} ${lastName}`,
     });
     
-    // Create a SetupIntent for the subscription process
-    // This is more appropriate for subscriptions than PaymentIntent
-    const setupIntent = await stripe.setupIntents.create({
+    // Create a payment intent for $1.00
+    const paymentIntent = await stripe.paymentIntents.create({
+      amount: 100, // $1.00 in cents
+      currency: "usd",
       customer: customer.id,
-      payment_method_types: ['card'],
+      automatic_payment_methods: {
+        enabled: true,
+      },
       metadata: {
-        firstName,
-        lastName,
-        email
+        firstName: firstName,
+        lastName: lastName,
+        email: email
       }
     });
 
-    // After setup intent is confirmed, we would create a subscription in a webhook
-    // This is just a note for future implementation
-    /*
-    const subscription = await stripe.subscriptions.create({
-      customer: customer.id,
-      items: [{ price: 'price_monthly_subscription' }], // Replace with your actual price ID
-      default_payment_method: paymentMethodId,
-    });
-    */
-
     return new Response(
       JSON.stringify({ 
-        clientSecret: setupIntent.client_secret,
+        clientSecret: paymentIntent.client_secret,
         customerId: customer.id 
       }),
       { 
