@@ -172,14 +172,6 @@ const PaymentForm = ({ onPaymentComplete, onBack }: PaymentFormProps) => {
           >
             Back
           </Button>
-          
-          <Button
-            type="button"
-            onClick={handleSubscribe}
-            disabled={isLoading || !termsAccepted}
-          >
-            {isLoading ? "Processing..." : "Subscribe Now"}
-          </Button>
         </div>
       </div>
     </div>
