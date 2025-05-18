@@ -46,6 +46,16 @@ const PaymentForm = ({ onPaymentComplete, onBack }: PaymentFormProps) => {
       setErrorMessage(null);
     }
     
+    // Save our success URL to localStorage so Stripe can find it after payment
+    const successUrl = `${window.location.origin}/onboarding/success?session_id={CHECKOUT_SESSION_ID}`;
+    const cancelUrl = `${window.location.origin}/onboarding/payment`;
+    
+    localStorage.setItem('stripe_success_url', successUrl);
+    localStorage.setItem('stripe_cancel_url', cancelUrl);
+    
+    // We could use these URLs in our webhook or Edge Function if needed
+    console.log('Success URL set:', successUrl);
+    
     // Add Stripe Buy Button script
     const script = document.createElement('script');
     script.src = 'https://js.stripe.com/v3/buy-button.js';

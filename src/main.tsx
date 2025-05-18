@@ -25,6 +25,7 @@ import ParentDashboardV3B from './pages/ParentDashboardV3B.tsx'
 import StudentDashboard from './pages/StudentDashboard.tsx'
 import AccountManagement from './pages/AccountManagement.tsx'
 import HeroTest from './pages/HeroTest.tsx'
+import OnboardingSuccess from './pages/OnboardingSuccess.tsx'
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -44,6 +45,7 @@ const router = createBrowserRouter(
       <Route path="/student-dashboard" element={<StudentDashboard />} />
       <Route path="/account-management" element={<AccountManagement />} />
       <Route path="/onboarding" element={<Onboarding />} />
+      <Route path="/onboarding/success" element={<OnboardingSuccess />} />
       <Route path="/herotest" element={<HeroTest />} />
       <Route path="/signup-test" element={<SignupTest />} />
       <Route path="*" element={<NotFound />} />
