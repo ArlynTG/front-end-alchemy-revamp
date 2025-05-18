@@ -87,10 +87,11 @@ const PaymentForm = ({ onPaymentComplete, onBack, profileData }: PaymentFormProp
     },
   };
 
-  // Options to pass to Elements - fixed to match proper type
+  // Options to pass to Elements - fixed to match proper type for SetupIntent
   const options = clientSecret ? {
     clientSecret,
     appearance,
+    mode: 'setup' as const, // Explicitly set mode to 'setup' for SetupIntent
   } : undefined;
 
   return (
