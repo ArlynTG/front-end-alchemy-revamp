@@ -45,6 +45,20 @@ const PaymentForm = ({ onPaymentComplete, onBack }: PaymentFormProps) => {
     } else {
       setErrorMessage(null);
     }
+    
+    // Add Stripe Buy Button script
+    const script = document.createElement('script');
+    script.src = 'https://js.stripe.com/v3/buy-button.js';
+    script.async = true;
+    document.head.appendChild(script);
+    
+    // Clean up on unmount
+    return () => {
+      // Check if the script is still in the document before removing
+      if (document.head.contains(script)) {
+        document.head.removeChild(script);
+      }
+    };
   }, []);
   
   const handleSubscribe = async () => {
@@ -185,8 +199,13 @@ const PaymentForm = ({ onPaymentComplete, onBack }: PaymentFormProps) => {
           Payment information will be securely processed by Stripe. Your card details are never stored on our servers.
         </p>
         
-        <div className="border rounded p-4 text-center text-gray-500 mb-6">
-          Stripe Payment Element will be integrated here
+        {/* Stripe Buy Button */}
+        <div className="flex justify-center mb-6">
+          <stripe-buy-button
+            buy-button-id="buy_btn_1RQGPXBpB9LJmKwiM4EJ2XGa"
+            publishable-key="pk_live_51R96NFBpB9LJmKwiof8LfkfsDcBtzx8sl21tqETJoiiuMSNh0yGHOuZscRLgo8NykCYscFtFGZ3Ghh29hR3Emo0W00vAw5C1Nu"
+          >
+          </stripe-buy-button>
         </div>
         
         <div className="flex justify-between">
