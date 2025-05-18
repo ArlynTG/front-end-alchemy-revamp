@@ -104,44 +104,6 @@ const PaymentForm = ({ onPaymentComplete, onBack }: PaymentFormProps) => {
         </p>
       </div>
       
-      {/* Subscription plan details */}
-      <div className="border rounded-lg p-6">
-        <h3 className="text-lg font-medium text-gray-900">Early Adopter Special</h3>
-        <p className="text-sm text-gray-500">Early access to Tobey's Tutor with special beta pricing</p>
-        
-        <div className="mt-4">
-          <p className="text-2xl font-semibold">$29<span className="text-sm font-normal text-gray-500">/month</span></p>
-          <p className="text-sm text-gray-500">Billed monthly, cancel anytime</p>
-        </div>
-        
-        <ul className="mt-4 space-y-2">
-          <li className="flex items-start">
-            <svg className="h-5 w-5 text-green-500 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7"></path>
-            </svg>
-            <span className="ml-2 text-sm text-gray-700">Unlimited access to Tobey's AI tutor</span>
-          </li>
-          <li className="flex items-start">
-            <svg className="h-5 w-5 text-green-500 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7"></path>
-            </svg>
-            <span className="ml-2 text-sm text-gray-700">Personalized learning paths for your child</span>
-          </li>
-          <li className="flex items-start">
-            <svg className="h-5 w-5 text-green-500 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7"></path>
-            </svg>
-            <span className="ml-2 text-sm text-gray-700">Regular progress reports and insights</span>
-          </li>
-          <li className="flex items-start">
-            <svg className="h-5 w-5 text-green-500 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7"></path>
-            </svg>
-            <span className="ml-2 text-sm text-gray-700">Early access to new features</span>
-          </li>
-        </ul>
-      </div>
-      
       {/* Error message display */}
       {errorMessage && (
         <div className="rounded-md bg-red-50 p-4">
