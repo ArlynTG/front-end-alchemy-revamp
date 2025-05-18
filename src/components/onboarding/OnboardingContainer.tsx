@@ -1,6 +1,6 @@
 
-import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useState, useEffect } from "react";
+import { useNavigate, useLocation } from "react-router-dom";
 import OnboardingLayout from "./OnboardingLayout";
 import ProfileForm from "./ProfileForm";
 import LearningDifferencesForm from "./LearningDifferencesForm";
@@ -15,10 +15,25 @@ interface OnboardingContainerProps {
 
 const OnboardingContainer = ({ studentId = "temp-id" }: OnboardingContainerProps) => {
   const navigate = useNavigate();
+  const location = useLocation();
   const [currentStep, setCurrentStep] = useState<OnboardingStep>("profile");
   const [formData, setFormData] = useState<Partial<OnboardingFormValues>>({});
   const [paymentId, setPaymentId] = useState<string | null>(null);
   const [showDevControls, setShowDevControls] = useState(false);
+
+  // Check for 'step' URL parameter on component mount and when location changes
+  useEffect(() => {
+    const urlParams = new URLSearchParams(location.search);
+    const stepParam = urlParams.get('step');
+    
+    if (stepParam) {
+      // Validate that the step is a valid onboarding step
+      const isValidStep = ['profile', 'learning-differences', 'payment', 'complete'].includes(stepParam);
+      if (isValidStep) {
+        setCurrentStep(stepParam as OnboardingStep);
+      }
+    }
+  }, [location.search]);
 
   // Toggle dev controls
   const toggleDevControls = () => {
@@ -28,18 +43,20 @@ const OnboardingContainer = ({ studentId = "temp-id" }: OnboardingContainerProps
   // Navigate to a specific step
   const navigateToStep = (step: OnboardingStep) => {
     setCurrentStep(step);
+    // Update URL with the step (without page reload)
+    navigate(`/onboarding?step=${step}`, { replace: true });
   };
 
   // Profile step handler
   const handleProfileSubmit = (profileData: Partial<OnboardingFormValues>) => {
     setFormData(prev => ({ ...prev, ...profileData }));
-    setCurrentStep("learning-differences");
+    navigateToStep("learning-differences");
   };
 
   // Learning differences step handler
   const handleLearningDifferencesSubmit = (differences: LearningDifference[]) => {
     setFormData(prev => ({ ...prev, learningDifferences: differences }));
-    setCurrentStep("payment");
+    navigateToStep("payment");
   };
 
   // Payment step handler
@@ -114,14 +131,14 @@ const OnboardingContainer = ({ studentId = "temp-id" }: OnboardingContainerProps
         <LearningDifferencesForm 
           selectedDifferences={formData.learningDifferences || []} 
           onSubmit={handleLearningDifferencesSubmit}
-          onBack={() => setCurrentStep("profile")}
+          onBack={() => navigateToStep("profile")}
         />
       )}
 
       {currentStep === "payment" && (
         <PaymentForm 
           onPaymentComplete={handlePaymentComplete}
-          onBack={() => setCurrentStep("learning-differences")}
+          onBack={() => navigateToStep("learning-differences")}
         />
       )}
 
