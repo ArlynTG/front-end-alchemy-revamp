@@ -142,13 +142,6 @@ const PaymentForm = ({ onPaymentComplete, onBack }: PaymentFormProps) => {
         </ul>
       </div>
       
-      {/* Debug info - only show in development */}
-      <div className="bg-gray-100 p-2 text-xs">
-        <p>Debugging info (hidden in production)</p>
-        <p>Email: {email || 'Not found'}</p>
-        <p>localStorage email: {localStorage.getItem('user_email') || 'Not found'}</p>
-      </div>
-      
       {/* Error message display */}
       {errorMessage && (
         <div className="rounded-md bg-red-50 p-4">
