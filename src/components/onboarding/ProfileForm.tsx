@@ -73,12 +73,6 @@ const ProfileForm = ({ defaultValues, onSubmit }: ProfileFormProps) => {
         console.log('Saved signup_id to localStorage:', data.signup_id);
       }
       
-      // Also store other useful data in localStorage
-      localStorage.setItem('user_email', values.email);
-      localStorage.setItem('user_name', `${values.firstName} ${values.lastName}`);
-      localStorage.setItem('user_first_name', values.firstName);
-      localStorage.setItem('user_last_name', values.lastName);
-      
       return data;
     } catch (error) {
       console.error('Error saving profile data:', error);
@@ -94,15 +88,21 @@ const ProfileForm = ({ defaultValues, onSubmit }: ProfileFormProps) => {
   };
 
   const handleSubmit = async (values: ProfileFormValues) => {
+    // Direct localStorage saves FIRST before any async operations
+    localStorage.setItem('user_email', values.email);
+    localStorage.setItem('user_name', `${values.firstName} ${values.lastName}`);
+    localStorage.setItem('user_first_name', values.firstName);
+    localStorage.setItem('user_last_name', values.lastName);
+    console.log('DIRECT SAVE to localStorage:', { 
+      email: localStorage.getItem('user_email'), 
+      name: localStorage.getItem('user_name') 
+    });
+    
     try {
       await saveProfileData(values);
-      
-      // Proceed to next step even if there's an error with the backend
-      // This prevents users from being blocked if the backend service is having issues
       onSubmit(values);
     } catch (error) {
       console.error('Error in form submission:', error);
-      // Still proceed to the next step
       onSubmit(values);
     }
   };

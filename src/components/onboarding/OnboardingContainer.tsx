@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import OnboardingLayout from "./OnboardingLayout";
@@ -8,6 +7,7 @@ import PaymentForm from "./PaymentForm";
 import CompletionPage from "./CompletionPage";
 import { OnboardingFormValues, OnboardingStep, LearningDifference } from "./types";
 import { Button } from "@/components/ui/button";
+import LocalStorageDebugger from "@/components/debug/LocalStorageDebugger";
 
 interface OnboardingContainerProps {
   studentId?: string; // This would be passed once the user creates an account
@@ -121,86 +121,89 @@ const OnboardingContainer = ({ studentId = "temp-id" }: OnboardingContainerProps
   };
 
   return (
-    <OnboardingLayout currentStep={currentStep}>
-      {/* Development testing controls */}
-      <div className="mb-6 text-right">
-        <Button
-          variant="outline"
-          size="sm"
-          onClick={toggleDevControls}
-          className="text-xs bg-gray-100 hover:bg-gray-200"
-        >
-          {showDevControls ? "Hide Test Controls" : "Show Test Controls"}
-        </Button>
-      </div>
-
-      {showDevControls && (
-        <div className="bg-gray-50 border border-gray-200 rounded-md p-4 mb-6">
-          <h3 className="text-sm font-medium mb-2">Testing Controls</h3>
-          <p className="text-xs text-gray-500 mb-3">Skip to any step in the onboarding process for testing purposes.</p>
-          <div className="flex flex-wrap gap-2">
-            <Button 
-              variant="outline" 
-              size="sm" 
-              onClick={() => navigateToStep("profile")}
-              className={`text-xs ${currentStep === "profile" ? "bg-blue-100" : ""}`}
-            >
-              Profile
-            </Button>
-            <Button 
-              variant="outline" 
-              size="sm" 
-              onClick={() => navigateToStep("learning-differences")}
-              className={`text-xs ${currentStep === "learning-differences" ? "bg-blue-100" : ""}`}
-            >
-              Learning Differences
-            </Button>
-            <Button 
-              variant="outline" 
-              size="sm" 
-              onClick={() => navigateToStep("payment")}
-              className={`text-xs ${currentStep === "payment" ? "bg-blue-100" : ""}`}
-            >
-              Payment
-            </Button>
-            <Button 
-              variant="outline" 
-              size="sm" 
-              onClick={() => navigateToStep("complete")}
-              className={`text-xs ${currentStep === "complete" ? "bg-blue-100" : ""}`}
-            >
-              Complete
-            </Button>
-          </div>
+    <>
+      <LocalStorageDebugger />
+      <OnboardingLayout currentStep={currentStep}>
+        {/* Development testing controls */}
+        <div className="mb-6 text-right">
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={toggleDevControls}
+            className="text-xs bg-gray-100 hover:bg-gray-200"
+          >
+            {showDevControls ? "Hide Test Controls" : "Show Test Controls"}
+          </Button>
         </div>
-      )}
 
-      {currentStep === "profile" && (
-        <ProfileForm 
-          defaultValues={formData} 
-          onSubmit={handleProfileSubmit} 
-        />
-      )}
+        {showDevControls && (
+          <div className="bg-gray-50 border border-gray-200 rounded-md p-4 mb-6">
+            <h3 className="text-sm font-medium mb-2">Testing Controls</h3>
+            <p className="text-xs text-gray-500 mb-3">Skip to any step in the onboarding process for testing purposes.</p>
+            <div className="flex flex-wrap gap-2">
+              <Button 
+                variant="outline" 
+                size="sm" 
+                onClick={() => navigateToStep("profile")}
+                className={`text-xs ${currentStep === "profile" ? "bg-blue-100" : ""}`}
+              >
+                Profile
+              </Button>
+              <Button 
+                variant="outline" 
+                size="sm" 
+                onClick={() => navigateToStep("learning-differences")}
+                className={`text-xs ${currentStep === "learning-differences" ? "bg-blue-100" : ""}`}
+              >
+                Learning Differences
+              </Button>
+              <Button 
+                variant="outline" 
+                size="sm" 
+                onClick={() => navigateToStep("payment")}
+                className={`text-xs ${currentStep === "payment" ? "bg-blue-100" : ""}`}
+              >
+                Payment
+              </Button>
+              <Button 
+                variant="outline" 
+                size="sm" 
+                onClick={() => navigateToStep("complete")}
+                className={`text-xs ${currentStep === "complete" ? "bg-blue-100" : ""}`}
+              >
+                Complete
+              </Button>
+            </div>
+          </div>
+        )}
 
-      {currentStep === "learning-differences" && (
-        <LearningDifferencesForm 
-          selectedDifferences={formData.learningDifferences || []} 
-          onSubmit={handleLearningDifferencesSubmit}
-          onBack={() => navigateToStep("profile")}
-        />
-      )}
+        {currentStep === "profile" && (
+          <ProfileForm 
+            defaultValues={formData} 
+            onSubmit={handleProfileSubmit} 
+          />
+        )}
 
-      {currentStep === "payment" && (
-        <PaymentForm 
-          onPaymentComplete={handlePaymentComplete}
-          onBack={() => navigateToStep("learning-differences")}
-        />
-      )}
+        {currentStep === "learning-differences" && (
+          <LearningDifferencesForm 
+            selectedDifferences={formData.learningDifferences || []} 
+            onSubmit={handleLearningDifferencesSubmit}
+            onBack={() => navigateToStep("profile")}
+          />
+        )}
 
-      {currentStep === "complete" && (
-        <CompletionPage />
-      )}
-    </OnboardingLayout>
+        {currentStep === "payment" && (
+          <PaymentForm 
+            onPaymentComplete={handlePaymentComplete}
+            onBack={() => navigateToStep("learning-differences")}
+          />
+        )}
+
+        {currentStep === "complete" && (
+          <CompletionPage />
+        )}
+      </OnboardingLayout>
+    </>
   );
 };
 

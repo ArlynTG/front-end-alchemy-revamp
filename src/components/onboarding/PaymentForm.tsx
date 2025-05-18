@@ -17,6 +17,16 @@ const PaymentForm = ({ onPaymentComplete, onBack }: PaymentFormProps) => {
   const [isProcessing, setIsProcessing] = useState(false);
   
   useEffect(() => {
+    console.log('PaymentForm MOUNTED');
+    console.log('localStorage direct check:', { email: localStorage.getItem('user_email') });
+    
+    // For debugging, dump all localStorage contents
+    console.log('All localStorage keys:');
+    for (let i = 0; i < localStorage.length; i++) {
+      const key = localStorage.key(i);
+      console.log(`${key}: ${localStorage.getItem(key)}`);
+    }
+    
     // Debug: Log all localStorage items at mount
     console.log('LocalStorage items at mount:', {
       email: localStorage.getItem('user_email'),
