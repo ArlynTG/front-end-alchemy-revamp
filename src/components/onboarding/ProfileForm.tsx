@@ -50,9 +50,6 @@ const ProfileForm = ({ defaultValues, onSubmit }: ProfileFormProps) => {
     try {
       setIsSubmitting(true);
       
-      // Get the anon key for authorization
-      const { data: { session } } = await supabase.auth.getSession();
-      
       // Make the request with proper headers - use the hardcoded anon key directly
       const response = await fetch('https://hgpplvegqlvxwszlhzwc.supabase.co/functions/v1/save-profile-data', {
         method: 'POST',
@@ -79,6 +76,8 @@ const ProfileForm = ({ defaultValues, onSubmit }: ProfileFormProps) => {
       // Also store other useful data in localStorage
       localStorage.setItem('user_email', values.email);
       localStorage.setItem('user_name', `${values.firstName} ${values.lastName}`);
+      localStorage.setItem('user_first_name', values.firstName);
+      localStorage.setItem('user_last_name', values.lastName);
       
       return data;
     } catch (error) {
@@ -96,14 +95,15 @@ const ProfileForm = ({ defaultValues, onSubmit }: ProfileFormProps) => {
 
   const handleSubmit = async (values: ProfileFormValues) => {
     try {
-      // Save profile data to database
       await saveProfileData(values);
       
-      // Call the original onSubmit function to proceed to next step
+      // Proceed to next step even if there's an error with the backend
+      // This prevents users from being blocked if the backend service is having issues
       onSubmit(values);
     } catch (error) {
       console.error('Error in form submission:', error);
-      // Error is already handled and displayed in saveProfileData
+      // Still proceed to the next step
+      onSubmit(values);
     }
   };
 
