@@ -40,9 +40,23 @@ const ProfileForm = ({ defaultValues, onSubmit }: ProfileFormProps) => {
     },
   });
 
+  const handleSubmit = (values: ProfileFormValues) => {
+    // Store email in localStorage for payment form
+    localStorage.setItem('user_email', values.email);
+    localStorage.setItem('user_name', `${values.firstName} ${values.lastName}`);
+    
+    // Also store a temp signup ID if none exists
+    if (!localStorage.getItem('signup_id')) {
+      localStorage.setItem('signup_id', `temp-${Date.now()}`);
+    }
+    
+    // Call the original onSubmit function
+    onSubmit(values);
+  };
+
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+      <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-6">
         <div className="space-y-6">
           <div>
             <h2 className="text-lg font-medium text-gray-900">Parent Information</h2>

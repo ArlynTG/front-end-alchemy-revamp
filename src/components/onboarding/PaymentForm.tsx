@@ -1,5 +1,5 @@
 
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -18,12 +18,20 @@ const PaymentForm = ({ onPaymentComplete, onBack }: PaymentFormProps) => {
   const [isProcessing, setIsProcessing] = useState(false);
   const [error, setError] = useState<string | null>(null);
   
-  // Helper function to get signup data
+  // Enhanced helper function to get signup data with better error handling
   const getSignupData = () => {
-    // This could be adapted to work with your app's data storage
+    const email = localStorage.getItem('user_email');
+    const id = localStorage.getItem('signup_id') || 'temp-id';
+    
+    console.log("Retrieved signup data:", { id, email });
+    
+    if (!email) {
+      console.warn("No email found in localStorage!");
+    }
+    
     return {
-      id: localStorage.getItem('signup_id') || 'temp-id',
-      email: localStorage.getItem('user_email') || localStorage.getItem('user_email_beta') || ''
+      id,
+      email
     };
   };
 
@@ -42,12 +50,17 @@ const PaymentForm = ({ onPaymentComplete, onBack }: PaymentFormProps) => {
     setError(null);
     
     try {
-      // Get data from your app's state or localStorage
+      // Get data from localStorage
       const signupData = getSignupData();
       
       if (!signupData.email) {
-        throw new Error('Email address is required. Please complete previous steps.');
+        throw new Error('Email address is required. Please go back and complete the profile form.');
       }
+      
+      console.log("Submitting checkout data:", {
+        signup_id: signupData.id,
+        email: signupData.email
+      });
       
       const response = await fetch('https://hgpplvegqlvxwszlhzwc.supabase.co/functions/v1/create-checkout-session-june-beta', {
         method: 'POST',
@@ -55,8 +68,8 @@ const PaymentForm = ({ onPaymentComplete, onBack }: PaymentFormProps) => {
           'Content-Type': 'application/json'
         },
         body: JSON.stringify({
-          signup_id: signupData.id, // The ID from your signup_data table
-          email: signupData.email // The parent's email
+          signup_id: signupData.id,
+          email: signupData.email
         })
       });
       

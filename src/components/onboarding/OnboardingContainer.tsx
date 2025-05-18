@@ -21,6 +21,22 @@ const OnboardingContainer = ({ studentId = "temp-id" }: OnboardingContainerProps
   const [paymentId, setPaymentId] = useState<string | null>(null);
   const [showDevControls, setShowDevControls] = useState(false);
 
+  // On component mount, try to load any existing form data from localStorage
+  useEffect(() => {
+    const email = localStorage.getItem('user_email');
+    const firstName = localStorage.getItem('user_first_name');
+    const lastName = localStorage.getItem('user_last_name');
+    
+    if (email || firstName || lastName) {
+      setFormData(prev => ({
+        ...prev,
+        email: email || prev.email,
+        firstName: firstName || prev.firstName,
+        lastName: lastName || prev.lastName
+      }));
+    }
+  }, []);
+
   // Check for 'step' URL parameter on component mount and when location changes
   useEffect(() => {
     const urlParams = new URLSearchParams(location.search);
@@ -49,7 +65,14 @@ const OnboardingContainer = ({ studentId = "temp-id" }: OnboardingContainerProps
 
   // Profile step handler
   const handleProfileSubmit = (profileData: Partial<OnboardingFormValues>) => {
+    // Store form data in component state AND localStorage
     setFormData(prev => ({ ...prev, ...profileData }));
+    
+    // Store user data in localStorage for persistence
+    if (profileData.email) localStorage.setItem('user_email', profileData.email);
+    if (profileData.firstName) localStorage.setItem('user_first_name', profileData.firstName);
+    if (profileData.lastName) localStorage.setItem('user_last_name', profileData.lastName);
+    
     navigateToStep("learning-differences");
   };
 
