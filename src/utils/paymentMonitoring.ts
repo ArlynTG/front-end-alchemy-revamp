@@ -71,7 +71,7 @@ export const recordPaymentStatus = async (
       registration_id: userId,
       payment_status: status,
       payment_method: details?.paymentMethod || 'stripe',
-      payment_amount: details?.amount || 100, // $1.00 default
+      payment_amount: details?.amount || 2900, // $29.00 default
       stripe_payment_id: details?.paymentId,
       stripe_customer_id: details?.customerId,
       payment_date: new Date().toISOString(),
