@@ -1,5 +1,5 @@
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -17,21 +17,36 @@ const PaymentForm = ({ onPaymentComplete, onBack }: PaymentFormProps) => {
   const [isProcessing, setIsProcessing] = useState(false);
   const [error, setError] = useState<string | null>(null);
   
-  // Enhanced helper function to get signup data with better error handling
+  useEffect(() => {
+    // Debug: Log all localStorage items at mount
+    console.log('LocalStorage items at mount:', {
+      email: localStorage.getItem('user_email'),
+      name: localStorage.getItem('user_name'),
+      firstName: localStorage.getItem('user_first_name'),
+      lastName: localStorage.getItem('user_last_name'),
+      signupId: localStorage.getItem('signup_id')
+    });
+    
+    // Check for email on component mount
+    const email = localStorage.getItem('user_email');
+    if (!email) {
+      setError('Email address is missing. Please go back and complete the profile form first.');
+      toast({
+        title: "Missing Information",
+        description: "Email address is required. Please complete the profile form.",
+        variant: "destructive"
+      });
+    }
+  }, []);
+  
+  // Improved function to get signup data
   const getSignupData = () => {
     const email = localStorage.getItem('user_email');
-    const id = localStorage.getItem('signup_id') || 'temp-id';
+    const signupId = localStorage.getItem('signup_id') || `temp-id-${Date.now()}`;
     
-    console.log("Retrieved signup data:", { id, email });
+    console.log('Retrieved signup data:', { signupId, email });
     
-    if (!email) {
-      console.warn("No email found in localStorage!");
-    }
-    
-    return {
-      id,
-      email
-    };
+    return { id: signupId, email: email };
   };
 
   const handleSubscribe = async (e: React.FormEvent) => {
@@ -49,15 +64,11 @@ const PaymentForm = ({ onPaymentComplete, onBack }: PaymentFormProps) => {
     setError(null);
     
     try {
-      // Get data from localStorage
+      // Get data from localStorage with detailed logging
       const signupData = getSignupData();
       
       if (!signupData.email) {
         throw new Error('Email address is required. Please go back and complete the profile form.');
-      }
-      
-      if (!signupData.id) {
-        throw new Error('Signup ID is missing. Please restart the onboarding process.');
       }
       
       console.log("Submitting checkout data:", {
@@ -68,7 +79,8 @@ const PaymentForm = ({ onPaymentComplete, onBack }: PaymentFormProps) => {
       const response = await fetch('https://hgpplvegqlvxwszlhzwc.supabase.co/functions/v1/create-checkout-session-june-beta', {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/json'
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhncHBsdmVncWx2eHdzemxoendjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDQ3NzU2NDEsImV4cCI6MjA2MDM1MTY0MX0.yMqquc9J0EhBA7lS7c-vInK6NC00BqTt5gKjMt7jl4I`
         },
         body: JSON.stringify({
           signup_id: signupData.id,
@@ -82,8 +94,19 @@ const PaymentForm = ({ onPaymentComplete, onBack }: PaymentFormProps) => {
       }
       
       const data = await response.json();
+      console.log("Checkout session created:", data);
       
       if (data.url) {
+        // Save session ID if available and call onPaymentComplete
+        if (data.session_id) {
+          localStorage.setItem('checkout_session_id', data.session_id);
+          // Call onPaymentComplete with the session ID before redirect
+          onPaymentComplete(data.session_id);
+        } else {
+          // If no session_id in response, still call onPaymentComplete with a generic ID
+          onPaymentComplete(`session-${Date.now()}`);
+        }
+        
         // Redirect to Stripe Checkout
         window.location.href = data.url;
       } else {
@@ -165,17 +188,17 @@ const PaymentForm = ({ onPaymentComplete, onBack }: PaymentFormProps) => {
         </CardFooter>
       </Card>
 
+      {error && (
+        <div className="p-4 bg-red-50 border border-red-200 rounded-md">
+          <p className="text-red-600 font-medium">{error}</p>
+        </div>
+      )}
+
       <form onSubmit={handleSubscribe}>
         <div className="pt-4 border-t border-gray-200 mt-8">
           <p className="text-sm text-gray-500 mb-8">
             Payment information will be securely processed by Stripe. Your card details are never stored on our servers.
           </p>
-
-          {error && (
-            <div className="p-3 mb-4 text-sm text-red-500 bg-red-50 rounded-md">
-              {error}
-            </div>
-          )}
 
           <div className="flex justify-between mt-8">
             <Button 

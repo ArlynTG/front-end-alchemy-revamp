@@ -227,6 +227,7 @@ export type Database = {
           learning_difference: string | null
           phone: string | null
           plan_type: string | null
+          signup_status: string | null
           student_age: string | null
           student_name: string | null
         }
@@ -239,6 +240,7 @@ export type Database = {
           learning_difference?: string | null
           phone?: string | null
           plan_type?: string | null
+          signup_status?: string | null
           student_age?: string | null
           student_name?: string | null
         }
@@ -251,6 +253,7 @@ export type Database = {
           learning_difference?: string | null
           phone?: string | null
           plan_type?: string | null
+          signup_status?: string | null
           student_age?: string | null
           student_name?: string | null
         }
