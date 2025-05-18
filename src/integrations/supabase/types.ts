@@ -77,6 +77,9 @@ export type Database = {
       }
       payment_records: {
         Row: {
+          cancel_at: string | null
+          current_period_end: string | null
+          current_period_start: string | null
           id: string
           payment_amount: number | null
           payment_date: string | null
@@ -85,8 +88,13 @@ export type Database = {
           registration_id: string | null
           stripe_customer_id: string | null
           stripe_payment_id: string | null
+          stripe_subscription_id: string | null
+          subscription_status: string | null
         }
         Insert: {
+          cancel_at?: string | null
+          current_period_end?: string | null
+          current_period_start?: string | null
           id?: string
           payment_amount?: number | null
           payment_date?: string | null
@@ -95,8 +103,13 @@ export type Database = {
           registration_id?: string | null
           stripe_customer_id?: string | null
           stripe_payment_id?: string | null
+          stripe_subscription_id?: string | null
+          subscription_status?: string | null
         }
         Update: {
+          cancel_at?: string | null
+          current_period_end?: string | null
+          current_period_start?: string | null
           id?: string
           payment_amount?: number | null
           payment_date?: string | null
@@ -105,6 +118,8 @@ export type Database = {
           registration_id?: string | null
           stripe_customer_id?: string | null
           stripe_payment_id?: string | null
+          stripe_subscription_id?: string | null
+          subscription_status?: string | null
         }
         Relationships: [
           {
@@ -391,6 +406,30 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      subscription_events: {
+        Row: {
+          created_at: string | null
+          id: string
+          stripe_event_data: Json
+          stripe_event_id: string
+          stripe_event_type: string
+        }
+        Insert: {
+          created_at?: string | null
+          id?: string
+          stripe_event_data: Json
+          stripe_event_id: string
+          stripe_event_type: string
+        }
+        Update: {
+          created_at?: string | null
+          id?: string
+          stripe_event_data?: Json
+          stripe_event_id?: string
+          stripe_event_type?: string
+        }
+        Relationships: []
       }
       uploads: {
         Row: {

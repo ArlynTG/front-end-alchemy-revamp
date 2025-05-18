@@ -1,10 +1,11 @@
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from '@/components/ui/label';
 import { CheckCircle } from 'lucide-react';
+import { toast } from "@/components/ui/use-toast";
 
 interface PaymentFormProps {
   onPaymentComplete: (paymentId: string) => void;
@@ -15,22 +16,69 @@ interface PaymentFormProps {
 const PaymentForm = ({ onPaymentComplete, onBack }: PaymentFormProps) => {
   const [isAgreed, setIsAgreed] = useState(false);
   const [isProcessing, setIsProcessing] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  
+  // Helper function to get signup data
+  const getSignupData = () => {
+    // This could be adapted to work with your app's data storage
+    return {
+      id: localStorage.getItem('signup_id') || 'temp-id',
+      email: localStorage.getItem('user_email') || localStorage.getItem('user_email_beta') || ''
+    };
+  };
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubscribe = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!isAgreed) return;
+    if (!isAgreed) {
+      toast({
+        title: "Agreement Required",
+        description: "Please accept the Terms of Service and Privacy Policy to continue.",
+        variant: "destructive"
+      });
+      return;
+    }
 
     setIsProcessing(true);
+    setError(null);
     
-    // This is a placeholder for the actual Stripe payment processing
-    // In the future, this will be replaced with a real Stripe checkout
-    setTimeout(() => {
-      // Simulate successful payment
-      const mockPaymentId = `pi_${Math.random().toString(36).substring(2, 15)}`;
+    try {
+      // Get data from your app's state or localStorage
+      const signupData = getSignupData();
       
+      if (!signupData.email) {
+        throw new Error('Email address is required. Please complete previous steps.');
+      }
+      
+      const response = await fetch('https://hgpplvegqlvxwszlhzwc.supabase.co/functions/v1/create-checkout-session-june-beta', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          signup_id: signupData.id, // The ID from your signup_data table
+          email: signupData.email // The parent's email
+        })
+      });
+      
+      const data = await response.json();
+      
+      if (data.url) {
+        // Redirect to Stripe Checkout
+        window.location.href = data.url;
+      } else {
+        throw new Error('Failed to create checkout session');
+      }
+    } catch (err) {
+      console.error('Error:', err);
+      setError(err instanceof Error ? err.message : 'An unknown error occurred');
+      toast({
+        title: "Payment Setup Failed",
+        description: err instanceof Error ? err.message : "There was an error processing your request. Please try again.",
+        variant: "destructive"
+      });
+    } finally {
       setIsProcessing(false);
-      onPaymentComplete(mockPaymentId);
-    }, 2000);
+    }
   };
 
   return (
@@ -96,31 +144,31 @@ const PaymentForm = ({ onPaymentComplete, onBack }: PaymentFormProps) => {
         </CardFooter>
       </Card>
 
-      <form onSubmit={handleSubmit}>
+      <form onSubmit={handleSubscribe}>
         <div className="pt-4 border-t border-gray-200 mt-8">
           <p className="text-sm text-gray-500 mb-8">
             Payment information will be securely processed by Stripe. Your card details are never stored on our servers.
           </p>
 
-          {/* This is a placeholder for the Stripe payment form */}
-          <div className="p-4 border border-gray-200 rounded-md bg-gray-50">
-            <p className="text-center text-gray-500">
-              Stripe Payment Element will be integrated here
-            </p>
-          </div>
+          {error && (
+            <div className="p-3 mb-4 text-sm text-red-500 bg-red-50 rounded-md">
+              {error}
+            </div>
+          )}
 
           <div className="flex justify-between mt-8">
             <Button 
               type="button" 
               variant="outline" 
               onClick={onBack}
+              disabled={isProcessing}
             >
               Back
             </Button>
             <Button 
               type="submit"
               disabled={!isAgreed || isProcessing}
-              className="bg-tobey-orange hover:bg-tobey-orange/90 text-white"
+              className="bg-tobey-orange hover:bg-tobey-orange/90 text-white subscribe-now"
             >
               {isProcessing ? "Processing..." : "Subscribe Now"}
             </Button>
