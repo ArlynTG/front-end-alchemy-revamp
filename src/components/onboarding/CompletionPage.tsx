@@ -1,7 +1,7 @@
 
 import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
-import { CheckCircle } from "lucide-react";
+import { CheckCircle, ArrowRight } from "lucide-react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { toast } from "@/components/ui/use-toast";
 
@@ -9,6 +9,7 @@ const CompletionPage = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const [isPaymentVerified, setIsPaymentVerified] = useState<boolean>(false);
+  const [isVerifying, setIsVerifying] = useState<boolean>(false);
   
   useEffect(() => {
     // Check for session_id in the URL params
@@ -16,11 +17,48 @@ const CompletionPage = () => {
     const sessionId = urlParams.get('session_id');
     
     if (sessionId) {
-      setIsPaymentVerified(true);
-      toast({
-        title: "Payment successful!",
-        description: "Your subscription to Tobey's Tutor has been activated.",
-      });
+      setIsVerifying(true);
+      
+      // Verify the session with our backend
+      const verifySession = async () => {
+        try {
+          const response = await fetch('https://hgpplvegqlvxwszlhzwc.supabase.co/functions/v1/verify-checkout-session', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+              session_id: sessionId,
+              signup_id: localStorage.getItem('signup_id')
+            })
+          });
+          
+          const data = await response.json();
+          
+          if (data.success) {
+            setIsPaymentVerified(true);
+            toast({
+              title: "Payment successful!",
+              description: "Your subscription to Tobey's Tutor has been activated.",
+            });
+          } else {
+            toast({
+              title: "Payment verification failed",
+              description: data.error || "There was an issue verifying your payment. Please contact support.",
+              variant: "destructive"
+            });
+          }
+        } catch (error) {
+          console.error('Error verifying session:', error);
+          // We'll still show success even if verification fails
+          // This prevents blocking users in case of backend errors
+          setIsPaymentVerified(true);
+        } finally {
+          setIsVerifying(false);
+        }
+      };
+      
+      verifySession();
     }
   }, [location.search]);
 
@@ -41,7 +79,14 @@ const CompletionPage = () => {
         </div>
       </div>
       
-      {isPaymentVerified ? (
+      {isVerifying ? (
+        <>
+          <h2 className="mt-6 text-3xl font-bold text-gray-900">Verifying Payment...</h2>
+          <p className="mt-4 text-lg text-gray-600 max-w-md mx-auto">
+            Please wait while we confirm your payment details.
+          </p>
+        </>
+      ) : isPaymentVerified ? (
         <>
           <h2 className="mt-6 text-3xl font-bold text-gray-900">Payment Successful!</h2>
           <p className="mt-4 text-lg text-gray-600 max-w-md mx-auto">
@@ -84,7 +129,7 @@ const CompletionPage = () => {
           onClick={handleContinue}
           className="px-8 py-2 bg-tobey-orange hover:bg-tobey-orange/90 text-white"
         >
-          Go to Dashboard
+          Go to Dashboard <ArrowRight className="ml-2 h-4 w-4" />
         </Button>
         
         {!isPaymentVerified && location.search && (

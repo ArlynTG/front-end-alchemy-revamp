@@ -12,7 +12,6 @@ interface PaymentFormProps {
   onBack: () => void;
 }
 
-// This is a placeholder that will be replaced with actual Stripe integration
 const PaymentForm = ({ onPaymentComplete, onBack }: PaymentFormProps) => {
   const [isAgreed, setIsAgreed] = useState(false);
   const [isProcessing, setIsProcessing] = useState(false);
@@ -57,6 +56,10 @@ const PaymentForm = ({ onPaymentComplete, onBack }: PaymentFormProps) => {
         throw new Error('Email address is required. Please go back and complete the profile form.');
       }
       
+      if (!signupData.id) {
+        throw new Error('Signup ID is missing. Please restart the onboarding process.');
+      }
+      
       console.log("Submitting checkout data:", {
         signup_id: signupData.id,
         email: signupData.email
@@ -73,13 +76,18 @@ const PaymentForm = ({ onPaymentComplete, onBack }: PaymentFormProps) => {
         })
       });
       
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || 'Failed to create checkout session');
+      }
+      
       const data = await response.json();
       
       if (data.url) {
         // Redirect to Stripe Checkout
         window.location.href = data.url;
       } else {
-        throw new Error('Failed to create checkout session');
+        throw new Error('Failed to create checkout session: No redirect URL returned');
       }
     } catch (err) {
       console.error('Error:', err);

@@ -6,6 +6,8 @@ import { Button } from "@/components/ui/button";
 import { Form } from "@/components/ui/form";
 import { InputField } from "@/components/form/FormField";
 import { OnboardingFormValues } from "./types";
+import { toast } from "@/components/ui/use-toast";
+import { useState } from "react";
 
 const profileSchema = z.object({
   firstName: z.string().min(1, "First name is required"),
@@ -27,6 +29,8 @@ interface ProfileFormProps {
 }
 
 const ProfileForm = ({ defaultValues, onSubmit }: ProfileFormProps) => {
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  
   const form = useForm<ProfileFormValues>({
     resolver: zodResolver(profileSchema),
     defaultValues: {
@@ -40,18 +44,61 @@ const ProfileForm = ({ defaultValues, onSubmit }: ProfileFormProps) => {
     },
   });
 
-  const handleSubmit = (values: ProfileFormValues) => {
-    // Store email in localStorage for payment form
-    localStorage.setItem('user_email', values.email);
-    localStorage.setItem('user_name', `${values.firstName} ${values.lastName}`);
-    
-    // Also store a temp signup ID if none exists
-    if (!localStorage.getItem('signup_id')) {
-      localStorage.setItem('signup_id', `temp-${Date.now()}`);
+  // New function to save profile data to Supabase via Edge Function
+  const saveProfileData = async (values: ProfileFormValues) => {
+    try {
+      setIsSubmitting(true);
+      
+      const response = await fetch('https://hgpplvegqlvxwszlhzwc.supabase.co/functions/v1/save-profile-data', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(values)
+      });
+      
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || 'Failed to save profile data');
+      }
+      
+      const data = await response.json();
+      
+      // Store the returned signup_id in localStorage
+      if (data.signup_id) {
+        localStorage.setItem('signup_id', data.signup_id);
+        console.log('Saved signup_id to localStorage:', data.signup_id);
+      }
+      
+      // Also store other useful data in localStorage
+      localStorage.setItem('user_email', values.email);
+      localStorage.setItem('user_name', `${values.firstName} ${values.lastName}`);
+      
+      return data;
+    } catch (error) {
+      console.error('Error saving profile data:', error);
+      toast({
+        title: "Error",
+        description: error instanceof Error ? error.message : "Failed to save profile data. Please try again.",
+        variant: "destructive"
+      });
+      throw error;
+    } finally {
+      setIsSubmitting(false);
     }
-    
-    // Call the original onSubmit function
-    onSubmit(values);
+  };
+
+  const handleSubmit = async (values: ProfileFormValues) => {
+    try {
+      // Save profile data to database
+      await saveProfileData(values);
+      
+      // Call the original onSubmit function to proceed to next step
+      onSubmit(values);
+    } catch (error) {
+      console.error('Error in form submission:', error);
+      // Error is already handled and displayed in saveProfileData
+    }
   };
 
   return (
@@ -125,8 +172,8 @@ const ProfileForm = ({ defaultValues, onSubmit }: ProfileFormProps) => {
         </div>
 
         <div className="flex justify-end pt-4">
-          <Button type="submit">
-            Continue to Learning Differences
+          <Button type="submit" disabled={isSubmitting}>
+            {isSubmitting ? "Saving..." : "Continue to Learning Differences"}
           </Button>
         </div>
       </form>

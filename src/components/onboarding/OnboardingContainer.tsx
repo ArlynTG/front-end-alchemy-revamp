@@ -26,6 +26,9 @@ const OnboardingContainer = ({ studentId = "temp-id" }: OnboardingContainerProps
     const email = localStorage.getItem('user_email');
     const firstName = localStorage.getItem('user_first_name');
     const lastName = localStorage.getItem('user_last_name');
+    const signupId = localStorage.getItem('signup_id');
+    
+    console.log("Loading saved data from localStorage:", { email, firstName, lastName, signupId });
     
     if (email || firstName || lastName) {
       setFormData(prev => ({
@@ -41,6 +44,13 @@ const OnboardingContainer = ({ studentId = "temp-id" }: OnboardingContainerProps
   useEffect(() => {
     const urlParams = new URLSearchParams(location.search);
     const stepParam = urlParams.get('step');
+    const sessionId = urlParams.get('session_id');
+    
+    // If there's a session_id, we're returning from Stripe payment
+    if (sessionId) {
+      setCurrentStep("complete");
+      return;
+    }
     
     if (stepParam) {
       // Validate that the step is a valid onboarding step
@@ -68,17 +78,39 @@ const OnboardingContainer = ({ studentId = "temp-id" }: OnboardingContainerProps
     // Store form data in component state AND localStorage
     setFormData(prev => ({ ...prev, ...profileData }));
     
-    // Store user data in localStorage for persistence
-    if (profileData.email) localStorage.setItem('user_email', profileData.email);
-    if (profileData.firstName) localStorage.setItem('user_first_name', profileData.firstName);
-    if (profileData.lastName) localStorage.setItem('user_last_name', profileData.lastName);
+    // Store user data in localStorage for persistence is now handled in the ProfileForm component
     
     navigateToStep("learning-differences");
   };
 
   // Learning differences step handler
   const handleLearningDifferencesSubmit = (differences: LearningDifference[]) => {
+    // Here we would typically save this data to the database
+    // For now we just store it in the component state
     setFormData(prev => ({ ...prev, learningDifferences: differences }));
+    
+    // Update any signup_id record if needed
+    const signupId = localStorage.getItem('signup_id');
+    const userEmail = localStorage.getItem('user_email');
+    
+    if (signupId && userEmail) {
+      // Optionally update the backend with the learning differences data
+      fetch('https://hgpplvegqlvxwszlhzwc.supabase.co/functions/v1/update-learning-differences', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          signup_id: signupId,
+          email: userEmail,
+          learning_differences: differences
+        })
+      }).catch(err => {
+        console.error("Failed to update learning differences:", err);
+        // We don't block navigation on this error
+      });
+    }
+    
     navigateToStep("payment");
   };
 
