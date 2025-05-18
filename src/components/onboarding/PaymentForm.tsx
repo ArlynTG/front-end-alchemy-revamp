@@ -44,17 +44,14 @@ const PaymentForm = ({ onPaymentComplete, onBack }: PaymentFormProps) => {
 
       <Card>
         <CardHeader>
-          <CardTitle>Beta Subscription</CardTitle>
+          <CardTitle>Early Adopter Special</CardTitle>
           <CardDescription>Early access to Tobey's Tutor with special beta pricing</CardDescription>
         </CardHeader>
         <CardContent>
           <div className="flex justify-between items-center">
             <div>
-              <p className="text-2xl font-semibold">$19.99<span className="text-sm text-gray-500">/month</span></p>
+              <p className="text-2xl font-semibold">$29<span className="text-sm text-gray-500">/month</span></p>
               <p className="text-sm text-gray-500 mt-1">Billed monthly, cancel anytime</p>
-            </div>
-            <div className="bg-green-50 text-green-700 text-sm font-medium px-3 py-1 rounded-full">
-              Beta discount applied
             </div>
           </div>
 
