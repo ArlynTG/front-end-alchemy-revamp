@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 
@@ -63,6 +62,11 @@ const PaymentForm = ({ onPaymentComplete, onBack }: PaymentFormProps) => {
       // Generate a unique ID for this transaction
       const signupId = localStorage.getItem('signup_id') || `user-${Date.now()}`;
       
+      // Get the current origin for dynamic success and cancel URLs
+      const origin = window.location.origin;
+      const successUrl = `${origin}/onboarding?step=complete`;
+      const cancelUrl = `${origin}/onboarding?step=payment`;
+      
       // Call Stripe checkout function with hardcoded auth
       const response = await fetch('https://hgpplvegqlvxwszlhzwc.supabase.co/functions/v1/create-checkout-session-june-beta', {
         method: 'POST',
@@ -72,7 +76,9 @@ const PaymentForm = ({ onPaymentComplete, onBack }: PaymentFormProps) => {
         },
         body: JSON.stringify({
           signup_id: signupId,
-          email: userEmail
+          email: userEmail,
+          success_url: `${successUrl}?session_id={CHECKOUT_SESSION_ID}`,
+          cancel_url: cancelUrl
         })
       });
       
