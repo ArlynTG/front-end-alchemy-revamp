@@ -36,20 +36,13 @@ const StripePaymentElement = ({
 
     setIsProcessing(true);
 
-    // Confirm the payment
-    const result = await stripe.confirmPayment({
+    // For subscription, we use setupIntent instead of paymentIntent
+    const result = await stripe.confirmSetup({
       elements,
       confirmParams: {
-        return_url: `${window.location.origin}/account`, // Where to redirect after successful payment
-        payment_method_data: {
-          billing_details: {
-            name: customerInfo?.firstName && customerInfo?.lastName ? 
-              `${customerInfo.firstName} ${customerInfo.lastName}` : undefined,
-            email: customerInfo?.email,
-          },
-        },
+        return_url: `${window.location.origin}/account`, // Where to redirect after successful setup
       },
-      redirect: 'if_required', // Only redirect if 3DS is required
+      redirect: 'if_required',
     });
 
     if (result.error) {
@@ -60,15 +53,15 @@ const StripePaymentElement = ({
         variant: "destructive",
       });
       setIsProcessing(false);
-    } else if (result.paymentIntent?.status === 'succeeded') {
-      // Payment succeeded, call the completion handler
+    } else if (result.setupIntent?.status === 'succeeded') {
+      // Setup intent succeeded, call the completion handler
       toast({
-        title: "Payment Successful",
+        title: "Payment Setup Successful",
         description: "Your subscription is now active",
       });
-      onPaymentComplete(result.paymentIntent.id);
+      onPaymentComplete(result.setupIntent.id);
     } else {
-      // Handle cases like payment_intent.requires_action
+      // Handle cases like setup_intent.requires_action
       setIsProcessing(false);
     }
   };

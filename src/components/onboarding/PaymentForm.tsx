@@ -87,7 +87,7 @@ const PaymentForm = ({ onPaymentComplete, onBack, profileData }: PaymentFormProp
     },
   };
 
-  // Options to pass to Elements
+  // Options to pass to Elements - fixed to match proper type
   const options = clientSecret ? {
     clientSecret,
     appearance,
