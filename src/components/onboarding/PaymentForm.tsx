@@ -13,7 +13,6 @@ const STRIPE_CHECKOUT_URL = "https://buy.stripe.com/00w7sKbnj3Tg4KQ1sP9bO03";
 const PaymentForm = ({ onPaymentComplete, onBack }: PaymentFormProps) => {
   const [isLoading, setIsLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
-  const [termsAccepted, setTermsAccepted] = useState(false);
   
   // Use state to store the email directly in the component
   // This serves as a backup to localStorage
@@ -72,11 +71,6 @@ const PaymentForm = ({ onPaymentComplete, onBack }: PaymentFormProps) => {
   }, []);
   
   const handleSubscribe = async () => {
-    if (!termsAccepted) {
-      setErrorMessage('Please accept the Terms of Service and Privacy Policy to continue.');
-      return;
-    }
-    
     setIsLoading(true);
     
     try {
@@ -129,35 +123,6 @@ const PaymentForm = ({ onPaymentComplete, onBack }: PaymentFormProps) => {
           </div>
         </div>
       )}
-      
-      {/* Terms agreement */}
-      <div className="flex items-start">
-        <div className="flex items-center h-5">
-          <input
-            id="terms"
-            name="terms"
-            type="checkbox"
-            checked={termsAccepted}
-            onChange={(e) => setTermsAccepted(e.target.checked)}
-            className="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded"
-          />
-        </div>
-        <div className="ml-3 text-sm">
-          <label htmlFor="terms" className="font-medium text-gray-700">
-            I agree to the{" "}
-            <a href="/terms" className="text-indigo-600 hover:text-indigo-500">
-              Terms of Service
-            </a>{" "}
-            and{" "}
-            <a href="/privacy" className="text-indigo-600 hover:text-indigo-500">
-              Privacy Policy
-            </a>
-          </label>
-          <p className="text-gray-500">
-            Your card will be charged immediately. You can cancel anytime from your account settings.
-          </p>
-        </div>
-      </div>
       
       <div className="border-t border-gray-200 pt-6">
         <p className="text-sm text-gray-500 mb-4">
