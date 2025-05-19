@@ -66,52 +66,91 @@ const BetaSignupModal = ({ isOpen, onClose, planId }: BetaSignupModalProps) => {
     setPaymentError(null);
 
     try {
-      // Format the data for the signup_data table
-      const signupData = {
-        first_name: data.firstName,
-        last_name: data.lastName,
-        email: data.email,
-        student_name: data.studentName || "",
-        phone: data.phone,
-        student_age: data.studentAge,
-        learning_difference: data.primaryLearningDifference,
-        plan_type: planId
-      };
-      
-      console.log("Submitting data to signup_data table:", signupData);
-      
-      // Use the submitSignupData function from signupDataService.ts
-      const { success, error } = await submitSignupData(signupData);
-      
-      if (!success) {
-        throw new Error(error || "Failed to submit registration");
-      }
-      
-      // Re-fetch the inserted data to get its ID (we need this for Stripe)
-      const { data: insertedData, error: fetchError } = await supabase
+      // First, check if this email already exists in the signup_data table
+      const { data: existingUser, error: checkError } = await supabase
         .from('signup_data')
-        .select('id')
+        .select('id, signup_status')
         .eq('email', data.email)
-        .limit(1)
-        .single();
+        .maybeSingle();
+      
+      if (checkError && checkError.code !== 'PGRST116') { // PGRST116 is not found
+        throw new Error(`Error checking existing user: ${checkError.message}`);
+      }
+      
+      let userUuid: string;
+      
+      // If user exists and hasn't paid (or status is null/undefined)
+      if (existingUser && (!existingUser.signup_status || existingUser.signup_status === 'pending')) {
+        console.log("User exists but hasn't completed payment, proceeding to payment step:", existingUser);
+        userUuid = existingUser.id;
+        
+        // Optionally update their information in case they changed it
+        await supabase
+          .from('signup_data')
+          .update({
+            first_name: data.firstName,
+            last_name: data.lastName,
+            student_name: data.studentName || "",
+            phone: data.phone,
+            student_age: data.studentAge,
+            learning_difference: data.primaryLearningDifference,
+            plan_type: planId
+          })
+          .eq('id', userUuid);
+      } 
+      // If user exists and has already paid
+      else if (existingUser && existingUser.signup_status === 'paid') {
+        throw new Error('This email has already completed registration and payment for the beta program.');
+      }
+      // If user doesn't exist, create new record
+      else {
+        // Format the data for the signup_data table
+        const signupData = {
+          first_name: data.firstName,
+          last_name: data.lastName,
+          email: data.email,
+          student_name: data.studentName || "",
+          phone: data.phone,
+          student_age: data.studentAge,
+          learning_difference: data.primaryLearningDifference,
+          plan_type: planId,
+          signup_status: 'pending'
+        };
+        
+        console.log("Submitting data to signup_data table:", signupData);
+        
+        // Use the submitSignupData function from signupDataService.ts
+        const { success, error } = await submitSignupData(signupData);
+        
+        if (!success) {
+          throw new Error(error || "Failed to submit registration");
+        }
+        
+        // Re-fetch the inserted data to get its ID (we need this for Stripe)
+        const { data: insertedData, error: fetchError } = await supabase
+          .from('signup_data')
+          .select('id')
+          .eq('email', data.email)
+          .limit(1)
+          .single();
 
-      if (fetchError) {
-        console.error("Error fetching inserted data:", fetchError);
-        throw new Error(`Failed to retrieve registration details: ${fetchError.message || 'Unknown error'}`);
+        if (fetchError) {
+          console.error("Error fetching inserted data:", fetchError);
+          throw new Error(`Failed to retrieve registration details: ${fetchError.message || 'Unknown error'}`);
+        }
+
+        userUuid = insertedData.id;
       }
 
-      console.log("Registration successful with inserted data:", insertedData);
-      
-      // Get the UUID from the inserted data
-      const newUserId = insertedData.id;
-      setUserId(newUserId);
+      console.log("Registration processed with user ID:", userUuid);
+      setUserId(userUuid);
       
       // Save confirmation data to localStorage to handle page transitions
       const confirmationData = {
         firstName: data.firstName,
         studentFirstName: data.studentName?.split(' ')[0] || '',
         email: data.email,
-        registrationId: newUserId
+        registrationId: userUuid
       };
       localStorage.setItem('betaConfirmationData', JSON.stringify(confirmationData));
       
@@ -120,7 +159,7 @@ const BetaSignupModal = ({ isOpen, onClose, planId }: BetaSignupModalProps) => {
       
       // Update Stripe button with client reference ID
       setTimeout(() => {
-        updateStripeButton(newUserId);
+        updateStripeButton(userUuid);
       }, 100);
       
     } catch (error) {
@@ -150,15 +189,29 @@ const BetaSignupModal = ({ isOpen, onClose, planId }: BetaSignupModalProps) => {
   // Add a listener to detect successful Stripe transactions
   useEffect(() => {
     if (formSubmitted && userId) {
-      const handleStripeSuccess = () => {
-        console.log("Stripe payment completed successfully");
+      const handleStripeSuccess = async (event: MessageEvent) => {
+        if (event.data?.type === 'stripe-buy-button:transaction-complete') {
+          console.log("Stripe payment completed successfully");
+          
+          // Update the user's signup status to 'paid'
+          try {
+            await supabase
+              .from('signup_data')
+              .update({ signup_status: 'paid' })
+              .eq('id', userId);
+              
+            console.log("User payment status updated to paid");
+          } catch (error) {
+            console.error("Failed to update payment status:", error);
+          }
+        }
       };
       
-      window.addEventListener('message', (event) => {
-        if (event.data?.type === 'stripe-buy-button:transaction-complete') {
-          handleStripeSuccess();
-        }
-      });
+      window.addEventListener('message', handleStripeSuccess);
+      
+      return () => {
+        window.removeEventListener('message', handleStripeSuccess);
+      };
     }
   }, [formSubmitted, userId]);
 
