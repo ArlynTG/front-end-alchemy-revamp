@@ -10,9 +10,10 @@ import AvailableSpotsIndicator from "./AvailableSpotsIndicator";
 
 interface RegistrationFormProps {
   selectedPlan: string;
+  isStripeLoaded: boolean;
 }
 
-const RegistrationForm = ({ selectedPlan }: RegistrationFormProps) => {
+const RegistrationForm = ({ selectedPlan, isStripeLoaded }: RegistrationFormProps) => {
   const [availableSpots, setAvailableSpots] = useState<number | null>(null);
   const navigate = useNavigate();
   const {
@@ -116,6 +117,7 @@ const RegistrationForm = ({ selectedPlan }: RegistrationFormProps) => {
             onPaymentSuccess={handlePaymentSuccess}
             onBackToDetails={backToDetails}
             isLoading={isLoading}
+            isStripeLoaded={isStripeLoaded}
           />
         )
       )}
