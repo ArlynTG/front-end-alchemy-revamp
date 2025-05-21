@@ -1,7 +1,7 @@
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import BetaSignupModal from "@/components/signup/BetaSignupModal";
+import BetaSignupModal from "@/components/pricing/BetaSignupModal";
 
 const SignupTest = () => {
   const [isModalOpen, setIsModalOpen] = useState(true);
