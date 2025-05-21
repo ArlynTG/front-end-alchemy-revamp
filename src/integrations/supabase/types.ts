@@ -77,11 +77,11 @@ export type Database = {
       }
       payment_records: {
         Row: {
+          amount_total: number | null
           cancel_at: string | null
           current_period_end: string | null
           current_period_start: string | null
           id: string
-          payment_amount: number | null
           payment_date: string | null
           payment_method: string | null
           payment_status: string | null
@@ -92,11 +92,11 @@ export type Database = {
           subscription_status: string | null
         }
         Insert: {
+          amount_total?: number | null
           cancel_at?: string | null
           current_period_end?: string | null
           current_period_start?: string | null
           id?: string
-          payment_amount?: number | null
           payment_date?: string | null
           payment_method?: string | null
           payment_status?: string | null
@@ -107,11 +107,11 @@ export type Database = {
           subscription_status?: string | null
         }
         Update: {
+          amount_total?: number | null
           cancel_at?: string | null
           current_period_end?: string | null
           current_period_start?: string | null
           id?: string
-          payment_amount?: number | null
           payment_date?: string | null
           payment_method?: string | null
           payment_status?: string | null
@@ -126,10 +126,34 @@ export type Database = {
             foreignKeyName: "payment_records_registration_id_fkey"
             columns: ["registration_id"]
             isOneToOne: false
-            referencedRelation: "beta_registrations"
+            referencedRelation: "signup_data"
             referencedColumns: ["id"]
           },
         ]
+      }
+      payments: {
+        Row: {
+          amount_total: number | null
+          created_at: string | null
+          customer_email: string | null
+          id: string
+          stripe_session_id: string | null
+        }
+        Insert: {
+          amount_total?: number | null
+          created_at?: string | null
+          customer_email?: string | null
+          id?: string
+          stripe_session_id?: string | null
+        }
+        Update: {
+          amount_total?: number | null
+          created_at?: string | null
+          customer_email?: string | null
+          id?: string
+          stripe_session_id?: string | null
+        }
+        Relationships: []
       }
       pedagogy_chunks: {
         Row: {
@@ -219,6 +243,7 @@ export type Database = {
       }
       signup_data: {
         Row: {
+          billing_status: string | null
           created_at: string | null
           email: string
           first_name: string
@@ -232,6 +257,7 @@ export type Database = {
           student_name: string | null
         }
         Insert: {
+          billing_status?: string | null
           created_at?: string | null
           email: string
           first_name: string
@@ -245,6 +271,7 @@ export type Database = {
           student_name?: string | null
         }
         Update: {
+          billing_status?: string | null
           created_at?: string | null
           email?: string
           first_name?: string
@@ -611,6 +638,15 @@ export type Database = {
           chunk_text: string
           similarity: number
         }[]
+      }
+      record_payment_and_mark_paid: {
+        Args: {
+          _stripe_payment_id: string
+          _stripe_customer_id: string
+          _amount_total: number
+          _registration_id?: string
+        }
+        Returns: undefined
       }
       sparsevec_out: {
         Args: { "": unknown }

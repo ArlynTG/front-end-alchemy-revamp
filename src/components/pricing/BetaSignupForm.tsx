@@ -7,9 +7,9 @@ import { Form } from "@/components/ui/form";
 import { InputField, SelectField } from "@/components/form/FormField";
 import { detailedSignupSchema, DetailedSignupFormValues } from "@/utils/formSchemas";
 
-// Define student age options (4-18 years)
-const studentAgeOptions = Array.from({ length: 15 }, (_, i) => {
-  const age = i + 4;
+// Update student age options to only include ages 8-16
+const studentAgeOptions = Array.from({ length: 9 }, (_, i) => {
+  const age = i + 8;
   return { value: age.toString(), label: `${age} years` };
 });
 
