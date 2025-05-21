@@ -1,27 +1,11 @@
 
-import { useState } from "react";
-import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
 import { Button } from "@/components/ui/button";
 import { Form } from "@/components/ui/form";
 import { InputField, SelectField } from "@/components/form/FormField";
 import { detailedSignupSchema, DetailedSignupFormValues } from "@/utils/formSchemas";
-
-// Update student age options to only include ages 8-16
-const studentAgeOptions = Array.from({ length: 9 }, (_, i) => {
-  const age = i + 8;
-  return { value: age.toString(), label: `${age} years` };
-});
-
-// Define learning difference options that match Supabase enum exactly
-const learningDifferenceOptions = [
-  { value: "ADHD", label: "ADHD" },
-  { value: "Dyslexia", label: "Dyslexia" },
-  { value: "Dyscalculia", label: "Dyscalculia" },
-  { value: "Auditory Processing", label: "Auditory Processing" },
-  { value: "Executive_Functioning", label: "Executive Function" },
-  { value: "Other", label: "Other" },
-];
+import { studentAgeOptions, learningDifferenceOptions } from "./formOptions";
 
 interface BetaSignupFormProps {
   onSubmit: (data: DetailedSignupFormValues) => Promise<void>;
