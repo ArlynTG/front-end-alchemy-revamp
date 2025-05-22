@@ -7,21 +7,7 @@ import { Button } from "@/components/ui/button";
 import { toast } from "@/hooks/use-toast";
 
 const SignupTestv2 = () => {
-  const [isModalOpen, setIsModalOpen] = useState(true);
-  const [formSubmitted, setFormSubmitted] = useState(false);
-  const [errorMessage, setErrorMessage] = useState<string | null>(null);
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const [stripeButtonInitialized, setStripeButtonInitialized] = useState(false);
-  const isMobile = useIsMobile();
-  const navigate = useNavigate();
-
-  const closeModal = () => {
-    setIsModalOpen(false);
-    // Navigate back to homepage when modal is closed
-    navigate("/");
-  };
-
-  // Define event handlers outside of useEffect
+  // Define event handlers at the top level
   const handleSignupSuccess = (event: any) => {
     console.log("Signup successful, rowId:", event.detail.rowId);
     setFormSubmitted(true);
@@ -76,6 +62,20 @@ const SignupTestv2 = () => {
       console.error("Error initializing Stripe Buy Button:", error);
       setErrorMessage("Could not initialize payment button. Please try again.");
     }
+  };
+
+  const [isModalOpen, setIsModalOpen] = useState(true);
+  const [formSubmitted, setFormSubmitted] = useState(false);
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [stripeButtonInitialized, setStripeButtonInitialized] = useState(false);
+  const isMobile = useIsMobile();
+  const navigate = useNavigate();
+
+  const closeModal = () => {
+    setIsModalOpen(false);
+    // Navigate back to homepage when modal is closed
+    navigate("/");
   };
 
   // Add the custom script when the component mounts
@@ -214,6 +214,9 @@ const SignupTestv2 = () => {
       closeModal();
     };
     document.addEventListener('closeModalEvent', handleCloseModal);
+
+    // Ensure modal is open when component mounts
+    setIsModalOpen(true);
 
     return () => {
       // Clean up scripts and event listeners when component unmounts
