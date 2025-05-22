@@ -36,7 +36,7 @@ export const useBetaSignup = (planId: string) => {
       
       // Insert data into Supabase
       const { data: insertedData, error } = await supabase
-        .from('beta_registrations')
+        .from('signup_data')
         .insert(insertData)
         .select()
         .single();
@@ -68,6 +68,7 @@ export const useBetaSignup = (planId: string) => {
       
       // Show form submitted state with Stripe button
       setFormSubmitted(true);
+      setIsSubmitting(false);
       
     } catch (error) {
       console.error("Error during submission:", error);
@@ -82,8 +83,22 @@ export const useBetaSignup = (planId: string) => {
 
   // Handle Stripe payment success event
   const setupStripeListener = () => {
-    const handleStripeSuccess = () => {
+    const handleStripeSuccess = async () => {
       console.log("Stripe payment completed successfully");
+      
+      // Update the user's signup status to 'paid'
+      if (userId) {
+        try {
+          await supabase
+            .from('signup_data')
+            .update({ signup_status: 'paid' })
+            .eq('id', userId);
+            
+          console.log("User payment status updated to paid");
+        } catch (error) {
+          console.error("Failed to update payment status:", error);
+        }
+      }
     };
     
     window.addEventListener('message', (event) => {

@@ -1,6 +1,6 @@
 import { supabase } from "@/integrations/supabase/client";
 
-// The Stripe checkout URL
+// The Stripe checkout URL - updated to reference the new buy button
 export const STRIPE_CHECKOUT_URL = "https://buy.stripe.com/aFabJ04YV1L80uA9Zl9bO04";
 
 interface BetaSignupData {

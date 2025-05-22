@@ -1,6 +1,5 @@
 
 import { useEffect } from "react";
-import { Button } from "@/components/ui/button";
 import { STRIPE_CHECKOUT_URL } from "@/utils/betaSignupService";
 
 interface BetaPaymentSectionProps {
@@ -10,25 +9,29 @@ interface BetaPaymentSectionProps {
 }
 
 const BetaPaymentSection = ({ userId, paymentError, setPaymentError }: BetaPaymentSectionProps) => {
-  // Handle redirect to Stripe
-  const handleCheckout = () => {
-    if (!userId) {
-      setPaymentError("Registration ID not found. Please try again.");
-      return;
+  // Set up the Stripe button with the client reference ID (userId)
+  useEffect(() => {
+    // Check if Stripe script is already loaded
+    if (!document.querySelector('script[src="https://js.stripe.com/v3/buy-button.js"]')) {
+      const script = document.createElement('script');
+      script.src = 'https://js.stripe.com/v3/buy-button.js';
+      script.async = true;
+      document.head.appendChild(script);
     }
     
-    try {
-      // Create URL with client reference ID
-      const url = new URL(STRIPE_CHECKOUT_URL);
-      url.searchParams.append('client_reference_id', userId);
-      
-      // Open in current tab
-      window.location.href = url.toString();
-    } catch (error) {
-      console.error("Error redirecting to Stripe:", error);
-      setPaymentError("Failed to open payment page. Please try again.");
+    // Set the client reference ID if userId exists
+    if (userId) {
+      setTimeout(() => {
+        const stripeButton = document.querySelector('stripe-buy-button');
+        if (stripeButton) {
+          stripeButton.setAttribute('client-reference-id', userId);
+          console.log("Set client reference ID on Stripe button:", userId);
+        } else {
+          setPaymentError("Payment button could not be initialized. Please refresh the page.");
+        }
+      }, 500); // Small delay to ensure the button is in the DOM
     }
-  };
+  }, [userId, setPaymentError]);
 
   return (
     <div className="py-6 text-center">
@@ -51,12 +54,11 @@ const BetaPaymentSection = ({ userId, paymentError, setPaymentError }: BetaPayme
       )}
 
       <div id="payment-button-container" className="flex justify-center mb-4">
-        <Button 
-          onClick={handleCheckout}
-          className="bg-tobey-orange hover:bg-tobey-orange/90 text-white px-8 py-6 text-lg font-medium"
+        <stripe-buy-button
+          buy-button-id="buy_btn_1RROv2BpB9LJmKwiJTDSTCPl"
+          publishable-key="pk_live_51R96NFBpB9LJmKwiof8LfkfsDcBtzx8sl21tqETJoiiuMSNh0yGHOuZscRLgo8NykCYscFtFGZ3Ghh29hR3Emo0W00vAw5C1Nu"
         >
-          Reserve Your Spot for $1
-        </Button>
+        </stripe-buy-button>
       </div>
     </div>
   );
