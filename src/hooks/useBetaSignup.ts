@@ -3,6 +3,7 @@ import { useState } from "react";
 import { DetailedSignupFormValues } from "@/utils/formSchemas";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "@/hooks/use-toast";
+import { Database } from "@/integrations/supabase/types";
 
 export const useBetaSignup = (planId: string) => {
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -17,9 +18,6 @@ export const useBetaSignup = (planId: string) => {
     setPaymentError(null);
 
     try {
-      // Important: Store learning differences as an array in the database
-      const learningDifferences = data.primaryLearningDifference ? [data.primaryLearningDifference] : null;
-      
       // Create the insertion object with all necessary fields
       const insertData = {
         first_name: data.firstName,
@@ -28,7 +26,7 @@ export const useBetaSignup = (planId: string) => {
         student_name: data.studentName || "",
         phone: data.phone,
         student_age: data.studentAge,
-        learning_differences: learningDifferences,
+        learning_difference: data.primaryLearningDifference || null,
         plan_type: planId
       };
       
@@ -39,6 +37,7 @@ export const useBetaSignup = (planId: string) => {
         .from('signup_data')
         .insert(insertData)
         .select()
+        .returns<Database["public"]["Tables"]["signup_data"]["Row"]>()
         .single();
 
       if (error) {

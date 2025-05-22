@@ -5,8 +5,8 @@ import { RegistrationFormValues } from "@/utils/formSchemas";
 import { Database } from "@/integrations/supabase/types";
 import { LearningDifference } from "@/components/onboarding/types";
 
-// Define a type for the beta_registrations table
-type BetaRegistration = {
+// Define a type for the signup_data table
+type SignupData = {
   id?: string;
   first_name: string;
   last_name: string;
@@ -14,7 +14,7 @@ type BetaRegistration = {
   student_name: string | null;
   phone: string;
   student_age: string;
-  primary_learning_difference: Database["public"]["Enums"]["learning_difference"] | null;
+  learning_difference: Database["public"]["Enums"]["learning_difference"] | null;
   plan_type: string;
   payment_id?: string;
   payment_status?: string;
@@ -25,7 +25,7 @@ type BetaRegistration = {
 export const checkAvailableSpots = async (): Promise<number> => {
   try {
     const { count, error } = await supabase
-      .from('beta_registrations')
+      .from('signup_data')
       .select('*', { count: 'exact', head: true });
     
     if (error) {
@@ -72,7 +72,7 @@ export const submitBetaRegistration = async (
     }
     
     // Create the insertion object with all necessary fields
-    const insertData: BetaRegistration = {
+    const insertData: SignupData = {
       first_name: data.firstName,
       last_name: data.lastName,
       email: data.email,
@@ -80,7 +80,7 @@ export const submitBetaRegistration = async (
       phone: data.phone,
       student_age: data.studentAge,
       // Convert extended learning difference to database enum or null
-      primary_learning_difference: data.primaryLearningDifference as Database["public"]["Enums"]["learning_difference"] || null,
+      learning_difference: data.primaryLearningDifference as Database["public"]["Enums"]["learning_difference"] || null,
       plan_type: planType,
       payment_id: paymentId,
       payment_status: paymentId ? "paid" : "pending"
@@ -90,9 +90,10 @@ export const submitBetaRegistration = async (
     
     // Ensure we are using the exact table name that exists in Supabase
     const { data: insertedData, error } = await supabase
-      .from('beta_registrations')
+      .from('signup_data')
       .insert(insertData)
       .select()
+      .returns<Database["public"]["Tables"]["signup_data"]["Row"]>()
       .single();
 
     if (error) {

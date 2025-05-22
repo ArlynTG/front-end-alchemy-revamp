@@ -1,4 +1,6 @@
+
 import { supabase } from "@/integrations/supabase/client";
+import { Database } from "@/integrations/supabase/types";
 
 // The Stripe checkout URL - updated to reference the new buy button
 export const STRIPE_CHECKOUT_URL = "https://buy.stripe.com/aFabJ04YV1L80uA9Zl9bO04";
@@ -26,7 +28,7 @@ export const saveBetaSignupToLocalStorage = (data: BetaSignupData): void => {
       phone: data.phone,
       student_name: data.studentName,
       student_age: data.studentAge,
-      learning_differences: data.learningDifference ? [data.learningDifference] : [],
+      learning_difference: data.learningDifference,
       plan_type: data.planId,
       timestamp: new Date().toISOString()
     }));
@@ -52,7 +54,7 @@ export const submitBetaSignup = async (data: BetaSignupData): Promise<{success: 
       phone: data.phone || null,
       student_name: data.studentName || null,
       student_age: data.studentAge || null,
-      learning_differences: data.learningDifference ? [data.learningDifference] : [],
+      learning_difference: data.learningDifference || null,
       plan_type: data.planId
     };
     
@@ -60,7 +62,7 @@ export const submitBetaSignup = async (data: BetaSignupData): Promise<{success: 
     
     // Insert data into Supabase
     const { error } = await supabase
-      .from('beta_registrations')
+      .from('signup_data')
       .insert(registrationData);
     
     if (error) {

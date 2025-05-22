@@ -37,21 +37,21 @@ serve(async (req) => {
     } = requestData
 
     // Format the data for insertion
-    const betaRegistration = {
+    const signupData = {
       first_name: firstName,
       last_name: lastName,
       email: email,
       phone: phone,
       student_name: studentName,
       student_age: studentAge,
-      learning_differences: learningDifference ? [learningDifference] : [],
+      learning_difference: learningDifference,
       plan_type: planId
     }
 
     // Insert the data using the service role client
     const { data, error } = await supabaseClient
-      .from('beta_registrations')
-      .insert(betaRegistration)
+      .from('signup_data')
+      .insert(signupData)
       .select()
 
     if (error) {

@@ -1,6 +1,7 @@
 
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "@/components/ui/use-toast";
+import { Database } from "@/integrations/supabase/types";
 
 /**
  * Helper function to insert beta registration data with error handling
@@ -26,7 +27,7 @@ export const insertBetaRegistration = async (data: {
       phone: data.phone || null,
       student_name: data.studentName || null,
       student_age: data.studentAge || null,
-      learning_differences: data.primaryLearningDifference ? [data.primaryLearningDifference] : null,
+      learning_difference: data.primaryLearningDifference || null,
       plan_type: data.planId
     };
     
@@ -34,9 +35,10 @@ export const insertBetaRegistration = async (data: {
     
     // Direct insert using Supabase client
     const { data: insertedData, error } = await supabase
-      .from('beta_registrations')
+      .from('signup_data')
       .insert(insertData)
-      .select();
+      .select()
+      .returns<Database["public"]["Tables"]["signup_data"]["Row"]>();
 
     if (error) {
       console.error("Supabase insert error:", error);

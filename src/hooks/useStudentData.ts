@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from '@/hooks/use-toast';
+import { Database } from '@/integrations/supabase/types';
 
 interface StudentData {
   name: string;
@@ -26,9 +27,10 @@ export const useStudentData = (studentId: string) => {
     try {
       // Get registration data for the specified UUID
       const { data, error } = await supabase
-        .from('beta_registrations')
+        .from('signup_data')
         .select('*')
         .eq('id', studentId)
+        .returns<Database["public"]["Tables"]["signup_data"]["Row"]>()
         .single();
 
       if (error) {
@@ -47,7 +49,8 @@ export const useStudentData = (studentId: string) => {
           ...prevData,
           name: data.student_name || `${data.first_name} ${data.last_name}`,
           // Keep existing values for totalLessons and averageSessionDuration
-          longTermPlan: data.goals_summary || prevData.longTermPlan
+          // TODO: goals_summary now lives in student_goals table, need to fetch from there
+          longTermPlan: "Goals will be implemented in student_goals table" || prevData.longTermPlan
         }));
         
         toast({
