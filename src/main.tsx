@@ -9,7 +9,6 @@ import { HelmetProvider } from 'react-helmet-async'
 
 // Import pages
 import SignupTest from './pages/SignupTest.tsx'
-import SignupTestv2 from './pages/SignupTestv2.tsx'
 import Onboarding from './pages/Onboarding.tsx'
 import Index from './pages/Index.tsx'
 import NotFound from './pages/NotFound.tsx'
@@ -50,7 +49,6 @@ const router = createBrowserRouter(
       <Route path="/onboarding/success" element={<OnboardingSuccess />} />
       <Route path="/herotest" element={<HeroTest />} />
       <Route path="/signup-test" element={<SignupTest />} />
-      <Route path="/signup-testv2" element={<SignupTestv2 />} />
       <Route path="*" element={<NotFound />} />
     </Route>
   )
