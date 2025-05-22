@@ -183,8 +183,9 @@ const SignupTestv2 = () => {
                   className="flex-1 px-3 py-2 border rounded"
                 >
                   <option value="" disabled selected>Select age</option>
-                  <option>6</option><option>7</option><option>8</option>
-                  <option>9</option><option>10</option><option>11</option><option>12+</option>
+                  <option>8</option><option>9</option><option>10</option>
+                  <option>11</option><option>12</option><option>13</option>
+                  <option>14</option><option>15</option><option>16</option>
                 </select>
               </div>
 
