@@ -1,7 +1,7 @@
 
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { Dialog, DialogContent } from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { Button } from "@/components/ui/button";
 import { toast } from "@/hooks/use-toast";
@@ -117,14 +117,10 @@ const SignupTestv2 = () => {
             detail: { rowId }
           }));
           
-          // Then click the stripe button
+          // Instead of trying to click the hidden Stripe button, redirect to the provided URL
           setTimeout(() => {
-            const btn = document.querySelector("stripe-buy-button");
-            if (btn) {
-              btn.setAttribute("data-client-reference-id", rowId);   // pass db id to Stripe
-              btn.click();
-            }
-          }, 100);
+            window.location.href = "https://buy.stripe.com/dRm28qgHDcpM2CI6N99bO05";
+          }, 500);
           
         } catch (err) {
           console.error("Signup error:", err);
@@ -147,11 +143,16 @@ const SignupTestv2 = () => {
     const handleSignupSuccess = (event: any) => {
       console.log("Signup successful, rowId:", event.detail.rowId);
       setFormSubmitted(true);
+      // Clear any previous error messages when successful
+      setErrorMessage(null);
     };
     
     const handleSignupError = (event: any) => {
       console.error("Signup error:", event.detail.message);
+      // Only show the error message, don't set formSubmitted to true
       setErrorMessage(event.detail.message);
+      setFormSubmitted(false); // Ensure form stays visible on error
+      
       // Show toast notification
       toast({
         title: "Error",
@@ -183,15 +184,17 @@ const SignupTestv2 = () => {
     <div className="min-h-screen bg-gray-100 flex flex-col items-center justify-center p-4">
       <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
         <DialogContent className={`sm:max-w-md md:max-w-xl ${isMobile ? 'h-[calc(100vh-4rem)] max-h-full mt-16 pt-6' : ''}`}>
+          <DialogHeader>
+            <DialogTitle className="text-2xl font-medium">Reserve Your Spot for $1</DialogTitle>
+            <DialogDescription>
+              Join our founding community of 200 families. Complete the form below to secure your place.
+            </DialogDescription>
+          </DialogHeader>
+          
           <div className={isMobile ? 'overflow-y-auto max-h-[calc(100vh-12rem)] pb-4' : ''}>
             {!formSubmitted ? (
               <>
                 <form id="signup-form" style={{ maxWidth: "560px" }}>
-                  <h2 className="text-2xl font-medium mb-2">Reserve Your Spot for $1</h2>
-                  <p className="text-gray-600 mb-4">
-                    Join our founding community of 200 families. Complete the form below to secure your place.
-                  </p>
-
                   {errorMessage && (
                     <div className="mb-4 p-3 bg-red-50 border border-red-200 text-red-700 rounded-md">
                       {errorMessage}
@@ -289,14 +292,14 @@ const SignupTestv2 = () => {
                   </div>
                   <h3 className="text-lg font-medium mb-2">Registration Complete!</h3>
                   <p className="text-gray-600 mb-6">
-                    Complete your payment to secure your spot in our beta program.
+                    Redirecting you to Stripe to complete your payment and secure your spot.
                   </p>
                 </div>
               </div>
             )}
           </div>
 
-          {/* Hidden Stripe Buy Button - Always present but only clicked when needed */}
+          {/* Hidden Stripe Buy Button - We're no longer using this for clicking */}
           <div style={{ display: 'none' }}>
             <stripe-buy-button
               buy-button-id="buy_btn_1RROv2BpB9LJmKwiJTDSTCPl"
