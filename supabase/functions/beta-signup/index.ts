@@ -53,6 +53,7 @@ serve(async (req) => {
       .from('signup_data')
       .insert(signupData)
       .select()
+      .single()
 
     if (error) {
       throw error
@@ -62,7 +63,7 @@ serve(async (req) => {
     return new Response(
       JSON.stringify({
         success: true,
-        data: data[0],
+        data: data,
         stripeUrl: 'https://buy.stripe.com/aEU29XbjrclwgO49AC'
       }),
       { 

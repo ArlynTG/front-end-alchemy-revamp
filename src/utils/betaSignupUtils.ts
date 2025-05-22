@@ -3,7 +3,6 @@ import { supabase } from "@/integrations/supabase/client";
 import { toast } from "@/components/ui/use-toast";
 import { DetailedSignupFormValues } from "@/utils/formSchemas";
 import { Database } from "@/integrations/supabase/types";
-import { LearningDifference } from "@/components/onboarding/types";
 
 // Define a type for the signup_data table
 type SignupData = {
@@ -55,7 +54,6 @@ export const submitBetaSignup = async (data: DetailedSignupFormValues, planType:
       .from('signup_data')
       .insert(insertData)
       .select()
-      .returns<Database["public"]["Tables"]["signup_data"]["Row"]>()
       .single();
 
     if (error) {
@@ -66,6 +64,10 @@ export const submitBetaSignup = async (data: DetailedSignupFormValues, planType:
       }
       
       throw new Error(`Failed to submit registration: ${error.message || 'Unknown error'}`);
+    }
+
+    if (!insertedData) {
+      throw new Error("Insert returned null");
     }
 
     console.log("Utils - Registration successful with inserted data:", insertedData);

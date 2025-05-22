@@ -38,7 +38,7 @@ export const insertBetaRegistration = async (data: {
       .from('signup_data')
       .insert(insertData)
       .select()
-      .returns<Database["public"]["Tables"]["signup_data"]["Row"]>();
+      .single();
 
     if (error) {
       console.error("Supabase insert error:", error);
@@ -50,8 +50,12 @@ export const insertBetaRegistration = async (data: {
       throw new Error(`Failed to submit registration: ${error.message || 'Unknown error'}`);
     }
 
+    if (!insertedData) {
+      throw new Error('Registration was submitted but returned no data');
+    }
+
     console.log("Registration successful:", insertedData);
-    return { success: true, data: insertedData?.[0] || null };
+    return { success: true, data: insertedData };
     
   } catch (error) {
     console.error("Error in insertBetaRegistration:", error);

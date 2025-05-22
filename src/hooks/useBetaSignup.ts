@@ -37,7 +37,6 @@ export const useBetaSignup = (planId: string) => {
         .from('signup_data')
         .insert(insertData)
         .select()
-        .returns<Database["public"]["Tables"]["signup_data"]["Row"]>()
         .single();
 
       if (error) {
@@ -48,6 +47,10 @@ export const useBetaSignup = (planId: string) => {
         }
         
         throw new Error(`Failed to submit registration: ${error.message || 'Unknown error'}`);
+      }
+
+      if (!insertedData) {
+        throw new Error("Insert returned null");
       }
 
       console.log("Registration successful with inserted data:", insertedData);
