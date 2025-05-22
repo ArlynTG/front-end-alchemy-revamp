@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { useIsMobile } from "@/hooks/use-mobile";
+import { Button } from "@/components/ui/button";
 
 const SignupTestv2 = () => {
   const [isModalOpen, setIsModalOpen] = useState(true);
@@ -201,13 +202,13 @@ const SignupTestv2 = () => {
 
               {/* Buttons */}
               <div className="flex justify-end gap-3">
-                <button 
-                  type="button" 
+                <Button 
+                  variant="outline" 
                   onClick={closeModal} 
-                  className="px-4 py-2 border rounded"
+                  className="mr-2"
                 >
                   Cancel
-                </button>
+                </Button>
                 <button 
                   id="reserve-btn" 
                   type="submit"
