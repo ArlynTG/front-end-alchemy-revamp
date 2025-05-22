@@ -1,5 +1,7 @@
 
-import { useEffect, useRef } from "react";
+import { useEffect } from "react";
+import { Button } from "@/components/ui/button";
+import { STRIPE_CHECKOUT_URL } from "@/utils/betaSignupService";
 
 interface BetaPaymentSectionProps {
   userId: string | null;
@@ -8,45 +10,25 @@ interface BetaPaymentSectionProps {
 }
 
 const BetaPaymentSection = ({ userId, paymentError, setPaymentError }: BetaPaymentSectionProps) => {
-  const stripeButtonInitialized = useRef(false);
-  
-  // Update the Stripe Button with the Supabase UUID
-  const updateStripeButton = (supabaseUuid: string) => {
-    stripeButtonInitialized.current = false;
-    setPaymentError(null);
+  // Handle redirect to Stripe
+  const handleCheckout = () => {
+    if (!userId) {
+      setPaymentError("Registration ID not found. Please try again.");
+      return;
+    }
     
-    const stripeButton = document.querySelector('stripe-buy-button');
-    if (stripeButton) {
-      try {
-        // Set the client-reference-id attribute directly
-        stripeButton.setAttribute('client-reference-id', supabaseUuid);
-        
-        // Show the payment container
-        const paymentContainer = document.getElementById('payment-button-container');
-        if (paymentContainer) {
-          paymentContainer.style.display = 'block';
-        }
-        
-        console.log("Stripe button updated with client-reference-id:", supabaseUuid);
-        stripeButtonInitialized.current = true;
-        
-      } catch (error) {
-        console.error("Error updating Stripe button:", error);
-        setPaymentError("Failed to initialize payment form. Please try again.");
-      }
-    } else {
-      setPaymentError("Payment form could not be loaded. Please refresh the page and try again.");
+    try {
+      // Create URL with client reference ID
+      const url = new URL(STRIPE_CHECKOUT_URL);
+      url.searchParams.append('client_reference_id', userId);
+      
+      // Open in current tab
+      window.location.href = url.toString();
+    } catch (error) {
+      console.error("Error redirecting to Stripe:", error);
+      setPaymentError("Failed to open payment page. Please try again.");
     }
   };
-
-  // Initialize the Stripe button when userId changes
-  useEffect(() => {
-    if (userId) {
-      setTimeout(() => {
-        updateStripeButton(userId);
-      }, 100);
-    }
-  }, [userId, setPaymentError]);
 
   return (
     <div className="py-6 text-center">
@@ -69,11 +51,12 @@ const BetaPaymentSection = ({ userId, paymentError, setPaymentError }: BetaPayme
       )}
 
       <div id="payment-button-container" className="flex justify-center mb-4">
-        <stripe-buy-button
-          buy-button-id="buy_btn_1RJ0FPBpB9LJmKwiQfros2F2"
-          publishable-key="pk_live_51R96NFBpB9LJmKwiof8LfkfsDcBtzx8sl21tqETJoiiuMSNh0yGHOuZscRLgo8NykCYscFtFGZ3Ghh29hR3Emo0W00vAw5C1Nu"
+        <Button 
+          onClick={handleCheckout}
+          className="bg-tobey-orange hover:bg-tobey-orange/90 text-white px-8 py-6 text-lg font-medium"
         >
-        </stripe-buy-button>
+          Reserve Your Spot for $1
+        </Button>
       </div>
     </div>
   );

@@ -1,8 +1,7 @@
-
 import { supabase } from "@/integrations/supabase/client";
 
 // The Stripe checkout URL
-export const STRIPE_CHECKOUT_URL = "https://buy.stripe.com/aEU29XbjrclwgO49AC";
+export const STRIPE_CHECKOUT_URL = "https://buy.stripe.com/aFabJ04YV1L80uA9Zl9bO04";
 
 interface BetaSignupData {
   firstName: string;
@@ -79,7 +78,14 @@ export const submitBetaSignup = async (data: BetaSignupData): Promise<{success: 
 /**
  * Redirect to Stripe checkout page
  */
-export const redirectToStripeCheckout = (): void => {
-  console.log("Redirecting to Stripe:", STRIPE_CHECKOUT_URL);
-  window.location.href = STRIPE_CHECKOUT_URL;
+export const redirectToStripeCheckout = (clientReferenceId?: string): void => {
+  const url = new URL(STRIPE_CHECKOUT_URL);
+  
+  // Add the client reference ID as a parameter if provided
+  if (clientReferenceId) {
+    url.searchParams.append('client_reference_id', clientReferenceId);
+  }
+  
+  console.log("Redirecting to Stripe:", url.toString());
+  window.location.href = url.toString();
 };

@@ -9,7 +9,7 @@ export type Json =
 export type Database = {
   public: {
     Tables: {
-      beta_registrations: {
+      beta_registrations_archive: {
         Row: {
           created_at: string
           diagnosis: string[] | null
@@ -245,44 +245,74 @@ export type Database = {
         Row: {
           billing_status: string | null
           created_at: string | null
+          dashboard_access_enabled: boolean | null
           email: string
           first_name: string
           id: string
           last_name: string
           learning_difference: string | null
+          onboarding_status: string | null
+          paid_at: string | null
+          parent_login_email: string | null
+          parent_login_password_hash: string | null
           phone: string | null
           plan_type: string | null
           signup_status: string | null
+          stripe_customer_id: string | null
           student_age: string | null
+          student_login_name: string | null
+          student_login_password_hash: string | null
           student_name: string | null
+          subscription_status: string | null
+          updated_at: string | null
         }
         Insert: {
           billing_status?: string | null
           created_at?: string | null
+          dashboard_access_enabled?: boolean | null
           email: string
           first_name: string
           id?: string
           last_name: string
           learning_difference?: string | null
+          onboarding_status?: string | null
+          paid_at?: string | null
+          parent_login_email?: string | null
+          parent_login_password_hash?: string | null
           phone?: string | null
           plan_type?: string | null
           signup_status?: string | null
+          stripe_customer_id?: string | null
           student_age?: string | null
+          student_login_name?: string | null
+          student_login_password_hash?: string | null
           student_name?: string | null
+          subscription_status?: string | null
+          updated_at?: string | null
         }
         Update: {
           billing_status?: string | null
           created_at?: string | null
+          dashboard_access_enabled?: boolean | null
           email?: string
           first_name?: string
           id?: string
           last_name?: string
           learning_difference?: string | null
+          onboarding_status?: string | null
+          paid_at?: string | null
+          parent_login_email?: string | null
+          parent_login_password_hash?: string | null
           phone?: string | null
           plan_type?: string | null
           signup_status?: string | null
+          stripe_customer_id?: string | null
           student_age?: string | null
+          student_login_name?: string | null
+          student_login_password_hash?: string | null
           student_name?: string | null
+          subscription_status?: string | null
+          updated_at?: string | null
         }
         Relationships: []
       }
@@ -325,7 +355,7 @@ export type Database = {
             foreignKeyName: "student_access_student_id_fkey"
             columns: ["student_id"]
             isOneToOne: false
-            referencedRelation: "beta_registrations"
+            referencedRelation: "signup_data"
             referencedColumns: ["id"]
           },
         ]
@@ -376,7 +406,7 @@ export type Database = {
             foreignKeyName: "student_chunks_uuid_fkey"
             columns: ["uuid"]
             isOneToOne: false
-            referencedRelation: "beta_registrations"
+            referencedRelation: "beta_registrations_archive"
             referencedColumns: ["id"]
           },
         ]
@@ -432,7 +462,7 @@ export type Database = {
             foreignKeyName: "student_goals_uuid_fkey"
             columns: ["uuid"]
             isOneToOne: false
-            referencedRelation: "beta_registrations"
+            referencedRelation: "beta_registrations_archive"
             referencedColumns: ["id"]
           },
         ]
@@ -506,7 +536,7 @@ export type Database = {
             foreignKeyName: "uploads_uuid_fkey"
             columns: ["uuid"]
             isOneToOne: false
-            referencedRelation: "beta_registrations"
+            referencedRelation: "beta_registrations_archive"
             referencedColumns: ["id"]
           },
         ]
