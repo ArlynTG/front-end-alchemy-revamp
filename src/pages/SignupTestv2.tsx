@@ -4,9 +4,12 @@ import { useNavigate } from "react-router-dom";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { Button } from "@/components/ui/button";
+import { toast } from "@/hooks/use-toast";
 
 const SignupTestv2 = () => {
   const [isModalOpen, setIsModalOpen] = useState(true);
+  const [formSubmitted, setFormSubmitted] = useState(false);
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const isMobile = useIsMobile();
   const navigate = useNavigate();
 
@@ -44,67 +47,93 @@ const SignupTestv2 = () => {
           plan_type:    "early-adopter"
         };
 
-        /* ── 1. Find existing row (if any) ────────────────────────── */
-        const { data: existing, error: fetchErr } = await supabase
-          .from("signup_data")
-          .select("*")
-          .eq("email", email)
-          .maybeSingle();
-
-        if (fetchErr) {
-          alert("Could not check your registration. Please try again.");
-          console.error(fetchErr);
-          return;
-        }
-
-        let rowId;
-
-        if (!existing) {
-          /* No row yet → insert */
-          const { data, error } = await supabase
+        try {
+          /* ── 1. Find existing row (if any) ────────────────────────── */
+          const { data: existing, error: fetchErr } = await supabase
             .from("signup_data")
-            .insert({ ...row, signup_status: 'submitted', billing_status: 'unpaid' })
-            .select()
-            .single();
+            .select("*")
+            .eq("email", email)
+            .maybeSingle();
 
-          if (error || !data) {
-            alert("Could not save your information. Please try again.");
-            console.error(error);
+          if (fetchErr) {
+            console.error(fetchErr);
+            // Dispatch error event instead of alert
+            document.dispatchEvent(new CustomEvent('signupError', {
+              detail: { message: "Could not check your registration. Please try again." }
+            }));
             return;
           }
-          rowId = data.id;
 
-        } else if (existing.billing_status === 'unpaid') {
-          /* Row exists but unpaid → update */
-          const { data, error } = await supabase
-            .from("signup_data")
-            .update(row)
-            .eq("id", existing.id)
-            .select()
-            .single();
+          let rowId;
 
-          if (error || !data) {
-            alert("Could not update your information. Please try again.");
-            console.error(error);
+          if (!existing) {
+            /* No row yet → insert */
+            const { data, error } = await supabase
+              .from("signup_data")
+              .insert({ ...row, signup_status: 'submitted', billing_status: 'unpaid' })
+              .select()
+              .single();
+
+            if (error || !data) {
+              console.error(error);
+              // Dispatch error event instead of alert
+              document.dispatchEvent(new CustomEvent('signupError', {
+                detail: { message: "Could not save your information. Please try again." }
+              }));
+              return;
+            }
+            rowId = data.id;
+
+          } else if (existing.billing_status === 'unpaid') {
+            /* Row exists but unpaid → update */
+            const { data, error } = await supabase
+              .from("signup_data")
+              .update(row)
+              .eq("id", existing.id)
+              .select()
+              .single();
+
+            if (error || !data) {
+              console.error(error);
+              // Dispatch error event instead of alert
+              document.dispatchEvent(new CustomEvent('signupError', {
+                detail: { message: "Could not update your information. Please try again." }
+              }));
+              return;
+            }
+            rowId = data.id;
+
+          } else {
+            // Dispatch event instead of alert
+            document.dispatchEvent(new CustomEvent('signupError', {
+              detail: { message: "Looks like you've already secured your spot—thank you!" }
+            }));
             return;
           }
-          rowId = data.id;
 
-        } else {
-          alert("Looks like you've already secured your spot—thank you!");
-          return;
+          /* ── 2. Open Stripe Checkout ──────────────────────────────── */
+          // Dispatch success event to switch to payment view
+          document.dispatchEvent(new CustomEvent('signupSuccess', {
+            detail: { rowId }
+          }));
+          
+          // Then click the stripe button
+          setTimeout(() => {
+            const btn = document.querySelector("stripe-buy-button");
+            if (btn) {
+              btn.setAttribute("data-client-reference-id", rowId);   // pass db id to Stripe
+              btn.click();
+            }
+          }, 100);
+          
+        } catch (err) {
+          console.error("Signup error:", err);
+          // Dispatch error event
+          document.dispatchEvent(new CustomEvent('signupError', {
+            detail: { message: "An unexpected error occurred. Please try again." }
+          }));
         }
-
-        /* ── 2. Open Stripe Checkout ──────────────────────────────── */
-        const btn = document.querySelector("stripe-buy-button");
-        btn.setAttribute("data-client-reference-id", rowId);   // pass db id to Stripe
-        btn.click();
       });
-
-      window.closeModal = function() {
-        const event = new Event('closeModalEvent');
-        document.dispatchEvent(event);
-      };
     `;
     document.body.appendChild(script);
 
@@ -114,6 +143,27 @@ const SignupTestv2 = () => {
     stripeScript.async = true;
     document.head.appendChild(stripeScript);
 
+    // Add event listeners for custom events
+    const handleSignupSuccess = (event: any) => {
+      console.log("Signup successful, rowId:", event.detail.rowId);
+      setFormSubmitted(true);
+    };
+    
+    const handleSignupError = (event: any) => {
+      console.error("Signup error:", event.detail.message);
+      setErrorMessage(event.detail.message);
+      // Show toast notification
+      toast({
+        title: "Error",
+        description: event.detail.message,
+        variant: "destructive",
+      });
+    };
+    
+    // Add event listeners
+    document.addEventListener('signupSuccess', handleSignupSuccess);
+    document.addEventListener('signupError', handleSignupError);
+    
     // Add event listener for closeModal event
     const handleCloseModal = () => {
       closeModal();
@@ -123,6 +173,8 @@ const SignupTestv2 = () => {
     return () => {
       document.body.removeChild(script);
       document.head.removeChild(stripeScript);
+      document.removeEventListener('signupSuccess', handleSignupSuccess);
+      document.removeEventListener('signupError', handleSignupError);
       document.removeEventListener('closeModalEvent', handleCloseModal);
     };
   }, [navigate]);
@@ -132,95 +184,119 @@ const SignupTestv2 = () => {
       <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
         <DialogContent className={`sm:max-w-md md:max-w-xl ${isMobile ? 'h-[calc(100vh-4rem)] max-h-full mt-16 pt-6' : ''}`}>
           <div className={isMobile ? 'overflow-y-auto max-h-[calc(100vh-12rem)] pb-4' : ''}>
-            <form id="signup-form" style={{ maxWidth: "560px" }}>
-              <h2 className="text-2xl font-medium mb-2">Reserve Your Spot for $1</h2>
-              <p className="text-gray-600 mb-4">
-                Join our founding community of 200 families. Complete the form below to secure your place.
-              </p>
+            {!formSubmitted ? (
+              <>
+                <form id="signup-form" style={{ maxWidth: "560px" }}>
+                  <h2 className="text-2xl font-medium mb-2">Reserve Your Spot for $1</h2>
+                  <p className="text-gray-600 mb-4">
+                    Join our founding community of 200 families. Complete the form below to secure your place.
+                  </p>
 
-              {/* First / Last */}
-              <div className="flex gap-3 mb-3">
-                <input 
-                  name="firstName" 
-                  placeholder="Your first name" 
-                  required 
-                  className="flex-1 px-3 py-2 border rounded"
-                />
-                <input 
-                  name="lastName" 
-                  placeholder="Your last name" 
-                  required 
-                  className="flex-1 px-3 py-2 border rounded"
-                />
+                  {errorMessage && (
+                    <div className="mb-4 p-3 bg-red-50 border border-red-200 text-red-700 rounded-md">
+                      {errorMessage}
+                    </div>
+                  )}
+
+                  {/* First / Last */}
+                  <div className="flex gap-3 mb-3">
+                    <input 
+                      name="firstName" 
+                      placeholder="Your first name" 
+                      required 
+                      className="flex-1 px-3 py-2 border rounded"
+                    />
+                    <input 
+                      name="lastName" 
+                      placeholder="Your last name" 
+                      required 
+                      className="flex-1 px-3 py-2 border rounded"
+                    />
+                  </div>
+
+                  {/* Email / Phone */}
+                  <div className="flex gap-3 mb-3">
+                    <input 
+                      name="email" 
+                      type="email" 
+                      placeholder="you@example.com" 
+                      required 
+                      className="flex-1 px-3 py-2 border rounded"
+                    />
+                    <input 
+                      name="phone" 
+                      type="tel" 
+                      placeholder="(555) 123-4567" 
+                      className="flex-1 px-3 py-2 border rounded"
+                    />
+                  </div>
+
+                  {/* Student name / age */}
+                  <div className="flex gap-3 mb-3">
+                    <input 
+                      name="studentName" 
+                      placeholder="Student's name" 
+                      className="flex-1 px-3 py-2 border rounded"
+                    />
+                    <select 
+                      name="studentAge" 
+                      required 
+                      className="flex-1 px-3 py-2 border rounded"
+                    >
+                      <option value="" disabled selected>Select age</option>
+                      <option>8</option><option>9</option><option>10</option>
+                      <option>11</option><option>12</option><option>13</option>
+                      <option>14</option><option>15</option><option>16</option>
+                    </select>
+                  </div>
+
+                  {/* Learning difference */}
+                  <select 
+                    name="learningDiff" 
+                    className="w-full mb-4 px-3 py-2 border rounded"
+                  >
+                    <option value="" selected>Select if applicable</option>
+                    <option>ADHD</option><option>Dyslexia</option><option>Dyscalculia</option>
+                    <option>Executive_Functioning</option><option>Autism</option>
+                  </select>
+
+                  {/* Buttons */}
+                  <div className="flex justify-end gap-3">
+                    <Button 
+                      variant="outline" 
+                      onClick={closeModal} 
+                      className="mr-2"
+                    >
+                      Cancel
+                    </Button>
+                    <button 
+                      id="reserve-btn" 
+                      type="submit"
+                      className="bg-tobey-orange text-white px-4 py-2 rounded border-none"
+                    >
+                      Reserve Your Spot for $1
+                    </button>
+                  </div>
+                </form>
+              </>
+            ) : (
+              <div className="py-6 text-center">
+                <div className="mb-6">
+                  <div className="bg-green-100 p-3 rounded-full mb-4 inline-block">
+                    <svg className="h-6 w-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                    </svg>
+                  </div>
+                  <h3 className="text-lg font-medium mb-2">Registration Complete!</h3>
+                  <p className="text-gray-600 mb-6">
+                    Complete your payment to secure your spot in our beta program.
+                  </p>
+                </div>
               </div>
-
-              {/* Email / Phone */}
-              <div className="flex gap-3 mb-3">
-                <input 
-                  name="email" 
-                  type="email" 
-                  placeholder="you@example.com" 
-                  required 
-                  className="flex-1 px-3 py-2 border rounded"
-                />
-                <input 
-                  name="phone" 
-                  type="tel" 
-                  placeholder="(555) 123-4567" 
-                  className="flex-1 px-3 py-2 border rounded"
-                />
-              </div>
-
-              {/* Student name / age */}
-              <div className="flex gap-3 mb-3">
-                <input 
-                  name="studentName" 
-                  placeholder="Student's name" 
-                  className="flex-1 px-3 py-2 border rounded"
-                />
-                <select 
-                  name="studentAge" 
-                  required 
-                  className="flex-1 px-3 py-2 border rounded"
-                >
-                  <option value="" disabled selected>Select age</option>
-                  <option>8</option><option>9</option><option>10</option>
-                  <option>11</option><option>12</option><option>13</option>
-                  <option>14</option><option>15</option><option>16</option>
-                </select>
-              </div>
-
-              {/* Learning difference */}
-              <select 
-                name="learningDiff" 
-                className="w-full mb-4 px-3 py-2 border rounded"
-              >
-                <option value="" selected>Select if applicable</option>
-                <option>ADHD</option><option>Dyslexia</option><option>Dyscalculia</option>
-                <option>Executive_Functioning</option><option>Autism</option>
-              </select>
-
-              {/* Buttons */}
-              <div className="flex justify-end gap-3">
-                <Button 
-                  variant="outline" 
-                  onClick={closeModal} 
-                  className="mr-2"
-                >
-                  Cancel
-                </Button>
-                <button 
-                  id="reserve-btn" 
-                  type="submit"
-                  className="bg-tobey-orange text-white px-4 py-2 rounded border-none"
-                >
-                  Reserve Your Spot for $1
-                </button>
-              </div>
-            </form>
+            )}
           </div>
 
-          {/* Hidden Stripe Buy Button */}
+          {/* Hidden Stripe Buy Button - Always present but only clicked when needed */}
           <div style={{ display: 'none' }}>
             <stripe-buy-button
               buy-button-id="buy_btn_1RROv2BpB9LJmKwiJTDSTCPl"
