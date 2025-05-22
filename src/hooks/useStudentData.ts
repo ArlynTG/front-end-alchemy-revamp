@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from '@/hooks/use-toast';
@@ -29,7 +30,7 @@ export const useStudentData = (studentId: string) => {
         .from('signup_data')
         .select('*')
         .eq('id', studentId)
-        .single();
+        .maybeSingle();
 
       if (error) {
         console.error("Error fetching student data:", error);
@@ -48,13 +49,22 @@ export const useStudentData = (studentId: string) => {
           name: data.student_name ?? `${data.first_name} ${data.last_name}`,
           // Keep existing values for totalLessons and averageSessionDuration
           // TODO: goals_summary now lives in student_goals table, need to fetch from there
-          longTermPlan: "Goals will be implemented in student_goals table" || prevData.longTermPlan
+          longTermPlan: prevData.longTermPlan
         }));
         
         toast({
           title: "Connection successful",
           description: "Successfully retrieved data from Supabase",
           variant: "default"
+        });
+      } else {
+        // Handle the case when no data is found
+        console.warn("No student data found for ID:", studentId);
+        setSupabaseError("No student data found");
+        toast({
+          title: "No data found",
+          description: `No student found with ID: ${studentId}`,
+          variant: "destructive"
         });
       }
     } catch (err) {
