@@ -11,6 +11,7 @@ const SignupTestv2 = () => {
   const [formSubmitted, setFormSubmitted] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [stripeButtonInitialized, setStripeButtonInitialized] = useState(false);
   const isMobile = useIsMobile();
   const navigate = useNavigate();
 
@@ -27,6 +28,11 @@ const SignupTestv2 = () => {
     setIsSubmitting(false);
     // Clear any previous error messages when successful
     setErrorMessage(null);
+    
+    // No need to redirect to Stripe URL - we'll show the button instead
+    setTimeout(() => {
+      initializeStripeButton();
+    }, 500);
   };
   
   const handleSignupError = (event: any) => {
@@ -42,6 +48,34 @@ const SignupTestv2 = () => {
       description: event.detail.message,
       variant: "destructive",
     });
+  };
+
+  // Initialize the Stripe Buy Button
+  const initializeStripeButton = () => {
+    try {
+      // Check if button container exists
+      const buttonContainer = document.getElementById('stripe-button-container');
+      if (!buttonContainer) {
+        console.error("Button container not found");
+        return;
+      }
+
+      // Clear any existing content
+      buttonContainer.innerHTML = '';
+      
+      // Create the stripe-buy-button element
+      const buyButton = document.createElement('stripe-buy-button');
+      buyButton.setAttribute('buy-button-id', 'buy_btn_1RROv2BpB9LJmKwiJTDSTCPl');
+      buyButton.setAttribute('publishable-key', 'pk_live_51R96NFBpB9LJmKwiof8LfkfsDcBtzx8sl21tqETJoiiuMSNh0yGHOuZscRLgo8NykCYscFtFGZ3Ghh29hR3Emo0W00vAw5C1Nu');
+      
+      // Append the button to the container
+      buttonContainer.appendChild(buyButton);
+      setStripeButtonInitialized(true);
+      console.log("Stripe Buy Button initialized successfully");
+    } catch (error) {
+      console.error("Error initializing Stripe Buy Button:", error);
+      setErrorMessage("Could not initialize payment button. Please try again.");
+    }
   };
 
   // Add the custom script when the component mounts
@@ -148,16 +182,10 @@ const SignupTestv2 = () => {
               return;
             }
 
-            /* ── 2. Open Stripe Checkout ──────────────────────────────── */
-            // Dispatch success event to switch to payment view
+            /* ── 2. Show success and Stripe button will be initialized ──────────────────────────────── */
             document.dispatchEvent(new CustomEvent('signupSuccess', {
               detail: { rowId }
             }));
-            
-            // Direct redirect to Stripe checkout URL with the correct one
-            setTimeout(() => {
-              window.location.href = "https://buy.stripe.com/dRm28qgHDcpM2CI6N99bO05";
-            }, 1000);
             
           } catch (err) {
             console.error("Signup error:", err);
@@ -332,8 +360,13 @@ const SignupTestv2 = () => {
                   </div>
                   <h3 className="text-lg font-medium mb-2">Registration Complete!</h3>
                   <p className="text-gray-600 mb-6">
-                    Redirecting you to Stripe to complete your payment and secure your spot.
+                    Complete your payment to secure your spot.
                   </p>
+                  
+                  {/* Stripe Buy Button Container */}
+                  <div id="stripe-button-container" className="flex justify-center mb-4">
+                    {/* Stripe Buy Button will be inserted here */}
+                  </div>
                 </div>
               </div>
             )}
