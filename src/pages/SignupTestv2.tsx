@@ -1,64 +1,13 @@
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
+import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { useIsMobile } from "@/hooks/use-mobile";
-import { Button } from "@/components/ui/button";
-import { Form } from "@/components/ui/form";
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { z } from "zod";
-import { InputField, SelectField } from "@/components/form/FormField";
-import { useEffect } from "react";
-
-// Create a mock schema for the form
-const mockSignupSchema = z.object({
-  firstName: z.string().min(1, "First name is required"),
-  lastName: z.string().min(1, "Last name is required"),
-  email: z.string().email("Please enter a valid email address"),
-  phone: z.string().min(10, "Please enter a valid phone number"),
-  studentName: z.string(),
-  studentAge: z.string(),
-  learningDiff: z.string().optional(),
-});
-
-type MockSignupFormValues = z.infer<typeof mockSignupSchema>;
-
-// Age options for students (8-16 years)
-const studentAgeOptions = Array.from({ length: 9 }, (_, i) => {
-  const age = i + 8;
-  return { value: age.toString(), label: `${age} years` };
-});
-
-// Learning difference options
-const learningDifferenceOptions = [
-  { value: "ADHD", label: "ADHD" },
-  { value: "Dyslexia", label: "Dyslexia" },
-  { value: "Dyscalculia", label: "Dyscalculia" },
-  { value: "Auditory Processing", label: "Auditory Processing" },
-  { value: "Executive_Functioning", label: "Executive Function" },
-  { value: "Other", label: "Other" },
-];
 
 const SignupTestv2 = () => {
   const [isModalOpen, setIsModalOpen] = useState(true);
-  const [formSubmitted, setFormSubmitted] = useState(false);
-  const [isSubmitting, setIsSubmitting] = useState(false);
   const isMobile = useIsMobile();
   const navigate = useNavigate();
-
-  const form = useForm<MockSignupFormValues>({
-    resolver: zodResolver(mockSignupSchema),
-    defaultValues: {
-      firstName: "",
-      lastName: "",
-      email: "",
-      phone: "",
-      studentName: "",
-      studentAge: "",
-      learningDiff: undefined,
-    },
-  });
 
   const closeModal = () => {
     setIsModalOpen(false);
@@ -66,30 +15,11 @@ const SignupTestv2 = () => {
     navigate("/");
   };
 
-  const handleSubmit = async (data: MockSignupFormValues) => {
-    setIsSubmitting(true);
-    console.log("Form data submitted:", data);
-    
-    // The actual form submission is handled by the script in useEffect
-    // This function now only manages UI state
-    setIsSubmitting(false);
-  };
-
-  const handleOpenChange = (open: boolean) => {
-    if (!open) {
-      // Reset when closing
-      setFormSubmitted(false);
-      setIsSubmitting(false);
-      closeModal();
-    }
-  };
-
   // Add the custom script when the component mounts
   useEffect(() => {
     const script = document.createElement('script');
     script.type = 'module';
     script.innerHTML = `
-      /* 1️⃣  Supabase client */
       import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 
       const supabase = createClient(
@@ -97,33 +27,83 @@ const SignupTestv2 = () => {
         "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhncHBsdmVncWx2eHdzemxoendjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDQ3NzU2NDEsImV4cCI6MjA2MDM1MTY0MX0.yMqquc9J0EhBA7lS7c-vInK6NC00BqTt5gKjMt7jl4I"
       );
 
-      /* 2️⃣  Handle form submit */
-      const form = document.getElementById("signup-form");
-      form.addEventListener("submit", async (e) => {
+      document.getElementById("signup-form").addEventListener("submit", async (e) => {
         e.preventDefault();
+        const f = e.target;
+        const email = f.email.value.trim().toLowerCase();
 
         const row = {
-          first_name:   form.firstName.value,
-          last_name:    form.lastName.value,
-          email:        form.email.value,
-          phone:        form.phone.value,
-          student_name: form.studentName.value,
-          student_age:  form.studentAge.value,
-          learning_difference: form.learningDiff.value || null,
-          signup_status:  'submitted',
-          billing_status: 'unpaid'
+          first_name:   f.firstName.value.trim(),
+          last_name:    f.lastName.value.trim(),
+          email,
+          phone:        f.phone.value.trim() || null,
+          student_name: f.studentName.value.trim() || null,
+          student_age:  f.studentAge.value,
+          learning_difference: f.learningDiff.value || null,
+          plan_type:    "early-adopter"
         };
 
-        const { error } = await supabase.from("signup_data").insert([row]);
-        if (error) {
-          alert("Sorry—couldn't save your info. Please try again.");
-          console.error(error);
+        /* ── 1. Find existing row (if any) ────────────────────────── */
+        const { data: existing, error: fetchErr } = await supabase
+          .from("signup_data")
+          .select("*")
+          .eq("email", email)
+          .maybeSingle();
+
+        if (fetchErr) {
+          alert("Could not check your registration. Please try again.");
+          console.error(fetchErr);
           return;
         }
 
-        /* 3️⃣  Launch Stripe Checkout */
-        document.querySelector("stripe-buy-button").click();
+        let rowId;
+
+        if (!existing) {
+          /* No row yet → insert */
+          const { data, error } = await supabase
+            .from("signup_data")
+            .insert({ ...row, signup_status: 'submitted', billing_status: 'unpaid' })
+            .select()
+            .single();
+
+          if (error || !data) {
+            alert("Could not save your information. Please try again.");
+            console.error(error);
+            return;
+          }
+          rowId = data.id;
+
+        } else if (existing.billing_status === 'unpaid') {
+          /* Row exists but unpaid → update */
+          const { data, error } = await supabase
+            .from("signup_data")
+            .update(row)
+            .eq("id", existing.id)
+            .select()
+            .single();
+
+          if (error || !data) {
+            alert("Could not update your information. Please try again.");
+            console.error(error);
+            return;
+          }
+          rowId = data.id;
+
+        } else {
+          alert("Looks like you've already secured your spot—thank you!");
+          return;
+        }
+
+        /* ── 2. Open Stripe Checkout ──────────────────────────────── */
+        const btn = document.querySelector("stripe-buy-button");
+        btn.setAttribute("data-client-reference-id", rowId);   // pass db id to Stripe
+        btn.click();
       });
+
+      window.closeModal = function() {
+        const event = new Event('closeModalEvent');
+        document.dispatchEvent(event);
+      };
     `;
     document.body.appendChild(script);
 
@@ -133,108 +113,117 @@ const SignupTestv2 = () => {
     stripeScript.async = true;
     document.head.appendChild(stripeScript);
 
+    // Add event listener for closeModal event
+    const handleCloseModal = () => {
+      closeModal();
+    };
+    document.addEventListener('closeModalEvent', handleCloseModal);
+
     return () => {
       document.body.removeChild(script);
       document.head.removeChild(stripeScript);
+      document.removeEventListener('closeModalEvent', handleCloseModal);
     };
-  }, []);
+  }, [navigate]);
 
   return (
     <div className="min-h-screen bg-gray-100 flex flex-col items-center justify-center p-4">
-      <Dialog open={isModalOpen} onOpenChange={handleOpenChange}>
+      <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
         <DialogContent className={`sm:max-w-md md:max-w-xl ${isMobile ? 'h-[calc(100vh-4rem)] max-h-full mt-16 pt-6' : ''}`}>
-          <DialogHeader className={isMobile ? 'pb-2' : ''}>
-            <DialogTitle className="text-2xl font-medium">Reserve Your Spot for $1</DialogTitle>
-            <DialogDescription>
-              Join our founding community of 200 families. Complete the form below to secure your place.
-            </DialogDescription>
-          </DialogHeader>
-          
           <div className={isMobile ? 'overflow-y-auto max-h-[calc(100vh-12rem)] pb-4' : ''}>
-            <Form {...form}>
-              <form id="signup-form" onSubmit={form.handleSubmit(handleSubmit)} className="space-y-4 py-4">
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <InputField
-                    control={form.control}
-                    name="firstName"
-                    label="First Name"
-                    placeholder="Your first name"
-                  />
-                  
-                  <InputField
-                    control={form.control}
-                    name="lastName"
-                    label="Last Name"
-                    placeholder="Your last name"
-                  />
-                </div>
-                
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <InputField
-                    control={form.control}
-                    name="email"
-                    label="Email Address"
-                    placeholder="your.email@example.com"
-                    type="email"
-                  />
-                  
-                  <InputField
-                    control={form.control}
-                    name="phone"
-                    label="Phone Number"
-                    placeholder="(555) 123-4567"
-                    type="tel"
-                  />
-                </div>
-                
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <InputField
-                    control={form.control}
-                    name="studentName"
-                    label="Student's Name"
-                    placeholder="Student's name"
-                  />
-                  
-                  <SelectField
-                    control={form.control}
-                    name="studentAge"
-                    label="Student's Age"
-                    placeholder="Select age"
-                    options={studentAgeOptions}
-                  />
-                </div>
-                
-                <SelectField
-                  control={form.control}
-                  name="learningDiff"
-                  label="Primary Learning Difference"
-                  placeholder="Select if applicable"
-                  options={learningDifferenceOptions}
-                  optional={true}
-                />
-                
-                <div className="flex justify-end pt-4">
-                  <Button variant="outline" onClick={closeModal} className="mr-2">
-                    Cancel
-                  </Button>
-                  <Button 
-                    type="submit" 
-                    disabled={isSubmitting}
-                    className="bg-tobey-orange hover:bg-tobey-orange/90 text-white"
-                  >
-                    {isSubmitting ? "Submitting..." : "Reserve Your Spot for $1"}
-                  </Button>
-                </div>
+            <form id="signup-form" style={{ maxWidth: "560px" }}>
+              <h2 className="text-2xl font-medium mb-2">Reserve Your Spot for $1</h2>
+              <p className="text-gray-600 mb-4">
+                Join our founding community of 200 families. Complete the form below to secure your place.
+              </p>
 
-                {/* Hidden Stripe Buy Button */}
-                <div style={{ display: 'none' }}>
-                  <stripe-buy-button
-                    buy-button-id="buy_btn_1RROv2BpB9LJmKwiJTDSTCPl"
-                    publishable-key="pk_live_51R96NFBpB9LJmKwiof8LfkfsDcBtzx8sl21tqETJoiiuMSNh0yGHOuZscRLgo8NykCYscFtFGZ3Ghh29hR3Emo0W00vAw5C1Nu"
-                  ></stripe-buy-button>
-                </div>
-              </form>
-            </Form>
+              {/* First / Last */}
+              <div className="flex gap-3 mb-3">
+                <input 
+                  name="firstName" 
+                  placeholder="Your first name" 
+                  required 
+                  className="flex-1 px-3 py-2 border rounded"
+                />
+                <input 
+                  name="lastName" 
+                  placeholder="Your last name" 
+                  required 
+                  className="flex-1 px-3 py-2 border rounded"
+                />
+              </div>
+
+              {/* Email / Phone */}
+              <div className="flex gap-3 mb-3">
+                <input 
+                  name="email" 
+                  type="email" 
+                  placeholder="you@example.com" 
+                  required 
+                  className="flex-1 px-3 py-2 border rounded"
+                />
+                <input 
+                  name="phone" 
+                  type="tel" 
+                  placeholder="(555) 123-4567" 
+                  className="flex-1 px-3 py-2 border rounded"
+                />
+              </div>
+
+              {/* Student name / age */}
+              <div className="flex gap-3 mb-3">
+                <input 
+                  name="studentName" 
+                  placeholder="Student's name" 
+                  className="flex-1 px-3 py-2 border rounded"
+                />
+                <select 
+                  name="studentAge" 
+                  required 
+                  className="flex-1 px-3 py-2 border rounded"
+                >
+                  <option value="" disabled selected>Select age</option>
+                  <option>6</option><option>7</option><option>8</option>
+                  <option>9</option><option>10</option><option>11</option><option>12+</option>
+                </select>
+              </div>
+
+              {/* Learning difference */}
+              <select 
+                name="learningDiff" 
+                className="w-full mb-4 px-3 py-2 border rounded"
+              >
+                <option value="" selected>Select if applicable</option>
+                <option>ADHD</option><option>Dyslexia</option><option>Dyscalculia</option>
+                <option>Executive_Functioning</option><option>Autism</option>
+              </select>
+
+              {/* Buttons */}
+              <div className="flex justify-end gap-3">
+                <button 
+                  type="button" 
+                  onClick={() => window.closeModal()} 
+                  className="px-4 py-2 border rounded"
+                >
+                  Cancel
+                </button>
+                <button 
+                  id="reserve-btn" 
+                  type="submit"
+                  className="bg-tobey-orange text-white px-4 py-2 rounded border-none"
+                >
+                  Reserve Your Spot for $1
+                </button>
+              </div>
+            </form>
+          </div>
+
+          {/* Hidden Stripe Buy Button */}
+          <div style={{ display: 'none' }}>
+            <stripe-buy-button
+              buy-button-id="buy_btn_1RROv2BpB9LJmKwiJTDSTCPl"
+              publishable-key="pk_live_51R96NFBpB9LJmKwiof8LfkfsDcBtzx8sl21tqETJoiiuMSNh0yGHOuZscRLgo8NykCYscFtFGZ3Ghh29hR3Emo0W00vAw5C1Nu"
+            ></stripe-buy-button>
           </div>
         </DialogContent>
       </Dialog>
