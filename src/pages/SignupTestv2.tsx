@@ -9,6 +9,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { InputField, SelectField } from "@/components/form/FormField";
+import { useEffect } from "react";
 
 // Create a mock schema for the form
 const mockSignupSchema = z.object({
@@ -18,7 +19,7 @@ const mockSignupSchema = z.object({
   phone: z.string().min(10, "Please enter a valid phone number"),
   studentName: z.string(),
   studentAge: z.string(),
-  primaryLearningDifference: z.string().optional(),
+  learningDiff: z.string().optional(),
 });
 
 type MockSignupFormValues = z.infer<typeof mockSignupSchema>;
@@ -55,7 +56,7 @@ const SignupTestv2 = () => {
       phone: "",
       studentName: "",
       studentAge: "",
-      primaryLearningDifference: undefined,
+      learningDiff: undefined,
     },
   });
 
@@ -67,13 +68,11 @@ const SignupTestv2 = () => {
 
   const handleSubmit = async (data: MockSignupFormValues) => {
     setIsSubmitting(true);
-    console.log("Form data submitted (no backend):", data);
+    console.log("Form data submitted:", data);
     
-    // Simulate a delay and then show payment section
-    setTimeout(() => {
-      setFormSubmitted(true);
-      setIsSubmitting(false);
-    }, 1000);
+    // The actual form submission is handled by the script in useEffect
+    // This function now only manages UI state
+    setIsSubmitting(false);
   };
 
   const handleOpenChange = (open: boolean) => {
@@ -84,6 +83,61 @@ const SignupTestv2 = () => {
       closeModal();
     }
   };
+
+  // Add the custom script when the component mounts
+  useEffect(() => {
+    const script = document.createElement('script');
+    script.type = 'module';
+    script.innerHTML = `
+      /* 1️⃣  Supabase client */
+      import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
+
+      const supabase = createClient(
+        "https://hgpplvegqlvxwszlhzwc.supabase.co",
+        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhncHBsdmVncWx2eHdzemxoendjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDQ3NzU2NDEsImV4cCI6MjA2MDM1MTY0MX0.yMqquc9J0EhBA7lS7c-vInK6NC00BqTt5gKjMt7jl4I"
+      );
+
+      /* 2️⃣  Handle form submit */
+      const form = document.getElementById("signup-form");
+      form.addEventListener("submit", async (e) => {
+        e.preventDefault();
+
+        const row = {
+          first_name:   form.firstName.value,
+          last_name:    form.lastName.value,
+          email:        form.email.value,
+          phone:        form.phone.value,
+          student_name: form.studentName.value,
+          student_age:  form.studentAge.value,
+          learning_difference: form.learningDiff.value || null,
+          signup_status:  'submitted',
+          billing_status: 'unpaid'
+        };
+
+        const { error } = await supabase.from("signup_data").insert([row]);
+        if (error) {
+          alert("Sorry—couldn't save your info. Please try again.");
+          console.error(error);
+          return;
+        }
+
+        /* 3️⃣  Launch Stripe Checkout */
+        document.querySelector("stripe-buy-button").click();
+      });
+    `;
+    document.body.appendChild(script);
+
+    // Add Stripe script
+    const stripeScript = document.createElement('script');
+    stripeScript.src = 'https://js.stripe.com/v3/buy-button.js';
+    stripeScript.async = true;
+    document.head.appendChild(stripeScript);
+
+    return () => {
+      document.body.removeChild(script);
+      document.head.removeChild(stripeScript);
+    };
+  }, []);
 
   return (
     <div className="min-h-screen bg-gray-100 flex flex-col items-center justify-center p-4">
@@ -97,111 +151,90 @@ const SignupTestv2 = () => {
           </DialogHeader>
           
           <div className={isMobile ? 'overflow-y-auto max-h-[calc(100vh-12rem)] pb-4' : ''}>
-            {!formSubmitted ? (
-              <Form {...form}>
-                <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-4 py-4">
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <InputField
-                      control={form.control}
-                      name="firstName"
-                      label="First Name"
-                      placeholder="Your first name"
-                    />
-                    
-                    <InputField
-                      control={form.control}
-                      name="lastName"
-                      label="Last Name"
-                      placeholder="Your last name"
-                    />
-                  </div>
+            <Form {...form}>
+              <form id="signup-form" onSubmit={form.handleSubmit(handleSubmit)} className="space-y-4 py-4">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <InputField
+                    control={form.control}
+                    name="firstName"
+                    label="First Name"
+                    placeholder="Your first name"
+                  />
                   
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <InputField
-                      control={form.control}
-                      name="email"
-                      label="Email Address"
-                      placeholder="your.email@example.com"
-                      type="email"
-                    />
-                    
-                    <InputField
-                      control={form.control}
-                      name="phone"
-                      label="Phone Number"
-                      placeholder="(555) 123-4567"
-                      type="tel"
-                    />
-                  </div>
+                  <InputField
+                    control={form.control}
+                    name="lastName"
+                    label="Last Name"
+                    placeholder="Your last name"
+                  />
+                </div>
+                
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <InputField
+                    control={form.control}
+                    name="email"
+                    label="Email Address"
+                    placeholder="your.email@example.com"
+                    type="email"
+                  />
                   
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <InputField
-                      control={form.control}
-                      name="studentName"
-                      label="Student's Name"
-                      placeholder="Student's name"
-                    />
-                    
-                    <SelectField
-                      control={form.control}
-                      name="studentAge"
-                      label="Student's Age"
-                      placeholder="Select age"
-                      options={studentAgeOptions}
-                    />
-                  </div>
+                  <InputField
+                    control={form.control}
+                    name="phone"
+                    label="Phone Number"
+                    placeholder="(555) 123-4567"
+                    type="tel"
+                  />
+                </div>
+                
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <InputField
+                    control={form.control}
+                    name="studentName"
+                    label="Student's Name"
+                    placeholder="Student's name"
+                  />
                   
                   <SelectField
                     control={form.control}
-                    name="primaryLearningDifference"
-                    label="Primary Learning Difference"
-                    placeholder="Select if applicable"
-                    options={learningDifferenceOptions}
-                    optional={true}
+                    name="studentAge"
+                    label="Student's Age"
+                    placeholder="Select age"
+                    options={studentAgeOptions}
                   />
-                  
-                  <div className="flex justify-end pt-4">
-                    <Button variant="outline" onClick={closeModal} className="mr-2">
-                      Cancel
-                    </Button>
-                    <Button 
-                      type="submit" 
-                      disabled={isSubmitting}
-                      className="bg-tobey-orange hover:bg-tobey-orange/90 text-white"
-                    >
-                      {isSubmitting ? "Submitting..." : "Reserve Your Spot for $1"}
-                    </Button>
-                  </div>
-                </form>
-              </Form>
-            ) : (
-              <div className="py-6 text-center">
-                <div className="mb-6">
-                  <div className="bg-green-100 p-3 rounded-full mb-4 inline-block">
-                    <svg className="h-6 w-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                    </svg>
-                  </div>
-                  <h3 className="text-lg font-medium mb-2">Registration Complete!</h3>
-                  <p className="text-gray-600 mb-6">
-                    Complete your payment to secure your spot in our beta program.
-                  </p>
                 </div>
-
-                <div id="payment-button-container" className="flex justify-center mb-4">
-                  {/* Mock Stripe button - no actual Stripe integration */}
+                
+                <SelectField
+                  control={form.control}
+                  name="learningDiff"
+                  label="Primary Learning Difference"
+                  placeholder="Select if applicable"
+                  options={learningDifferenceOptions}
+                  optional={true}
+                />
+                
+                <div className="flex justify-end pt-4">
+                  <Button variant="outline" onClick={closeModal} className="mr-2">
+                    Cancel
+                  </Button>
                   <Button 
-                    className="bg-indigo-600 hover:bg-indigo-700 text-white px-8 py-6 text-lg font-medium"
-                    onClick={() => {
-                      console.log("Mock payment button clicked - no actual payment processed");
-                      alert("This is a frontend-only demo. No payment will be processed.");
-                    }}
+                    type="submit" 
+                    disabled={isSubmitting}
+                    className="bg-tobey-orange hover:bg-tobey-orange/90 text-white"
                   >
-                    Pay $1 to Reserve Your Spot
+                    {isSubmitting ? "Submitting..." : "Reserve Your Spot for $1"}
                   </Button>
                 </div>
-              </div>
-            )}
+
+                {/* Hidden Stripe Buy Button */}
+                <div style={{ display: 'none' }}>
+                  <stripe-buy-button
+                    buy-button-id="buy_btn_1RROv2BpB9LJmKwiJTDSTCPl"
+                    publishable-key="pk_live_51R96NFBpB9LJmKwiof8LfkfsDcBtzx8sl21tqETJoiiuMSNh0yGHOuZscRLgo8NykCYscFtFGZ3Ghh29hR3Emo0W00vAw5C1Nu"
+                  ></stripe-buy-button>
+                </div>
+              </form>
+            </Form>
           </div>
         </DialogContent>
       </Dialog>
