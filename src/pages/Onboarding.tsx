@@ -10,7 +10,7 @@ const Onboarding = () => {
     <HelmetProvider>
       <Helmet>
         <title>Complete Your Setup | Tobey's Tutor</title>
-        <meta name="description" content="Complete your account setup to get started with Tobey's Tutor, the AI learning assistant for bright kids with dyslexia and ADHD." />
+        <meta name="description" content="AI-enabled tutoring for dyslexic & ADHD students that boosts academic grades, skills and confidence." />
       </Helmet>
       
       <Alert className="max-w-4xl mx-auto mt-6 bg-blue-50 border-blue-200">

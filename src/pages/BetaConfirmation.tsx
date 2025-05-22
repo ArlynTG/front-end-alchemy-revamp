@@ -1,4 +1,3 @@
-
 import { useLocation, Navigate, Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Check, Calendar } from "lucide-react";
@@ -17,9 +16,9 @@ const BetaConfirmation = () => {
     <div className="min-h-screen flex flex-col items-center justify-center bg-gray-50 px-4">
       <Helmet>
         <title>Tobey's Tutor: Registration Confirmed | AI Learning Assistant</title>
-        <meta name="description" content="AI tutoring transforms learning for bright kids with dyslexia and ADHD. Our evidence-based approach celebrates neurodiversity while unlocking academic potential." />
+        <meta name="description" content="AI-enabled tutoring for dyslexic & ADHD students that boosts academic grades, skills and confidence." />
         <meta property="og:title" content="Tobey's Tutor: Registration Confirmed | AI Learning Assistant" />
-        <meta property="og:description" content="AI tutoring transforms learning for bright kids with dyslexia and ADHD. Our evidence-based approach celebrates neurodiversity while unlocking academic potential." />
+        <meta property="og:description" content="AI-enabled tutoring for dyslexic & ADHD students that boosts academic grades, skills and confidence." />
         <meta property="og:type" content="website" />
       </Helmet>
       <div className="bg-white rounded-2xl shadow-md p-8 max-w-md w-full text-center">

@@ -9,7 +9,7 @@ const OnboardingSuccess = () => {
     <HelmetProvider>
       <Helmet>
         <title>Payment Successful | Tobey's Tutor</title>
-        <meta name="description" content="Your payment was successful. Welcome to Tobey's Tutor, the AI learning assistant for bright kids with dyslexia and ADHD." />
+        <meta name="description" content="AI-enabled tutoring for dyslexic & ADHD students that boosts academic grades, skills and confidence." />
       </Helmet>
       
       <OnboardingLayout currentStep="payment">

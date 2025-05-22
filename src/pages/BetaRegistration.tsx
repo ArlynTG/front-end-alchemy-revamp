@@ -1,4 +1,3 @@
-
 import { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import Navbar from "@/components/Navbar";
@@ -66,9 +65,9 @@ const BetaRegistration = () => {
       <div className="flex flex-col min-h-screen">
         <Helmet>
           <title>Tobey's Tutor: Beta Registration | AI Learning Assistant</title>
-          <meta name="description" content="AI tutoring transforms learning for bright kids with dyslexia and ADHD. Our evidence-based approach celebrates neurodiversity while unlocking academic potential." />
+          <meta name="description" content="AI-enabled tutoring for dyslexic & ADHD students that boosts academic grades, skills and confidence." />
           <meta property="og:title" content="Tobey's Tutor: Beta Registration | AI Learning Assistant" />
-          <meta property="og:description" content="AI tutoring transforms learning for bright kids with dyslexia and ADHD. Our evidence-based approach celebrates neurodiversity while unlocking academic potential." />
+          <meta property="og:description" content="AI-enabled tutoring for dyslexic & ADHD students that boosts academic grades, skills and confidence." />
           <meta property="og:type" content="website" />
         </Helmet>
         <Navbar />
