@@ -20,6 +20,30 @@ const SignupTestv2 = () => {
     navigate("/");
   };
 
+  // Define event handlers outside of useEffect
+  const handleSignupSuccess = (event: any) => {
+    console.log("Signup successful, rowId:", event.detail.rowId);
+    setFormSubmitted(true);
+    setIsSubmitting(false);
+    // Clear any previous error messages when successful
+    setErrorMessage(null);
+  };
+  
+  const handleSignupError = (event: any) => {
+    console.error("Signup error:", event.detail.message);
+    // Only show the error message, don't set formSubmitted to true
+    setErrorMessage(event.detail.message);
+    setFormSubmitted(false); // Ensure form stays visible on error
+    setIsSubmitting(false);
+    
+    // Show toast notification
+    toast({
+      title: "Error",
+      description: event.detail.message,
+      variant: "destructive",
+    });
+  };
+
   // Add the custom script when the component mounts
   useEffect(() => {
     // Clear any existing event listeners to prevent duplicates
@@ -154,30 +178,6 @@ const SignupTestv2 = () => {
     document.head.appendChild(stripeScript);
 
     // Add event listeners for custom events
-    const handleSignupSuccess = (event: any) => {
-      console.log("Signup successful, rowId:", event.detail.rowId);
-      setFormSubmitted(true);
-      setIsSubmitting(false);
-      // Clear any previous error messages when successful
-      setErrorMessage(null);
-    };
-    
-    const handleSignupError = (event: any) => {
-      console.error("Signup error:", event.detail.message);
-      // Only show the error message, don't set formSubmitted to true
-      setErrorMessage(event.detail.message);
-      setFormSubmitted(false); // Ensure form stays visible on error
-      setIsSubmitting(false);
-      
-      // Show toast notification
-      toast({
-        title: "Error",
-        description: event.detail.message,
-        variant: "destructive",
-      });
-    };
-    
-    // Add event listeners
     document.addEventListener('signupSuccess', handleSignupSuccess);
     document.addEventListener('signupError', handleSignupError);
     
